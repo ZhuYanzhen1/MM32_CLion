@@ -21,7 +21,7 @@ jobs:
       - name: Build Hex
         run: |
           PATH="$PATH:/opt/gcc-arm-none-eabi/bin" && echo $PATH
-          cd build && cmake.exe --build . --target mm32f3277.elf -- -j 2 && ls
+          cd build && cmake --build . --target mm32f3277.elf -- -j 2 && ls
       - name: Upload Hex
         uses: actions/upload-artifact@v2
         with:
