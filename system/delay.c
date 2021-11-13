@@ -1,7 +1,7 @@
 #include "delay.h"
 
 extern unsigned int SystemCoreClock;
-static volatile unsigned int TimingDelay;
+static volatile unsigned int delayms_counter = 0;
 
 void delay_config(void) {
     if (SysTick_Config(SystemCoreClock / 1000))
@@ -10,8 +10,8 @@ void delay_config(void) {
 }
 
 static void TimingDelayDecrement(void) {
-    if (TimingDelay != 0x00) {
-        TimingDelay--;
+    if (delayms_counter != 0x00) {
+        delayms_counter--;
     }
 }
 
@@ -20,6 +20,6 @@ void SysTick_Handler(void) {
 }
 
 void delayms(unsigned int xms) {
-    TimingDelay = xms;
-    while (TimingDelay != 0);
+    delayms_counter = xms;
+    while (delayms_counter != 0);
 }

@@ -21,7 +21,7 @@
 // Files includes
 #include "types.h"
 #include "mm32_device.h"
-#include "HAL_eth_conf.h"
+#include "hal_eth_conf.h"
 ////////////////////////////////////////////////////////////////////////////////
 /// @addtogroup MM32_Hardware_Abstract_Layer
 /// @{
@@ -81,67 +81,65 @@
 #define  ETH_ERROR                                          ((u32)0)
 #define  ETH_SUCCESS                                        ((u32)1)
 
-
-
-
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief ETH Init Structure Definition
 ////////////////////////////////////////////////////////////////////////////////
 typedef struct {
-    __IO u32    ETH_AutoNegotiation;
-    __IO u32    ETH_Watchdog;
-    __IO u32    ETH_Jabber;
-    __IO u32    ETH_InterFrameGap;
-    __IO u32    ETH_CarrierSense;
-    __IO u32    ETH_Speed;
-    __IO u32    ETH_ReceiveOwn;
-    __IO u32    ETH_LoopbackMode;
-    __IO u32    ETH_Mode;
-    __IO u32    ETH_ChecksumOffload;
-    __IO u32    ETH_RetryTransmission;
-    __IO u32    ETH_AutomaticPadCRCStrip;
-    __IO u32    ETH_BackOffLimit;
-    __IO u32    ETH_DeferralCheck;
-    __IO u32    ETH_ReceiveAll;
-    __IO u32    ETH_SourceAddrFilter;
-    __IO u32    ETH_PassControlFrames;
-    __IO u32    ETH_BroadcastFramesReception;
-    __IO u32    ETH_DestinationAddrFilter;
-    __IO u32    ETH_PromiscuousMode;
-    __IO u32    ETH_MulticastFramesFilter;
-    __IO u32    ETH_UnicastFramesFilter;
-    __IO u32    ETH_HashTableHigh;
-    __IO u32    ETH_HashTableLow;
-    __IO u32    ETH_PauseTime;
-    __IO u32    ETH_ZeroQuantaPause;
-    __IO u32    ETH_PauseLowThreshold;
-    __IO u32    ETH_UnicastPauseFrameDetect;
-    __IO u32    ETH_ReceiveFlowControl;
-    __IO u32    ETH_TransmitFlowControl;
-    __IO u32    ETH_VLANTagComparison;
-    __IO u32    ETH_VLANTagIdentifier;
-    __IO u32    ETH_DropTCPIPChecksumErrorFrame;
-    __IO u32    ETH_ReceiveStoreForward;
-    __IO u32    ETH_FlushReceivedFrame;
-    __IO u32    ETH_TransmitStoreForward;
-    __IO u32    ETH_TransmitThresholdControl;
-    __IO u32    ETH_ForwardErrorFrames;
-    __IO u32    ETH_ForwardUndersizedGoodFrames;
-    __IO u32    ETH_ReceiveThresholdControl;
-    __IO u32    ETH_SecondFrameOperate;
-    __IO u32    ETH_AddressAlignedBeats;
-    __IO u32    ETH_FixedBurst;
-    __IO u32    ETH_RxDMABurstLength;
-    __IO u32    ETH_TxDMABurstLength;
-    __IO u32    ETH_DescriptorSkipLength;
-    __IO u32    ETH_DMAArbitration;
+    __IO u32 ETH_AutoNegotiation;
+    __IO u32 ETH_Watchdog;
+    __IO u32 ETH_Jabber;
+    __IO u32 ETH_InterFrameGap;
+    __IO u32 ETH_CarrierSense;
+    __IO u32 ETH_Speed;
+    __IO u32 ETH_ReceiveOwn;
+    __IO u32 ETH_LoopbackMode;
+    __IO u32 ETH_Mode;
+    __IO u32 ETH_ChecksumOffload;
+    __IO u32 ETH_RetryTransmission;
+    __IO u32 ETH_AutomaticPadCRCStrip;
+    __IO u32 ETH_BackOffLimit;
+    __IO u32 ETH_DeferralCheck;
+    __IO u32 ETH_ReceiveAll;
+    __IO u32 ETH_SourceAddrFilter;
+    __IO u32 ETH_PassControlFrames;
+    __IO u32 ETH_BroadcastFramesReception;
+    __IO u32 ETH_DestinationAddrFilter;
+    __IO u32 ETH_PromiscuousMode;
+    __IO u32 ETH_MulticastFramesFilter;
+    __IO u32 ETH_UnicastFramesFilter;
+    __IO u32 ETH_HashTableHigh;
+    __IO u32 ETH_HashTableLow;
+    __IO u32 ETH_PauseTime;
+    __IO u32 ETH_ZeroQuantaPause;
+    __IO u32 ETH_PauseLowThreshold;
+    __IO u32 ETH_UnicastPauseFrameDetect;
+    __IO u32 ETH_ReceiveFlowControl;
+    __IO u32 ETH_TransmitFlowControl;
+    __IO u32 ETH_VLANTagComparison;
+    __IO u32 ETH_VLANTagIdentifier;
+    __IO u32 ETH_DropTCPIPChecksumErrorFrame;
+    __IO u32 ETH_ReceiveStoreForward;
+    __IO u32 ETH_FlushReceivedFrame;
+    __IO u32 ETH_TransmitStoreForward;
+    __IO u32 ETH_TransmitThresholdControl;
+    __IO u32 ETH_ForwardErrorFrames;
+    __IO u32 ETH_ForwardUndersizedGoodFrames;
+    __IO u32 ETH_ReceiveThresholdControl;
+    __IO u32 ETH_SecondFrameOperate;
+    __IO u32 ETH_AddressAlignedBeats;
+    __IO u32 ETH_FixedBurst;
+    __IO u32 ETH_RxDMABurstLength;
+    __IO u32 ETH_TxDMABurstLength;
+    __IO u32 ETH_DescriptorSkipLength;
+    __IO u32 ETH_DMAArbitration;
 } ETH_InitTypeDef;
 
 typedef struct {
-    __IO u32   CS;                                                              ///< Control and Status
-    __IO u32   BL;                                                              ///< Buffer1, Buffer2 lengths
-    __IO u32   BUF1ADDR;                                                        ///< Buffer1 address pointer
-    __IO u32   BUF2NDADDR;                                                      ///< Buffer2 or next descriptor address pointer
+    __IO u32 CS;                                                              ///< Control and Status
+    __IO u32 BL;                                                              ///< Buffer1, Buffer2 lengths
+    __IO u32 BUF1ADDR;                                                        ///< Buffer1 address pointer
+    __IO u32
+        BUF2NDADDR;                                                      ///< Buffer2 or next descriptor address pointer
 
 #ifdef USE_ENHANCED_DMA_DESCRIPTORS                                             ///< Enhanced ETHERNET DMA PTP Descriptors
     __IO u32        ExtendedStatus;                                             ///< Extended status for PTP receive descriptor
@@ -152,18 +150,16 @@ typedef struct {
 } ETH_DMADESCTypeDef;
 
 typedef struct {
-    __IO u32                         len;
-    __IO u32                         buf;
-    __IO ETH_DMADESCTypeDef*    ptrDesc;
+    __IO u32 len;
+    __IO u32 buf;
+    __IO ETH_DMADESCTypeDef *ptrDesc;
 } FrameTypeDef;
 
-typedef struct  {
-    __IO ETH_DMADESCTypeDef*    ptrFS_Rx_Desc;                                  ///< First Segment Rx Desc
-    __IO ETH_DMADESCTypeDef*    ptrLS_Rx_Desc;                                  ///< Last Segment Rx Desc
-    __IO u32               cnt;                                            ///< Segment count
+typedef struct {
+    __IO ETH_DMADESCTypeDef *ptrFS_Rx_Desc;                                  ///< First Segment Rx Desc
+    __IO ETH_DMADESCTypeDef *ptrLS_Rx_Desc;                                  ///< Last Segment Rx Desc
+    __IO u32 cnt;                                            ///< Segment count
 } ETH_DMA_Rx_Frame_infos;
-
-
 
 #define ETH_DMA_TDES_OWN                     ((u32)0x80000000)             ///< OWN bit: descriptor is owned by DMA engine
 #define ETH_DMA_TDES_ES                      ((u32)0x00008000)             ///< Error summary: OR of the following bits: UE || ED || EC || LCO || NC || LCA || FF || JT
@@ -227,7 +223,6 @@ typedef struct  {
 #define ETH_DMA_RDES_B1AP                    ((u32)0xFFFFFFFF)             ///< Buffer 1 Address Pointer
 
 #define ETH_DMA_RDES_B2AP                    ((u32)0xFFFFFFFF)             ///< Buffer 2 Address Pointer
-
 
 #if defined(USE_ENHANCED_DMA_DESCRIPTORS)
 #define ETH_DMA_PTP_RDES_PTPV                            ((u32)0x00002000)  ///< PTP Version
@@ -633,11 +628,11 @@ typedef struct  {
 #else
 #define GLOBAL extern
 #endif
-GLOBAL __IO ETH_DMADESCTypeDef*  DMATxDescToSet;
-GLOBAL __IO ETH_DMADESCTypeDef*  DMARxDescToGet;
+GLOBAL __IO ETH_DMADESCTypeDef *DMATxDescToSet;
+GLOBAL __IO ETH_DMADESCTypeDef *DMARxDescToGet;
 
 GLOBAL ETH_DMA_Rx_Frame_infos RX_Frame_Descriptor;
-GLOBAL __IO ETH_DMA_Rx_Frame_infos* DMA_RX_FRAME_infos;
+GLOBAL __IO ETH_DMA_Rx_Frame_infos *DMA_RX_FRAME_infos;
 GLOBAL __IO u32 Frame_Rx_index;
 
 #undef GLOBAL
@@ -648,8 +643,8 @@ GLOBAL __IO u32 Frame_Rx_index;
 /// @{
 
 void ETH_DeInit(void);
-void ETH_StructInit(ETH_InitTypeDef* ptr);
-u32 ETH_Init(ETH_InitTypeDef* ptr, u16 phy_addr);
+void ETH_StructInit(ETH_InitTypeDef *ptr);
+u32 ETH_Init(ETH_InitTypeDef *ptr, u16 phy_addr);
 void ETH_Start(void);
 void ETH_Stop(void);
 void ETH_MACTransmissionCmd(FunctionalState sta);
@@ -657,33 +652,33 @@ void ETH_MACReceptionCmd(FunctionalState sta);
 FlagStatus ETH_GetFlowControlBusyStatus(void);
 void ETH_InitiatePauseControlFrame(void);
 void ETH_BackPressureActivationCmd(FunctionalState sta);
-void ETH_MACAddressConfig(u32 reg_addr, u8* mac_addr);
-void ETH_GetMACAddress(u32 reg_addr, u8* mac_addr);
+void ETH_MACAddressConfig(u32 reg_addr, u8 *mac_addr);
+void ETH_GetMACAddress(u32 reg_addr, u8 *mac_addr);
 void ETH_MACAddressPerfectFilterCmd(u32 reg_addr, FunctionalState sta);
 void ETH_MACAddressFilterConfig(u32 reg_addr, u32 sta);
 void ETH_MACAddressMaskBytesFilterConfig(u32 reg_addr, u32 mask_byte);
 FrameTypeDef ETH_Get_Received_Frame(void);
 FrameTypeDef ETH_Get_Received_Frame_interrupt(void);
 u32 ETH_Prepare_Transmit_Descriptors(u16 len);
-void ETH_DMARxDescChainInit(ETH_DMADESCTypeDef* ptr_desc, u8* buf, u32 cnt);
+void ETH_DMARxDescChainInit(ETH_DMADESCTypeDef *ptr_desc, u8 *buf, u32 cnt);
 u32 ETH_CheckFrameReceived(void);
-void ETH_DMATxDescChainInit(ETH_DMADESCTypeDef* ptr_desc, u8* buf, u32 cnt);
-FlagStatus ETH_GetDMATxDescFlagStatus(ETH_DMADESCTypeDef* ptr_desc, u32 flag);
-u32 ETH_GetDMATxDescCollisionCount(ETH_DMADESCTypeDef* ptr_desc);
-void ETH_SetDMATxDescOwnBit(ETH_DMADESCTypeDef* ptr_desc);
-void ETH_DMATxDescTransmitITConfig(ETH_DMADESCTypeDef* ptr_desc, FunctionalState sta);
-void ETH_DMATxDescFrameSegmentConfig(ETH_DMADESCTypeDef* ptr_desc, u32 val);
-void ETH_DMATxDescChecksumInsertionConfig(ETH_DMADESCTypeDef* ptr_desc, u32 val);
-void ETH_DMATxDescCRCCmd(ETH_DMADESCTypeDef* ptr_desc, FunctionalState sta);
-void ETH_DMATxDescSecondAddressChainedCmd(ETH_DMADESCTypeDef* ptr_desc, FunctionalState sta);
-void ETH_DMATxDescShortFramePaddingCmd(ETH_DMADESCTypeDef* ptr_desc, FunctionalState sta);
-void ETH_DMATxDescBufferSizeConfig(ETH_DMADESCTypeDef* ptr_desc, u32 buf1_size, u32 buf2_size);
-FlagStatus ETH_GetDMARxDescFlagStatus(ETH_DMADESCTypeDef* ptr_desc, u32 flag);
-void ETH_SetDMARxDescOwnBit(ETH_DMADESCTypeDef* ptr_desc);
-u32 ETH_GetDMARxDescFrameLength(ETH_DMADESCTypeDef* ptr_desc);
-void ETH_DMARxDescReceiveITConfig(ETH_DMADESCTypeDef* ptr_desc, FunctionalState sta);
-u32 ETH_GetDMARxDescBufferSize(ETH_DMADESCTypeDef* ptr_desc, u32 buf);
-u32 ETH_GetRxPktSize(ETH_DMADESCTypeDef* ptr_desc);
+void ETH_DMATxDescChainInit(ETH_DMADESCTypeDef *ptr_desc, u8 *buf, u32 cnt);
+FlagStatus ETH_GetDMATxDescFlagStatus(ETH_DMADESCTypeDef *ptr_desc, u32 flag);
+u32 ETH_GetDMATxDescCollisionCount(ETH_DMADESCTypeDef *ptr_desc);
+void ETH_SetDMATxDescOwnBit(ETH_DMADESCTypeDef *ptr_desc);
+void ETH_DMATxDescTransmitITConfig(ETH_DMADESCTypeDef *ptr_desc, FunctionalState sta);
+void ETH_DMATxDescFrameSegmentConfig(ETH_DMADESCTypeDef *ptr_desc, u32 val);
+void ETH_DMATxDescChecksumInsertionConfig(ETH_DMADESCTypeDef *ptr_desc, u32 val);
+void ETH_DMATxDescCRCCmd(ETH_DMADESCTypeDef *ptr_desc, FunctionalState sta);
+void ETH_DMATxDescSecondAddressChainedCmd(ETH_DMADESCTypeDef *ptr_desc, FunctionalState sta);
+void ETH_DMATxDescShortFramePaddingCmd(ETH_DMADESCTypeDef *ptr_desc, FunctionalState sta);
+void ETH_DMATxDescBufferSizeConfig(ETH_DMADESCTypeDef *ptr_desc, u32 buf1_size, u32 buf2_size);
+FlagStatus ETH_GetDMARxDescFlagStatus(ETH_DMADESCTypeDef *ptr_desc, u32 flag);
+void ETH_SetDMARxDescOwnBit(ETH_DMADESCTypeDef *ptr_desc);
+u32 ETH_GetDMARxDescFrameLength(ETH_DMADESCTypeDef *ptr_desc);
+void ETH_DMARxDescReceiveITConfig(ETH_DMADESCTypeDef *ptr_desc, FunctionalState sta);
+u32 ETH_GetDMARxDescBufferSize(ETH_DMADESCTypeDef *ptr_desc, u32 buf);
+u32 ETH_GetRxPktSize(ETH_DMADESCTypeDef *ptr_desc);
 void ETH_SoftwareReset(void);
 FlagStatus ETH_GetSoftwareResetStatus(void);
 FlagStatus ETH_GetDMAFlagStatus(u32 flag);
@@ -711,7 +706,7 @@ u16 ETH_ReadPHYRegister(u16 addr, u16 reg);
 u16 ETH_WritePHYRegister(u16 addr, u16 reg, u16 val);
 u32 ETH_PHYLoopBackCmd(u16 addr, FunctionalState sta);
 void ETH_ResetWakeUpFrameFilterRegisterPointer(void);
-void ETH_SetWakeUpFrameFilterRegister(u32* buf);
+void ETH_SetWakeUpFrameFilterRegister(u32 *buf);
 void ETH_GlobalUnicastWakeUpCmd(FunctionalState sta);
 FlagStatus ETH_GetPMTFlagStatus(u32 flag);
 void ETH_WakeUpFrameDetectionCmd(FunctionalState sta);
