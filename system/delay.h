@@ -11,6 +11,7 @@
 
 #include "mm32_device.h"
 
+void delay_decrease(void);
 void delay_config(void);
 void delayms(unsigned int xms);
 void delayus(unsigned int xus);

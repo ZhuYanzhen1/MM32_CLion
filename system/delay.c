@@ -22,14 +22,10 @@ void delay_config(void) {
     NVIC_SetPriority(SysTick_IRQn, 0x0);
 }
 
-static void TimingDelayDecrement(void) {
+void delay_decrease(void) {
     if (delayms_counter != 0x00) {
         delayms_counter--;
     }
-}
-
-void SysTick_Handler(void) {
-    TimingDelayDecrement();
 }
 
 void delayus(unsigned int xus) {

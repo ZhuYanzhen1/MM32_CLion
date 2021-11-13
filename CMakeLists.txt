@@ -40,9 +40,10 @@ add_compile_options(-Ofast)
 
 #add_definitions(-DUSE_HAL_DRIVER)
 
-include_directories(library/regs system system/cmsis library/include user hardware)
+include_directories(library/regs system system/cmsis library/include user hardware system/official)
 
-file(GLOB_RECURSE SOURCES "system/*.s" "library/source/*.c" "user/*.c" "hardware/*.c" "system/*.c")
+file(GLOB_RECURSE SOURCES "system/official/startup_mm32f327.s" "library/source/*.c"
+        "user/*.c" "hardware/*.c" "system/*.c" "system/official/*.c")
 
 set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/mm32f3277.ld)
 

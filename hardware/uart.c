@@ -44,15 +44,8 @@ void uart1_config(unsigned int baudrate) {
     UART_InitStruct.Mode = UART_Mode_Rx | UART_Mode_Tx;
 
     UART_Init(UART1, &UART_InitStruct);
+    UART_ITConfig(UART1, UART_IT_RXIEN, ENABLE);
     UART_Cmd(UART1, ENABLE);
-}
-
-void UART1_IRQHandler(void) {
-    if (UART_GetITStatus(UART1, UART_ISR_RX) != RESET) {
-        unsigned char recvbyte = UART_ReceiveData(UART1);
-        uart1_sendbyte(recvbyte);
-        UART_ClearITPendingBit(UART1, UART_ISR_RX);
-    }
 }
 
 void uart1_sendbyte(unsigned char data) {
