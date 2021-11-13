@@ -16,13 +16,12 @@ jobs:
           fetch-depth: 1
       - name: Configure CMake
         run: |
-          #          PATH="$PATH:/home/runner/work/miniFOC/miniFOC/gcc-arm-none-eabi/bin" && echo $PATH
-               echo $PATH
-               mkdir build -p && cd build && cmake ..
+          PATH="$PATH:/opt/gcc-arm-none-eabi/bin" && echo $PATH
+          mkdir build -p && cd build && cmake ..
       - name: Build Hex
         run: |
-          #          PATH="$PATH:/home/runner/work/miniFOC/miniFOC/gcc-arm-none-eabi/bin" && echo $PATH
-               cd build && ls && make && ls
+          PATH="$PATH:opt/gcc-arm-none-eabi/bin" && echo $PATH
+          cd build && ls && make && ls
       - name: Upload Hex
         uses: actions/upload-artifact@v2
         with:
