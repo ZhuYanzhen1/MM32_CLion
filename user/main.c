@@ -1,19 +1,17 @@
 #include "main.h"
 #include "delay.h"
 #include "led.h"
-#include "uart_txrx_interrupt.h"
+#include "uart.h"
 
-s32 main(void) {
-    DELAY_Init();
-    LED_Init();
+int main(void) {
+    delay_config();
+    led_config();
     UART1_NVIC_Init(115200);
     while (1) {
         LED1_ON();
-        LED2_OFF();
-        DELAY_Ms(100);
+        delayms(5);
         LED1_OFF();
-        LED2_ON();
-        DELAY_Ms(100);
+        delayms(5);
         //UART1_RxTx_Transceiving();
     }
 }

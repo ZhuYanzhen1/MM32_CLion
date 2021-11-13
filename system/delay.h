@@ -4,8 +4,8 @@
 #include <string.h>
 #include "mm32_device.h"
 
-void DELAY_Init(void);
-void DELAY_Ms(__IO u32 nTime);
+void delay_config(void);
+void delayms(__IO u32 xms);
 //void DELAY_Us(__IO u32 nTime);
 
 #endif

@@ -17,6 +17,6 @@
 #define LED2_OFF()  GPIO_SetBits(LED2_Port,LED2_Pin)
 #define LED2_TOGGLE()  (GPIO_ReadOutputDataBit(LED2_Port,LED2_Pin))?(GPIO_ResetBits(LED2_Port,LED2_Pin)):(GPIO_SetBits(LED2_Port,LED2_Pin))
 
-void LED_Init(void);
+void led_config(void);
 
 #endif

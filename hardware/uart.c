@@ -1,38 +1,5 @@
-////////////////////////////////////////////////////////////////////////////////
-/// @file     uart_txrx_interrupt.c
-/// @author   AE TEAM
-/// @brief    PWM output.
-////////////////////////////////////////////////////////////////////////////////
-/// @attention
-///
-/// THE EXISTING FIRMWARE IS ONLY FOR REFERENCE, WHICH IS DESIGNED TO PROVIDE
-/// CUSTOMERS WITH CODING INFORMATION ABOUT THEIR PRODUCTS SO THEY CAN SAVE
-/// TIME. THEREFORE, MINDMOTION SHALL NOT BE LIABLE FOR ANY DIRECT, INDIRECT OR
-/// CONSEQUENTIAL DAMAGES ABOUT ANY CLAIMS ARISING OUT OF THE CONTENT OF SUCH
-/// HARDWARE AND/OR THE USE OF THE CODING INFORMATION CONTAINED HEREIN IN
-/// CONNECTION WITH PRODUCTS MADE BY CUSTOMERS.
-///
-/// <H2><CENTER>&COPY; COPYRIGHT MINDMOTION </CENTER></H2>
-////////////////////////////////////////////////////////////////////////////////
-// Define to prevent recursive inclusion
-#define _UART_TXRX_INTERRUPT_C_
+#include "uart.h"
 
-// Files includes
-#include "uart_txrx_interrupt.h"
-u8 gUartRxBuf[UART_REC_LEN];
-//Received status marker
-u16 gUartRxSta = 0;
-////////////////////////////////////////////////////////////////////////////////
-/// @addtogroup MM32_Example_Layer
-/// @{
-
-////////////////////////////////////////////////////////////////////////////////
-/// @addtogroup MAIN
-/// @{
-
-////////////////////////////////////////////////////////////////////////////////
-/// @addtogroup MAIN_Exported_Constants
-/// @{
 typedef struct UART_SendItStruct {
     u32 UART_SendBufferAddress;
     u32 UART_SendLen;

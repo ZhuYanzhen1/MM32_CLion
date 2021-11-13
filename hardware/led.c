@@ -1,6 +1,6 @@
 #include "led.h"
 
-void LED_Init(void) {
+void led_config(void) {
     GPIO_InitTypeDef GPIO_InitStruct;
 
     RCC_AHBPeriphClockCmd(RCC_AHBENR_GPIOB, ENABLE);

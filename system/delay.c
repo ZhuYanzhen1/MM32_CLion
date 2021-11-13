@@ -1,12 +1,11 @@
 #include "delay.h"
 
-extern u32 SystemCoreClock;
-static __IO u32 TimingDelay;
+extern unsigned int SystemCoreClock;
+static volatile unsigned int TimingDelay;
 
-void DELAY_Init(void) {
-    if (SysTick_Config(SystemCoreClock / 1000)) {
+void delay_config(void) {
+    if (SysTick_Config(SystemCoreClock / 1000))
         while (1);
-    }
     NVIC_SetPriority(SysTick_IRQn, 0x0);
 }
 
@@ -20,7 +19,7 @@ void SysTick_Handler(void) {
     TimingDelayDecrement();
 }
 
-void DELAY_Ms(__IO u32 nTime) {
-    TimingDelay = nTime;
+void delayms(unsigned int xms) {
+    TimingDelay = xms;
     while (TimingDelay != 0);
 }
