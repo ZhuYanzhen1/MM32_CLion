@@ -1,3 +1,11 @@
+/**************************************************************************//**
+  \file     delay.c
+  \brief    delay function Source File
+  \author   Lao·Zhu
+  \version  V1.0.1
+  \date     14. November 2021
+ ******************************************************************************/
+
 #include "delay.h"
 #include "config.h"
 

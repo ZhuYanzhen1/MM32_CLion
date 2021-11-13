@@ -1,5 +1,13 @@
-#ifndef __LED_H
-#define __LED_H
+/**************************************************************************//**
+  \file     led.h
+  \brief    led function Header File
+  \author   Lao·Zhu
+  \version  V1.0.1
+  \date     14. November 2021
+ ******************************************************************************/
+
+#ifndef MM32F3277_HARDWARE_LED_H_
+#define MM32F3277_HARDWARE_LED_H_
 
 #include "mm32_device.h"
 #include "hal_conf.h"
@@ -19,4 +27,4 @@
 
 void led_config(void);
 
-#endif
+#endif  // MM32F3277_HARDWARE_LED_H_

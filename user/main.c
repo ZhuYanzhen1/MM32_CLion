@@ -9,9 +9,10 @@
 #include "main.h"
 
 int main(void) {
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
     delay_config();
     led_config();
-    UART1_NVIC_Init(115200);
+    uart1_config(115200);
     while (1) {
         LED1_TOGGLE();
         delayms(500);
