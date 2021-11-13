@@ -37,9 +37,9 @@ else ()
     add_compile_options(-Og -g)
 endif ()
 
-include_directories(system/include system system/cmsis library/include user hardware)
+include_directories(library/regs system system/cmsis library/include user hardware)
 
-add_definitions(-DUSE_HAL_DRIVER)
+#add_definitions(-DUSE_HAL_DRIVER)
 
 file(GLOB_RECURSE SOURCES "system/*.s" "library/source/*.c" "user/*.c" "hardware/*.c" "system/*.c")
 
