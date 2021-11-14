@@ -19,4 +19,8 @@
 #include "led.h"
 #include "uart.h"
 
+///////////// Math /////////////
+#include "qfplib.h"
+#include "verification.h"
+
 #endif  // MM32F3277_USER_MAIN_H_
