@@ -40,10 +40,11 @@ add_compile_options(-Ofast)
 
 #add_definitions(-DUSE_HAL_DRIVER)
 
-include_directories(library/regs system system/cmsis library/include user hardware system/official)
+include_directories(library/regs system system/cmsis library/include user hardware system/official
+        math)
 
-file(GLOB_RECURSE SOURCES "system/official/startup_mm32f327.s" "library/source/*.c"
-        "user/*.c" "hardware/*.c" "system/*.c" "system/official/*.c")
+file(GLOB_RECURSE SOURCES "system/official/startup_mm32f327.s" "library/source/*.c" "math/*.c"
+        "user/*.c" "hardware/*.c" "system/*.c" "system/official/*.c" "math/qfplib.s")
 
 set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/mm32f3277.ld)
 
