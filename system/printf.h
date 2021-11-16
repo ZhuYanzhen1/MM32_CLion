@@ -1,11 +1,10 @@
 /**************************************************************************//**
-  \file     printf.c
+  \file     printf.h
   \brief    Tiny printf, sprintf and (v)snprintf implementation header file.
   \author   Marco Paland (info@paland.com)
   \version  V1.0.1
   \date     14. November 2019
  ******************************************************************************/
-
 
 #ifndef MM32F3277_SYSTEM_PRINTF_H_
 #define MM32F3277_SYSTEM_PRINTF_H_

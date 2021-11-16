@@ -1,6 +1,10 @@
-//
-// Created by Lao·Zhu on 2021/11/14.
-//
+/**************************************************************************//**
+  \file     fft.c
+  \brief    fft function Source File
+  \author   Lao·Zhu
+  \version  V1.0.1
+  \date     17. November 2021
+ ******************************************************************************/
 
 #include "fft.h"
 #include "qfplib.h"
@@ -49,7 +53,7 @@ static void math_fft_k(complex_t *dat, const complex_t *w, unsigned int k, unsig
     }
 }
 
-void fft_init(complex_t *w, unsigned int k) {
+void math_fft_init(complex_t *w, unsigned int k) {
     float beta = 0.0f, dbeta = 3.1415926535f / (float) k;
     for (; k; k--) {
         w->r = qfp_fcos(beta);
@@ -59,7 +63,7 @@ void fft_init(complex_t *w, unsigned int k) {
     }
 }
 
-void fft(complex_t *dat, const complex_t *w, unsigned int k) {
+void math_fft(complex_t *dat, const complex_t *w, unsigned int k) {
     unsigned int i, j, n;
     complex_t temp;
     n = 1 << k;

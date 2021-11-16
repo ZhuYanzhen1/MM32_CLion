@@ -1,6 +1,10 @@
-//
-// Created by Lao·Zhu on 2021/11/14.
-//
+/**************************************************************************//**
+  \file     fft.h
+  \brief    fft function Header File
+  \author   Lao·Zhu
+  \version  V1.0.1
+  \date     17. November 2021
+ ******************************************************************************/
 
 #ifndef MM32F3277_MATH_FFT_H_
 #define MM32F3277_MATH_FFT_H_
@@ -10,7 +14,7 @@ typedef struct {
     float i;
 } complex_t;
 
-void fft_init(complex_t *w, unsigned int k);
-void fft(complex_t *dat, const complex_t *w, unsigned int k);
+void math_fft_init(complex_t *w, unsigned int k);
+void math_fft(complex_t *dat, const complex_t *w, unsigned int k);
 
 #endif //MM32F3277_MATH_FFT_H_
