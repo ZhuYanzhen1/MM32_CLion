@@ -14,6 +14,7 @@
 #include "hal_conf.h"
 #include "delay.h"
 #include "config.h"
+#include "printf.h"
 
 ///////////// Hardware /////////////
 #include "led.h"

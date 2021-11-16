@@ -7,6 +7,7 @@
  ******************************************************************************/
 
 #include "uart.h"
+#include "printf.h"
 
 void uart1_config(unsigned int baudrate) {
     UART_InitTypeDef UART_InitStruct;
@@ -46,6 +47,11 @@ void uart1_config(unsigned int baudrate) {
     UART_Init(UART1, &UART_InitStruct);
     UART_ITConfig(UART1, UART_IT_RXIEN, ENABLE);
     UART_Cmd(UART1, ENABLE);
+}
+
+void _putchar(char character) {
+    UART_SendData(UART1, character);
+    while (!UART_GetFlagStatus(UART1, UART_FLAG_TXEPT));
 }
 
 void uart1_sendbyte(unsigned char data) {
