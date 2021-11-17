@@ -17,10 +17,8 @@ jobs:
         config: ./circuit/bom.ibom.kibot.yaml
       # optional - prefix to output defined in config
         dir: docs
-      # optional - schematic file
-        schema: '*.sch'
-      # optional - PCB design file
-        board: '*.kicad_pcb'
+        schema: './circuit/*.sch'
+        board: './circuit/project.kicad_pcb.kicad_pcb'
       # optional - verbose output info
         verbose: 0
     - name: upload results
