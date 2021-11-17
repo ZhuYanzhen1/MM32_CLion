@@ -3,10 +3,10 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 2 2
-Title ""
-Date ""
-Rev ""
+Sheet 2 3
+Title "MM32_Board"
+Date "2021-11-16"
+Rev "1.0.1"
 Comp ""
 Comment1 ""
 Comment2 ""
