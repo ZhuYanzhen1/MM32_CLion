@@ -14,7 +14,7 @@ jobs:
     - uses: nerdyscout/kicad-exports@v2.3.1
       with:
       # Required - kibot config file
-        config: any.kibot.yaml
+        config: /opt/kibot/config/bom.html.kibot.yaml
       # optional - prefix to output defined in config
         dir: docs
         schema: './circuit/project.sch'
