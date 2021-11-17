@@ -18,6 +18,7 @@ S 900  700  1300 1000
 U 6191448D
 F0 "Power" 50
 F1 "1_Power.sch" 50
+F2 "PWR_EN" I R 2200 1000 50 
 $EndSheet
 $Sheet
 S 2650 700  1850 1600
