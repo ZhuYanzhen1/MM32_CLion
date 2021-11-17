@@ -1,10 +1,10 @@
 name: KiCAD Exports
 
-on:
-  push:
-    paths:
-    - '**.sch'
-    - '**.kicad_pcb'
+on: push
+#   push:
+#     paths:
+#     - '**.sch'
+#     - '**.kicad_pcb'
 
 jobs:
   export:
