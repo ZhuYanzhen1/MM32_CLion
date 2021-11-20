@@ -1,0 +1,25 @@
+EESchema-LIBRARY Version 2.4
+#encoding utf-8
+#
+# REF3030-Reference_Voltage
+#
+DEF REF3030-Reference_Voltage U 0 10 Y Y 1 F N
+F0 "U" 0 250 50 H V C CNN
+F1 "REF3030-Reference_Voltage" 100 -250 50 H V C CIN
+F2 "Package_TO_SOT_SMD:SOT-23" 0 -450 50 H I C CIN
+F3 "" 100 -350 50 H I C CIN
+$FPLIST
+ SOT?23*
+$ENDFPLIST
+DRAW
+S -200 200 200 -200 0 1 10 f
+P 2 0 1 0 -10 75 -10 -75 N
+P 4 0 1 0 -35 -25 15 -25 -10 25 -35 -25 N
+P 4 0 1 0 15 40 15 25 -35 25 -35 10 N
+X IN 1 -100 300 100 D 50 50 1 1 W
+X OUT 2 300 0 100 L 50 50 1 1 w
+X GND 3 -100 -300 100 U 50 50 1 1 W
+ENDDRAW
+ENDDEF
+#
+#End Library
