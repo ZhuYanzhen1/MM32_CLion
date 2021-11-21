@@ -2,7 +2,7 @@
 
 &nbsp;&nbsp;&nbsp;&nbsp;![Version](https://img.shields.io/badge/Version-1.0.1-brightgreen.svg)&nbsp;&nbsp;![Build](https://img.shields.io/badge/Build-Passed-success.svg)&nbsp;&nbsp;![License](https://img.shields.io/badge/License-AGPL-blue.svg)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[English](https://github.com/ZhuYanzhen1/MM32_CLion/blob/master/README.md) / 中文
 
-&nbsp;&nbsp;&nbsp;&nbsp;这个项目是MM32F3277G9芯片的Windows CLion集成开发环境文件。其中包含了GCC所需的链接文件、CMake文件、clang-format文件、Doxygen配置文件等，确保本软件包可以到手即用。
+&nbsp;&nbsp;&nbsp;&nbsp;这个项目是MM32F3277G9芯片的Windows CLion集成开发环境文件以及基于MM32F3277G9芯片的主控板电路设计。软件代码中还包含了GCC所需的链接文件、CMake文件、clang-format文件、Doxygen配置文件等，确保本软件包可以到手即用。
 
 ***
 
