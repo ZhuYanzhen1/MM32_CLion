@@ -17,7 +17,7 @@ jobs:
       - name: Configure CMake
         run: |
           PATH="$PATH:/opt/gcc-arm-none-eabi/bin" && echo $PATH
-          mkdir build -p && cd build && cmake ..
+          mkdir build -p && cd build && cmake ../program
       - name: Build Hex
         run: |
           PATH="$PATH:/opt/gcc-arm-none-eabi/bin" && echo $PATH
