@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 1 3
+Sheet 1 4
 Title "MM32_Board"
 Date "2021-11-14"
 Rev "1.0.1"
@@ -26,5 +26,11 @@ U 6194FB75
 F0 "MCU" 50
 F1 "2_MCU.sch" 50
 F2 "PWR_EN" I L 2650 1000 50 
+$EndSheet
+$Sheet
+S 4750 700  1400 1600
+U 61A493C9
+F0 "Sensor" 50
+F1 "3_Sensor.sch" 50
 $EndSheet
 $EndSCHEMATC
