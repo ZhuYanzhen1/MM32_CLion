@@ -30,7 +30,7 @@ $EndSheet
 $Sheet
 S 4750 700  1400 1600
 U 61A493C9
-F0 "Sensor" 50
-F1 "3_Sensor.sch" 50
+F0 "IMU" 50
+F1 "3_IMU.sch" 50
 $EndSheet
 $EndSCHEMATC
