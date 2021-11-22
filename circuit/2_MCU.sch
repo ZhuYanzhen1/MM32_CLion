@@ -843,4 +843,20 @@ Wire Wire Line
 Connection ~ 8750 6850
 Wire Wire Line
 	8750 6850 9200 6850
+Text HLabel 1450 2150 0    50   Output ~ 0
+SPI2_CLK
+Text HLabel 1450 2250 0    50   Output ~ 0
+SPI2_CS
+Text HLabel 1450 2450 0    50   Input ~ 0
+SPI2_MISO
+Text HLabel 1450 2550 0    50   Output ~ 0
+SPI2_MOSI
+Wire Wire Line
+	1450 2150 2050 2150
+Wire Wire Line
+	2050 2250 1450 2250
+Wire Wire Line
+	1450 2450 2050 2450
+Wire Wire Line
+	2050 2550 1450 2550
 $EndSCHEMATC
