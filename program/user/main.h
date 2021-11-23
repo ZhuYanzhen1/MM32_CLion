@@ -1,4 +1,4 @@
-/**************************************************************************//**
+/**************************************************************************/ /**
   \file     main.h
   \brief    main function Header File
   \author   Lao·Zhu
@@ -10,14 +10,15 @@
 #define MM32F3277_USER_MAIN_H_
 
 ///////////// System /////////////
-#include "mm32_device.h"
-#include "hal_conf.h"
-#include "delay.h"
 #include "config.h"
+#include "delay.h"
+#include "hal_conf.h"
+#include "mm32_device.h"
 #include "printf.h"
 
 ///////////// Hardware /////////////
 #include "led.h"
+#include "spi.h"
 #include "uart.h"
 
 ///////////// Math /////////////
