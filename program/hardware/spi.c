@@ -1,3 +1,11 @@
+/**************************************************************************/ /**
+\file     spi.c
+\brief    spi function Source File
+\author   Lao·Zhu
+\version  V1.0.1
+\date     24. November 2021
+******************************************************************************/
+
 #include "spi.h"
 #include "hal_conf.h"
 

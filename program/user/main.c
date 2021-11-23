@@ -1,4 +1,4 @@
-/**************************************************************************//**
+/*****************************************************************************
   \file     main.c
   \brief    main function Source File
   \author   Lao·Zhu
@@ -13,6 +13,7 @@ int main(void) {
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
     delay_config();
     led_config();
+    spi2_config();
     uart1_config(115200);
     while (1) {
         counter++;
