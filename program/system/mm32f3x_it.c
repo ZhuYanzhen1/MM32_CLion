@@ -1,26 +1,13 @@
-/**************************************************************************//**
-  \file     mm32f3x_it.c
-  \brief    mm32f3x interrupt handler function source file
-  \author   Lao·Zhu
-  \version  V1.0.1
-  \date     14. November 2021
+/*****************************************************************************
+    \file     mm32f3x_it.c
+    \brief    mm32f3x interrupt handler function source file
+    \author   Lao·Zhu
+    \version  V1.0.1
+    \date     14. November 2021
  ******************************************************************************/
 
 #include "mm32f3x_it.h"
 #include "main.h"
-
-/*!
-    \brief  systick interrupt count variable is used to
-            realize the encoder update function.
-*/
-static unsigned char systick_counter = 0;
-
-/*!
-    \brief  this function handles NMI exception
-    \retval none
-*/
-void NMI_Handler(void) {
-}
 
 /*!
     \brief  this function handles HardFault exception
@@ -28,7 +15,8 @@ void NMI_Handler(void) {
 */
 void HardFault_Handler(void) {
     /* if Hard Fault exception occurs, go to infinite loop */
-    while (1);
+    while (1)
+        ;
 }
 
 /*!
@@ -37,7 +25,8 @@ void HardFault_Handler(void) {
 */
 void MemManage_Handler(void) {
     /* if Memory Manage exception occurs, go to infinite loop */
-    while (1);
+    while (1)
+        ;
 }
 
 /*!
@@ -46,7 +35,8 @@ void MemManage_Handler(void) {
 */
 void BusFault_Handler(void) {
     /* if Bus Fault exception occurs, go to infinite loop */
-    while (1);
+    while (1)
+        ;
 }
 
 /*!
@@ -55,28 +45,8 @@ void BusFault_Handler(void) {
 */
 void UsageFault_Handler(void) {
     /* if Usage Fault exception occurs, go to infinite loop */
-    while (1);
-}
-
-/*!
-    \brief  this function handles SVC exception
-    \retval none
-*/
-void SVC_Handler(void) {
-}
-
-/*!
-    \brief  this function handles DebugMon exception
-    \retval none
-*/
-void DebugMon_Handler(void) {
-}
-
-/*!
-    \brief  this function handles PendSV exception
-    \retval none
-*/
-void PendSV_Handler(void) {
+    while (1)
+        ;
 }
 
 /*!

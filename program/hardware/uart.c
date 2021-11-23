@@ -1,9 +1,9 @@
-/**************************************************************************//**
-  \file     uart.c
-  \brief    uart function Source File
-  \author   Lao·Zhu
-  \version  V1.0.1
-  \date     14. November 2021
+/*****************************************************************************
+    \file     uart.c
+    \brief    uart function Source File
+    \author   Lao·Zhu
+    \version  V1.0.1
+    \date     14. November 2021
  ******************************************************************************/
 
 #include "uart.h"
@@ -51,10 +51,12 @@ void uart1_config(unsigned int baudrate) {
 
 void _putchar(char character) {
     UART_SendData(UART1, character);
-    while (!UART_GetFlagStatus(UART1, UART_FLAG_TXEPT));
+    while (!UART_GetFlagStatus(UART1, UART_FLAG_TXEPT))
+        ;
 }
 
 void uart1_sendbyte(unsigned char data) {
     UART_SendData(UART1, data);
-    while (!UART_GetFlagStatus(UART1, UART_FLAG_TXEPT));
+    while (!UART_GetFlagStatus(UART1, UART_FLAG_TXEPT))
+        ;
 }

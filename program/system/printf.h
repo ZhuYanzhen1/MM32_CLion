@@ -1,9 +1,9 @@
-/**************************************************************************//**
-  \file     printf.h
-  \brief    Tiny printf, sprintf and (v)snprintf implementation header file.
-  \author   Marco Paland (info@paland.com)
-  \version  V1.0.1
-  \date     14. November 2019
+/*****************************************************************************
+    \file     printf.h
+    \brief    Tiny printf, sprintf and (v)snprintf implementation header file.
+    \author   Marco Paland (info@paland.com)
+    \version  V1.0.1
+    \date     14. November 2019
  ******************************************************************************/
 
 #ifndef MM32F3277_SYSTEM_PRINTF_H_
@@ -19,7 +19,6 @@
  */
 void _putchar(char character);
 
-
 /**
  * Tiny printf implementation
  * You have to implement _putchar if you use printf()
@@ -31,7 +30,6 @@ void _putchar(char character);
 #define printf printf_
 int printf_(const char *format, ...);
 
-
 /**
  * Tiny sprintf implementation
  * Due to security reasons (buffer overflow) YOU SHOULD CONSIDER USING (V)SNPRINTF INSTEAD!
@@ -41,7 +39,6 @@ int printf_(const char *format, ...);
  */
 #define sprintf sprintf_
 int sprintf_(char *buffer, const char *format, ...);
-
 
 /**
  * Tiny snprintf/vsnprintf implementation
@@ -53,11 +50,10 @@ int sprintf_(char *buffer, const char *format, ...);
  *         null character. A value equal or larger than count indicates truncation. Only when the returned value
  *         is non-negative and less than count, the string has been completely written.
  */
-#define snprintf  snprintf_
+#define snprintf snprintf_
 #define vsnprintf vsnprintf_
 int snprintf_(char *buffer, size_t count, const char *format, ...);
 int vsnprintf_(char *buffer, size_t count, const char *format, va_list va);
-
 
 /**
  * Tiny vprintf implementation

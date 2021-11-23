@@ -1,9 +1,9 @@
-/**************************************************************************/ /**
-\file     spi.h
-\brief    spi function Header File
-\author   Lao·Zhu
-\version  V1.0.1
-\date     24. November 2021
+/*****************************************************************************
+    \file     spi.h
+    \brief    spi function Header File
+    \author   Lao·Zhu
+    \version  V1.0.1
+    \date     24. November 2021
 ******************************************************************************/
 
 #ifndef MM32F3277_HARDWARE_SPI_H_

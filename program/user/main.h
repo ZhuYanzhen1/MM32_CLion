@@ -1,9 +1,9 @@
-/**************************************************************************/ /**
-  \file     main.h
-  \brief    main function Header File
-  \author   Lao·Zhu
-  \version  V1.0.1
-  \date     14. November 2021
+/*****************************************************************************
+    \file     main.h
+    \brief    main function Header File
+    \author   Lao·Zhu
+    \version  V1.0.1
+    \date     14. November 2021
  ******************************************************************************/
 
 #ifndef MM32F3277_USER_MAIN_H_
@@ -22,6 +22,7 @@
 #include "uart.h"
 
 ///////////// Math /////////////
+#include "fft.h"
 #include "qfplib.h"
 #include "verification.h"
 
