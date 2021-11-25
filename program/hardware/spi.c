@@ -9,11 +9,11 @@
 #include "spi.h"
 #include "hal_conf.h"
 
-unsigned char spi2_readwrite_byte(unsigned char tx_data) {
+unsigned int spi2_readwrite_byte(unsigned int tx_data) {
     SPI_SendData(SPI2, tx_data);
     while (1) {
         if (SPI_GetFlagStatus(SPI2, SPI_FLAG_RXAVL)) {
-            return (SPI_ReceiveData(SPI2) & 0x000000FFUL);
+            return SPI_ReceiveData(SPI2);
         }
     }
 }
