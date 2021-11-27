@@ -1084,4 +1084,24 @@ Text Label 7150 3650 2    50   ~ 0
 KEY
 Wire Wire Line
 	6350 3650 7150 3650
+Text HLabel 6850 5250 2    50   Output ~ 0
+UART3_TX
+Text HLabel 6850 5150 2    50   Input ~ 0
+UART3_RX
+Wire Wire Line
+	6850 5150 6350 5150
+Wire Wire Line
+	6350 5250 6850 5250
+Text HLabel 3550 1400 1    50   Output ~ 0
+SPI1_CLK
+Text HLabel 3450 1400 1    50   Input ~ 0
+SPI1_MISO
+Text HLabel 3350 1400 1    50   Output ~ 0
+SPI1_MOSI
+Wire Wire Line
+	3550 1400 3550 1850
+Wire Wire Line
+	3450 1850 3450 1400
+Wire Wire Line
+	3350 1400 3350 1850
 $EndSCHEMATC
