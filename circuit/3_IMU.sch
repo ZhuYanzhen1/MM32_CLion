@@ -1274,7 +1274,7 @@ IMU
 Text Notes 4750 1350 0    150  ~ 0
 Filter
 Text Notes 1050 5350 0    150  ~ 0
-Isolated Power Supply
+Power Supply Isolation
 Text Notes 7250 1350 0    150  ~ 0
 Signal Isolation
 $EndSCHEMATC
