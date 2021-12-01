@@ -499,17 +499,17 @@ Wire Wire Line
 	1800 3050 1800 3150
 NoConn ~ 2050 2550
 Text Label 1150 2650 0    50   ~ 0
-IMU_DOUT
+DOUT
 Text Label 1150 2450 0    50   ~ 0
-IMU_SCLK
+SCLK
 Text Label 1150 2350 0    50   ~ 0
-IMU_RST
+RST
 Text Label 1150 2250 0    50   ~ 0
-IMU_DR
+DR
 Text Label 1150 2150 0    50   ~ 0
-IMU_DIN
+DIN
 Text Label 1150 2050 0    50   ~ 0
-IMU_CS
+CS
 Wire Wire Line
 	1150 2050 2050 2050
 Wire Wire Line
@@ -761,25 +761,25 @@ Wire Wire Line
 Wire Wire Line
 	8550 5050 8650 5050
 Text Label 9750 5450 0    50   ~ 0
-IMU_DOUT
+DOUT
 Text Label 9750 3000 0    50   ~ 0
-IMU_DR
+DR
 Wire Wire Line
 	9500 3000 9750 3000
 Wire Wire Line
 	9500 5450 9750 5450
 Text Label 9750 5250 0    50   ~ 0
-IMU_SCLK
+SCLK
 Text Label 9750 5350 0    50   ~ 0
-IMU_DIN
+DIN
 Wire Wire Line
 	9500 5350 9750 5350
 Wire Wire Line
 	9750 5250 9500 5250
 Text Label 9750 2900 0    50   ~ 0
-IMU_RST
+RST
 Text Label 9750 2800 0    50   ~ 0
-IMU_CS
+CS
 Wire Wire Line
 	9500 2800 9750 2800
 Wire Wire Line
@@ -1277,4 +1277,18 @@ Text Notes 1050 5350 0    150  ~ 0
 Power Supply Isolation
 Text Notes 7250 1350 0    150  ~ 0
 Signal Isolation
+$Comp
+L power:PWR_FLAG #FLG0106
+U 1 1 61CA638A
+P 2350 5750
+F 0 "#FLG0106" H 2350 5825 50  0001 C CNN
+F 1 "PWR_FLAG" H 2350 5923 50  0000 C CNN
+F 2 "" H 2350 5750 50  0001 C CNN
+F 3 "~" H 2350 5750 50  0001 C CNN
+	1    2350 5750
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2350 5750 2350 6400
+Connection ~ 2350 6400
 $EndSCHEMATC
