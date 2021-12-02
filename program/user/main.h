@@ -26,4 +26,10 @@
 #include "qfplib.h"
 #include "verification.h"
 
+///////////// Device /////////////
+#include "adis16470.h"
+
+///////////// Debug /////////////
+#include "debugger.h"
+
 #endif  // MM32F3277_USER_MAIN_H_
