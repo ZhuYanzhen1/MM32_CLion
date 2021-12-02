@@ -608,4 +608,61 @@ $EndComp
 Wire Wire Line
 	1500 4900 1500 5700
 Connection ~ 1500 5700
+$Comp
+L Connector_Generic:Conn_01x03 J5
+U 1 1 61A932D6
+P 9850 5700
+F 0 "J5" H 9800 5900 50  0000 L CNN
+F 1 "Conn_01x03" H 9700 5500 50  0000 L CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Horizontal" H 9850 5700 50  0001 C CNN
+F 3 "~" H 9850 5700 50  0001 C CNN
+	1    9850 5700
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0162
+U 1 1 61A93E0F
+P 9450 6450
+F 0 "#PWR0162" H 9450 6200 50  0001 C CNN
+F 1 "GND" H 9455 6277 50  0000 C CNN
+F 2 "" H 9450 6450 50  0001 C CNN
+F 3 "" H 9450 6450 50  0001 C CNN
+	1    9450 6450
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+7.5V #PWR?
+U 1 1 61A9B489
+P 9450 4900
+AR Path="/6191448D/61A9B489" Ref="#PWR?"  Part="1" 
+AR Path="/61E2DD2B/61A9B489" Ref="#PWR0163"  Part="1" 
+F 0 "#PWR0163" H 9450 4750 50  0001 C CNN
+F 1 "+7.5V" H 9465 5073 50  0000 C CNN
+F 2 "" H 9450 4900 50  0001 C CNN
+F 3 "" H 9450 4900 50  0001 C CNN
+	1    9450 4900
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9450 4900 9450 5700
+Wire Wire Line
+	9450 5700 9650 5700
+Wire Wire Line
+	9650 5800 9450 5800
+Wire Wire Line
+	9450 5800 9450 6450
+Text HLabel 9250 5600 0    50   Input ~ 0
+Servo_PWM
+Wire Wire Line
+	9250 5600 9650 5600
+Wire Notes Line
+	8100 4200 10500 4200
+Wire Notes Line
+	10500 4200 10500 6900
+Wire Notes Line
+	10500 6900 8100 6900
+Wire Notes Line
+	8100 6900 8100 4200
+Text Notes 8250 4550 0    150  ~ 0
+Servo
 $EndSCHEMATC

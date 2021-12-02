@@ -1166,7 +1166,6 @@ Wire Wire Line
 	6350 4150 7000 4150
 Wire Wire Line
 	7000 4250 6350 4250
-NoConn ~ 4750 5950
 NoConn ~ 4650 5950
 NoConn ~ 4550 5950
 NoConn ~ 4450 5950
@@ -1252,4 +1251,8 @@ NoConn ~ 2050 4650
 NoConn ~ 2050 4750
 NoConn ~ 2050 4850
 NoConn ~ 2050 4950
+Text HLabel 4750 6400 3    50   Output ~ 0
+TIM1_CH1
+Wire Wire Line
+	4750 6400 4750 5950
 $EndSCHEMATC
