@@ -1,4 +1,4 @@
-/*****************************************************************************
+/**************************************************************************/ /**
     \file     encrypt.h
     \brief    Medium capacity transport protocol packing function Header File.
     \author   Lao·Zhu

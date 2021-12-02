@@ -1,4 +1,4 @@
-/*****************************************************************************
+/**************************************************************************/ /**
     \file     decrypt.c
     \brief    Medium capacity transport protocol unpacking function Source File.
     \author   Lao·Zhu

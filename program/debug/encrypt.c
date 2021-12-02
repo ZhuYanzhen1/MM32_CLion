@@ -1,4 +1,4 @@
-/*****************************************************************************
+/**************************************************************************/ /**
     \file     encrypt.c
     \brief    Medium capacity transport protocol packing function source file.
     \author   Lao·Zhu

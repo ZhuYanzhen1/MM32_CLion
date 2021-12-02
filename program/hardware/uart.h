@@ -1,6 +1,6 @@
-/*****************************************************************************
+/**************************************************************************/ /**
     \file     uart.h
-    \brief    uart function Header File
+    \brief    UART function Header File
     \author   Lao·Zhu
     \version  V1.0.1
     \date     14. November 2021

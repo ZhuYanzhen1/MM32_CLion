@@ -1,4 +1,4 @@
-/*****************************************************************************
+/**************************************************************************/ /**
     \file     decrypt.h
     \brief    Medium capacity transport protocol unpacking function Header File.
     \author   Lao·Zhu

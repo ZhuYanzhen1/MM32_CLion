@@ -1,6 +1,6 @@
-/*****************************************************************************
+/**************************************************************************/ /**
     \file     mm32f3x_it.c
-    \brief    mm32f3x interrupt handler function source file
+    \brief    MM32F3x interrupt handler function source file
     \author   Lao·Zhu
     \version  V1.0.1
     \date     14. November 2021
@@ -61,7 +61,7 @@ void SysTick_Handler(void) {
 void UART1_IRQHandler(void) {
     if (UART_GetITStatus(UART1, UART_ISR_RX) != RESET) {
         unsigned char recvbyte = UART_ReceiveData(UART1);
-        uart1_sendbyte(recvbyte);
+        mdtp_receive_handler(recvbyte);
         UART_ClearITPendingBit(UART1, UART_ISR_RX);
     }
 }

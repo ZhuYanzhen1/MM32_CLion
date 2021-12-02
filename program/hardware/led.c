@@ -1,6 +1,6 @@
-/*****************************************************************************
+/**************************************************************************/ /**
     \file     led.c
-    \brief    led function Source File
+    \brief    LED function Source File
     \author   Lao·Zhu
     \version  V1.0.1
     \date     14. November 2021

@@ -1,9 +1,9 @@
-/**************************************************************************//**
-  \file     fft.c
-  \brief    fft function Source File
-  \author   Lao·Zhu
-  \version  V1.0.1
-  \date     17. November 2021
+/**************************************************************************/ /**
+    \file     fft.c
+    \brief    FFT function Source File
+    \author   Lao·Zhu
+    \version  V1.0.1
+    \date     17. November 2021
  ******************************************************************************/
 
 #include "fft.h"
