@@ -513,36 +513,8 @@ Wire Wire Line
 Connection ~ 1900 5900
 Wire Wire Line
 	1900 6350 1900 6450
-$Comp
-L Device:Battery_Cell BT1
-U 1 1 61A84728
-P 1500 6150
-F 0 "BT1" H 1618 6200 50  0000 L CNN
-F 1 "Battery_Cell" H 1618 6155 50  0001 L CNN
-F 2 "Battery:BatteryHolder_Keystone_1060_1x2032" V 1500 6210 50  0001 C CNN
-F 3 "~" V 1500 6210 50  0001 C CNN
-	1    1500 6150
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
-	1900 4900 1900 5900
-Wire Wire Line
-	1500 5950 1500 5700
-Wire Wire Line
-	1500 5700 2250 5700
-$Comp
-L power:GND #PWR0143
-U 1 1 61A8DC9F
-P 1500 6450
-F 0 "#PWR0143" H 1500 6200 50  0001 C CNN
-F 1 "GND" H 1505 6277 50  0000 C CNN
-F 2 "" H 1500 6450 50  0001 C CNN
-F 3 "" H 1500 6450 50  0001 C CNN
-	1    1500 6450
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	1500 6450 1500 6250
+	1900 4900 1900 5700
 NoConn ~ 2250 6000
 Text HLabel 1850 5400 0    50   Input ~ 0
 GPS_RX
@@ -594,20 +566,6 @@ Text Notes 1400 4550 0    150  ~ 0
 GPS
 NoConn ~ 2250 5600
 NoConn ~ 2250 5500
-$Comp
-L power:PWR_FLAG #FLG0107
-U 1 1 61CB58F4
-P 1500 4900
-F 0 "#FLG0107" H 1500 4975 50  0001 C CNN
-F 1 "PWR_FLAG" H 1500 5073 50  0000 C CNN
-F 2 "" H 1500 4900 50  0001 C CNN
-F 3 "~" H 1500 4900 50  0001 C CNN
-	1    1500 4900
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	1500 4900 1500 5700
-Connection ~ 1500 5700
 $Comp
 L Connector_Generic:Conn_01x03 J5
 U 1 1 61A932D6
@@ -665,4 +623,9 @@ Wire Notes Line
 	8100 6900 8100 4200
 Text Notes 8250 4550 0    150  ~ 0
 Servo
+Wire Wire Line
+	2250 5700 1900 5700
+Connection ~ 1900 5700
+Wire Wire Line
+	1900 5700 1900 5900
 $EndSCHEMATC
