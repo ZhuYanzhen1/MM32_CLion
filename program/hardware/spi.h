@@ -9,6 +9,9 @@
 #ifndef MM32F3277_HARDWARE_SPI_H_
 #define MM32F3277_HARDWARE_SPI_H_
 
+#define SPI_CS_GPIO_Port GPIO_PortSourceGPIOA /* Not yet determined */
+#define SPI_CS_Pin GPIO_Pin_0                 /* Not yet determined */
+
 void spi2_config(void);
 unsigned int spi2_readwrite_byte(unsigned int tx_data);
 
