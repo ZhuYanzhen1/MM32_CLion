@@ -9,13 +9,18 @@
 #include "spi.h"
 #include "hal_conf.h"
 
+#define CS_SET GPIO_WriteBit(SPI_CS_GPIO_Port, SPI_CS_Pin, 1)
+#define CS_RESET GPIO_WriteBit(SPI_CS_GPIO_Port, SPI_CS_Pin, 0)
+
 unsigned int spi2_readwrite_byte(unsigned int tx_data) {
+    CS_RESET;
     SPI_SendData(SPI2, tx_data);
     while (1) {
         if (SPI_GetFlagStatus(SPI2, SPI_FLAG_RXAVL)) {
             return SPI_ReceiveData(SPI2);
         }
     }
+    CS_SET;
 }
 
 void spi2_config(void) {
@@ -56,7 +61,7 @@ void spi2_config(void) {
     SPI_InitStruct.SPI_CPOL = SPI_CPOL_High;
     SPI_InitStruct.SPI_CPHA = SPI_CPHA_2Edge;
     SPI_InitStruct.SPI_NSS = SPI_NSS_Soft;
-    SPI_InitStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_64; /* 120MHz / 64MHz <2MHz */
+    SPI_InitStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_128; /* 120MHz / 128MHz <1MHz :Burst Read command*/
     SPI_InitStruct.SPI_FirstBit = SPI_FirstBit_MSB;
     SPI_Init(SPI2, &SPI_InitStruct);
     if (SPI_InitStruct.SPI_BaudRatePrescaler <= 8) {
