@@ -1,4 +1,4 @@
-/*****************************************************************************
+/**************************************************************************/ /**
     \file     delay.h
     \brief    delay function Header File
     \author   Lao·Zhu
@@ -8,8 +8,6 @@
 
 #ifndef MM32F3277_SYSTEM_USER_H_
 #define MM32F3277_SYSTEM_USER_H_
-
-#include "mm32_device.h"
 
 void delay_decrease(void);
 void delay_config(void);

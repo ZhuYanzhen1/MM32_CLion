@@ -1,6 +1,6 @@
-/*****************************************************************************
+/**************************************************************************/ /**
     \file     fft.h
-    \brief    fft function Header File
+    \brief    FFT function Header File
     \author   Lao·Zhu
     \version  V1.0.1
     \date     17. November 2021

@@ -1,4 +1,4 @@
-/*****************************************************************************
+/**************************************************************************/ /**
     \file     main.h
     \brief    main function Header File
     \author   Lao·Zhu
@@ -25,5 +25,12 @@
 #include "fft.h"
 #include "qfplib.h"
 #include "verification.h"
+
+///////////// Device /////////////
+#include "adis16470.h"
+
+///////////// Debug /////////////
+#include "debugger.h"
+#include "decrypt.h"
 
 #endif  // MM32F3277_USER_MAIN_H_

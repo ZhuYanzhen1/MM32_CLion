@@ -1,4 +1,4 @@
-/*****************************************************************************
+/**************************************************************************/ /**
     \file     delay.c
     \brief    delay function Source File
     \author   Lao·Zhu
@@ -8,6 +8,7 @@
 
 #include "delay.h"
 #include "config.h"
+#include "mm32_device.h"
 
 extern unsigned int SystemCoreClock;
 static volatile unsigned int delayms_counter = 0;

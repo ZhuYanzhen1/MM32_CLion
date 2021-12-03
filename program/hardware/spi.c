@@ -1,6 +1,6 @@
-/*****************************************************************************
+/**************************************************************************/ /**
     \file     spi.c
-    \brief    spi function Source File
+    \brief    SPI function Source File
     \author   Lao·Zhu
     \version  V1.0.1
     \date     24. November 2021

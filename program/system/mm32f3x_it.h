@@ -1,6 +1,6 @@
-/*****************************************************************************
+/**************************************************************************/ /**
     \file     mm32f3x_it.h
-    \brief    mm32f3x interrupt handler function header file
+    \brief    MM32F3x interrupt handler function header file
     \author   Lao·Zhu
     \version  V1.0.1
     \date     14. November 2021

@@ -1,4 +1,4 @@
-/*****************************************************************************
+/**************************************************************************/ /**
     \file     printf.h
     \brief    Tiny printf, sprintf and (v)snprintf implementation header file.
     \author   Marco Paland (info@paland.com)

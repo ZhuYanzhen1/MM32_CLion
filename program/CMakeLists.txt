@@ -23,6 +23,7 @@ add_compile_options(-mfloat-abi=soft)
 add_compile_options(-mcpu=cortex-m3 -mthumb -mthumb-interwork)
 add_compile_options(-ffunction-sections -fdata-sections -fno-common -fmessage-length=0)
 
+message(STATUS "Maximum optimization for speed")
 add_compile_options(-Ofast)
 #if ("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
 #    message(STATUS "Maximum optimization for speed")
@@ -41,10 +42,11 @@ add_compile_options(-Ofast)
 #add_definitions(-DUSE_HAL_DRIVER)
 
 include_directories(library/regs system system/cmsis library/include user hardware system/official
-        math device)
+        math device debug)
 
 file(GLOB_RECURSE SOURCES "system/official/startup_mm32f327.s" "library/source/*.c" "math/*.c"
-        "user/*.c" "hardware/*.c" "system/*.c" "system/official/*.c" "math/qfplib.s" "device/*.c")
+        "user/*.c" "hardware/*.c" "system/*.c" "system/official/*.c" "math/qfplib.s" "device/*.c"
+        "debug/*.c")
 
 set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/mm32f3277.ld)
 
@@ -55,10 +57,7 @@ add_link_options(-T ${LINKER_SCRIPT})
 add_executable(${PROJECT_NAME}.elf ${SOURCES} ${LINKER_SCRIPT})
 
 set(HEX_FILE ${PROJECT_BINARY_DIR}/${PROJECT_NAME}.hex)
-set(BIN_FILE ${PROJECT_BINARY_DIR}/${PROJECT_NAME}.bin)
 
 add_custom_command(TARGET ${PROJECT_NAME}.elf POST_BUILD
         COMMAND ${CMAKE_OBJCOPY} -Oihex $<TARGET_FILE:${PROJECT_NAME}.elf> ${HEX_FILE}
-        COMMAND ${CMAKE_OBJCOPY} -Obinary $<TARGET_FILE:${PROJECT_NAME}.elf> ${BIN_FILE}
-        COMMENT "Building ${HEX_FILE}
-Building ${BIN_FILE}")
+        COMMENT "Building ${HEX_FILE}")

@@ -1,6 +1,6 @@
-/*****************************************************************************
+/**************************************************************************/ /**
     \file     spi.h
-    \brief    spi function Header File
+    \brief    SPI function Header File
     \author   Lao·Zhu
     \version  V1.0.1
     \date     24. November 2021

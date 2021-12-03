@@ -1,4 +1,4 @@
-/*****************************************************************************
+/**************************************************************************/ /**
     \file     printf.c
     \brief    Tiny printf, sprintf and (v)snprintf implementation source file.
     \author   Marco Paland (info@paland.com)
