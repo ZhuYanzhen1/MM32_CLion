@@ -16,7 +16,7 @@ typedef enum {
     unsigned_int8 = 3,
     unsigned_int16 = 4,
     unsigned_int32 = 5,
-    float_32bit = 6
+    float_32bit = 6,
 } variable_type;
 
 typedef struct DEBUGGER_VARIABLE_T {

@@ -15,7 +15,7 @@ int main(void) {
     led_config();
     spi2_config();
     uart1_config(115200);
-    debugger_register_variable(integer_8bit, &counter, "counter");
+    debugger_register_variable(unsigned_int8, &counter, "counter");
     while (1) {
         counter++;
         //        printf("Hello MM32 with printf! counter: %d\r\n", counter);

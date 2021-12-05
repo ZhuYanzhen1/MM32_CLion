@@ -24,10 +24,30 @@ static unsigned char variable_index = 0;
 void mdtp_callback_handler(unsigned char pid, const unsigned char *data) {
 }
 
-void debugger_register_variable(variable_type var_type, void *variable, const char *name) {
+static void debugger_report_variable(unsigned char index) {
     unsigned char tmp_buffer[8] = {0};
-    unsigned char name_length = strlen(name) > 16 ? 16 : strlen(name);
-    unsigned long variable_physical_addr = (unsigned long) variable;
+    unsigned long variable_physical_addr = (unsigned long) variable_buffer[index]->var_address;
+    tmp_buffer[0] = index - 1;
+    tmp_buffer[1] = (variable_buffer[index]->var_status >> 16) & 0x000000ffUL;
+    tmp_buffer[2] = (variable_buffer[index]->var_status >> 8) & 0x000000ffUL;
+    tmp_buffer[3] = variable_buffer[index]->var_status & 0x000000ffUL;
+    tmp_buffer[4] = variable_physical_addr >> 24;
+    tmp_buffer[5] = (variable_physical_addr >> 16) & 0x000000ffUL;
+    tmp_buffer[6] = (variable_physical_addr >> 8) & 0x000000ffUL;
+    tmp_buffer[7] = variable_physical_addr & 0x000000ffUL;
+    mdtp_data_transmit(0x00, tmp_buffer);
+
+    for (unsigned char counter = 0; counter < 7; ++counter)
+        tmp_buffer[counter + 1] = variable_buffer[index]->var_name[counter];
+    mdtp_data_transmit(0x01, tmp_buffer);
+
+    for (unsigned char counter = 0; counter < 7; ++counter)
+        tmp_buffer[counter + 1] = variable_buffer[index]->var_name[counter + 7];
+    mdtp_data_transmit(0x02, tmp_buffer);
+}
+
+void debugger_register_variable(variable_type var_type, void *variable, const char *name) {
+    unsigned char name_length = strlen(name) > 14 ? 14 : strlen(name);
     debugger_variable_t *new_variable = memalloc(sizeof(debugger_variable_t));
     new_variable->var_status = var_type;
     new_variable->var_address = variable;
@@ -36,6 +56,7 @@ void debugger_register_variable(variable_type var_type, void *variable, const ch
         new_variable->var_name[counter] = name[counter];
     variable_buffer[variable_index] = new_variable;
     variable_index = variable_index + 1;
+    debugger_report_variable(variable_index - 1);
 }
 
 void debugger_scan_variable(unsigned long time_stamp) {
