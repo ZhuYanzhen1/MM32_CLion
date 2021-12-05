@@ -15,9 +15,10 @@ int main(void) {
     led_config();
     spi2_config();
     uart1_config(115200);
+    debugger_register_variable(integer_8bit, &counter, "counter");
     while (1) {
         counter++;
-        printf("Hello MM32 with printf! counter: %d\r\n", counter);
+        //        printf("Hello MM32 with printf! counter: %d\r\n", counter);
         LED1_TOGGLE();
         delayms(500);
     }

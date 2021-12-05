@@ -13,6 +13,7 @@
 #include "config.h"
 #include "delay.h"
 #include "hal_conf.h"
+#include "malloc.h"
 #include "mm32_device.h"
 #include "printf.h"
 
