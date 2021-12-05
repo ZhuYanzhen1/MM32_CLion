@@ -18,7 +18,8 @@ int main(void) {
     debugger_register_variable(unsigned_int8, &counter, "counter");
     while (1) {
         counter++;
-        //        printf("Hello MM32 with printf! counter: %d\r\n", counter);
+        printf("Hello MM32 with printf! counter: %d\r\n", counter);
+        fflush(stdout);
         LED1_TOGGLE();
         delayms(500);
     }

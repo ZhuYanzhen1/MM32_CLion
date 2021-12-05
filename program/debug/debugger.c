@@ -10,10 +10,13 @@
 #include "config.h"
 #include "encrypt.h"
 #include "malloc.h"
+#include "printf.h"
 #include "string.h"
 
 static debugger_variable_t *variable_buffer[VARIABLE_BUFFER_SIZE];
 static unsigned char variable_index = 0;
+static unsigned char printf_byte_counter = 0;
+static unsigned char printf_byte_buffer[8] = {0};
 
 /*!
     \brief        user callback function for unpacking completion of medium capacity transport protocol
@@ -24,10 +27,29 @@ static unsigned char variable_index = 0;
 void mdtp_callback_handler(unsigned char pid, const unsigned char *data) {
 }
 
+void _fflush(void) {
+    if (printf_byte_counter != 8) {
+        for (unsigned char counter = printf_byte_counter; counter < 8; counter++)
+            printf_byte_buffer[counter] = 0x00;
+    }
+    printf_byte_counter = 0;
+    mdtp_data_transmit(0x04, printf_byte_buffer);
+}
+
+void _putchar(char character) {
+    if (printf_byte_counter != 8) {
+        printf_byte_buffer[printf_byte_counter] = character;
+        printf_byte_counter++;
+    } else {
+        printf_byte_counter = 0;
+        mdtp_data_transmit(0x04, printf_byte_buffer);
+    }
+}
+
 static void debugger_report_variable(unsigned char index) {
     unsigned char tmp_buffer[8] = {0};
     unsigned long variable_physical_addr = (unsigned long) variable_buffer[index]->var_address;
-    tmp_buffer[0] = index - 1;
+    tmp_buffer[0] = index;
     tmp_buffer[1] = (variable_buffer[index]->var_status >> 16) & 0x000000ffUL;
     tmp_buffer[2] = (variable_buffer[index]->var_status >> 8) & 0x000000ffUL;
     tmp_buffer[3] = variable_buffer[index]->var_status & 0x000000ffUL;
