@@ -25,10 +25,13 @@ void mdtp_callback_handler(unsigned char pid, const unsigned char *data) {
 }
 
 void debugger_register_variable(variable_type var_type, void *variable, const char *name) {
+    unsigned char tmp_buffer[8] = {0};
     unsigned char name_length = strlen(name) > 16 ? 16 : strlen(name);
+    unsigned long variable_physical_addr = (unsigned long) variable;
     debugger_variable_t *new_variable = memalloc(sizeof(debugger_variable_t));
     new_variable->var_status = var_type;
     new_variable->var_address = variable;
+    new_variable->var_lastvalue = 0x00000000UL;
     for (unsigned char counter = 0; counter < name_length; counter++)
         new_variable->var_name[counter] = name[counter];
     variable_buffer[variable_index] = new_variable;
@@ -36,4 +39,42 @@ void debugger_register_variable(variable_type var_type, void *variable, const ch
 }
 
 void debugger_scan_variable(unsigned long time_stamp) {
+    unsigned char tmp_buffer[8] = {0};
+    tmp_buffer[1] = (time_stamp >> 16) & 0x000000ffUL;
+    tmp_buffer[2] = (time_stamp >> 8) & 0x000000ffUL;
+    tmp_buffer[3] = time_stamp & 0x000000ffUL;
+    for (unsigned char counter = 0; counter < variable_index; ++counter) {
+        unsigned long tmp_variable_u32;
+        switch (variable_buffer[counter]->var_status) {
+            case signed_int8:
+                tmp_variable_u32 = (unsigned long) (*((char *) variable_buffer[counter]->var_address));
+                break;
+            case signed_int16:
+                tmp_variable_u32 = (unsigned long) (*((short *) variable_buffer[counter]->var_address));
+                break;
+            case signed_int32:
+                tmp_variable_u32 = (unsigned long) (*((long *) variable_buffer[counter]->var_address));
+                break;
+            default:
+            case unsigned_int8:
+                tmp_variable_u32 = (unsigned long) (*((unsigned char *) variable_buffer[counter]->var_address));
+                break;
+            case unsigned_int16:
+                tmp_variable_u32 = (unsigned long) (*((unsigned short *) variable_buffer[counter]->var_address));
+                break;
+            case float_32bit:
+            case unsigned_int32:
+                tmp_variable_u32 = (*((unsigned long *) variable_buffer[counter]->var_address));
+                break;
+        }
+        if (variable_buffer[counter]->var_lastvalue != tmp_variable_u32) {
+            tmp_buffer[0] = counter;
+            tmp_buffer[4] = tmp_variable_u32 >> 24;
+            tmp_buffer[5] = (tmp_variable_u32 >> 16) & 0x000000ffUL;
+            tmp_buffer[6] = (tmp_variable_u32 >> 8) & 0x000000ffUL;
+            tmp_buffer[7] = tmp_variable_u32 & 0x000000ffUL;
+            mdtp_data_transmit(0x03, tmp_buffer);
+        }
+        variable_buffer[counter]->var_lastvalue = tmp_variable_u32;
+    }
 }
