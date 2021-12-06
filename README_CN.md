@@ -27,6 +27,8 @@
   + system：与MM32F3277G9P系统有关初始化及操作代码。
   + user：用户层代码，主要逻辑实现。
   + math：与数学计算有关的代码和函数，如校验计算、FFT等。
+  + debug：用于实现串口调参的数据链路层和传输层代码。
+  + device：针对器件的数据链路层协议，实现对器件级别的寄存器读写。
 
 ***
 
@@ -36,5 +38,4 @@
 作者：朱彦臻<br>
 维护人：朱彦臻, 2208213223@qq.com**
 
-&nbsp;&nbsp;&nbsp;&nbsp;本项目的源代码根据[AGPL-3.0许可证](https://github.com/ZhuYanzhen1/MM32_CLion/blob/master/LICENSE)发布。本项目已经在Windows
-10、Ubuntu 18.04和20.04下进行了测试。这是一个学习型代码，希望它经常更改，并且不承认任何特定用途的适用性。
+&nbsp;&nbsp;&nbsp;&nbsp;本项目的源代码根据[AGPL-3.0许可证](https://github.com/ZhuYanzhen1/MM32_CLion/blob/master/LICENSE)发布。本项目已经在Windows10、Ubuntu 18.04和20.04下进行了测试。这是一个学习型代码，希望它经常更改，并且不承认任何特定用途的适用性。
