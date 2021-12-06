@@ -1,6 +1,6 @@
-update=2021/12/5 17:04:26
+update=2021/12/6 13:05:42
 version=1
-last_client=kicad
+last_client=pcbnew
 [general]
 version=1
 RootSch=
@@ -47,7 +47,7 @@ TrackWidth6=0.3
 TrackWidth7=0.4
 TrackWidth8=0.5
 TrackWidth9=1
-ViaDiameter1=0.4
+ViaDiameter1=0.45
 ViaDrill1=0.2
 ViaDiameter2=0.45
 ViaDrill2=0.2
@@ -251,7 +251,7 @@ Enabled=0
 Name=Default
 Clearance=0.1
 TrackWidth=0.254
-ViaDiameter=0.4
+ViaDiameter=0.45
 ViaDrill=0.2
 uViaDiameter=0.3
 uViaDrill=0.1
