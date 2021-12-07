@@ -9,21 +9,21 @@
 #ifndef MM32F3277_DEVICE_ADIS16470_H
 #define MM32F3277_DEVICE_ADIS16470_H
 
-#include "mm32_device.h"
+#include "main.h"
 
-typedef struct
+typedef volatile struct
 {
-    volatile int16_t DIAG_STAT;
-    volatile int16_t X_GYRO;
-    volatile int16_t Y_GYRO;
-    volatile int16_t Z_GYRO;
-    volatile int16_t X_ACCL;
-    volatile int16_t Y_ACCL;
-    volatile int16_t Z_ACCL;
-    volatile int16_t TEMP;
-    volatile int16_t DATA_CNTR;
-    volatile int16_t Checknum;
-} adis_t;
+    int diag_star;
+    int x_gyro;
+    int y_gyro;
+    int z_gyro;
+    int x_acll;
+    int y_acll;
+    int z_acll;
+    int temp;
+    int data_cntr;
+    int checknum;
+} adis16470_t;
 typedef struct
 {
     float angular_speed_x;  //角速度
@@ -36,12 +36,12 @@ typedef struct
     float angle_y;
     float angle_z;
 } gyroscope_t;
-extern adis_t imu;
+extern adis16470_t imu;
 extern gyroscope_t gyroscope_data;
 
-void adis_read_register(const uint8_t *addr_register, uint16_t *rx_point, uint8_t register_num);
-void adis_write_register(uint8_t addr, uint8_t value);
-void adis_single_handle(void);
+void adis16470_read_register(const unsigned char *addr_register, unsigned int *rx_point, unsigned char register_num);
+void adis16470_write_register(unsigned char addr, unsigned char value);
+void adis16470_single_handle(void);
 void Self_Calibration(void);
 
 #endif  // MM32F3277_DEVICE_ADIS16470_H
