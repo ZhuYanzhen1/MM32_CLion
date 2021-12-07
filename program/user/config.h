@@ -11,6 +11,8 @@
 
 #define USE_FREERTOS 0
 #define configTICK_RATE_HZ 1000
+#define VARIABLE_BUFFER_SIZE 32
 #define common_sendbyte uart1_sendbyte
+#define configTOTAL_HEAP_SIZE ((unsigned int) (10 * 1024))
 
 #endif  // MM32F3277_USER_CONFIG_H_

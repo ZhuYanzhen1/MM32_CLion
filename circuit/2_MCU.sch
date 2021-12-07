@@ -845,16 +845,12 @@ Wire Wire Line
 	8550 6750 9000 6750
 Text HLabel 1450 2150 0    50   Output ~ 0
 SPI2_CLK
-Text HLabel 1450 2250 0    50   Output ~ 0
-PE3
 Text HLabel 1450 2450 0    50   Input ~ 0
 SPI2_MISO
 Text HLabel 1450 2550 0    50   Output ~ 0
 SPI2_MOSI
 Wire Wire Line
 	1450 2150 2050 2150
-Wire Wire Line
-	2050 2250 1450 2250
 Wire Wire Line
 	1450 2450 2050 2450
 Wire Wire Line
@@ -949,14 +945,10 @@ Wire Wire Line
 	3750 6750 3750 5950
 Wire Wire Line
 	3650 5950 3650 6750
-Text HLabel 1450 2350 0    50   Input ~ 0
-PE4
+Text HLabel 3250 1200 1    50   Output ~ 0
+PB6
 Wire Wire Line
-	1450 2350 2050 2350
-Text HLabel 2650 1350 1    50   Output ~ 0
-PE1
-Wire Wire Line
-	2650 1350 2650 1850
+	3250 1200 3250 1850
 Wire Wire Line
 	4050 6450 4050 5950
 $Comp
@@ -1080,10 +1072,10 @@ Wire Wire Line
 	6900 2750 6350 2750
 Text Label 9450 3500 0    50   ~ 0
 KEY
-Text Label 7150 3650 2    50   ~ 0
+Text Label 4150 6750 1    50   ~ 0
 KEY
 Wire Wire Line
-	6350 3650 7150 3650
+	4150 6750 4150 5950
 Text HLabel 6850 5250 2    50   Output ~ 0
 UART3_TX
 Text HLabel 6850 5150 2    50   Input ~ 0
@@ -1146,33 +1138,23 @@ Text HLabel 3150 6300 3    50   Input ~ 0
 ADC23_IN14
 Wire Wire Line
 	3150 6300 3150 5950
-Text HLabel 7000 4250 2    50   Input ~ 0
-PG2
-Text HLabel 7000 4150 2    50   Output ~ 0
-PG3
-Text HLabel 7000 4050 2    50   Output ~ 0
-PG4
-Text HLabel 7000 3950 2    50   Output ~ 0
-PG5
-Text HLabel 7000 3850 2    50   Output ~ 0
-PG6
+Text HLabel 2750 1200 1    50   Input ~ 0
+PE0
+Text HLabel 2650 1200 1    50   Output ~ 0
+PE1
+Text HLabel 2850 1200 1    50   Output ~ 0
+PB9
 Wire Wire Line
-	7000 3850 6350 3850
+	2850 1200 2850 1850
 Wire Wire Line
-	6350 3950 7000 3950
+	2650 1850 2650 1200
 Wire Wire Line
-	7000 4050 6350 4050
-Wire Wire Line
-	6350 4150 7000 4150
-Wire Wire Line
-	7000 4250 6350 4250
-NoConn ~ 4750 5950
+	2750 1200 2750 1850
 NoConn ~ 4650 5950
 NoConn ~ 4550 5950
 NoConn ~ 4450 5950
 NoConn ~ 4350 5950
 NoConn ~ 4250 5950
-NoConn ~ 4150 5950
 NoConn ~ 3550 5950
 NoConn ~ 3250 5950
 NoConn ~ 3050 5950
@@ -1220,17 +1202,7 @@ NoConn ~ 5450 1850
 NoConn ~ 5550 1850
 NoConn ~ 5650 1850
 NoConn ~ 5750 1850
-NoConn ~ 2750 1850
-NoConn ~ 2850 1850
 NoConn ~ 2950 1850
-NoConn ~ 3150 1850
-NoConn ~ 3250 1850
-NoConn ~ 3650 1850
-NoConn ~ 3950 1850
-NoConn ~ 4050 1850
-NoConn ~ 4150 1850
-NoConn ~ 4250 1850
-NoConn ~ 4350 1850
 NoConn ~ 4450 1850
 NoConn ~ 4550 1850
 NoConn ~ 4650 1850
@@ -1252,4 +1224,34 @@ NoConn ~ 2050 4650
 NoConn ~ 2050 4750
 NoConn ~ 2050 4850
 NoConn ~ 2050 4950
+Text HLabel 4750 6400 3    50   Output ~ 0
+TIM1_CH1
+Wire Wire Line
+	4750 6400 4750 5950
+NoConn ~ 6350 3850
+NoConn ~ 6350 3950
+NoConn ~ 6350 4050
+NoConn ~ 6350 4150
+NoConn ~ 6350 4250
+Text HLabel 3150 1200 1    50   Output ~ 0
+PB7
+Wire Wire Line
+	3150 1200 3150 1850
+Text HLabel 3650 1200 1    50   Input ~ 0
+PG15
+Wire Wire Line
+	3650 1200 3650 1850
+Text HLabel 1450 2250 0    50   Output ~ 0
+PE3
+Wire Wire Line
+	1450 2250 2050 2250
+Text HLabel 1450 2350 0    50   Output ~ 0
+PE4
+Wire Wire Line
+	1450 2350 2050 2350
+NoConn ~ 4050 1850
+NoConn ~ 4150 1850
+NoConn ~ 3950 1850
+NoConn ~ 4350 1850
+NoConn ~ 4250 1850
 $EndSCHEMATC
