@@ -13,6 +13,8 @@
 #include "mm32_device.h"
 #include "spi.h"
 
+static int16_t Send_Cmd = 0x6800;  //Burst Read command
+
 /*!
     \brief                      The function to read the registers,
                                 because the SPI method is efficient in continuous reading, so it is recommended to read continuously
