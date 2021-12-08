@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.11.1, 2021-12-07T01:30:11. -->
+<!-- Written by QtCreator 4.11.1, 2021-12-07T01:40:52. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -328,7 +328,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">C:/Users/LaoZhu/AppData/Local/Temp/QtCreator-uUZJxz/qtc-cmake-xYdtoIcy</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">D:/Desktop/Files/Freescale/MM32_CLion/tools/build</value>
    </valuemap>
    <value type="int" key="ProjectExplorer.Target.RunConfigurationCount">1</value>
   </valuemap>
@@ -600,7 +600,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">C:/Users/LaoZhu/AppData/Local/Temp/QtCreator-uUZJxz/qtc-cmake-hcLTMhdW</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">D:/Desktop/Files/Freescale/MM32_CLion/tools/build</value>
    </valuemap>
    <value type="int" key="ProjectExplorer.Target.RunConfigurationCount">1</value>
   </valuemap>
