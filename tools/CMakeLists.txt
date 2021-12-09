@@ -18,6 +18,7 @@ set_property(SOURCE app_win32.rc APPEND PROPERTY
 
 find_package(Qt5 COMPONENTS Widgets SerialPort PrintSupport REQUIRED)
 
-add_executable(monitor WIN32 ${app_WINRC} main.cpp mainwindow.cpp mainwindow.h mainwindow.ui)
+add_executable(monitor WIN32 ${app_WINRC} main.cpp mainwindow.cpp mainwindow.h
+                decrypt.cpp encrypt.cpp mainwindow.ui)
 
 target_link_libraries(monitor PRIVATE Qt5::Widgets Qt5::SerialPort Qt5::PrintSupport)
