@@ -20,4 +20,10 @@ jobs:
         run: |
           tar -jxvf CUnit-2.1-3.tar.bz2 && ls && cd CUnit-2.1-3
           ./bootstrap && ./configure --prefix /home/runner/work/MM32_CLion/MM32_CLion/cunit
-          make && make install && cd /home/runner/work/MM32_CLion/MM32_CLion/cunit && ls
+          make && make install && cd /home/runner/work/MM32_CLion/MM32_CLion/cunit && sudo ldconfig
+      - name: Run Test Program
+        run: |
+          ls && cd testbench && ls
+          gcc -Wall -o test -I/home/runner/work/MM32_CLion/MM32_CLion/cunit/include -L/home/runner/work/MM32_CLion/MM32_CLion/cunit/lib test.c -lcunit
+          export LD_LIBRARY_PATH=/home/runner/work/MM32_CLion/MM32_CLion/cunit/lib
+          ./test
