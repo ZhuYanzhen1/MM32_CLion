@@ -1,6 +1,8 @@
 name: Unit Test
 
-on: [ push ]
+on:# [ push ]
+  schedule:
+  - cron: '40 15 * * *'      # compile at 23:50 each day
 
 env:
   BUILD_TYPE: Release
@@ -26,4 +28,4 @@ jobs:
           ls && cd testbench && mkdir build && ls && cd build
           cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_BUILD_PLATFORM=laozhu ../ && make
           export LD_LIBRARY_PATH=/home/runner/work/MM32_CLion/MM32_CLion/cunit/lib
-          ls && ./testbench
+          ls && ./testbench && ls
