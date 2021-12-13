@@ -43,6 +43,8 @@ void _putchar(char character) {
     } else {
         printf_byte_counter = 0;
         mdtp_data_transmit(0x04, printf_byte_buffer);
+        printf_byte_buffer[printf_byte_counter] = character;
+        printf_byte_counter++;
     }
 }
 
