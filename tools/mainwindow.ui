@@ -6,9 +6,17 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>499</width>
-    <height>337</height>
+    <width>711</width>
+    <height>477</height>
    </rect>
+  </property>
+  <property name="font">
+   <font>
+    <family>等线</family>
+    <pointsize>11</pointsize>
+    <weight>50</weight>
+    <bold>false</bold>
+   </font>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
@@ -17,34 +25,56 @@
    <widget class="QPushButton" name="open_serial_btn">
     <property name="geometry">
      <rect>
-      <x>340</x>
-      <y>30</y>
-      <width>93</width>
-      <height>28</height>
+      <x>240</x>
+      <y>10</y>
+      <width>101</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>PushButton</string>
+     <string>Open</string>
     </property>
    </widget>
    <widget class="QComboBox" name="serial_port_cb">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>30</y>
+      <x>10</x>
+      <y>11</y>
       <width>87</width>
-      <height>22</height>
+      <height>31</height>
      </rect>
     </property>
    </widget>
    <widget class="QTextEdit" name="serial_baudrate_txt">
     <property name="geometry">
      <rect>
-      <x>150</x>
-      <y>20</y>
-      <width>141</width>
+      <x>110</x>
+      <y>10</y>
+      <width>121</width>
       <height>31</height>
      </rect>
+    </property>
+    <property name="accessibleName">
+     <string/>
+    </property>
+    <property name="documentTitle">
+     <string/>
+    </property>
+    <property name="placeholderText">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="refresh_serial_btn">
+    <property name="geometry">
+     <rect>
+      <x>350</x>
+      <y>10</y>
+      <width>101</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Refresh</string>
     </property>
    </widget>
   </widget>

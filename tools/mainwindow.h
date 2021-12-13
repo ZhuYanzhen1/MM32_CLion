@@ -23,6 +23,8 @@ public:
 private slots:
     void on_open_serial_btn_clicked();
 
+    void on_refresh_serial_btn_clicked();
+
 public slots:
     void serial_received();
 
