@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>711</width>
-    <height>477</height>
+    <width>944</width>
+    <height>575</height>
    </rect>
   </property>
   <property name="font">
@@ -75,6 +75,16 @@
     </property>
     <property name="text">
      <string>Refresh</string>
+    </property>
+   </widget>
+   <widget class="QTextBrowser" name="debug_info_txt">
+    <property name="geometry">
+     <rect>
+      <x>670</x>
+      <y>10</y>
+      <width>261</width>
+      <height>551</height>
+     </rect>
     </property>
    </widget>
   </widget>

@@ -1,16 +1,23 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include <QDebug>
+#include <QString>
 
 void MainWindow::mdtp_callback_handler(unsigned char pid, const unsigned char *data) {
     QString debug_string;
-    (void) pid;
-    (void) data;
+    const unsigned char array_buffer[9] = {data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], 0x00};
     debug_string = "Received PID:" + QString::number(pid) + ", 0x" + QString::number(data[0], 16)
              + " 0x" + QString::number(data[1], 16) + " 0x" + QString::number(data[2], 16)
              + " 0x" + QString::number(data[3], 16) + " 0x" + QString::number(data[4], 16)
              + " 0x" + QString::number(data[5], 16) + " 0x" + QString::number(data[6], 16) + " 0x" + QString::number(data[7], 16);
     qDebug() << debug_string;
+    switch (pid) {
+        case 4:
+            ui->debug_info_txt->setText(ui->debug_info_txt->toPlainText() + QString::fromLocal8Bit((const char *)array_buffer));
+            break;
+        default:
+            break;
+    }
 }
 
 bool MainWindow::set_serial_badurate(void) {
