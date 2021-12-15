@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include <QTextEdit>
 #include <QSlider>
+#include <QStandardItemModel>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -31,6 +32,9 @@ public slots:
 private:
     Ui::MainWindow *ui;
     QSerialPort *serial;
+
+    QStandardItemModel *variable_list_table;
+    QStandardItem *variable_list_item[32];
 
     /* serial configure functions */
     void refresh_serial_port();
