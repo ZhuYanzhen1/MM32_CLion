@@ -32,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent)
     variable_list_table->setItem(0, variable_list_item[0]);
     variable_list_table->setItem(0, 1, new QStandardItem("uint32"));
     variable_list_table->setItem(0, 2, new QStandardItem("counter"));
+    variable_list_item[0]->setBackground(Qt::green);
 }
 
 MainWindow::~MainWindow() {

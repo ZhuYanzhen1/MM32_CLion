@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>944</width>
-    <height>575</height>
+    <width>930</width>
+    <height>623</height>
    </rect>
   </property>
   <property name="font">
@@ -80,10 +80,10 @@
    <widget class="QTextBrowser" name="debug_info_txt">
     <property name="geometry">
      <rect>
-      <x>670</x>
-      <y>10</y>
-      <width>261</width>
-      <height>551</height>
+      <x>10</x>
+      <y>460</y>
+      <width>901</width>
+      <height>151</height>
      </rect>
     </property>
     <property name="font">
@@ -96,21 +96,39 @@
    <widget class="QTableView" name="variable_list">
     <property name="geometry">
      <rect>
-      <x>470</x>
-      <y>10</y>
-      <width>181</width>
-      <height>551</height>
+      <x>690</x>
+      <y>20</y>
+      <width>221</width>
+      <height>431</height>
      </rect>
     </property>
     <attribute name="horizontalHeaderDefaultSectionSize">
-     <number>30</number>
+     <number>31</number>
     </attribute>
     <attribute name="verticalHeaderVisible">
      <bool>false</bool>
     </attribute>
    </widget>
+   <widget class="QCustomPlot" name="widget" native="true">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>70</y>
+      <width>671</width>
+      <height>381</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QCustomPlot</class>
+   <extends>QWidget</extends>
+   <header>qcustomplot.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
