@@ -97,9 +97,9 @@
     <property name="geometry">
      <rect>
       <x>690</x>
-      <y>20</y>
+      <y>50</y>
       <width>221</width>
-      <height>431</height>
+      <height>401</height>
      </rect>
     </property>
     <attribute name="horizontalHeaderDefaultSectionSize">
@@ -113,9 +113,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>70</y>
+      <y>50</y>
       <width>671</width>
-      <height>381</height>
+      <height>401</height>
      </rect>
     </property>
    </widget>
