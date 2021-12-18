@@ -29,6 +29,8 @@
 #include <cm_backtrace.h>
 #include <stdbool.h>
 #include <string.h>
+#include <cmb_def.h>
+#include <printf.h>
 
 #if __STDC_VERSION__ < 199901L
 #error "must be C99 or higher. try to add '-std=c99' to compile parameters"
@@ -141,47 +143,6 @@ static const char *const print_info[] = {
     [PRINT_DFSR_EXTERNAL]         = "Debug fault is caused by EDBGRQ signal asserted",
     [PRINT_MMAR]                  = "The memory management fault occurred address is %08x",
     [PRINT_BFAR]                  = "The bus fault occurred address is %08x",
-#elif (CMB_PRINT_LANGUAGE == CMB_PRINT_LANGUAGE_CHINESE)
-    [PRINT_MAIN_STACK_CFG_ERROR]  = "�����޷���ȡ��ջ��Ϣ��������ջ���������",
-    [PRINT_FIRMWARE_INFO]         = "�̼����ƣ�%s��Ӳ���汾�ţ�%s������汾�ţ�%s",
-    [PRINT_ASSERT_ON_THREAD]      = "���߳�(%s)�з�������",
-    [PRINT_ASSERT_ON_HANDLER]     = "���жϻ���������·�������",
-    [PRINT_THREAD_STACK_INFO]     = "=========== �̶߳�ջ��Ϣ ===========",
-    [PRINT_MAIN_STACK_INFO]       = "============ ����ջ��Ϣ ============",
-    [PRINT_THREAD_STACK_OVERFLOW] = "�����߳�ջ(%08x)�������",
-    [PRINT_MAIN_STACK_OVERFLOW]   = "������ջ(%08x)�������",
-    [PRINT_CALL_STACK_INFO]       = "�鿴���ຯ������ջ��Ϣ�������У�addr2line -e %s%s -a -f %.*s",
-    [PRINT_CALL_STACK_ERR]        = "��ȡ��������ջʧ��",
-    [PRINT_FAULT_ON_THREAD]       =  "���߳�(%s)�з��������쳣",
-    [PRINT_FAULT_ON_HANDLER]      = "���жϻ���������·��������쳣",
-    [PRINT_REGS_TITLE]            = "========================= �Ĵ�����Ϣ =========================",
-    [PRINT_HFSR_VECTBL]           = "����Ӳ����ԭ��ȡ�ж�����ʱ����",
-    [PRINT_MFSR_IACCVIOL]         = "�����洢���������ԭ����ͼ�Ӳ�������ʵ�����ȡָ��",
-    [PRINT_MFSR_DACCVIOL]         = "�����洢���������ԭ����ͼ�Ӳ�������ʵ��������д����",
-    [PRINT_MFSR_MUNSTKERR]        = "�����洢���������ԭ�򣺳�ջʱ��ͼ���ʲ������������",
-    [PRINT_MFSR_MSTKERR]          = "�����洢���������ԭ����ջʱ��ͼ���ʲ������������",
-    [PRINT_MFSR_MLSPERR]          = "�����洢���������ԭ�򣺶��Ա��渡��״̬ʱ��������",
-    [PRINT_BFSR_IBUSERR]          = "�������ߴ���ԭ��ָ�����ߴ���",
-    [PRINT_BFSR_PRECISERR]        = "�������ߴ���ԭ�򣺾�ȷ���������ߴ���",
-    [PRINT_BFSR_IMPREISERR]       = "�������ߴ���ԭ�򣺲���ȷ���������ߴ���",
-    [PRINT_BFSR_UNSTKERR]         = "�������ߴ���ԭ�򣺳�ջʱ��������",
-    [PRINT_BFSR_STKERR]           = "�������ߴ���ԭ����ջʱ��������",
-    [PRINT_BFSR_LSPERR]           = "�������ߴ���ԭ�򣺶��Ա��渡��״̬ʱ��������",
-    [PRINT_UFSR_UNDEFINSTR]       = "�����÷�����ԭ����ͼִ��δ����ָ��",
-    [PRINT_UFSR_INVSTATE]         = "�����÷�����ԭ����ͼ�л��� ARM ״̬",
-    [PRINT_UFSR_INVPC]            = "�����÷�����ԭ����Ч���쳣������",
-    [PRINT_UFSR_NOCP]             = "�����÷�����ԭ����ͼִ��Э������ָ��",
-    [PRINT_UFSR_UNALIGNED]        = "�����÷�����ԭ����ͼִ�зǶ������",
-    [PRINT_UFSR_DIVBYZERO0]       = "�����÷�����ԭ����ͼִ�г� 0 ����",
-    [PRINT_DFSR_HALTED]           = "�������Դ���ԭ��NVIC ͣ������",
-    [PRINT_DFSR_BKPT]             = "�������Դ���ԭ��ִ�� BKPT ָ��",
-    [PRINT_DFSR_DWTTRAP]          = "�������Դ���ԭ�����ݼ���ƥ��",
-    [PRINT_DFSR_VCATCH]           = "�������Դ���ԭ�򣺷�����������",
-    [PRINT_DFSR_EXTERNAL]         = "�������Դ���ԭ���ⲿ��������",
-    [PRINT_MMAR]                  = "�����洢���������ĵ�ַ��%08x",
-    [PRINT_BFAR]                  = "�������ߴ���ĵ�ַ��%08x",
-#else
-#error "CMB_PRINT_LANGUAGE defined error in 'cmb_cfg.h'"
 #endif
 };
 

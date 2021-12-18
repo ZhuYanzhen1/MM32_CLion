@@ -29,9 +29,8 @@
 #ifndef _CMB_DEF_H_
 #define _CMB_DEF_H_
 
-#include <config.h>
-#include <cmb_cfg.h>
-#include <printf.h>
+#include "cmb_cfg.h"
+#include "config.h"
 
 /* library software version number */
 #define CMB_SW_VERSION                "1.4.0"

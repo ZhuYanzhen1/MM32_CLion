@@ -15,6 +15,7 @@ int main(void) {
     led_config();
     spi2_config();
     uart1_config(115200);
+    cm_backtrace_init("mm32f3277", "1.0.1", "1.0.1");
     debugger_register_variable(unsigned_int8, &counter, "counter");
     while (1) {
         counter++;

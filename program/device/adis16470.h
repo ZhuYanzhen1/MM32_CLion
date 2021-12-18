@@ -9,10 +9,7 @@
 #ifndef MM32F3277_DEVICE_ADIS16470_H
 #define MM32F3277_DEVICE_ADIS16470_H
 
-#include "main.h"
-
-typedef volatile struct
-{
+typedef volatile struct {
     int diag_star;
     int x_gyro;
     int y_gyro;
@@ -24,8 +21,8 @@ typedef volatile struct
     int data_cntr;
     int checknum;
 } adis16470_t;
-typedef struct
-{
+
+typedef struct {
     float angular_speed_x;  //角速度
     float angular_speed_y;
     float angular_speed_z;
