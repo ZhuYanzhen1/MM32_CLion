@@ -109,7 +109,7 @@
      <bool>false</bool>
     </attribute>
    </widget>
-   <widget class="QCustomPlot" name="widget" native="true">
+   <widget class="QCustomPlot" name="custom_plot" native="true">
     <property name="geometry">
      <rect>
       <x>10</x>

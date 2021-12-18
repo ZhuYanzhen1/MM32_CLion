@@ -13,6 +13,13 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+typedef struct DEBUGGER_VARIABLE_T {
+    unsigned int var_status;
+    unsigned int var_address;
+    unsigned int var_value;
+    char var_name[16];
+} debugger_variable_t;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -35,6 +42,7 @@ private:
 
     QStandardItemModel *variable_list_table;
     QStandardItem *variable_list_item[32];
+    debugger_variable_t *debugger_variable[32];
 
     /* serial configure functions */
     void refresh_serial_port();
@@ -44,6 +52,12 @@ private:
     void mdtp_data_transmit(unsigned char pid, const unsigned char *data);
     void mdtp_receive_handler(unsigned char data);
     void mdtp_callback_handler(unsigned char pid, const unsigned char *data);
+
+    /* variable list and plot related functions */
+    void table_append_variable(unsigned char index, unsigned char type,
+                               unsigned int value, char *name, unsigned int address);
+    void setup_variable_table(void);
+    void setup_custom_plot(void);
 };
 
 #endif // MAINWINDOW_H
