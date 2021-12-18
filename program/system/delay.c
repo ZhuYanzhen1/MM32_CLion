@@ -14,17 +14,18 @@ extern unsigned int SystemCoreClock;
 static volatile unsigned int delayms_counter = 0;
 static unsigned int delay_us_factor = 0;
 static unsigned int delay_ms_factor = 0;
+unsigned int global_time_stamp = 0;
 
 void delay_config(void) {
     delay_us_factor = SystemCoreClock / 1000000;
     delay_ms_factor = 1000 / configTICK_RATE_HZ;
     if (SysTick_Config(SystemCoreClock / configTICK_RATE_HZ))
-        while (1)
-            ;
+        while (1);
     NVIC_SetPriority(SysTick_IRQn, 0x0);
 }
 
 void delay_decrease(void) {
+    global_time_stamp++;
     if (delayms_counter != 0x00) {
         delayms_counter--;
     }
@@ -62,7 +63,6 @@ void delayms(unsigned int xms) {
         delayus(xms * 1000);
 #else
     delayms_counter = xms;
-    while (delayms_counter != 0)
-        ;
+    while (delayms_counter != 0);
 #endif
 }
