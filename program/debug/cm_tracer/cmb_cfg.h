@@ -30,6 +30,6 @@
 #define _CMB_CFG_H_
 
 /* print line, must config by user */
-#define cmb_println(...)        /* e.g., printf(__VA_ARGS__);printf("\r\n") */
+#define cmb_println(...)     printf_(__VA_ARGS__);printf("\r\n");fflush()
 
 #endif /* _CMB_CFG_H_ */

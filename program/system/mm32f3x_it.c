@@ -10,46 +10,6 @@
 #include "main.h"
 
 /*!
-    \brief  this function handles HardFault exception
-    \retval none
-*/
-void HardFault_Handler(void) {
-    /* if Hard Fault exception occurs, go to infinite loop */
-    while (1)
-        ;
-}
-
-/*!
-    \brief  this function handles MemManage exception
-    \retval none
-*/
-void MemManage_Handler(void) {
-    /* if Memory Manage exception occurs, go to infinite loop */
-    while (1)
-        ;
-}
-
-/*!
-    \brief  this function handles BusFault exception
-    \retval none
-*/
-void BusFault_Handler(void) {
-    /* if Bus Fault exception occurs, go to infinite loop */
-    while (1)
-        ;
-}
-
-/*!
-    \brief  this function handles UsageFault exception
-    \retval none
-*/
-void UsageFault_Handler(void) {
-    /* if Usage Fault exception occurs, go to infinite loop */
-    while (1)
-        ;
-}
-
-/*!
     \brief  this function handles SysTick exception
     \retval none
 */

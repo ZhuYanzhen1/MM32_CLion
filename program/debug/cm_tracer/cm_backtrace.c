@@ -29,36 +29,35 @@
 #include <cm_backtrace.h>
 #include <stdbool.h>
 #include <string.h>
-#include <stdio.h>
 
 #if __STDC_VERSION__ < 199901L
-    #error "must be C99 or higher. try to add '-std=c99' to compile parameters"
+#error "must be C99 or higher. try to add '-std=c99' to compile parameters"
 #endif
 
 #if defined(__CC_ARM)
-    #define SECTION_START(_name_)                _name_##$$Base
-    #define SECTION_END(_name_)                  _name_##$$Limit
-    #define IMAGE_SECTION_START(_name_)          Image$$##_name_##$$Base
-    #define IMAGE_SECTION_END(_name_)            Image$$##_name_##$$Limit
-    #define CSTACK_BLOCK_START(_name_)           SECTION_START(_name_)
-    #define CSTACK_BLOCK_END(_name_)             SECTION_END(_name_)
-    #define CODE_SECTION_START(_name_)           IMAGE_SECTION_START(_name_)
-    #define CODE_SECTION_END(_name_)             IMAGE_SECTION_END(_name_)
+#define SECTION_START(_name_)                _name_##$$Base
+#define SECTION_END(_name_)                  _name_##$$Limit
+#define IMAGE_SECTION_START(_name_)          Image$$##_name_##$$Base
+#define IMAGE_SECTION_END(_name_)            Image$$##_name_##$$Limit
+#define CSTACK_BLOCK_START(_name_)           SECTION_START(_name_)
+#define CSTACK_BLOCK_END(_name_)             SECTION_END(_name_)
+#define CODE_SECTION_START(_name_)           IMAGE_SECTION_START(_name_)
+#define CODE_SECTION_END(_name_)             IMAGE_SECTION_END(_name_)
 
-    extern const int CSTACK_BLOCK_START(CMB_CSTACK_BLOCK_NAME);
-    extern const int CSTACK_BLOCK_END(CMB_CSTACK_BLOCK_NAME);
-    extern const int CODE_SECTION_START(CMB_CODE_SECTION_NAME);
-    extern const int CODE_SECTION_END(CMB_CODE_SECTION_NAME);
+extern const int CSTACK_BLOCK_START(CMB_CSTACK_BLOCK_NAME);
+extern const int CSTACK_BLOCK_END(CMB_CSTACK_BLOCK_NAME);
+extern const int CODE_SECTION_START(CMB_CODE_SECTION_NAME);
+extern const int CODE_SECTION_END(CMB_CODE_SECTION_NAME);
 #elif defined(__ICCARM__)
-    #pragma section=CMB_CSTACK_BLOCK_NAME
-    #pragma section=CMB_CODE_SECTION_NAME
+#pragma section=CMB_CSTACK_BLOCK_NAME
+#pragma section=CMB_CODE_SECTION_NAME
 #elif defined(__GNUC__)
-    extern const int CMB_CSTACK_BLOCK_START;
-    extern const int CMB_CSTACK_BLOCK_END;
-    extern const int CMB_CODE_SECTION_START;
-    extern const int CMB_CODE_SECTION_END;
+extern const int CMB_CSTACK_BLOCK_START;
+extern const int CMB_CSTACK_BLOCK_END;
+extern const int CMB_CODE_SECTION_START;
+extern const int CMB_CODE_SECTION_END;
 #else
-    #error "not supported compiler"
+#error "not supported compiler"
 #endif
 
 enum {
@@ -102,99 +101,99 @@ enum {
     PRINT_BFAR,
 };
 
-static const char * const print_info[] = {
+static const char *const print_info[] = {
 #if (CMB_PRINT_LANGUAGE == CMB_PRINT_LANGUAGE_ENGLISH)
-        [PRINT_MAIN_STACK_CFG_ERROR]  = "ERROR: Unable to get the main stack information, please check the configuration of the main stack",
-        [PRINT_FIRMWARE_INFO]         = "Firmware name: %s, hardware version: %s, software version: %s",
-        [PRINT_ASSERT_ON_THREAD]      = "Assert on thread %s",
-        [PRINT_ASSERT_ON_HANDLER]     = "Assert on interrupt or bare metal(no OS) environment",
-        [PRINT_THREAD_STACK_INFO]     = "===== Thread stack information =====",
-        [PRINT_MAIN_STACK_INFO]       = "====== Main stack information ======",
-        [PRINT_THREAD_STACK_OVERFLOW] = "Error: Thread stack(%08x) was overflow",
-        [PRINT_MAIN_STACK_OVERFLOW]   = "Error: Main stack(%08x) was overflow",
-        [PRINT_CALL_STACK_INFO]       = "Show more call stack info by run: addr2line -e %s%s -a -f %.*s",
-        [PRINT_CALL_STACK_ERR]        = "Dump call stack has an error",
-        [PRINT_FAULT_ON_THREAD]       = "Fault on thread %s",
-        [PRINT_FAULT_ON_HANDLER]      = "Fault on interrupt or bare metal(no OS) environment",
-        [PRINT_REGS_TITLE]            = "=================== Registers information ====================",
-        [PRINT_HFSR_VECTBL]           = "Hard fault is caused by failed vector fetch",
-        [PRINT_MFSR_IACCVIOL]         = "Memory management fault is caused by instruction access violation",
-        [PRINT_MFSR_DACCVIOL]         = "Memory management fault is caused by data access violation",
-        [PRINT_MFSR_MUNSTKERR]        = "Memory management fault is caused by unstacking error",
-        [PRINT_MFSR_MSTKERR]          = "Memory management fault is caused by stacking error",
-        [PRINT_MFSR_MLSPERR]          = "Memory management fault is caused by floating-point lazy state preservation",
-        [PRINT_BFSR_IBUSERR]          = "Bus fault is caused by instruction access violation",
-        [PRINT_BFSR_PRECISERR]        = "Bus fault is caused by precise data access violation",
-        [PRINT_BFSR_IMPREISERR]       = "Bus fault is caused by imprecise data access violation",
-        [PRINT_BFSR_UNSTKERR]         = "Bus fault is caused by unstacking error",
-        [PRINT_BFSR_STKERR]           = "Bus fault is caused by stacking error",
-        [PRINT_BFSR_LSPERR]           = "Bus fault is caused by floating-point lazy state preservation",
-        [PRINT_UFSR_UNDEFINSTR]       = "Usage fault is caused by attempts to execute an undefined instruction",
-        [PRINT_UFSR_INVSTATE]         = "Usage fault is caused by attempts to switch to an invalid state (e.g., ARM)",
-        [PRINT_UFSR_INVPC]            = "Usage fault is caused by attempts to do an exception with a bad value in the EXC_RETURN number",
-        [PRINT_UFSR_NOCP]             = "Usage fault is caused by attempts to execute a coprocessor instruction",
-        [PRINT_UFSR_UNALIGNED]        = "Usage fault is caused by indicates that an unaligned access fault has taken place",
-        [PRINT_UFSR_DIVBYZERO0]       = "Usage fault is caused by Indicates a divide by zero has taken place (can be set only if DIV_0_TRP is set)",
-        [PRINT_DFSR_HALTED]           = "Debug fault is caused by halt requested in NVIC",
-        [PRINT_DFSR_BKPT]             = "Debug fault is caused by BKPT instruction executed",
-        [PRINT_DFSR_DWTTRAP]          = "Debug fault is caused by DWT match occurred",
-        [PRINT_DFSR_VCATCH]           = "Debug fault is caused by Vector fetch occurred",
-        [PRINT_DFSR_EXTERNAL]         = "Debug fault is caused by EDBGRQ signal asserted",
-        [PRINT_MMAR]                  = "The memory management fault occurred address is %08x",
-        [PRINT_BFAR]                  = "The bus fault occurred address is %08x",
+    [PRINT_MAIN_STACK_CFG_ERROR]  = "ERROR: Unable to get the main stack information, please check the configuration of the main stack",
+    [PRINT_FIRMWARE_INFO]         = "Firmware name: %s, hardware version: %s, software version: %s",
+    [PRINT_ASSERT_ON_THREAD]      = "Assert on thread %s",
+    [PRINT_ASSERT_ON_HANDLER]     = "Assert on interrupt or bare metal(no OS) environment",
+    [PRINT_THREAD_STACK_INFO]     = "===== Thread stack information =====",
+    [PRINT_MAIN_STACK_INFO]       = "====== Main stack information ======",
+    [PRINT_THREAD_STACK_OVERFLOW] = "Error: Thread stack(%08x) was overflow",
+    [PRINT_MAIN_STACK_OVERFLOW]   = "Error: Main stack(%08x) was overflow",
+    [PRINT_CALL_STACK_INFO]       = "Show more call stack info by run: addr2line -e %s%s -a -f %.*s",
+    [PRINT_CALL_STACK_ERR]        = "Dump call stack has an error",
+    [PRINT_FAULT_ON_THREAD]       = "Fault on thread %s",
+    [PRINT_FAULT_ON_HANDLER]      = "Fault on interrupt or bare metal(no OS) environment",
+    [PRINT_REGS_TITLE]            = "=================== Registers information ====================",
+    [PRINT_HFSR_VECTBL]           = "Hard fault is caused by failed vector fetch",
+    [PRINT_MFSR_IACCVIOL]         = "Memory management fault is caused by instruction access violation",
+    [PRINT_MFSR_DACCVIOL]         = "Memory management fault is caused by data access violation",
+    [PRINT_MFSR_MUNSTKERR]        = "Memory management fault is caused by unstacking error",
+    [PRINT_MFSR_MSTKERR]          = "Memory management fault is caused by stacking error",
+    [PRINT_MFSR_MLSPERR]          = "Memory management fault is caused by floating-point lazy state preservation",
+    [PRINT_BFSR_IBUSERR]          = "Bus fault is caused by instruction access violation",
+    [PRINT_BFSR_PRECISERR]        = "Bus fault is caused by precise data access violation",
+    [PRINT_BFSR_IMPREISERR]       = "Bus fault is caused by imprecise data access violation",
+    [PRINT_BFSR_UNSTKERR]         = "Bus fault is caused by unstacking error",
+    [PRINT_BFSR_STKERR]           = "Bus fault is caused by stacking error",
+    [PRINT_BFSR_LSPERR]           = "Bus fault is caused by floating-point lazy state preservation",
+    [PRINT_UFSR_UNDEFINSTR]       = "Usage fault is caused by attempts to execute an undefined instruction",
+    [PRINT_UFSR_INVSTATE]         = "Usage fault is caused by attempts to switch to an invalid state (e.g., ARM)",
+    [PRINT_UFSR_INVPC]            = "Usage fault is caused by attempts to do an exception with a bad value in the EXC_RETURN number",
+    [PRINT_UFSR_NOCP]             = "Usage fault is caused by attempts to execute a coprocessor instruction",
+    [PRINT_UFSR_UNALIGNED]        = "Usage fault is caused by indicates that an unaligned access fault has taken place",
+    [PRINT_UFSR_DIVBYZERO0]       = "Usage fault is caused by Indicates a divide by zero has taken place (can be set only if DIV_0_TRP is set)",
+    [PRINT_DFSR_HALTED]           = "Debug fault is caused by halt requested in NVIC",
+    [PRINT_DFSR_BKPT]             = "Debug fault is caused by BKPT instruction executed",
+    [PRINT_DFSR_DWTTRAP]          = "Debug fault is caused by DWT match occurred",
+    [PRINT_DFSR_VCATCH]           = "Debug fault is caused by Vector fetch occurred",
+    [PRINT_DFSR_EXTERNAL]         = "Debug fault is caused by EDBGRQ signal asserted",
+    [PRINT_MMAR]                  = "The memory management fault occurred address is %08x",
+    [PRINT_BFAR]                  = "The bus fault occurred address is %08x",
 #elif (CMB_PRINT_LANGUAGE == CMB_PRINT_LANGUAGE_CHINESE)
-        [PRINT_MAIN_STACK_CFG_ERROR]  = "´íÎó£ºÎÞ·¨»ñÈ¡Ö÷Õ»ÐÅÏ¢£¬Çë¼ì²éÖ÷Õ»µÄÏà¹ØÅäÖÃ",
-        [PRINT_FIRMWARE_INFO]         = "¹Ì¼þÃû³Æ£º%s£¬Ó²¼þ°æ±¾ºÅ£º%s£¬Èí¼þ°æ±¾ºÅ£º%s",
-        [PRINT_ASSERT_ON_THREAD]      = "ÔÚÏß³Ì(%s)ÖÐ·¢Éú¶ÏÑÔ",
-        [PRINT_ASSERT_ON_HANDLER]     = "ÔÚÖÐ¶Ï»òÂã»ú»·¾³ÏÂ·¢Éú¶ÏÑÔ",
-        [PRINT_THREAD_STACK_INFO]     = "=========== Ïß³Ì¶ÑÕ»ÐÅÏ¢ ===========",
-        [PRINT_MAIN_STACK_INFO]       = "============ Ö÷¶ÑÕ»ÐÅÏ¢ ============",
-        [PRINT_THREAD_STACK_OVERFLOW] = "´íÎó£ºÏß³ÌÕ»(%08x)·¢ÉúÒç³ö",
-        [PRINT_MAIN_STACK_OVERFLOW]   = "´íÎó£ºÖ÷Õ»(%08x)·¢ÉúÒç³ö",
-        [PRINT_CALL_STACK_INFO]       = "²é¿´¸ü¶àº¯Êýµ÷ÓÃÕ»ÐÅÏ¢£¬ÇëÔËÐÐ£ºaddr2line -e %s%s -a -f %.*s",
-        [PRINT_CALL_STACK_ERR]        = "»ñÈ¡º¯Êýµ÷ÓÃÕ»Ê§°Ü",
-        [PRINT_FAULT_ON_THREAD]       =  "ÔÚÏß³Ì(%s)ÖÐ·¢Éú´íÎóÒì³£",
-        [PRINT_FAULT_ON_HANDLER]      = "ÔÚÖÐ¶Ï»òÂã»ú»·¾³ÏÂ·¢Éú´íÎóÒì³£",
-        [PRINT_REGS_TITLE]            = "========================= ¼Ä´æÆ÷ÐÅÏ¢ =========================",
-        [PRINT_HFSR_VECTBL]           = "·¢ÉúÓ²´íÎó£¬Ô­Òò£ºÈ¡ÖÐ¶ÏÏòÁ¿Ê±³ö´í",
-        [PRINT_MFSR_IACCVIOL]         = "·¢Éú´æ´¢Æ÷¹ÜÀí´íÎó£¬Ô­Òò£ºÆóÍ¼´Ó²»ÔÊÐí·ÃÎÊµÄÇøÓòÈ¡Ö¸Áî",
-        [PRINT_MFSR_DACCVIOL]         = "·¢Éú´æ´¢Æ÷¹ÜÀí´íÎó£¬Ô­Òò£ºÆóÍ¼´Ó²»ÔÊÐí·ÃÎÊµÄÇøÓò¶Á¡¢Ð´Êý¾Ý",
-        [PRINT_MFSR_MUNSTKERR]        = "·¢Éú´æ´¢Æ÷¹ÜÀí´íÎó£¬Ô­Òò£º³öÕ»Ê±ÆóÍ¼·ÃÎÊ²»±»ÔÊÐíµÄÇøÓò",
-        [PRINT_MFSR_MSTKERR]          = "·¢Éú´æ´¢Æ÷¹ÜÀí´íÎó£¬Ô­Òò£ºÈëÕ»Ê±ÆóÍ¼·ÃÎÊ²»±»ÔÊÐíµÄÇøÓò",
-        [PRINT_MFSR_MLSPERR]          = "·¢Éú´æ´¢Æ÷¹ÜÀí´íÎó£¬Ô­Òò£º¶èÐÔ±£´æ¸¡µã×´Ì¬Ê±·¢Éú´íÎó",
-        [PRINT_BFSR_IBUSERR]          = "·¢Éú×ÜÏß´íÎó£¬Ô­Òò£ºÖ¸Áî×ÜÏß´íÎó",
-        [PRINT_BFSR_PRECISERR]        = "·¢Éú×ÜÏß´íÎó£¬Ô­Òò£º¾«È·µÄÊý¾Ý×ÜÏß´íÎó",
-        [PRINT_BFSR_IMPREISERR]       = "·¢Éú×ÜÏß´íÎó£¬Ô­Òò£º²»¾«È·µÄÊý¾Ý×ÜÏß´íÎó",
-        [PRINT_BFSR_UNSTKERR]         = "·¢Éú×ÜÏß´íÎó£¬Ô­Òò£º³öÕ»Ê±·¢Éú´íÎó",
-        [PRINT_BFSR_STKERR]           = "·¢Éú×ÜÏß´íÎó£¬Ô­Òò£ºÈëÕ»Ê±·¢Éú´íÎó",
-        [PRINT_BFSR_LSPERR]           = "·¢Éú×ÜÏß´íÎó£¬Ô­Òò£º¶èÐÔ±£´æ¸¡µã×´Ì¬Ê±·¢Éú´íÎó",
-        [PRINT_UFSR_UNDEFINSTR]       = "·¢ÉúÓÃ·¨´íÎó£¬Ô­Òò£ºÆóÍ¼Ö´ÐÐÎ´¶¨ÒåÖ¸Áî",
-        [PRINT_UFSR_INVSTATE]         = "·¢ÉúÓÃ·¨´íÎó£¬Ô­Òò£ºÊÔÍ¼ÇÐ»»µ½ ARM ×´Ì¬",
-        [PRINT_UFSR_INVPC]            = "·¢ÉúÓÃ·¨´íÎó£¬Ô­Òò£ºÎÞÐ§µÄÒì³£·µ»ØÂë",
-        [PRINT_UFSR_NOCP]             = "·¢ÉúÓÃ·¨´íÎó£¬Ô­Òò£ºÆóÍ¼Ö´ÐÐÐ­´¦ÀíÆ÷Ö¸Áî",
-        [PRINT_UFSR_UNALIGNED]        = "·¢ÉúÓÃ·¨´íÎó£¬Ô­Òò£ºÆóÍ¼Ö´ÐÐ·Ç¶ÔÆë·ÃÎÊ",
-        [PRINT_UFSR_DIVBYZERO0]       = "·¢ÉúÓÃ·¨´íÎó£¬Ô­Òò£ºÆóÍ¼Ö´ÐÐ³ý 0 ²Ù×÷",
-        [PRINT_DFSR_HALTED]           = "·¢Éúµ÷ÊÔ´íÎó£¬Ô­Òò£ºNVIC Í£»úÇëÇó",
-        [PRINT_DFSR_BKPT]             = "·¢Éúµ÷ÊÔ´íÎó£¬Ô­Òò£ºÖ´ÐÐ BKPT Ö¸Áî",
-        [PRINT_DFSR_DWTTRAP]          = "·¢Éúµ÷ÊÔ´íÎó£¬Ô­Òò£ºÊý¾Ý¼à²âµãÆ¥Åä",
-        [PRINT_DFSR_VCATCH]           = "·¢Éúµ÷ÊÔ´íÎó£¬Ô­Òò£º·¢ÉúÏòÁ¿²¶»ñ",
-        [PRINT_DFSR_EXTERNAL]         = "·¢Éúµ÷ÊÔ´íÎó£¬Ô­Òò£ºÍâ²¿µ÷ÊÔÇëÇó",
-        [PRINT_MMAR]                  = "·¢Éú´æ´¢Æ÷¹ÜÀí´íÎóµÄµØÖ·£º%08x",
-        [PRINT_BFAR]                  = "·¢Éú×ÜÏß´íÎóµÄµØÖ·£º%08x",
+    [PRINT_MAIN_STACK_CFG_ERROR]  = "ï¿½ï¿½ï¿½ï¿½ï¿½Þ·ï¿½ï¿½ï¿½È¡ï¿½ï¿½Õ»ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
+    [PRINT_FIRMWARE_INFO]         = "ï¿½Ì¼ï¿½ï¿½ï¿½ï¿½Æ£ï¿½%sï¿½ï¿½Ó²ï¿½ï¿½ï¿½æ±¾ï¿½Å£ï¿½%sï¿½ï¿½ï¿½ï¿½ï¿½ï¿½æ±¾ï¿½Å£ï¿½%s",
+    [PRINT_ASSERT_ON_THREAD]      = "ï¿½ï¿½ï¿½ß³ï¿½(%s)ï¿½Ð·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
+    [PRINT_ASSERT_ON_HANDLER]     = "ï¿½ï¿½ï¿½Ð¶Ï»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
+    [PRINT_THREAD_STACK_INFO]     = "=========== ï¿½ß³Ì¶ï¿½Õ»ï¿½ï¿½Ï¢ ===========",
+    [PRINT_MAIN_STACK_INFO]       = "============ ï¿½ï¿½ï¿½ï¿½Õ»ï¿½ï¿½Ï¢ ============",
+    [PRINT_THREAD_STACK_OVERFLOW] = "ï¿½ï¿½ï¿½ï¿½ï¿½ß³ï¿½Õ»(%08x)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
+    [PRINT_MAIN_STACK_OVERFLOW]   = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ»(%08x)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
+    [PRINT_CALL_STACK_INFO]       = "ï¿½é¿´ï¿½ï¿½ï¿½àº¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ»ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð£ï¿½addr2line -e %s%s -a -f %.*s",
+    [PRINT_CALL_STACK_ERR]        = "ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ»Ê§ï¿½ï¿½",
+    [PRINT_FAULT_ON_THREAD]       =  "ï¿½ï¿½ï¿½ß³ï¿½(%s)ï¿½Ð·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ì³£",
+    [PRINT_FAULT_ON_HANDLER]      = "ï¿½ï¿½ï¿½Ð¶Ï»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ì³£",
+    [PRINT_REGS_TITLE]            = "========================= ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ =========================",
+    [PRINT_HFSR_VECTBL]           = "ï¿½ï¿½ï¿½ï¿½Ó²ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½È¡ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½",
+    [PRINT_MFSR_IACCVIOL]         = "ï¿½ï¿½ï¿½ï¿½ï¿½æ´¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½Í¼ï¿½Ó²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½ï¿½È¡Ö¸ï¿½ï¿½",
+    [PRINT_MFSR_DACCVIOL]         = "ï¿½ï¿½ï¿½ï¿½ï¿½æ´¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½Í¼ï¿½Ó²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½ï¿½ï¿½",
+    [PRINT_MFSR_MUNSTKERR]        = "ï¿½ï¿½ï¿½ï¿½ï¿½æ´¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ò£º³ï¿½Õ»Ê±ï¿½ï¿½Í¼ï¿½ï¿½ï¿½Ê²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
+    [PRINT_MFSR_MSTKERR]          = "ï¿½ï¿½ï¿½ï¿½ï¿½æ´¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½Õ»Ê±ï¿½ï¿½Í¼ï¿½ï¿½ï¿½Ê²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
+    [PRINT_MFSR_MLSPERR]          = "ï¿½ï¿½ï¿½ï¿½ï¿½æ´¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ò£º¶ï¿½ï¿½Ô±ï¿½ï¿½æ¸¡ï¿½ï¿½×´Ì¬Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
+    [PRINT_BFSR_IBUSERR]          = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß´ï¿½ï¿½ï¿½Ô­ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ß´ï¿½ï¿½ï¿½",
+    [PRINT_BFSR_PRECISERR]        = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß´ï¿½ï¿½ï¿½Ô­ï¿½ò£º¾ï¿½È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß´ï¿½ï¿½ï¿½",
+    [PRINT_BFSR_IMPREISERR]       = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß´ï¿½ï¿½ï¿½Ô­ï¿½ò£º²ï¿½ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß´ï¿½ï¿½ï¿½",
+    [PRINT_BFSR_UNSTKERR]         = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß´ï¿½ï¿½ï¿½Ô­ï¿½ò£º³ï¿½Õ»Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
+    [PRINT_BFSR_STKERR]           = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß´ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½Õ»Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
+    [PRINT_BFSR_LSPERR]           = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß´ï¿½ï¿½ï¿½Ô­ï¿½ò£º¶ï¿½ï¿½Ô±ï¿½ï¿½æ¸¡ï¿½ï¿½×´Ì¬Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
+    [PRINT_UFSR_UNDEFINSTR]       = "ï¿½ï¿½ï¿½ï¿½ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½Í¼Ö´ï¿½ï¿½Î´ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½",
+    [PRINT_UFSR_INVSTATE]         = "ï¿½ï¿½ï¿½ï¿½ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½Í¼ï¿½Ð»ï¿½ï¿½ï¿½ ARM ×´Ì¬",
+    [PRINT_UFSR_INVPC]            = "ï¿½ï¿½ï¿½ï¿½ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½ï¿½ì³£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
+    [PRINT_UFSR_NOCP]             = "ï¿½ï¿½ï¿½ï¿½ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½Í¼Ö´ï¿½ï¿½Ð­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½",
+    [PRINT_UFSR_UNALIGNED]        = "ï¿½ï¿½ï¿½ï¿½ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½Í¼Ö´ï¿½Ð·Ç¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
+    [PRINT_UFSR_DIVBYZERO0]       = "ï¿½ï¿½ï¿½ï¿½ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½Í¼Ö´ï¿½Ð³ï¿½ 0 ï¿½ï¿½ï¿½ï¿½",
+    [PRINT_DFSR_HALTED]           = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½Ô­ï¿½ï¿½NVIC Í£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
+    [PRINT_DFSR_BKPT]             = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½Ô­ï¿½ï¿½Ö´ï¿½ï¿½ BKPT Ö¸ï¿½ï¿½",
+    [PRINT_DFSR_DWTTRAP]          = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½ï¿½Ý¼ï¿½ï¿½ï¿½Æ¥ï¿½ï¿½",
+    [PRINT_DFSR_VCATCH]           = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½Ô­ï¿½ò£º·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
+    [PRINT_DFSR_EXTERNAL]         = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½â²¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
+    [PRINT_MMAR]                  = "ï¿½ï¿½ï¿½ï¿½ï¿½æ´¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½Ö·ï¿½ï¿½%08x",
+    [PRINT_BFAR]                  = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß´ï¿½ï¿½ï¿½Äµï¿½Ö·ï¿½ï¿½%08x",
 #else
-    #error "CMB_PRINT_LANGUAGE defined error in 'cmb_cfg.h'"
+#error "CMB_PRINT_LANGUAGE defined error in 'cmb_cfg.h'"
 #endif
 };
 
 static char fw_name[CMB_NAME_MAX] = {0};
 static char hw_ver[CMB_NAME_MAX] = {0};
 static char sw_ver[CMB_NAME_MAX] = {0};
-static uint32_t main_stack_start_addr = 0;
+static unsigned int main_stack_start_addr = 0;
 static size_t main_stack_size = 0;
-static uint32_t code_start_addr = 0;
+static unsigned int code_start_addr = 0;
 static size_t code_size = 0;
 static bool init_ok = false;
-static char call_stack_info[CMB_CALL_STACK_MAX_DEPTH * (8 + 1)] = { 0 };
+static char call_stack_info[CMB_CALL_STACK_MAX_DEPTH * (8 + 1)] = {0};
 static bool on_fault = false;
 static bool stack_is_overflow = false;
 static struct cmb_hard_fault_regs regs;
@@ -214,22 +213,22 @@ void cm_backtrace_init(const char *firmware_name, const char *hardware_ver, cons
     strncpy(sw_ver, software_ver, CMB_NAME_MAX);
 
 #if defined(__CC_ARM)
-    main_stack_start_addr = (uint32_t)&CSTACK_BLOCK_START(CMB_CSTACK_BLOCK_NAME);
-    main_stack_size = (uint32_t)&CSTACK_BLOCK_END(CMB_CSTACK_BLOCK_NAME) - main_stack_start_addr;
-    code_start_addr = (uint32_t)&CODE_SECTION_START(CMB_CODE_SECTION_NAME);
-    code_size = (uint32_t)&CODE_SECTION_END(CMB_CODE_SECTION_NAME) - code_start_addr;
+    main_stack_start_addr = (unsigned int)&CSTACK_BLOCK_START(CMB_CSTACK_BLOCK_NAME);
+    main_stack_size = (unsigned int)&CSTACK_BLOCK_END(CMB_CSTACK_BLOCK_NAME) - main_stack_start_addr;
+    code_start_addr = (unsigned int)&CODE_SECTION_START(CMB_CODE_SECTION_NAME);
+    code_size = (unsigned int)&CODE_SECTION_END(CMB_CODE_SECTION_NAME) - code_start_addr;
 #elif defined(__ICCARM__)
-    main_stack_start_addr = (uint32_t)__section_begin(CMB_CSTACK_BLOCK_NAME);
-    main_stack_size = (uint32_t)__section_end(CMB_CSTACK_BLOCK_NAME) - main_stack_start_addr;
-    code_start_addr = (uint32_t)__section_begin(CMB_CODE_SECTION_NAME);
-    code_size = (uint32_t)__section_end(CMB_CODE_SECTION_NAME) - code_start_addr;
+    main_stack_start_addr = (unsigned int)__section_begin(CMB_CSTACK_BLOCK_NAME);
+    main_stack_size = (unsigned int)__section_end(CMB_CSTACK_BLOCK_NAME) - main_stack_start_addr;
+    code_start_addr = (unsigned int)__section_begin(CMB_CODE_SECTION_NAME);
+    code_size = (unsigned int)__section_end(CMB_CODE_SECTION_NAME) - code_start_addr;
 #elif defined(__GNUC__)
-    main_stack_start_addr = (uint32_t)(&CMB_CSTACK_BLOCK_START);
-    main_stack_size = (uint32_t)(&CMB_CSTACK_BLOCK_END) - main_stack_start_addr;
-    code_start_addr = (uint32_t)(&CMB_CODE_SECTION_START);
-    code_size = (uint32_t)(&CMB_CODE_SECTION_END) - code_start_addr;
+    main_stack_start_addr = (unsigned int) (&CMB_CSTACK_BLOCK_START);
+    main_stack_size = (unsigned int) (&CMB_CSTACK_BLOCK_END) - main_stack_start_addr;
+    code_start_addr = (unsigned int) (&CMB_CODE_SECTION_START);
+    code_size = (unsigned int) (&CMB_CODE_SECTION_END) - code_start_addr;
 #else
-    #error "not supported compiler"
+#error "not supported compiler"
 #endif
 
     if (main_stack_size == 0) {
@@ -255,25 +254,25 @@ void cm_backtrace_firmware_info(void) {
  * @param start_addr stack start address
  * @param size stack size
  */
-static void get_cur_thread_stack_info(uint32_t sp, uint32_t *start_addr, size_t *size) {
+static void get_cur_thread_stack_info(unsigned int sp, unsigned int *start_addr, size_t *size) {
     CMB_ASSERT(start_addr);
     CMB_ASSERT(size);
 
 #if (CMB_OS_PLATFORM_TYPE == CMB_OS_PLATFORM_RTT)
-    *start_addr = (uint32_t) rt_thread_self()->stack_addr;
+    *start_addr = (unsigned int) rt_thread_self()->stack_addr;
     *size = rt_thread_self()->stack_size;
 #elif (CMB_OS_PLATFORM_TYPE == CMB_OS_PLATFORM_UCOSII)
     extern OS_TCB *OSTCBCur;
 
-    *start_addr = (uint32_t) OSTCBCur->OSTCBStkBottom;
+    *start_addr = (unsigned int) OSTCBCur->OSTCBStkBottom;
     *size = OSTCBCur->OSTCBStkSize * sizeof(OS_STK);
 #elif (CMB_OS_PLATFORM_TYPE == CMB_OS_PLATFORM_UCOSIII)
     extern OS_TCB *OSTCBCurPtr; 
     
-    *start_addr = (uint32_t) OSTCBCurPtr->StkBasePtr;
+    *start_addr = (unsigned int) OSTCBCurPtr->StkBasePtr;
     *size = OSTCBCurPtr->StkSize * sizeof(CPU_STK_SIZE);
 #elif (CMB_OS_PLATFORM_TYPE == CMB_OS_PLATFORM_FREERTOS)   
-    *start_addr = (uint32_t)vTaskStackAddr();
+    *start_addr = (unsigned int)vTaskStackAddr();
     *size = vTaskStackSize() * sizeof( StackType_t );
 #endif
 }
@@ -308,21 +307,21 @@ static const char *get_cur_thread_name(void) {
 /**
  * dump current stack information
  */
-static void dump_stack(uint32_t stack_start_addr, size_t stack_size, uint32_t *stack_pointer) {
+static void dump_stack(unsigned int stack_start_addr, size_t stack_size, unsigned int *stack_pointer) {
     if (stack_is_overflow) {
         if (on_thread_before_fault) {
             cmb_println(print_info[PRINT_THREAD_STACK_OVERFLOW], stack_pointer);
         } else {
             cmb_println(print_info[PRINT_MAIN_STACK_OVERFLOW], stack_pointer);
         }
-        if ((uint32_t) stack_pointer < stack_start_addr) {
-            stack_pointer = (uint32_t *) stack_start_addr;
-        } else if ((uint32_t) stack_pointer > stack_start_addr + stack_size) {
-            stack_pointer = (uint32_t *) (stack_start_addr + stack_size);
+        if ((unsigned int) stack_pointer < stack_start_addr) {
+            stack_pointer = (unsigned int *) stack_start_addr;
+        } else if ((unsigned int) stack_pointer > stack_start_addr + stack_size) {
+            stack_pointer = (unsigned int *) (stack_start_addr + stack_size);
         }
     }
     cmb_println(print_info[PRINT_THREAD_STACK_INFO]);
-    for (; (uint32_t) stack_pointer < stack_start_addr + stack_size; stack_pointer++) {
+    for (; (unsigned int) stack_pointer < stack_start_addr + stack_size; stack_pointer++) {
         cmb_println("  addr: %08x    data: %08x", stack_pointer, *stack_pointer);
     }
     cmb_println("====================================");
@@ -330,9 +329,9 @@ static void dump_stack(uint32_t stack_start_addr, size_t stack_size, uint32_t *s
 #endif /* CMB_USING_DUMP_STACK_INFO */
 
 /* check the disassembly instruction is 'BL' or 'BLX' */
-static bool disassembly_ins_is_bl_blx(uint32_t addr) {
-    uint16_t ins1 = *((uint16_t *)addr);
-    uint16_t ins2 = *((uint16_t *)(addr + 2));
+static bool disassembly_ins_is_bl_blx(unsigned int addr) {
+    unsigned short ins1 = *((unsigned short *) addr);
+    unsigned short ins2 = *((unsigned short *) (addr + 2));
 
 #define BL_INS_MASK         0xF800
 #define BL_INS_HIGH         0xF800
@@ -358,8 +357,8 @@ static bool disassembly_ins_is_bl_blx(uint32_t addr) {
  *
  * @return depth
  */
-size_t cm_backtrace_call_stack(uint32_t *buffer, size_t size, uint32_t sp) {
-    uint32_t stack_start_addr = main_stack_start_addr, pc;
+unsigned int cm_backtrace_call_stack(unsigned int *buffer, unsigned int size, unsigned int sp) {
+    unsigned int stack_start_addr = main_stack_start_addr, pc;
     size_t depth = 0, stack_size = main_stack_size;
     bool regs_saved_lr_is_valid = false;
 
@@ -370,7 +369,7 @@ size_t cm_backtrace_call_stack(uint32_t *buffer, size_t size, uint32_t sp) {
             /* fix the LR address in thumb mode */
             pc = regs.saved.lr - 1;
             if ((pc >= code_start_addr) && (pc <= code_start_addr + code_size) && (depth < CMB_CALL_STACK_MAX_DEPTH)
-                    && (depth < size)) {
+                && (depth < size)) {
                 buffer[depth++] = pc;
                 regs_saved_lr_is_valid = true;
             }
@@ -401,16 +400,16 @@ size_t cm_backtrace_call_stack(uint32_t *buffer, size_t size, uint32_t sp) {
     /* copy called function address */
     for (; sp < stack_start_addr + stack_size; sp += sizeof(size_t)) {
         /* the *sp value may be LR, so need decrease a word to PC */
-        pc = *((uint32_t *) sp) - sizeof(size_t);
+        pc = *((unsigned int *) sp) - sizeof(size_t);
         /* the Cortex-M using thumb instruction, so the pc must be an odd number */
         if (pc % 2 == 0) {
             continue;
         }
         /* fix the PC address in thumb mode */
-        pc = *((uint32_t *) sp) - 1;
+        pc = *((unsigned int *) sp) - 1;
         if ((pc >= code_start_addr) && (pc <= code_start_addr + code_size) && (depth < CMB_CALL_STACK_MAX_DEPTH)
-                /* check the the instruction before PC address is 'BL' or 'BLX' */
-                && disassembly_ins_is_bl_blx(pc - sizeof(size_t)) && (depth < size)) {
+            /* check the the instruction before PC address is 'BL' or 'BLX' */
+            && disassembly_ins_is_bl_blx(pc - sizeof(size_t)) && (depth < size)) {
             /* the second depth function may be already saved, so need ignore repeat */
             if ((depth == 2) && regs_saved_lr_is_valid && (pc == buffer[1])) {
                 continue;
@@ -427,9 +426,9 @@ size_t cm_backtrace_call_stack(uint32_t *buffer, size_t size, uint32_t sp) {
  *
  * @param sp stack pointer
  */
-static void print_call_stack(uint32_t sp) {
+static void print_call_stack(unsigned int sp) {
     size_t i, cur_depth = 0;
-    uint32_t call_stack_buf[CMB_CALL_STACK_MAX_DEPTH] = {0};
+    unsigned int call_stack_buf[CMB_CALL_STACK_MAX_DEPTH] = {0};
 
     cur_depth = cm_backtrace_call_stack(call_stack_buf, CMB_CALL_STACK_MAX_DEPTH, sp);
 
@@ -440,7 +439,7 @@ static void print_call_stack(uint32_t sp) {
 
     if (cur_depth) {
         cmb_println(print_info[PRINT_CALL_STACK_INFO], fw_name, CMB_ELF_FILE_EXTENSION_NAME, cur_depth * (8 + 1),
-                call_stack_info);
+                    call_stack_info);
     } else {
         cmb_println(print_info[PRINT_CALL_STACK_ERR]);
     }
@@ -451,11 +450,11 @@ static void print_call_stack(uint32_t sp) {
  *
  * @param sp the stack pointer when on assert occurred
  */
-void cm_backtrace_assert(uint32_t sp) {
+void cm_backtrace_assert(unsigned int sp) {
     CMB_ASSERT(init_ok);
 
 #ifdef CMB_USING_OS_PLATFORM
-    uint32_t cur_stack_pointer = cmb_get_sp();
+    unsigned int cur_stack_pointer = cmb_get_sp();
 #endif
 
     cmb_println("");
@@ -467,17 +466,17 @@ void cm_backtrace_assert(uint32_t sp) {
         cmb_println(print_info[PRINT_ASSERT_ON_HANDLER]);
 
 #ifdef CMB_USING_DUMP_STACK_INFO
-        dump_stack(main_stack_start_addr, main_stack_size, (uint32_t *) sp);
+        dump_stack(main_stack_start_addr, main_stack_size, (unsigned int *) sp);
 #endif /* CMB_USING_DUMP_STACK_INFO */
 
     } else if (cur_stack_pointer == cmb_get_psp()) {
         cmb_println(print_info[PRINT_ASSERT_ON_THREAD], get_cur_thread_name());
 
 #ifdef CMB_USING_DUMP_STACK_INFO
-        uint32_t stack_start_addr;
+        unsigned int stack_start_addr;
         size_t stack_size;
         get_cur_thread_stack_info(sp, &stack_start_addr, &stack_size);
-        dump_stack(stack_start_addr, stack_size, (uint32_t *) sp);
+        dump_stack(stack_start_addr, stack_size, (unsigned int *) sp);
 #endif /* CMB_USING_DUMP_STACK_INFO */
 
     }
@@ -486,7 +485,7 @@ void cm_backtrace_assert(uint32_t sp) {
 
     /* bare metal(no OS) environment */
 #ifdef CMB_USING_DUMP_STACK_INFO
-    dump_stack(main_stack_start_addr, main_stack_size, (uint32_t *) sp);
+    dump_stack(main_stack_start_addr, main_stack_size, (unsigned int *) sp);
 #endif /* CMB_USING_DUMP_STACK_INFO */
 
 #endif /* CMB_USING_OS_PLATFORM */
@@ -607,7 +606,7 @@ static void fault_diagnosis(void) {
 #endif /* (CMB_CPU_PLATFORM_TYPE != CMB_CPU_ARM_CORTEX_M0) */
 
 #if (CMB_CPU_PLATFORM_TYPE == CMB_CPU_ARM_CORTEX_M4) || (CMB_CPU_PLATFORM_TYPE == CMB_CPU_ARM_CORTEX_M7)
-static uint32_t statck_del_fpu_regs(uint32_t fault_handler_lr, uint32_t sp) {
+static unsigned int statck_del_fpu_regs(unsigned int fault_handler_lr, unsigned int sp) {
     statck_has_fpu_regs = (fault_handler_lr & (1UL << 4)) == 0 ? true : false;
 
     /* the stack has S0~S15 and FPSCR registers when statck_has_fpu_regs is true, double word align */
@@ -622,12 +621,12 @@ static uint32_t statck_del_fpu_regs(uint32_t fault_handler_lr, uint32_t sp) {
  * @param fault_handler_lr the LR register value on fault handler
  * @param fault_handler_sp the stack pointer on fault handler
  */
-void cm_backtrace_fault(uint32_t fault_handler_lr, uint32_t fault_handler_sp) {
-    uint32_t stack_pointer = fault_handler_sp, saved_regs_addr = stack_pointer;
-    const char *regs_name[] = { "R0 ", "R1 ", "R2 ", "R3 ", "R12", "LR ", "PC ", "PSR" };
+void cm_backtrace_fault(unsigned int fault_handler_lr, unsigned int fault_handler_sp) {
+    unsigned int stack_pointer = fault_handler_sp, saved_regs_addr = stack_pointer;
+    const char *regs_name[] = {"R0 ", "R1 ", "R2 ", "R3 ", "R12", "LR ", "PC ", "PSR"};
 
 #ifdef CMB_USING_DUMP_STACK_INFO
-    uint32_t stack_start_addr = main_stack_start_addr;
+    unsigned int stack_start_addr = main_stack_start_addr;
     size_t stack_size = main_stack_size;
 #endif
 
@@ -672,7 +671,7 @@ void cm_backtrace_fault(uint32_t fault_handler_lr, uint32_t fault_handler_sp) {
         stack_is_overflow = true;
     }
     /* dump stack information */
-    dump_stack(stack_start_addr, stack_size, (uint32_t *) stack_pointer);
+    dump_stack(stack_start_addr, stack_size, (unsigned int *) stack_pointer);
 #endif /* CMB_USING_DUMP_STACK_INFO */
 
     /* the stack frame may be get failed when it is overflow  */
@@ -680,37 +679,37 @@ void cm_backtrace_fault(uint32_t fault_handler_lr, uint32_t fault_handler_sp) {
         /* dump register */
         cmb_println(print_info[PRINT_REGS_TITLE]);
 
-        regs.saved.r0        = ((uint32_t *)saved_regs_addr)[0];  // Register R0
-        regs.saved.r1        = ((uint32_t *)saved_regs_addr)[1];  // Register R1
-        regs.saved.r2        = ((uint32_t *)saved_regs_addr)[2];  // Register R2
-        regs.saved.r3        = ((uint32_t *)saved_regs_addr)[3];  // Register R3
-        regs.saved.r12       = ((uint32_t *)saved_regs_addr)[4];  // Register R12
-        regs.saved.lr        = ((uint32_t *)saved_regs_addr)[5];  // Link register LR
-        regs.saved.pc        = ((uint32_t *)saved_regs_addr)[6];  // Program counter PC
-        regs.saved.psr.value = ((uint32_t *)saved_regs_addr)[7];  // Program status word PSR
+        regs.saved.r0 = ((unsigned int *) saved_regs_addr)[0];  // Register R0
+        regs.saved.r1 = ((unsigned int *) saved_regs_addr)[1];  // Register R1
+        regs.saved.r2 = ((unsigned int *) saved_regs_addr)[2];  // Register R2
+        regs.saved.r3 = ((unsigned int *) saved_regs_addr)[3];  // Register R3
+        regs.saved.r12 = ((unsigned int *) saved_regs_addr)[4];  // Register R12
+        regs.saved.lr = ((unsigned int *) saved_regs_addr)[5];  // Link register LR
+        regs.saved.pc = ((unsigned int *) saved_regs_addr)[6];  // Program counter PC
+        regs.saved.psr.value = ((unsigned int *) saved_regs_addr)[7];  // Program status word PSR
 
         cmb_println("  %s: %08x  %s: %08x  %s: %08x  %s: %08x", regs_name[0], regs.saved.r0,
-                                                                regs_name[1], regs.saved.r1,
-                                                                regs_name[2], regs.saved.r2,
-                                                                regs_name[3], regs.saved.r3);
+                    regs_name[1], regs.saved.r1,
+                    regs_name[2], regs.saved.r2,
+                    regs_name[3], regs.saved.r3);
         cmb_println("  %s: %08x  %s: %08x  %s: %08x  %s: %08x", regs_name[4], regs.saved.r12,
-                                                                regs_name[5], regs.saved.lr,
-                                                                regs_name[6], regs.saved.pc,
-                                                                regs_name[7], regs.saved.psr.value);
+                    regs_name[5], regs.saved.lr,
+                    regs_name[6], regs.saved.pc,
+                    regs_name[7], regs.saved.psr.value);
         cmb_println("==============================================================");
     }
 
     /* the Cortex-M0 is not support fault diagnosis */
 #if (CMB_CPU_PLATFORM_TYPE != CMB_CPU_ARM_CORTEX_M0)
     regs.syshndctrl.value = CMB_SYSHND_CTRL;  // System Handler Control and State Register
-    regs.mfsr.value       = CMB_NVIC_MFSR;    // Memory Fault Status Register
-    regs.mmar             = CMB_NVIC_MMAR;    // Memory Management Fault Address Register
-    regs.bfsr.value       = CMB_NVIC_BFSR;    // Bus Fault Status Register
-    regs.bfar             = CMB_NVIC_BFAR;    // Bus Fault Manage Address Register
-    regs.ufsr.value       = CMB_NVIC_UFSR;    // Usage Fault Status Register
-    regs.hfsr.value       = CMB_NVIC_HFSR;    // Hard Fault Status Register
-    regs.dfsr.value       = CMB_NVIC_DFSR;    // Debug Fault Status Register
-    regs.afsr             = CMB_NVIC_AFSR;    // Auxiliary Fault Status Register
+    regs.mfsr.value = CMB_NVIC_MFSR;    // Memory Fault Status Register
+    regs.mmar = CMB_NVIC_MMAR;    // Memory Management Fault Address Register
+    regs.bfsr.value = CMB_NVIC_BFSR;    // Bus Fault Status Register
+    regs.bfar = CMB_NVIC_BFAR;    // Bus Fault Manage Address Register
+    regs.ufsr.value = CMB_NVIC_UFSR;    // Usage Fault Status Register
+    regs.hfsr.value = CMB_NVIC_HFSR;    // Hard Fault Status Register
+    regs.dfsr.value = CMB_NVIC_DFSR;    // Debug Fault Status Register
+    regs.afsr = CMB_NVIC_AFSR;    // Auxiliary Fault Status Register
 
     fault_diagnosis();
 #endif
