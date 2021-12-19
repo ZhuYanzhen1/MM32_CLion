@@ -12,6 +12,9 @@ void MainWindow::mdtp_callback_handler(unsigned char pid, const unsigned char *d
              + " 0x" + QString::number(data[5], 16) + " 0x" + QString::number(data[6], 16) + " 0x" + QString::number(data[7], 16);
     qDebug() << debug_string;
     switch (pid) {
+        case 0:
+
+            break;
         case 4:
             ui->debug_info_txt->setText(ui->debug_info_txt->toPlainText() + QString::fromLocal8Bit((const char *)array_buffer));
             break;
@@ -33,6 +36,11 @@ bool MainWindow::set_serial_badurate(void) {
         serial->setStopBits(QSerialPort::OneStop);
         return true;
     }
+}
+
+void MainWindow::setup_serial_wire(QString baudrate) {
+    serial = new QSerialPort();
+    ui->serial_baudrate_txt->setText(baudrate);
 }
 
 void MainWindow::refresh_serial_port(void) {

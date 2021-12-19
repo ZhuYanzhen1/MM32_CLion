@@ -52,10 +52,11 @@ private:
     void mdtp_data_transmit(unsigned char pid, const unsigned char *data);
     void mdtp_receive_handler(unsigned char data);
     void mdtp_callback_handler(unsigned char pid, const unsigned char *data);
+    void setup_serial_wire(QString baudrate);
 
     /* variable list and plot related functions */
-    void table_append_variable(unsigned char index, unsigned char type,
-                               unsigned int value, char *name, unsigned int address);
+    void table_setvalue_variable(unsigned char index, unsigned int value);
+    void table_append_variable(unsigned char type, unsigned int value, char *name, unsigned int address);
     void setup_variable_table(void);
     void setup_custom_plot(void);
 };

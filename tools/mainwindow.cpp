@@ -4,11 +4,9 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow) {
-    serial = new QSerialPort();
     ui->setupUi(this);
     refresh_serial_port();
-    ui->serial_baudrate_txt->setText("115200");
-
+    setup_serial_wire("115200");
     setup_variable_table();
     setup_custom_plot();
 }
