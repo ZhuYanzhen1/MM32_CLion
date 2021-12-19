@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>930</width>
-    <height>623</height>
+    <width>1167</width>
+    <height>770</height>
    </rect>
   </property>
   <property name="font">
@@ -82,8 +82,8 @@
      <rect>
       <x>10</x>
       <y>460</y>
-      <width>901</width>
-      <height>151</height>
+      <width>801</width>
+      <height>301</height>
      </rect>
     </property>
     <property name="font">
@@ -96,10 +96,10 @@
    <widget class="QTableView" name="variable_list">
     <property name="geometry">
      <rect>
-      <x>690</x>
-      <y>50</y>
-      <width>221</width>
-      <height>401</height>
+      <x>820</x>
+      <y>460</y>
+      <width>331</width>
+      <height>301</height>
      </rect>
     </property>
     <attribute name="horizontalHeaderDefaultSectionSize">
@@ -114,7 +114,7 @@
      <rect>
       <x>10</x>
       <y>50</y>
-      <width>671</width>
+      <width>1141</width>
       <height>401</height>
      </rect>
     </property>
