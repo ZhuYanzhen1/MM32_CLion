@@ -15,9 +15,12 @@
 
 /////////////// Script ///////////////
 #include "operations_test.h"
+#include "mdtp_test.h"
 
 int initialize_cunit_suite(CU_pSuite *psuite_ptr, const char *strName);
+
 int generate_statements_report(void);
+
 int add_test_scripts_to_suite(CU_pSuite *psuite_ptr, const char *strName, CU_TestFunc pTestFunc);
 
 #endif //TESTBENCH__MAIN_H_
