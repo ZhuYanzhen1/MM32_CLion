@@ -14,4 +14,6 @@ void delay_config(void);
 void delayms(unsigned int xms);
 void delayus(unsigned int xus);
 
+extern unsigned int global_time_stamp;
+
 #endif  // MM32F3277_SYSTEM_USER_H_

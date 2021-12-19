@@ -5,7 +5,6 @@ on: #[ push ]
   # - cron: '40 15 * * *'      # compile at 23:50 each day
   push:
     paths:
-    - '**.sch'
     - '**.kicad_pcb'
 
 jobs:

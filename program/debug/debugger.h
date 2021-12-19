@@ -28,5 +28,6 @@ typedef struct DEBUGGER_VARIABLE_T {
 
 void mdtp_callback_handler(unsigned char pid, const unsigned char *data);
 void debugger_register_variable(variable_type var_type, void *variable, const char *name);
+void debugger_scan_variable(unsigned long time_stamp);
 
 #endif  //MM32F3277_DEBUG_DEBUGGER_H_

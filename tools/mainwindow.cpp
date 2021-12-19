@@ -7,6 +7,10 @@ MainWindow::MainWindow(QWidget *parent)
     serial = new QSerialPort();
     ui->setupUi(this);
     refresh_serial_port();
+    ui->serial_baudrate_txt->setText("115200");
+
+    setup_variable_table();
+    setup_custom_plot();
 }
 
 MainWindow::~MainWindow() {
@@ -16,20 +20,17 @@ MainWindow::~MainWindow() {
     delete ui;
 }
 
-void MainWindow::mdtp_callback_handler(unsigned char pid, const unsigned char *data) {
-    (void) pid;
-    (void) data;
-}
-
 void MainWindow::on_open_serial_btn_clicked() {
-    if(serial->isOpen() == false){
-        if(set_serial_badurate() == true) {
-            serial->open(QSerialPort::ReadWrite);
-            connect(serial, SIGNAL(readyRead()), this, SLOT(serial_received()));
-            ui->open_serial_btn->setText("Close");
-        }
+    if(serial->isOpen() == false && set_serial_badurate() == true) {
+        serial->open(QSerialPort::ReadWrite);
+        connect(serial, SIGNAL(readyRead()), this, SLOT(serial_received()));
+        ui->open_serial_btn->setText("Close");
     } else {
         serial->close();
         ui->open_serial_btn->setText("Open");
     }
+}
+
+void MainWindow::on_refresh_serial_btn_clicked() {
+    refresh_serial_port();
 }

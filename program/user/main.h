@@ -33,5 +33,6 @@
 ///////////// Debug /////////////
 #include "debugger.h"
 #include "decrypt.h"
+#include "cm_backtrace.h"
 
 #endif  // MM32F3277_USER_MAIN_H_
