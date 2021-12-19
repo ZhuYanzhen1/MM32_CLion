@@ -7,8 +7,14 @@
 ******************************************************************************/
 
 #include "encrypt.h"
-#include "config.h"
+
+#ifndef RUNNING_UNIT_TEST
 #include "uart.h"
+#else
+
+extern void uart1_sendbyte(unsigned char data);
+
+#endif
 
 /*!
     \brief      medium capacity data transmission protocol packing function
