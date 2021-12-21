@@ -11,9 +11,7 @@
 #ifndef RUNNING_UNIT_TEST
 #include "uart.h"
 #else
-
 extern void uart1_sendbyte(unsigned char data);
-
 #endif
 
 /*!

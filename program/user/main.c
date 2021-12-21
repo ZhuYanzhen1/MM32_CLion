@@ -8,19 +8,22 @@
 
 #include "main.h"
 
+static float theta = 0, sin_theta = 0;
+
 int main(void) {
-    unsigned char counter = 0;
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
     delay_config();
     led_config();
+    key_config();
     spi2_config();
     uart1_config(115200);
     cm_backtrace_init("mm32f3277", "1.0.1", "1.0.1");
-    debugger_register_variable(unsigned_int8, &counter, "counter");
+    debugger_register_variable(float_32bit, &theta, "theta");
+    debugger_register_variable(float_32bit, &sin_theta, "sin_theta");
     while (1) {
-        counter++;
-        printf("Hello MM32 with printf! counter: %d\r\n", counter);
-        fflush(stdout);
+        theta = theta + 0.1f;
+        sin_theta = qfp_fsin(theta);
+        debugger_scan_variable(global_time_stamp);
         LED1_TOGGLE();
         delayms(500);
     }

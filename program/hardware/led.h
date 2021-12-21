@@ -9,13 +9,10 @@
 #ifndef MM32F3277_HARDWARE_LED_H_
 #define MM32F3277_HARDWARE_LED_H_
 
-#include "hal_conf.h"
-#include "mm32_device.h"
-
-#define LED1_Port GPIOB
-#define LED1_Pin GPIO_Pin_13
-#define LED2_Port GPIOH
-#define LED2_Pin GPIO_Pin_2
+#define LED1_Port GPIOF
+#define LED1_Pin GPIO_Pin_11
+#define LED2_Port GPIOF
+#define LED2_Pin GPIO_Pin_12
 
 #define LED1_ON() GPIO_ResetBits(LED1_Port, LED1_Pin)
 #define LED1_OFF() GPIO_SetBits(LED1_Port, LED1_Pin)
