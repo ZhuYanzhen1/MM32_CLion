@@ -18,6 +18,13 @@ void SysTick_Handler(void) {
     delay_decrease();
 }
 
+void EXTI15_10_IRQHandler(void) {
+    if (EXTI_GetITStatus(EXTI_Line14)) {
+        LED2_TOGGLE();
+        EXTI_ClearFlag(EXTI_Line14);
+    }
+}
+
 void UART1_IRQHandler(void) {
     if (UART_GetITStatus(UART1, UART_ISR_RX) != RESET) {
         unsigned char recvbyte = UART_ReceiveData(UART1);

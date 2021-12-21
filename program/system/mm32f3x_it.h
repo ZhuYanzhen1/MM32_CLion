@@ -9,11 +9,8 @@
 #ifndef MINIFOC_SYSTEM_GD32F1X0_IT_H
 #define MINIFOC_SYSTEM_GD32F1X0_IT_H
 
-void HardFault_Handler(void);
-void MemManage_Handler(void);
-void BusFault_Handler(void);
-void UsageFault_Handler(void);
 void SysTick_Handler(void);
 void UART1_IRQHandler(void);
+void EXTI15_10_IRQHandler(void);
 
 #endif  // MINIFOC_SYSTEM_GD32F1X0_IT_H
