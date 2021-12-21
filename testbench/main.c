@@ -14,7 +14,8 @@ int main() {
 
     CU_pSuite mdtp_suite = NULL;
     initialize_cunit_suite(&mdtp_suite, "mdtp_suit");
-    add_test_scripts_to_suite(&mdtp_suite, "mdtp_encrypt", test_mdtp_encrypt);
+    add_test_scripts_to_suite(&mdtp_suite, "mdtp-encrypt", test_mdtp_encrypt);
+    add_test_scripts_to_suite(&mdtp_suite, "mdtp-decrypt", test_mdtp_decrypt);
 
     return generate_statements_report();
 }

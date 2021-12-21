@@ -27,15 +27,17 @@ unsigned char operation_divide_uint8(unsigned char a, unsigned char b) {
 }
 
 void test_operation_add(void) {
-    for (unsigned char counter = 0; counter < 0xff; ++counter) {
-        CU_ASSERT_EQUAL(operation_add_uint8(counter, 1), (unsigned short) (counter + 1))
-    }
+    CU_ASSERT_EQUAL(operation_add_uint8(20, 5), 25)
+    CU_ASSERT_EQUAL(operation_add_uint8(200, 1), 201)
+    CU_ASSERT_EQUAL(operation_add_uint8(10, 200), 210)
+    CU_ASSERT_EQUAL(operation_add_uint8(5, 5), 10)
 }
 
 void test_operation_minus(void) {
-    for (unsigned char counter = 0; counter < 0xff; ++counter) {
-        CU_ASSERT_EQUAL(operation_minus_uint8(counter, 1), (short) (counter - 1))
-    }
+    CU_ASSERT_EQUAL(operation_minus_uint8(20, 5), 15)
+    CU_ASSERT_EQUAL(operation_minus_uint8(1, 1), 0)
+    CU_ASSERT_EQUAL(operation_minus_uint8(10, 200), 0)
+    CU_ASSERT_EQUAL(operation_minus_uint8(5, 15), 0)
 }
 
 void test_operation_multiply(void) {

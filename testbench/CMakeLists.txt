@@ -18,7 +18,8 @@ endif ()
 
 add_definitions(-DRUNNING_UNIT_TEST)
 
-file(GLOB_RECURSE SOURCES "main.c" "unit_test.c" "script/*.c" "../program/debug/encrypt.c")
+file(GLOB_RECURSE SOURCES "main.c" "unit_test.c" "script/*.c" "../program/debug/encrypt.c"
+        "../program/debug/decrypt.c")
 add_executable(testbench ${SOURCES})
 
 target_link_libraries(testbench cunit)

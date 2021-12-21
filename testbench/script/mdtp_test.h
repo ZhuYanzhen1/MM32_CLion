@@ -6,5 +6,6 @@
 #define TESTBENCH_MDTP_TEST_H
 
 void test_mdtp_encrypt(void);
+void test_mdtp_decrypt(void);
 
 #endif //TESTBENCH_MDTP_TEST_H
