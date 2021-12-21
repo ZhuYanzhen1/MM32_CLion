@@ -5,8 +5,8 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 3 5
 Title "MM32_Board"
-Date "2021-12-01"
-Rev "1.0.1"
+Date "2021-12-21"
+Rev "1.0.2"
 Comp ""
 Comment1 ""
 Comment2 ""
@@ -513,7 +513,7 @@ Wire Wire Line
 	2050 4450 1300 4450
 Wire Wire Line
 	1300 4550 2050 4550
-Text HLabel 4050 6450 3    50   Input ~ 0
+Text HLabel 4050 6450 3    50   Output ~ 0
 PF13
 $Comp
 L power:+3V0 #PWR057
@@ -1072,10 +1072,10 @@ Wire Wire Line
 	6900 2750 6350 2750
 Text Label 9450 3500 0    50   ~ 0
 KEY
-Text Label 4150 6750 1    50   ~ 0
+Text Label 4250 6750 1    50   ~ 0
 KEY
 Wire Wire Line
-	4150 6750 4150 5950
+	4250 6750 4250 5950
 Text HLabel 6850 5250 2    50   Output ~ 0
 UART3_TX
 Text HLabel 6850 5150 2    50   Input ~ 0
@@ -1154,7 +1154,6 @@ NoConn ~ 4650 5950
 NoConn ~ 4550 5950
 NoConn ~ 4450 5950
 NoConn ~ 4350 5950
-NoConn ~ 4250 5950
 NoConn ~ 3550 5950
 NoConn ~ 3250 5950
 NoConn ~ 3050 5950
@@ -1254,4 +1253,8 @@ NoConn ~ 4150 1850
 NoConn ~ 3950 1850
 NoConn ~ 4350 1850
 NoConn ~ 4250 1850
+Text HLabel 4150 6450 3    50   Input ~ 0
+PF14
+Wire Wire Line
+	4150 6450 4150 5950
 $EndSCHEMATC
