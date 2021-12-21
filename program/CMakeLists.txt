@@ -23,30 +23,17 @@ add_compile_options(-mfloat-abi=soft)
 add_compile_options(-mcpu=cortex-m3 -mthumb -mthumb-interwork)
 add_compile_options(-ffunction-sections -fdata-sections -fno-common -fmessage-length=0)
 
-message(STATUS "Maximum optimization for speed")
+message(STATUS "Optimization for speed")
 add_compile_options(-O2)
-#if ("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
-#    message(STATUS "Maximum optimization for speed")
-#    add_compile_options(-Ofast)
-#elseif ("${CMAKE_BUILD_TYPE}" STREQUAL "RelWithDebInfo")
-#    message(STATUS "Maximum optimization for speed, debug info included")
-#    add_compile_options(-Ofast -g)
-#elseif ("${CMAKE_BUILD_TYPE}" STREQUAL "MinSizeRel")
-#    message(STATUS "Maximum optimization for size")
-#    add_compile_options(-Os)
-#else ()
-#    message(STATUS "Minimal optimization, debug info included")
-#    add_compile_options(-Og -g)
-#endif ()
 
 #add_definitions(-DUSE_HAL_DRIVER)
 
 include_directories(library/regs system system/cmsis library/include user hardware system/official
-        math device debug debug/cm_tracer)
+        math device debug protocol gui)
 
 file(GLOB_RECURSE SOURCES "system/official/startup_mm32f327.s" "library/source/*.c" "math/*.c"
         "user/*.c" "hardware/*.c" "system/*.c" "system/official/*.c" "math/qfplib.s" "device/*.c"
-        "debug/*.c" "debug/cm_tracer/*.c" "debug/cm_tracer/cmb_fault.S")
+        "debug/*.c" "protocol/*.c" "debug/cmb_fault.S" "gui/*.c")
 
 set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/mm32f3277.ld)
 

@@ -1,15 +1,16 @@
 /**************************************************************************/ /**
-    \file     encrypt.c
+    \file     mdtp_pack.c
     \brief    Medium capacity transport protocol packing function source file.
     \author   Lao·Zhu
     \version  V1.0.3
     \date     3. December 2021
 ******************************************************************************/
 
-#include "encrypt.h"
+#include "mdtp_pack.h"
 
 #ifndef RUNNING_UNIT_TEST
 #include "uart.h"
+#define common_sendbyte uart1_sendbyte
 #else
 extern void uart1_sendbyte(unsigned char data);
 #endif

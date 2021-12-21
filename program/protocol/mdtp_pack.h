@@ -1,5 +1,5 @@
 /**************************************************************************/ /**
-    \file     encrypt.h
+    \file     mdtp_pack.h
     \brief    Medium capacity transport protocol packing function Header File.
     \author   Lao·Zhu
     \version  V1.0.3
@@ -8,8 +8,6 @@
 
 #ifndef MM32F3277_DEBUG_ENCRYPT_H_
 #define MM32F3277_DEBUG_ENCRYPT_H_
-
-#define common_sendbyte uart1_sendbyte
 
 void mdtp_data_transmit(unsigned char pid, const unsigned char *data);
 

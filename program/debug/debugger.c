@@ -8,7 +8,7 @@
 
 #include "debugger.h"
 #include "config.h"
-#include "encrypt.h"
+#include "mdtp_pack.h"
 #include "malloc.h"
 #include "printf.h"
 #include "string.h"
@@ -25,6 +25,7 @@ static unsigned char printf_byte_buffer[8] = {0};
     \retval none
 */
 void mdtp_callback_handler(unsigned char pid, const unsigned char *data) {
+
 }
 
 void _fflush(void) {
@@ -103,8 +104,7 @@ void debugger_scan_variable(unsigned long time_stamp) {
             case unsigned_int32:
             case signed_int32:tmp_variable_u32 = (*((unsigned long *) variable_buffer[counter]->var_address));
                 break;
-            default:
-                tmp_variable_u32 = 0x00000000UL;
+            default:tmp_variable_u32 = 0x00000000UL;
                 break;
         }
         if (variable_buffer[counter]->var_lastvalue != tmp_variable_u32) {
