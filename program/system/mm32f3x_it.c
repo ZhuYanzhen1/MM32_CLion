@@ -32,3 +32,11 @@ void UART1_IRQHandler(void) {
         UART_ClearITPendingBit(UART1, UART_ISR_RX);
     }
 }
+
+void UART3_IRQHandler(void) {
+    if (UART_GetITStatus(UART3, UART_ISR_RX) != RESET) {
+        unsigned char recvbyte = UART_ReceiveData(UART3);
+        sdtp_receive_handler(recvbyte);
+        UART_ClearITPendingBit(UART3, UART_ISR_RX);
+    }
+}
