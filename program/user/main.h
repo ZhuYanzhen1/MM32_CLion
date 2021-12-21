@@ -11,6 +11,7 @@
 
 ///////////// System /////////////
 #include "config.h"
+#include "pin.h"
 #include "delay.h"
 #include "hal_conf.h"
 #include "malloc.h"
@@ -33,7 +34,16 @@
 
 ///////////// Debug /////////////
 #include "debugger.h"
-#include "decrypt.h"
 #include "cm_backtrace.h"
+
+///////////// Protocol /////////////
+#include "mdtp_unpack.h"
+#include "mdtp_pack.h"
+#include "sdtp_unpack.h"
+#include "sdtp_pack.h"
+
+//////////// GUI ////////////
+#include "tft_lcd.h"
+#include "gui_base.h"
 
 #endif  // MM32F3277_USER_MAIN_H_
