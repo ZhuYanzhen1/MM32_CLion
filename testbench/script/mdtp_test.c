@@ -3,11 +3,11 @@
 //
 
 #include "mdtp_test.h"
-#include "encrypt.h"
-#include "decrypt.h"
+#include "mdtp_unpack.h"
+#include "mdtp_pack.h"
 #include "CUnit/Basic.h"
 
-void uart1_sendbyte(unsigned char data) {
+void mdtp_sendbyte(unsigned char data) {
     static unsigned char rcv_counter = 0;
     switch (rcv_counter) {
         case 0:

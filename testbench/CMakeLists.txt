@@ -3,7 +3,7 @@ project(testbench C)
 
 set(CMAKE_C_STANDARD 11)
 
-set(COMMON_INCLUDE "script" "../program/debug")
+set(COMMON_INCLUDE "script" "../program/protocol")
 
 if ("${CMAKE_BUILD_PLATFORM}" STREQUAL "laozhu")
     link_directories(D:/msys64/opt/cunit/lib)
@@ -18,8 +18,8 @@ endif ()
 
 add_definitions(-DRUNNING_UNIT_TEST)
 
-file(GLOB_RECURSE SOURCES "main.c" "unit_test.c" "script/*.c" "../program/debug/encrypt.c"
-        "../program/debug/decrypt.c")
+file(GLOB_RECURSE SOURCES "main.c" "unit_test.c" "script/*.c" "../program/protocol/mdtp_pack.c"
+        "../program/protocol/mdtp_unpack.c")
 add_executable(testbench ${SOURCES})
 
 target_link_libraries(testbench cunit)
