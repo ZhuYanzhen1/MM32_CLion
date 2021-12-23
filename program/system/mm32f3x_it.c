@@ -18,6 +18,12 @@ void SysTick_Handler(void) {
     delay_decrease();
 }
 
+void EXTI0_IRQHandler(void) {
+    if (EXTI_GetITStatus(EXTI_Line0)) {
+        EXTI_ClearFlag(EXTI_Line0);
+    }
+}
+
 void EXTI15_10_IRQHandler(void) {
     if (EXTI_GetITStatus(EXTI_Line14)) {
         LED2_TOGGLE();
