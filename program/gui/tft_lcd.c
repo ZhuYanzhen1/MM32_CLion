@@ -10,17 +10,17 @@
 #include "spi.h"
 
 void LCD_WriteReg(unsigned int Com) {
-    GPIO_WriteBit(LCD_A0_Port, LCD_A0_Pin, Bit_RESET);
-    GPIO_WriteBit(LCD_CSB_Port, LCD_CSB_Pin, Bit_RESET);
+    GPIO_WriteBit(LCD_A0_PORT, LCD_A0_PIN, Bit_RESET);
+    GPIO_WriteBit(LCD_CSB_PORT, LCD_CSB_PIN, Bit_RESET);
     spi2_readwrite_byte(Com);
-    GPIO_WriteBit(LCD_CSB_Port, LCD_CSB_Pin, Bit_SET);
+    GPIO_WriteBit(LCD_CSB_PORT, LCD_CSB_PIN, Bit_SET);
 }
 
 void LCD_WriteData(unsigned int dat) {
-    GPIO_WriteBit(LCD_A0_Port, LCD_A0_Pin, Bit_SET);
-    GPIO_WriteBit(LCD_CSB_Port, LCD_CSB_Pin, Bit_RESET);
+    GPIO_WriteBit(LCD_A0_PORT, LCD_A0_PIN, Bit_SET);
+    GPIO_WriteBit(LCD_CSB_PORT, LCD_CSB_PIN, Bit_RESET);
     spi2_readwrite_byte(dat);
-    GPIO_WriteBit(LCD_CSB_Port, LCD_CSB_Pin, Bit_SET);
+    GPIO_WriteBit(LCD_CSB_PORT, LCD_CSB_PIN, Bit_SET);
 }
 
 void lcd_write_data(unsigned int dat16) {
@@ -89,28 +89,28 @@ void lcd_config() {
     RCC_AHBPeriphClockCmd(RCC_AHBENR_GPIOE, ENABLE);
 
     GPIO_StructInit(&GPIO_InitStruct);
-    GPIO_InitStruct.GPIO_Pin = LCD_A0_Pin;
+    GPIO_InitStruct.GPIO_Pin = LCD_A0_PIN;
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
-    GPIO_Init(LCD_A0_Port, &GPIO_InitStruct);
+    GPIO_Init(LCD_A0_PORT, &GPIO_InitStruct);
 
     GPIO_StructInit(&GPIO_InitStruct);
-    GPIO_InitStruct.GPIO_Pin = LCD_CSB_Pin;
+    GPIO_InitStruct.GPIO_Pin = LCD_CSB_PIN;
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
-    GPIO_Init(LCD_CSB_Port, &GPIO_InitStruct);
+    GPIO_Init(LCD_CSB_PORT, &GPIO_InitStruct);
 
     GPIO_StructInit(&GPIO_InitStruct);
-    GPIO_InitStruct.GPIO_Pin = LCD_RES_Pin;
+    GPIO_InitStruct.GPIO_Pin = LCD_RES_PIN;
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
-    GPIO_Init(LCD_RES_Port, &GPIO_InitStruct);
+    GPIO_Init(LCD_RES_PORT, &GPIO_InitStruct);
 
-    GPIO_WriteBit(LCD_RES_Port, LCD_RES_Pin, Bit_SET);
+    GPIO_WriteBit(LCD_RES_PORT, LCD_RES_PIN, Bit_SET);
     delayus(1000);
-    GPIO_WriteBit(LCD_RES_Port, LCD_RES_Pin, Bit_RESET);
+    GPIO_WriteBit(LCD_RES_PORT, LCD_RES_PIN, Bit_RESET);
     delayus(1000);
-    GPIO_WriteBit(LCD_RES_Port, LCD_RES_Pin, Bit_SET);
+    GPIO_WriteBit(LCD_RES_PORT, LCD_RES_PIN, Bit_SET);
     delayus(120 * 1000);
     LCD_WriteReg(0x11);
     delayus(120 * 1000);

@@ -2,8 +2,8 @@
 // Created by Lao·Zhu on 2021/2/26.
 //
 
-#ifndef _DEVICE_COLOR_H_
-#define _DEVICE_COLOR_H_
+#ifndef MM32F3277_GUI_COLOR_H_
+#define MM32F3277_GUI_COLOR_H_
 
 #define C_MAROON                       0x8000
 #define C_DARK_RED                     0x8800
@@ -145,4 +145,4 @@
 #define C_WHITE_SMOKE                  0xF7BE
 #define C_WHITE                        0xFFFF
 
-#endif //LOWER_COMPUTER_STM32_DEVICE_COLOR_H_
+#endif // MM32F3277_GUI_COLOR_H_
