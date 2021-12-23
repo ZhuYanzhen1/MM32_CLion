@@ -56,7 +56,7 @@ private:
 
     /* variable list and plot related functions */
     void table_setvalue_variable(unsigned char index, unsigned int value);
-    void table_append_variable(unsigned char type, unsigned int value, char *name, unsigned int address);
+    void table_append_variable(unsigned char type, unsigned int value, const char *name, unsigned int address);
     void setup_variable_table(void);
     void setup_custom_plot(void);
 };
