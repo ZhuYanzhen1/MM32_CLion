@@ -61,6 +61,7 @@ void test_nmea_gpgga_analysis() {
     CU_ASSERT_EQUAL(gpsx->latitude_direction, 'S');
     CU_ASSERT_EQUAL(gpsx->checksum, 0X7B);
     CU_ASSERT_EQUAL(gpsx->height_unit_altitude, 'M');
+    CU_ASSERT_EQUAL(gpsx->latitude, 39599925);
 }
 
 
