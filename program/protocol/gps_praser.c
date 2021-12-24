@@ -3,6 +3,7 @@
 //
 
 #include "gps_praser.h"
+#include "main.h"
 
 /*!
     \brief      Get the position of the nth comma from inside buffer
@@ -35,6 +36,10 @@ int nmea_pow(char m, char n) {
     while (n--) {
         result *= m;
     }
+    while (n < 0) {
+        result /= m;
+        n++;
+    }
     return result;
 }
 
@@ -42,9 +47,9 @@ int nmea_pow(char m, char n) {
     \brief      Character to number conversion,end with ',' or '*'
     \param[in]  buffer: Digital storage area
     \param[in]  decimal_places: Number of decimal places,return to the calling function
-    \retval     Converted values
+    \retval     Converted values()
 */
-int nmea_str2num(char *buffer, char *decimal_places) {
+int nmea_str2num(char *buffer) {
     char *p = buffer;
     int integer_data = 0, decimal_data = 0;
     char integer_length = 0, decimal_length = 0, i;
@@ -81,14 +86,29 @@ int nmea_str2num(char *buffer, char *decimal_places) {
 
     /* Maximum 5 decimal places */
     if (decimal_length > 5) decimal_length = 5;
-    *decimal_places = decimal_length;
 
     /* Get the decimal part of the data */
     for (i = 0; i < decimal_length; i++) {
         decimal_data += nmea_pow(10, decimal_length - 1 - i) * (buffer[integer_length + 1 + i] - '0');
     }
-    data = integer_data * nmea_pow(10, decimal_length) + decimal_data;
+    data = integer_data + decimal_data * nmea_pow(10, -decimal_length);
     if (mask == 0X02) data = -data;
     return data;
 }
 
+//分析GPGGA信息
+//gpsx:nmea信息结构体
+//buf:接收到的GPS数据缓冲区首地址
+void NMEA_GPGGA_Analysis(nmea_gga *gpsx, char *buf) {
+    char *p1;
+    char posx;
+
+    /* strstr determines whether $GPGGA is a substring of the p array, and if so, returns the address of the first occurrence in $GPGGA */
+    p1 = (char *) strstr((const char *) buf, "$GPGGA");
+    posx = nmea_comma_position(p1, 6);                              //得到GPS状态
+    if (posx != 0XFF)gpsx->positioning_quality = nmea_str2num(p1 + posx);
+    posx = nmea_comma_position(p1, 7);                              //得到用于定位的卫星数
+    if (posx != 0XFF)gpsx->positioning_satellites_num = nmea_str2num(p1 + posx);
+    posx = nmea_comma_position(p1, 9);                              //得到海拔高度
+    if (posx != 0XFF)gpsx->altitude = nmea_str2num(p1 + posx);
+}
