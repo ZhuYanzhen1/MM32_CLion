@@ -43,9 +43,9 @@ void text_nmea_pow() {
 }
 
 void test_nmea_str2num() {
-    char *data[] = {"3424", "-234", "34.32", "-23.43", "0.661"};
+    char *data[] = {"3424,", "-234,", "34.32,", "-23.43,", "0.661,"};
     char **p = data;
-    CU_ASSERT_EQUAL(nmea_str2num(p[0]), 3424);
+    CU_ASSERT_EQUAL(nmea_str2num(data[0]), 3424);
     CU_ASSERT_EQUAL(nmea_str2num(p[1]), -234);
     CU_ASSERT_EQUAL(nmea_str2num(p[2]), 34.32);
     CU_ASSERT_EQUAL(nmea_str2num(p[3]), -23.43);

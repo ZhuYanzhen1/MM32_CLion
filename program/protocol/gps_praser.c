@@ -31,6 +31,9 @@ int nmea_comma_position(char *buffer, char n) {
     \retval     m^n
 */
 int nmea_pow(char m, char n) {
+    if (m == 0) {
+        return 0;
+    }
     int result = 1;
     while (n > 0) {
         result *= m;
@@ -45,12 +48,12 @@ int nmea_pow(char m, char n) {
     \param[in]  decimal_places: Number of decimal places,return to the calling function
     \retval     Converted values
 */
-float nmea_str2num(char *buffer) {
+int nmea_str2num(char *buffer) {
     char *p = buffer;
     int integer_data = 0, decimal_data = 0;
     char integer_length = 0, decimal_length = 0;
     char mask = 0;
-    float data = 0;
+    int data = 0;
 
     /* Get the length of integers and decimals */
     while (1) {
@@ -67,13 +70,13 @@ float nmea_str2num(char *buffer) {
             decimal_length = 0;
             break;
         }
-        if (mask == 0X01) decimal_length++;
+        if (mask & 0X01) decimal_length++;
         else integer_length++;
         p++;
     }
 
     /* Remove negative sign */
-    if (mask == 0X02) buffer++;
+    if (mask & 0X02) buffer++;
 
     /* Get the integer part of the data */
     for (int i = 0; i < integer_length; i++) {
@@ -88,10 +91,10 @@ float nmea_str2num(char *buffer) {
         decimal_data += nmea_pow(10, decimal_length - 1 - i) * (buffer[integer_length + 1 + i] - '0');
     }
     data = integer_data * nmea_pow(10, integer_length) + decimal_data;
-    if (mask == 0X02) data = -data;
-    while (decimal_data--) {
-        data /= 10;
-    }
+    if (mask & 0X02) data = -data;
+//    while (decimal_data--) {
+//        data /= 10;
+//    }
     return data;
 }
 

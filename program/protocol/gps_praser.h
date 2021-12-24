@@ -54,7 +54,7 @@ typedef struct {
 
 int nmea_comma_position(char *buffer, char n);
 int nmea_pow(char m, char n);
-float nmea_str2num(char *buffer);
+int nmea_str2num(char *buffer);
 void nmea_gpgga_analysis(nmea_gga *gpsx, char *buffer);
 
 #endif //MAIN_C_PROTOCOL_GPS_PRASER_H_
