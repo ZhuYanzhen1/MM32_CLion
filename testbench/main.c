@@ -19,7 +19,7 @@ int main() {
 
     CU_pSuite gps_suite = NULL;
     initialize_cunit_suite(&gps_suite, "gps_suit");
-//    add_test_scripts_to_suite(&gps_suite, "gps-encrypt", test_gps_encrypt);
+    add_test_scripts_to_suite(&gps_suite, "gps-nmea_comma_position", test_nmea_comma_position);
 //    add_test_scripts_to_suite(&gps_suite, "gps-decrypt", test_gps_decrypt);
 
     return generate_statements_report();
