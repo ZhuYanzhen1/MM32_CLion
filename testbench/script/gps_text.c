@@ -5,8 +5,12 @@
 #include "gps_text.h"
 #include "CUnit/Basic.h"
 
-int test_gps_encrypt() {
-    
+int test_gps_decrypt() {
+
 
 }
 
+int test_gps_encrypt() {
+
+
+}

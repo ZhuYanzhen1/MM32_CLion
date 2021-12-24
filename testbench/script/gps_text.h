@@ -5,4 +5,8 @@
 #ifndef TESTBENCH_GPS_TEXT_H
 #define TESTBENCH_GPS_TEXT_H
 
+int test_gps_decrypt();
+
+int test_gps_encrypt();
+
 #endif //TESTBENCH_GPS_TEXT_H
