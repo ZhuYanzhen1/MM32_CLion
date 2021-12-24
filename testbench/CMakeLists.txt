@@ -19,8 +19,8 @@ endif ()
 add_definitions(-DRUNNING_UNIT_TEST)
 
 file(GLOB_RECURSE SOURCES "main.c" "unit_test.c" "script/*.c" "../program/protocol/mdtp_pack.c"
-        "../program/protocol/gps_parser.c"
-        "../program/protocol/mdtp_unpack.c")
+        "../program/protocol/gps_parser.c" "../program/protocol/mdtp_unpack.c")
+
 add_executable(testbench ${SOURCES})
 
 target_link_libraries(testbench cunit)

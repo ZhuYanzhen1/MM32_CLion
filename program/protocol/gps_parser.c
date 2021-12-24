@@ -103,7 +103,7 @@ long nmea_str2num(char *buffer, char *decimal_places) {
 int nmea_get_checksum(char *buffer) {
     int checksum = 0;
     while (*buffer++ != '*');
-    checksum = (buffer[0] - '0') * 16 + (buffer[1] - '0');
+    checksum = (buffer[0] - (buffer[0] > 58 ? '7' : '0')) * 16 + (buffer[1] - (buffer[1] > 58 ? '7' : '0'));
     return checksum;
 }
 
@@ -161,14 +161,16 @@ void nmea_gpgga_analysis(nmea_gga *gps_gga, char *buffer) {
     \param[in]  gps_ant: antenna status structure
 */
 void nema_gpant_analysis(nmea_ant *gps_ant, char *buffer) {
-    char *p;
     char posx;
+    char i = 0;
+    char ant_message[14] = {0};
+    gps_ant->text_message = ant_message;
 
     /* Variables a and decimal_places are not used */
-    char a = 1;
-    char *decimal_places = &a;
+    unsigned char a = 1;
+    char *decimal_places = (char *) &a;
 
-    p = (char *) strstr((const char *) buffer, "$GPTXT");
+    char *p = (char *) strstr((const char *) buffer, "$GPTXT");
     posx = nmea_comma_position(p, 1);
     if (posx != 0XFF) gps_ant->xx = nmea_str2num(p + posx, decimal_places);
     posx = nmea_comma_position(p, 2);
@@ -176,7 +178,12 @@ void nema_gpant_analysis(nmea_ant *gps_ant, char *buffer) {
     posx = nmea_comma_position(p, 3);
     if (posx != 0XFF) gps_ant->zz = nmea_str2num(p + posx, decimal_places);
     posx = nmea_comma_position(p, 4);
-    if (posx != 0XFF) strcpy(gps_ant->text_message, (p + posx));
+    if (posx != 0XFF) {
+        while (*(p + posx + i) != '*') {
+            ant_message[i] = *(p + posx + i);
+            i++;
+        }
+    }
     posx = nmea_comma_position(p, 5);
     if (posx != 0XFF) gps_ant->checksum = nmea_get_checksum(buffer);
 }

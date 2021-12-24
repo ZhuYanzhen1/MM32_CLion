@@ -5,6 +5,13 @@
 #ifndef MAIN_C_PROTOCOL_GPS_PARSER_H_
 #define MAIN_C_PROTOCOL_GPS_PARSER_H_
 
+typedef enum {
+    error_message = 0,
+    warning_message = 1,
+    notification_message = 2,
+    user_message = 7
+} text_identifiers;
+
 typedef struct {
     int satellite_azimuth;
     char satellite_number;
@@ -62,14 +69,9 @@ typedef struct {
 typedef struct {
     char xx;
     char yy;
-    char text_message[13];
+    char *text_message;
     char checksum;
-    enum text_identifiers {
-        error_message = 0,
-        warning_message = 1,
-        notification_message = 2,
-        user_message = 7
-    } zz;
+    text_identifiers zz;
 } nmea_ant;
 
 int nmea_comma_position(char *buffer, char n);
