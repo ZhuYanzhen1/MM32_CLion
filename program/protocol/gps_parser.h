@@ -59,9 +59,23 @@ typedef struct {
 
 } nmea_gga;
 
+typedef struct {
+    char xx;
+    char yy;
+    char text_message[13];
+    char checksum;
+    enum text_identifiers {
+        error_message = 0,
+        warning_message = 1,
+        notification_message = 2,
+        user_message = 7
+    } zz;
+} nmea_ant;
+
 int nmea_comma_position(char *buffer, char n);
 int nmea_pow(char m, char n);
 long nmea_str2num(char *buffer, char *decimal_places);
 void nmea_gpgga_analysis(nmea_gga *gpsx, char *buffer);
+void nema_gpant_analysis(nmea_ant *gps_ant, char *buffer);
 
 #endif //MAIN_C_PROTOCOL_GPS_PARSER_H_

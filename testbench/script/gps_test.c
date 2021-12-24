@@ -56,12 +56,22 @@ void test_nmea_str2num() {
 
 void test_nmea_gpgga_analysis() {
     char data[] = "$GPGGA,235316.000,3959.9925,S,12000.0090,E,1,06,1.21,62.77,M,0.00,M,,*7B";
-    nmea_gga *gpsx = malloc(sizeof(*gpsx));
-    nmea_gpgga_analysis(gpsx, data);
-    CU_ASSERT_EQUAL(gpsx->latitude_direction, 'S');
-    CU_ASSERT_EQUAL(gpsx->checksum, 0X7B);
-    CU_ASSERT_EQUAL(gpsx->height_unit_altitude, 'M');
-    CU_ASSERT_EQUAL(gpsx->latitude, 39599925);
+    nmea_gga *gps_gga = malloc(sizeof(*gps_gga));
+    nmea_gpgga_analysis(gps_gga, data);
+    CU_ASSERT_EQUAL(gps_gga->latitude_direction, 'S');
+    CU_ASSERT_EQUAL(gps_gga->checksum, 0X7B);
+    CU_ASSERT_EQUAL(gps_gga->height_unit_altitude, 'M');
+    CU_ASSERT_EQUAL(gps_gga->latitude, 39599925);
 }
 
+void test_nmea_gpant_analysis() {
+    char data[] = "$GPTXT,01,01,01,ANTENNA SHORT*63";
+    nmea_ant *gps_ant = malloc(sizeof(*gps_ant));
+    nema_gpant_analysis(gps_ant, data);
+    CU_ASSERT_EQUAL(gps_ant->xx, 1);
+    CU_ASSERT_EQUAL(gps_ant->yy, 1);
+    CU_ASSERT_EQUAL(gps_ant->zz, 1);
+//    CU_ASSERT_EQUAL(*gps_ant->text_message, "ANTENNA SHORT");
+    CU_ASSERT_EQUAL(gps_ant->checksum, 0x63);
 
+}

@@ -103,17 +103,17 @@ long nmea_str2num(char *buffer, char *decimal_places) {
 int nmea_get_checksum(char *buffer) {
     int checksum = 0;
     while (*buffer++ != '*');
-    checksum = (buffer[0] - '0') * 15 + (buffer[1] - '0');
+    checksum = (buffer[0] - '0') * 16 + (buffer[1] - '0');
     return checksum;
 }
 
 /*!
     \brief      Analyze GPGGA information
     \param[in]  buffer: Digital storage area
-    \param[in]  gpsx: nmea information structure
+    \param[in]  gps_gga: Receiver time, location and positioning related data
 */
-void nmea_gpgga_analysis(nmea_gga *gpsx, char *buffer) {
-    char *p1;
+void nmea_gpgga_analysis(nmea_gga *gps_gga, char *buffer) {
+    char *p;
     char posx;
 
     /* Variables a and decimal_places are not used */
@@ -121,36 +121,62 @@ void nmea_gpgga_analysis(nmea_gga *gpsx, char *buffer) {
     char *decimal_places = &a;
 
     /* strstr determines whether $GPGGA is a substring of the p array, and if so, returns the address of the first occurrence in $GPGGA */
-    p1 = (char *) strstr((const char *) buffer, "$GPGGA");
-    posx = nmea_comma_position(p1, 1);
+    p = (char *) strstr((const char *) buffer, "$GPGGA");
+    posx = nmea_comma_position(p, 1);
     if (posx != 0XFF)
-        gpsx->positioning_time.uct_time = nmea_str2num(p1 + posx, &gpsx->positioning_time.decimal_places_time);
-    posx = nmea_comma_position(p1, 2);
-    if (posx != 0XFF) gpsx->latitude = nmea_str2num(p1 + posx, &gpsx->decimal_places_latitude);
-    posx = nmea_comma_position(p1, 3);
-    if (posx != 0XFF) gpsx->latitude_direction = *(p1 + posx);
-    posx = nmea_comma_position(p1, 4);
-    if (posx != 0XFF) gpsx->longitude = nmea_str2num(p1 + posx, &gpsx->decimal_places_longitude);
-    posx = nmea_comma_position(p1, 5);
-    if (posx != 0XFF) gpsx->longitude_direction = *(p1 + posx);
-    posx = nmea_comma_position(p1, 6);
-    if (posx != 0XFF) gpsx->positioning_quality = (int) nmea_str2num(p1 + posx, decimal_places);
-    posx = nmea_comma_position(p1, 7);
-    if (posx != 0XFF) gpsx->positioning_satellites_num = (int) nmea_str2num(p1 + posx, decimal_places);
-    posx = nmea_comma_position(p1, 8);
-    if (posx != 0XFF) gpsx->horizontal_accuracy_factor = nmea_str2num(p1 + posx, &gpsx->decimal_places_accuracy);
-    posx = nmea_comma_position(p1, 9);
-    if (posx != 0XFF) gpsx->altitude = nmea_str2num(p1 + posx, &gpsx->decimal_places_altitude);
-    posx = nmea_comma_position(p1, 10);
-    if (posx != 0XFF) gpsx->height_unit_altitude = *(p1 + posx);
-    posx = nmea_comma_position(p1, 11);
-    if (posx != 0XFF) gpsx->distance_reference_ellipsoid_geoid = nmea_str2num(p1 + posx, decimal_places);
-    posx = nmea_comma_position(p1, 12);
-    if (posx != 0XFF) gpsx->height_unit_distance = *(p1 + posx);
-    posx = nmea_comma_position(p1, 13);
-    if (posx != 0XFF) gpsx->differentially_corrected_data_age = (int) nmea_str2num(p1 + posx, decimal_places);
-    posx = nmea_comma_position(p1, 14);
-    if (posx != 0XFF) gpsx->differential_reference_stations_id = (char) nmea_str2num(p1 + posx, decimal_places);
-    posx = nmea_comma_position(p1, 15);
-    if (posx != 0XFF) gpsx->checksum = nmea_get_checksum(buffer);
+        gps_gga->positioning_time.uct_time = nmea_str2num(p + posx, &gps_gga->positioning_time.decimal_places_time);
+    posx = nmea_comma_position(p, 2);
+    if (posx != 0XFF) gps_gga->latitude = nmea_str2num(p + posx, &gps_gga->decimal_places_latitude);
+    posx = nmea_comma_position(p, 3);
+    if (posx != 0XFF) gps_gga->latitude_direction = *(p + posx);
+    posx = nmea_comma_position(p, 4);
+    if (posx != 0XFF) gps_gga->longitude = nmea_str2num(p + posx, &gps_gga->decimal_places_longitude);
+    posx = nmea_comma_position(p, 5);
+    if (posx != 0XFF) gps_gga->longitude_direction = *(p + posx);
+    posx = nmea_comma_position(p, 6);
+    if (posx != 0XFF) gps_gga->positioning_quality = (int) nmea_str2num(p + posx, decimal_places);
+    posx = nmea_comma_position(p, 7);
+    if (posx != 0XFF) gps_gga->positioning_satellites_num = (int) nmea_str2num(p + posx, decimal_places);
+    posx = nmea_comma_position(p, 8);
+    if (posx != 0XFF) gps_gga->horizontal_accuracy_factor = nmea_str2num(p + posx, &gps_gga->decimal_places_accuracy);
+    posx = nmea_comma_position(p, 9);
+    if (posx != 0XFF) gps_gga->altitude = nmea_str2num(p + posx, &gps_gga->decimal_places_altitude);
+    posx = nmea_comma_position(p, 10);
+    if (posx != 0XFF) gps_gga->height_unit_altitude = *(p + posx);
+    posx = nmea_comma_position(p, 11);
+    if (posx != 0XFF) gps_gga->distance_reference_ellipsoid_geoid = nmea_str2num(p + posx, decimal_places);
+    posx = nmea_comma_position(p, 12);
+    if (posx != 0XFF) gps_gga->height_unit_distance = *(p + posx);
+    posx = nmea_comma_position(p, 13);
+    if (posx != 0XFF) gps_gga->differentially_corrected_data_age = (int) nmea_str2num(p + posx, decimal_places);
+    posx = nmea_comma_position(p, 14);
+    if (posx != 0XFF) gps_gga->differential_reference_stations_id = (char) nmea_str2num(p + posx, decimal_places);
+    posx = nmea_comma_position(p, 15);
+    if (posx != 0XFF) gps_gga->checksum = nmea_get_checksum(buffer);
+}
+
+/*!
+    \brief      Analyze GPANT information
+    \param[in]  buffer: Digital storage area
+    \param[in]  gps_ant: antenna status structure
+*/
+void nema_gpant_analysis(nmea_ant *gps_ant, char *buffer) {
+    char *p;
+    char posx;
+
+    /* Variables a and decimal_places are not used */
+    char a = 1;
+    char *decimal_places = &a;
+
+    p = (char *) strstr((const char *) buffer, "$GPTXT");
+    posx = nmea_comma_position(p, 1);
+    if (posx != 0XFF) gps_ant->xx = nmea_str2num(p + posx, decimal_places);
+    posx = nmea_comma_position(p, 2);
+    if (posx != 0XFF) gps_ant->yy = nmea_str2num(p + posx, decimal_places);
+    posx = nmea_comma_position(p, 3);
+    if (posx != 0XFF) gps_ant->zz = nmea_str2num(p + posx, decimal_places);
+    posx = nmea_comma_position(p, 4);
+    if (posx != 0XFF) strcpy(gps_ant->text_message, (p + posx));
+    posx = nmea_comma_position(p, 5);
+    if (posx != 0XFF) gps_ant->checksum = nmea_get_checksum(buffer);
 }

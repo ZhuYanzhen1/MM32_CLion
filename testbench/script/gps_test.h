@@ -13,4 +13,6 @@ void test_nmea_str2num();
 
 void test_nmea_gpgga_analysis();
 
+void test_nmea_gpant_analysis();
+
 #endif //TESTBENCH_GPS_TEST_H
