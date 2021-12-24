@@ -26,22 +26,36 @@ void test_nmea_comma_position() {
     CU_ASSERT_NOT_EQUAL(n3, sizeof(data));
 }
 
+//m^n函数
+//返回值:m^n次方.
+int NMEA_Pow(char m, char n) {
+    int result = 1;
+    while (n--)result *= m;
+    return result;
+}
+
 void text_nmea_pow() {
     CU_ASSERT_EQUAL(nmea_pow(10, 2), 100);
     CU_ASSERT_NOT_EQUAL(nmea_pow(10, 8), 100);
-    CU_ASSERT_EQUAL(nmea_pow(10, -2), 0.01);
-    CU_ASSERT_NOT_EQUAL(nmea_pow(10, -8), 0.01);
     CU_ASSERT_EQUAL(nmea_pow(10, 0), 1);
     CU_ASSERT_NOT_EQUAL(nmea_pow(10, 0), 10);
     CU_ASSERT_NOT_EQUAL(nmea_pow(10, 8), 1);
-    CU_ASSERT_EQUAL(nmea_pow(-10, 0), 1);
-    CU_ASSERT_EQUAL(nmea_pow(-10, 2), 100);
-    CU_ASSERT_EQUAL(nmea_pow(-10, 3), -1000);
-    CU_ASSERT_EQUAL(nmea_pow(-10, -3), -0.001);
-    CU_ASSERT_EQUAL(nmea_pow(-10, -2), 0.01);
 }
 
 void test_nmea_str2num() {
+    char *data[] = {"3424", "-234", "34.32", "-23.43", "0.661"};
+    char **p = data;
+    CU_ASSERT_EQUAL(nmea_str2num(p[0]), 3424);
+    CU_ASSERT_EQUAL(nmea_str2num(p[1]), -234);
+    CU_ASSERT_EQUAL(nmea_str2num(p[2]), 34.32);
+    CU_ASSERT_EQUAL(nmea_str2num(p[3]), -23.43);
+    CU_ASSERT_EQUAL(nmea_str2num(p[4]), 0.661);
+    CU_ASSERT_NOT_EQUAL(nmea_str2num(p[0]), 13424);
+    CU_ASSERT_NOT_EQUAL(nmea_str2num(p[1]), -13424);
+    CU_ASSERT_NOT_EQUAL(nmea_str2num(p[2]), 13.424);
+    CU_ASSERT_NOT_EQUAL(nmea_str2num(p[3]), -13.424);
+    CU_ASSERT_NOT_EQUAL(nmea_str2num(p[4]), 0.134);
+
 
 }
 
