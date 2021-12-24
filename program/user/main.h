@@ -43,6 +43,7 @@
 #include "mdtp_pack.h"
 #include "sdtp_unpack.h"
 #include "sdtp_pack.h"
+#include "gps_praser.h"
 
 //////////// GUI ////////////
 #include "tft_lcd.h"
