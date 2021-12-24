@@ -20,8 +20,9 @@ int main() {
     CU_pSuite gps_suite = NULL;
     initialize_cunit_suite(&gps_suite, "gps_suit");
     add_test_scripts_to_suite(&gps_suite, "gps_nmea_comma_position", test_nmea_comma_position);
-    add_test_scripts_to_suite(&gps_suite, "gps_nmea_pow", text_nmea_pow);
+    add_test_scripts_to_suite(&gps_suite, "gps_nmea_pow", test_nmea_pow);
     add_test_scripts_to_suite(&gps_suite, "gps_nmea_str2num", test_nmea_str2num);
+    add_test_scripts_to_suite(&gps_suite, "gps_nmea_gpgga_analysis", test_nmea_gpgga_analysis);
 
     return generate_statements_report();
 }

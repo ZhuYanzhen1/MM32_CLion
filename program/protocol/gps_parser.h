@@ -2,8 +2,8 @@
 // Created by 16625 on 2021-12-24.
 //
 
-#ifndef MAIN_C_PROTOCOL_GPS_PRASER_H_
-#define MAIN_C_PROTOCOL_GPS_PRASER_H_
+#ifndef MAIN_C_PROTOCOL_GPS_PARSER_H_
+#define MAIN_C_PROTOCOL_GPS_PARSER_H_
 
 typedef struct {
     int satellite_azimuth;
@@ -19,14 +19,14 @@ typedef struct {
     char hour;
     char minute;
     char second;
-    char a;
-    float uct_time;
+    char decimal_places_time;
+    long uct_time;
 } nmea_utc_time;
 
 typedef struct {
     nmea_utc_time positioning_time;
-    float latitude;
-    float longitude;
+    long latitude;
+    long longitude;
     char latitude_direction;
     char longitude_direction;
 
@@ -37,24 +37,31 @@ typedef struct {
 
     /* 0~24 */
     char positioning_satellites_num;
+
     char height_unit_altitude;
     char height_unit_distance;
-    short differential_reference_stations_id;
-    float altitude;
-    float horizontal_accuracy_factor;
+    char differential_reference_stations_id;
+    char decimal_places_distance;
+
+    long altitude;
+    long horizontal_accuracy_factor;
 
     /* "-" indicates that the geoid is lower than the reference ellipsoid */
-    float distance_reference_ellipsoid_geoid;
+    long distance_reference_ellipsoid_geoid;
 
     /* This field is empty when DGPS is not used */
     int differentially_corrected_data_age;
     int checksum;
+    char decimal_places_latitude;
+    char decimal_places_longitude;
+    char decimal_places_altitude;
+    char decimal_places_accuracy;
 
 } nmea_gga;
 
 int nmea_comma_position(char *buffer, char n);
 int nmea_pow(char m, char n);
-float nmea_str2num(char *buffer);
+long nmea_str2num(char *buffer, char *decimal_places);
 void nmea_gpgga_analysis(nmea_gga *gpsx, char *buffer);
 
-#endif //MAIN_C_PROTOCOL_GPS_PRASER_H_
+#endif //MAIN_C_PROTOCOL_GPS_PARSER_H_

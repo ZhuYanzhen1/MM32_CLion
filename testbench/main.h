@@ -16,7 +16,7 @@
 /////////////// Script ///////////////
 #include "operations_test.h"
 #include "mdtp_test.h"
-#include "gps_text.h"
+#include "gps_test.h"
 
 int initialize_cunit_suite(CU_pSuite *psuite_ptr, const char *strName);
 

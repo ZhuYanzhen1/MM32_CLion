@@ -2,7 +2,7 @@
 // Created by 16625 on 2021-12-24.
 //
 
-#include "gps_praser.h"
+#include "gps_parser.h"
 #include "string.h"
 
 /*!
@@ -48,12 +48,12 @@ int nmea_pow(char m, char n) {
     \param[in]  decimal_places: Number of decimal places,return to the calling function
     \retval     Converted values
 */
-float nmea_str2num(char *buffer) {
+long nmea_str2num(char *buffer, char *decimal_places) {
     char *p = buffer;
     int integer_data = 0, decimal_data = 0;
     char integer_length = 0, decimal_length = 0;
     char mask = 0;
-    float data = 0;
+    long data = 0;
 
     /* Get the length of integers and decimals */
     while (1) {
@@ -83,19 +83,28 @@ float nmea_str2num(char *buffer) {
         integer_data += nmea_pow(10, integer_length - 1 - i) * (buffer[i] - '0');
     }
 
-    /* Maximum 5 decimal places */
-    if (decimal_length > 5) decimal_length = 5;
-
+    /* Maximum 4 decimal places */
+    if (decimal_length > 4) decimal_length = 4;
+    *decimal_places = decimal_length;
     /* Get the decimal part of the data */
     for (int i = 0; i < decimal_length; i++) {
         decimal_data += nmea_pow(10, decimal_length - 1 - i) * (buffer[integer_length + 1 + i] - '0');
     }
     data = integer_data * nmea_pow(10, decimal_length) + decimal_data;
     if (mask & 0X02) data = -data;
-    while (decimal_length--) {
-        data /= 10;
-    }
     return data;
+}
+
+/*!
+    \brief      get checksum
+    \param[in]  buffer: Digital storage area
+    \retval     checksum
+*/
+int nmea_get_checksum(char *buffer) {
+    int checksum = 0;
+    while (*buffer++ != '*');
+    checksum = (buffer[0] - '0') * 15 + (buffer[1] - '0');
+    return checksum;
 }
 
 /*!
@@ -107,36 +116,41 @@ void nmea_gpgga_analysis(nmea_gga *gpsx, char *buffer) {
     char *p1;
     char posx;
 
+    /* Variables a and decimal_places are not used */
+    char a = 1;
+    char *decimal_places = &a;
+
     /* strstr determines whether $GPGGA is a substring of the p array, and if so, returns the address of the first occurrence in $GPGGA */
     p1 = (char *) strstr((const char *) buffer, "$GPGGA");
     posx = nmea_comma_position(p1, 1);
-    if (posx != 0XFF) gpsx->positioning_time.uct_time = nmea_str2num(p1 + posx);
+    if (posx != 0XFF)
+        gpsx->positioning_time.uct_time = nmea_str2num(p1 + posx, &gpsx->positioning_time.decimal_places_time);
     posx = nmea_comma_position(p1, 2);
-    if (posx != 0XFF) gpsx->latitude = nmea_str2num(p1 + posx);
+    if (posx != 0XFF) gpsx->latitude = nmea_str2num(p1 + posx, &gpsx->decimal_places_latitude);
     posx = nmea_comma_position(p1, 3);
     if (posx != 0XFF) gpsx->latitude_direction = *(p1 + posx);
     posx = nmea_comma_position(p1, 4);
-    if (posx != 0XFF) gpsx->longitude = nmea_str2num(p1 + posx);
+    if (posx != 0XFF) gpsx->longitude = nmea_str2num(p1 + posx, &gpsx->decimal_places_longitude);
     posx = nmea_comma_position(p1, 5);
     if (posx != 0XFF) gpsx->longitude_direction = *(p1 + posx);
     posx = nmea_comma_position(p1, 6);
-    if (posx != 0XFF) gpsx->positioning_quality = (int) nmea_str2num(p1 + posx);
+    if (posx != 0XFF) gpsx->positioning_quality = (int) nmea_str2num(p1 + posx, decimal_places);
     posx = nmea_comma_position(p1, 7);
-    if (posx != 0XFF) gpsx->positioning_satellites_num = (int) nmea_str2num(p1 + posx);
+    if (posx != 0XFF) gpsx->positioning_satellites_num = (int) nmea_str2num(p1 + posx, decimal_places);
     posx = nmea_comma_position(p1, 8);
-    if (posx != 0XFF) gpsx->horizontal_accuracy_factor = nmea_str2num(p1 + posx);
+    if (posx != 0XFF) gpsx->horizontal_accuracy_factor = nmea_str2num(p1 + posx, &gpsx->decimal_places_accuracy);
     posx = nmea_comma_position(p1, 9);
-    if (posx != 0XFF) gpsx->altitude = nmea_str2num(p1 + posx);
+    if (posx != 0XFF) gpsx->altitude = nmea_str2num(p1 + posx, &gpsx->decimal_places_altitude);
     posx = nmea_comma_position(p1, 10);
     if (posx != 0XFF) gpsx->height_unit_altitude = *(p1 + posx);
     posx = nmea_comma_position(p1, 11);
-    if (posx != 0XFF) gpsx->distance_reference_ellipsoid_geoid = nmea_str2num(p1 + posx);
+    if (posx != 0XFF) gpsx->distance_reference_ellipsoid_geoid = nmea_str2num(p1 + posx, decimal_places);
     posx = nmea_comma_position(p1, 12);
     if (posx != 0XFF) gpsx->height_unit_distance = *(p1 + posx);
     posx = nmea_comma_position(p1, 13);
-    if (posx != 0XFF) gpsx->differentially_corrected_data_age = (int) nmea_str2num(p1 + posx);
+    if (posx != 0XFF) gpsx->differentially_corrected_data_age = (int) nmea_str2num(p1 + posx, decimal_places);
     posx = nmea_comma_position(p1, 14);
-    if (posx != 0XFF) gpsx->differential_reference_stations_id = (short) nmea_str2num(p1 + posx);
+    if (posx != 0XFF) gpsx->differential_reference_stations_id = (char) nmea_str2num(p1 + posx, decimal_places);
     posx = nmea_comma_position(p1, 15);
-    if (posx != 0XFF) gpsx->checksum = (int) nmea_str2num(p1 + posx);
+    if (posx != 0XFF) gpsx->checksum = nmea_get_checksum(buffer);
 }
