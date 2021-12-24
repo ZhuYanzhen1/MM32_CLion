@@ -48,12 +48,12 @@ int nmea_pow(char m, char n) {
     \param[in]  decimal_places: Number of decimal places,return to the calling function
     \retval     Converted values
 */
-int nmea_str2num(char *buffer) {
+float nmea_str2num(char *buffer) {
     char *p = buffer;
     int integer_data = 0, decimal_data = 0;
     char integer_length = 0, decimal_length = 0;
     char mask = 0;
-    int data = 0;
+    float data = 0;
 
     /* Get the length of integers and decimals */
     while (1) {
@@ -90,11 +90,11 @@ int nmea_str2num(char *buffer) {
     for (int i = 0; i < decimal_length; i++) {
         decimal_data += nmea_pow(10, decimal_length - 1 - i) * (buffer[integer_length + 1 + i] - '0');
     }
-    data = integer_data * nmea_pow(10, integer_length) + decimal_data;
+    data = integer_data * nmea_pow(10, decimal_length) + decimal_data;
     if (mask & 0X02) data = -data;
-//    while (decimal_data--) {
-//        data /= 10;
-//    }
+    while (decimal_length--) {
+        data /= 10;
+    }
     return data;
 }
 
@@ -120,9 +120,9 @@ void nmea_gpgga_analysis(nmea_gga *gpsx, char *buffer) {
     posx = nmea_comma_position(p1, 5);
     if (posx != 0XFF) gpsx->longitude_direction = *(p1 + posx);
     posx = nmea_comma_position(p1, 6);
-    if (posx != 0XFF) gpsx->positioning_quality = nmea_str2num(p1 + posx);
+    if (posx != 0XFF) gpsx->positioning_quality = (int) nmea_str2num(p1 + posx);
     posx = nmea_comma_position(p1, 7);
-    if (posx != 0XFF) gpsx->positioning_satellites_num = nmea_str2num(p1 + posx);
+    if (posx != 0XFF) gpsx->positioning_satellites_num = (int) nmea_str2num(p1 + posx);
     posx = nmea_comma_position(p1, 8);
     if (posx != 0XFF) gpsx->horizontal_accuracy_factor = nmea_str2num(p1 + posx);
     posx = nmea_comma_position(p1, 9);
@@ -134,9 +134,9 @@ void nmea_gpgga_analysis(nmea_gga *gpsx, char *buffer) {
     posx = nmea_comma_position(p1, 12);
     if (posx != 0XFF) gpsx->height_unit_distance = *(p1 + posx);
     posx = nmea_comma_position(p1, 13);
-    if (posx != 0XFF) gpsx->differentially_corrected_data_age = nmea_str2num(p1 + posx);
+    if (posx != 0XFF) gpsx->differentially_corrected_data_age = (int) nmea_str2num(p1 + posx);
     posx = nmea_comma_position(p1, 14);
-    if (posx != 0XFF) gpsx->differential_reference_stations_id = nmea_str2num(p1 + posx);
+    if (posx != 0XFF) gpsx->differential_reference_stations_id = (short) nmea_str2num(p1 + posx);
     posx = nmea_comma_position(p1, 15);
-    if (posx != 0XFF) gpsx->checksum = nmea_str2num(p1 + posx);
+    if (posx != 0XFF) gpsx->checksum = (int) nmea_str2num(p1 + posx);
 }
