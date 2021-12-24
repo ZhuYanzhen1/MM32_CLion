@@ -11,7 +11,7 @@
     \retval     0~0XFE,represents the offset of the comma location.
                 0XFF means there is no nth comma
 */
-char nmea_comma_position(char *buffer, char n) {
+int nmea_comma_position(char *buffer, char n) {
     char *p = buffer;
     while (n) {
 

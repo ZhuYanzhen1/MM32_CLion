@@ -52,7 +52,7 @@ typedef struct {
 
 } nmea_gga;
 
-char nmea_comma_position(char *buffer, char n);
+int nmea_comma_position(char *buffer, char n);
 int nmea_pow(char m, char n);
 int nmea_str2num(char *buffer);
 void nmea_gpgga_analysis(nmea_gga *gpsx, char *buffer);
