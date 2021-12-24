@@ -20,6 +20,7 @@ typedef struct {
     char minute;
     char second;
     char a;
+    float uct_time;
 } nmea_utc_time;
 
 typedef struct {
@@ -54,5 +55,6 @@ typedef struct {
 char nmea_comma_position(char *buffer, char n);
 int nmea_pow(char m, char n);
 int nmea_str2num(char *buffer);
+void NMEA_GPGGA_Analysis(nmea_gga *gpsx, char *buffer);
 
 #endif //MAIN_C_PROTOCOL_GPS_PRASER_H_

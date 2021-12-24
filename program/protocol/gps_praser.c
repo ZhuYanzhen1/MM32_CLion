@@ -47,7 +47,7 @@ int nmea_pow(char m, char n) {
     \brief      Character to number conversion,end with ',' or '*'
     \param[in]  buffer: Digital storage area
     \param[in]  decimal_places: Number of decimal places,return to the calling function
-    \retval     Converted values()
+    \retval     Converted values
 */
 int nmea_str2num(char *buffer) {
     char *p = buffer;
@@ -96,19 +96,45 @@ int nmea_str2num(char *buffer) {
     return data;
 }
 
-//分析GPGGA信息
-//gpsx:nmea信息结构体
-//buf:接收到的GPS数据缓冲区首地址
-void NMEA_GPGGA_Analysis(nmea_gga *gpsx, char *buf) {
+/*!
+    \brief      Analyze GPGGA information
+    \param[in]  buffer: Digital storage area
+    \param[in]  gpsx: nmea information structure
+*/
+void NMEA_GPGGA_Analysis(nmea_gga *gpsx, char *buffer) {
     char *p1;
     char posx;
 
     /* strstr determines whether $GPGGA is a substring of the p array, and if so, returns the address of the first occurrence in $GPGGA */
-    p1 = (char *) strstr((const char *) buf, "$GPGGA");
-    posx = nmea_comma_position(p1, 6);                              //得到GPS状态
-    if (posx != 0XFF)gpsx->positioning_quality = nmea_str2num(p1 + posx);
-    posx = nmea_comma_position(p1, 7);                              //得到用于定位的卫星数
-    if (posx != 0XFF)gpsx->positioning_satellites_num = nmea_str2num(p1 + posx);
-    posx = nmea_comma_position(p1, 9);                              //得到海拔高度
-    if (posx != 0XFF)gpsx->altitude = nmea_str2num(p1 + posx);
+    p1 = (char *) strstr((const char *) buffer, "$GPGGA");
+    posx = nmea_comma_position(p1, 1);
+    if (posx != 0XFF) gpsx->positioning_time.uct_time = nmea_str2num(p1 + posx);
+    posx = nmea_comma_position(p1, 2);
+    if (posx != 0XFF) gpsx->latitude = nmea_str2num(p1 + posx);
+    posx = nmea_comma_position(p1, 3);
+    if (posx != 0XFF) gpsx->latitude_direction = *(p1 + posx);
+    posx = nmea_comma_position(p1, 4);
+    if (posx != 0XFF) gpsx->longitude = nmea_str2num(p1 + posx);
+    posx = nmea_comma_position(p1, 5);
+    if (posx != 0XFF) gpsx->longitude_direction = *(p1 + posx);
+    posx = nmea_comma_position(p1, 6);
+    if (posx != 0XFF) gpsx->positioning_quality = nmea_str2num(p1 + posx);
+    posx = nmea_comma_position(p1, 7);
+    if (posx != 0XFF) gpsx->positioning_satellites_num = nmea_str2num(p1 + posx);
+    posx = nmea_comma_position(p1, 8);
+    if (posx != 0XFF) gpsx->horizontal_accuracy_factor = nmea_str2num(p1 + posx);
+    posx = nmea_comma_position(p1, 9);
+    if (posx != 0XFF) gpsx->altitude = nmea_str2num(p1 + posx);
+    posx = nmea_comma_position(p1, 10);
+    if (posx != 0XFF) gpsx->height_unit_altitude = *(p1 + posx);
+    posx = nmea_comma_position(p1, 11);
+    if (posx != 0XFF) gpsx->distance_reference_ellipsoid_geoid = nmea_str2num(p1 + posx);
+    posx = nmea_comma_position(p1, 12);
+    if (posx != 0XFF) gpsx->height_unit_distance = *(p1 + posx);
+    posx = nmea_comma_position(p1, 13);
+    if (posx != 0XFF) gpsx->differentially_corrected_data_age = nmea_str2num(p1 + posx);
+    posx = nmea_comma_position(p1, 14);
+    if (posx != 0XFF) gpsx->differential_reference_stations_id = nmea_str2num(p1 + posx);
+    posx = nmea_comma_position(p1, 15);
+    if (posx != 0XFF) gpsx->checksum = nmea_str2num(p1 + posx);
 }
