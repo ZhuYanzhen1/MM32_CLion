@@ -14,7 +14,6 @@
 int nmea_comma_position(char *buffer, char n) {
     char *p = buffer;
     while (n) {
-
         /* If '*' or illegal character is encountered, there is no nth comma */
         if (*buffer == '*' || *buffer < ' ' || *buffer > 'z') return 0XFF;
         if (*buffer == ',') n--;
