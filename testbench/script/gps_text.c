@@ -27,7 +27,18 @@ void test_nmea_comma_position() {
 }
 
 void text_nmea_pow() {
-
+    CU_ASSERT_EQUAL(nmea_pow(10, 2), 100);
+    CU_ASSERT_NOT_EQUAL(nmea_pow(10, 8), 100);
+    CU_ASSERT_EQUAL(nmea_pow(10, -2), 0.01);
+    CU_ASSERT_NOT_EQUAL(nmea_pow(10, -8), 0.01);
+    CU_ASSERT_EQUAL(nmea_pow(10, 0), 1);
+    CU_ASSERT_NOT_EQUAL(nmea_pow(10, 0), 10);
+    CU_ASSERT_NOT_EQUAL(nmea_pow(10, 8), 1);
+    CU_ASSERT_EQUAL(nmea_pow(-10, 0), 1);
+    CU_ASSERT_EQUAL(nmea_pow(-10, 2), 100);
+    CU_ASSERT_EQUAL(nmea_pow(-10, 3), -1000);
+    CU_ASSERT_EQUAL(nmea_pow(-10, -3), -0.001);
+    CU_ASSERT_EQUAL(nmea_pow(-10, -2), 0.01);
 }
 
 void test_nmea_str2num() {
