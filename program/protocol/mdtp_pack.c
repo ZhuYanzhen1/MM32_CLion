@@ -12,7 +12,8 @@
 #include "uart.h"
 #define common_sendbyte uart1_sendbyte
 #else
-extern void uart1_sendbyte(unsigned char data);
+#define common_sendbyte mdtp_sendbyte
+extern void mdtp_sendbyte(unsigned char data);
 #endif
 
 /*!

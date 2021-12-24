@@ -3,6 +3,8 @@
 #include <QDebug>
 #include <QString>
 
+static unsigned char variable_counter_serial = 0;
+
 void MainWindow::mdtp_callback_handler(unsigned char pid, const unsigned char *data) {
     QString debug_string;
     const unsigned char array_buffer[9] = {data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], 0x00};
@@ -13,7 +15,42 @@ void MainWindow::mdtp_callback_handler(unsigned char pid, const unsigned char *d
     qDebug() << debug_string;
     switch (pid) {
         case 0:
-
+            if(data[0] == variable_counter_serial) {
+                debugger_variable[variable_counter_serial]->var_status = data[1] << 16;
+                debugger_variable[variable_counter_serial]->var_status |= data[2] << 8;
+                debugger_variable[variable_counter_serial]->var_status |= data[3];
+                debugger_variable[variable_counter_serial]->var_address = data[4] << 24;
+                debugger_variable[variable_counter_serial]->var_address |= data[5] << 16;
+                debugger_variable[variable_counter_serial]->var_address |= data[6] << 8;
+                debugger_variable[variable_counter_serial]->var_address |= data[7];
+            }
+            break;
+        case 1:
+            if(data[0] == variable_counter_serial) {
+                for(unsigned char counter = 0; counter < 7; counter++)
+                    debugger_variable[variable_counter_serial]->var_name[counter] = data[counter + 1];
+            }
+            break;
+        case 2:
+            if(data[0] == variable_counter_serial) {
+                for(unsigned char counter = 0; counter < 7; counter++)
+                    debugger_variable[variable_counter_serial]->var_name[counter + 7] = data[counter + 1];
+                debugger_variable[variable_counter_serial]->var_name[15] = 0x00;
+                table_append_variable(debugger_variable[variable_counter_serial]->var_status,
+                                      debugger_variable[variable_counter_serial]->var_value,
+                                      debugger_variable[variable_counter_serial]->var_name,
+                                      debugger_variable[variable_counter_serial]->var_address);
+                variable_counter_serial++;
+            }
+            break;
+        case 3:
+            if(variable_counter_serial > data[0]) {
+                debugger_variable[data[0]]->var_value = data[4] << 24;
+                debugger_variable[data[0]]->var_value |= data[5] << 16;
+                debugger_variable[data[0]]->var_value |= data[6] << 8;
+                debugger_variable[data[0]]->var_value |= data[7];
+                table_setvalue_variable(data[0], debugger_variable[data[0]]->var_value);
+            }
             break;
         case 4:
             ui->debug_info_txt->setText(ui->debug_info_txt->toPlainText() + QString::fromLocal8Bit((const char *)array_buffer));

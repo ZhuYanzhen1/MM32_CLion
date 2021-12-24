@@ -7,8 +7,13 @@
 ******************************************************************************/
 
 #include "mdtp_unpack.h"
-#include "debugger.h"
 #include "string.h"
+
+#ifndef RUNNING_UNIT_TEST
+#include "debugger.h"
+#else
+extern void mdtp_callback_handler(unsigned char pid, const unsigned char *data);
+#endif
 
 /*!
     \brief  medium capacity transport protocol receive state variable

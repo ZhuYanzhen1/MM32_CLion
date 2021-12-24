@@ -16,7 +16,9 @@ int main(void) {
     led_config();
     key_config();
     spi2_config();
+    xpt2046_config();
     gui_config();
+    xpt2046_calibrate();
     uart1_config(115200);
     uart3_config(115200);
     cm_backtrace_init("mm32f3277", "1.0.1", "1.0.1");

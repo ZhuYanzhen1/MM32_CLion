@@ -2,8 +2,8 @@
 // Created by Lao·Zhu on 2021/2/26.
 //
 
-#ifndef _FONT_H_
-#define _FONT_H_
+#ifndef MM32F3277_GUI_FONT_H_
+#define MM32F3277_GUI_FONT_H_
 
 /*   !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~  */
 const unsigned char Font_6_12[] = {
@@ -104,4 +104,4 @@ const unsigned char Font_6_12[] = {
     0x68, 0x90, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,/*"~",94*/
 };
 
-#endif
+#endif  // MM32F3277_GUI_FONT_H_

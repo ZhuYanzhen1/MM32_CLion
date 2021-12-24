@@ -2,8 +2,8 @@
 // Created by Lao·Zhu on 2021/2/26.
 //
 
-#ifndef _GUI_H_
-#define _GUI_H_
+#ifndef MM32F3277_GUI_GUI_BASE_H_
+#define MM32F3277_GUI_GUI_BASE_H_
 
 #include "color.h"
 
@@ -35,4 +35,4 @@ void gui_printf(unsigned char row,
                 const char *fmt,
                 ...);
 
-#endif
+#endif  // MM32F3277_GUI_GUI_BASE_H_
