@@ -101,7 +101,7 @@ int nmea_str2num(char *buffer) {
     \param[in]  buffer: Digital storage area
     \param[in]  gpsx: nmea information structure
 */
-void NMEA_GPGGA_Analysis(nmea_gga *gpsx, char *buffer) {
+void nmea_gpgga_analysis(nmea_gga *gpsx, char *buffer) {
     char *p1;
     char posx;
 
