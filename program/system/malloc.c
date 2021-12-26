@@ -1,15 +1,15 @@
-#include <stdlib.h>
-
-/* Defining MPU_WRAPPERS_INCLUDED_FROM_API_FILE prevents task.h from redefining
-all the API functions to use the MPU wrappers.  That should only be done when
-task.h is included from an application file. */
 #define MPU_WRAPPERS_INCLUDED_FROM_API_FILE
 
+#ifndef RUNNING_UNIT_TEST
 #include "config.h"
+#else
+#define configTOTAL_HEAP_SIZE   16 * 1024
+#endif
 #include "malloc.h"
 
 #undef MPU_WRAPPERS_INCLUDED_FROM_API_FILE
 
+#define NULL ((void *)0)
 #define heapMINIMUM_BLOCK_SIZE ((unsigned int) (xHeapStructSize << 1))
 #define portBYTE_ALIGNMENT_MASK (0x0007)
 #define heapBITS_PER_BYTE ((unsigned int) 8)
@@ -43,7 +43,8 @@ static void prvHeapInit(void);
 
 /* The size of the structure placed at the beginning of each allocated memory
 block must by correctly byte aligned. */
-static const unsigned int xHeapStructSize = (sizeof(BlockLink_t) + ((unsigned int) (8 - 1))) & ~((unsigned int) portBYTE_ALIGNMENT_MASK);
+static const unsigned int
+    xHeapStructSize = (sizeof(BlockLink_t) + ((unsigned int) (8 - 1))) & ~((unsigned int) portBYTE_ALIGNMENT_MASK);
 
 /* Create a couple of list links to mark the start and end of the list. */
 static BlockLink_t xStart, *pxEnd = NULL;
@@ -228,7 +229,8 @@ static void prvInsertBlockIntoFreeList(BlockLink_t *pxBlockToInsert) {
 
     /* Iterate through the list until a block is found that has a higher address
 	than the block being inserted. */
-    for (pxIterator = &xStart; pxIterator->pxNextFreeBlock < pxBlockToInsert; pxIterator = pxIterator->pxNextFreeBlock) {
+    for (pxIterator = &xStart; pxIterator->pxNextFreeBlock < pxBlockToInsert;
+         pxIterator = pxIterator->pxNextFreeBlock) {
         /* Nothing to do here, just iterate to the right position. */
     }
 
