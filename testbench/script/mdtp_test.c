@@ -29,8 +29,7 @@ void mdtp_sendbyte(unsigned char data) {
             break;
         case 10: CU_ASSERT_EQUAL(data, 0x11)
             break;
-        default: CU_FAIL("Unexpected Value Appear")
-            break;
+        default:break;
     }
     rcv_counter++;
 }

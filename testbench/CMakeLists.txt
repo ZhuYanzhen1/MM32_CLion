@@ -3,7 +3,7 @@ project(testbench C)
 
 set(CMAKE_C_STANDARD 11)
 
-set(COMMON_INCLUDE "script" "../program/protocol")
+set(COMMON_INCLUDE "script" "../program/protocol" "../program/math" "../program/system")
 
 if ("${CMAKE_BUILD_PLATFORM}" STREQUAL "laozhu")
     link_directories(D:/msys64/opt/cunit/lib)
@@ -19,7 +19,8 @@ endif ()
 add_definitions(-DRUNNING_UNIT_TEST)
 
 file(GLOB_RECURSE SOURCES "main.c" "unit_test.c" "script/*.c" "../program/protocol/mdtp_pack.c"
-        "../program/protocol/gps_parser.c" "../program/protocol/mdtp_unpack.c")
+        "../program/protocol/gps_parser.c" "../program/protocol/mdtp_unpack.c"
+        "../program/math/sort.c" "../program/system/malloc.c")
 
 add_executable(testbench ${SOURCES})
 

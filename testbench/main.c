@@ -25,5 +25,11 @@ int main() {
     add_test_scripts_to_suite(&gps_suite, "gps_nmea_gpgga_analysis", test_nmea_gpgga_analysis);
     add_test_scripts_to_suite(&gps_suite, "gps_nmea_gpant_analysis", test_nmea_gpant_analysis);
 
+    CU_pSuite sort_suite = NULL;
+    initialize_cunit_suite(&sort_suite, "sort_suit");
+    add_test_scripts_to_suite(&sort_suite, "sort_heapsort", test_heap_sort);
+    add_test_scripts_to_suite(&sort_suite, "sort_mergesort", test_merge_sort);
+    add_test_scripts_to_suite(&sort_suite, "sort_quicksort", test_quick_sort);
+
     return generate_statements_report();
 }
