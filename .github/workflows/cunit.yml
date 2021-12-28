@@ -26,6 +26,7 @@ jobs:
       - name: Run Test Program
         run: |
           ls && cd testbench && mkdir build && ls && cd build
-          cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_BUILD_PLATFORM=github ../ && make
+          cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_BUILD_PLATFORM=github ../
+          cmake --build ./ --target testbench
           export LD_LIBRARY_PATH=/home/runner/work/MM32_CLion/MM32_CLion/cunit/lib
           ls && ./testbench && ls
