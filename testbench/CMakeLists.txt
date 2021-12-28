@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 3.21)
 project(testbench C)
-
 set(CMAKE_C_STANDARD 11)
+
+add_compile_options(-Wno-pointer-to-int-cast -Wno-int-to-pointer-cast)
+add_link_options(-Wno-pointer-to-int-cast -Wno-int-to-pointer-cast)
+add_definitions(-DRUNNING_UNIT_TEST)
 
 set(COMMON_INCLUDE "script" "../program/protocol" "../program/math" "../program/system")
 
@@ -16,12 +19,9 @@ elseif ("${CMAKE_BUILD_PLATFORM}" STREQUAL "github")
     include_directories(/home/runner/work/MM32_CLion/MM32_CLion/cunit/include ${COMMON_INCLUDE})
 endif ()
 
-add_definitions(-DRUNNING_UNIT_TEST)
-
 file(GLOB_RECURSE SOURCES "main.c" "unit_test.c" "script/*.c" "../program/protocol/mdtp_pack.c"
         "../program/protocol/gps_parser.c" "../program/protocol/mdtp_unpack.c"
         "../program/math/sort.c" "../program/system/malloc.c")
 
 add_executable(testbench ${SOURCES})
-
 target_link_libraries(testbench cunit)
