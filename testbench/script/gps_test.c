@@ -5,7 +5,6 @@
 #include "gps_test.h"
 #include "CUnit/Basic.h"
 #include "gps_parser.h"
-#include "malloc.h"
 
 void test_nmea_comma_position() {
     char data[] = "$GPGGA,235316.000,3959.9925,S,12000.0090,E,1,06,1.21,62.77,M,0.00,M,,*7B";
