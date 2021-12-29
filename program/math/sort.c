@@ -3,7 +3,8 @@
 //
 
 #include "sort.h"
-#include "malloc.h"
+
+static int merge_memory1[512], merge_memory2[512];
 
 int heaplify(int *a, int len, int index) {
     int left = 2 * index + 1;
@@ -44,10 +45,9 @@ int build_heap(int *a, int len) {
     return 0;
 }
 
-int sort_heapsort(int *a, int len) {
+void sort_heapsort(int *a, int len) {
     build_heap(a, len);
-    int tmp;
-    int newlen = len;
+    int tmp, newlen = len;
     while (newlen > 1) {
         //swap head with last
         tmp = a[0];
@@ -57,7 +57,6 @@ int sort_heapsort(int *a, int len) {
         //heapify new heap
         heaplify(a, newlen, 0);
     }
-    return 0;
 }
 
 void u_memcpy(void *destin, void *source, unsigned int n) {
@@ -86,14 +85,14 @@ int merge_two(int *a, int s1, int e1, int s2, int e2, int *m1, int *m2) {
     return 0;
 }
 
-int sort_mergesort(int *a, int len) {
+void sort_mergesort(int *a, int len) {
     int step = 1;
-    int *m1 = (int *) (int *) memalloc(len * sizeof(int));
-    if (!m1)
-        return -1;
-    int *m2 = (int *) memalloc(len * sizeof(int));
-    if (!m2)
-        return -1;
+    int *m1 = merge_memory1;
+    int *m2 = merge_memory2;
+    for (unsigned int counter = 0; counter < sizeof(merge_memory1) / 4; counter++) {
+        merge_memory1[counter] = 0x00000000L;
+        merge_memory2[counter] = 0x00000000L;
+    }
     while (step < len) {
         int i, s1, e1, s2, e2;
         for (i = 0; (i + step - 1) < (len - 1); i += 2 * step) {
@@ -105,9 +104,6 @@ int sort_mergesort(int *a, int len) {
         }
         step = step << 1;
     }
-    memfree(m1);
-    memfree(m2);
-    return 0;
 }
 
 int quicksort_r(int *a, int start, int end) {
@@ -134,8 +130,6 @@ int quicksort_r(int *a, int start, int end) {
     return 0;
 }
 
-int sort_quicksort(int *a, int len) {
+void sort_quicksort(int *a, int len) {
     quicksort_r(a, 0, len - 1);
-    return 0;
 }
-
