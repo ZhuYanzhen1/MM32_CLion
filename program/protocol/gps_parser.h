@@ -75,7 +75,7 @@ typedef struct {
 
 } nmea_ant;
 
-int nmea_comma_position(char *buffer, char n);
+char nmea_comma_position(char *buffer, char n);
 int nmea_pow(char m, char n);
 long nmea_str2num(char *buffer, char *decimal_places);
 char nmea_gpgga_analysis(nmea_gga *gpsx, char *buffer);
