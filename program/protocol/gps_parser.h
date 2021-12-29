@@ -78,7 +78,7 @@ typedef struct {
 int nmea_comma_position(char *buffer, char n);
 int nmea_pow(char m, char n);
 long nmea_str2num(char *buffer, char *decimal_places);
-void nmea_gpgga_analysis(nmea_gga *gpsx, char *buffer);
-void nema_gpant_analysis(nmea_ant *gps_ant, char *buffer);
+char nmea_gpgga_analysis(nmea_gga *gpsx, char *buffer);
+char nema_gpant_analysis(nmea_ant *gps_ant, char *buffer);
 
 #endif //MAIN_C_PROTOCOL_GPS_PARSER_H_

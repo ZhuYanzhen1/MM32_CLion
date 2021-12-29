@@ -111,8 +111,10 @@ int nmea_get_checksum(char *buffer) {
     \brief      Analyze GPGGA information
     \param[in]  buffer: Digital storage area
     \param[in]  gps_gga: Receiver time, location and positioning related data
+    \retval     0：Receive gps information error
+                1：Receive gps information without error
 */
-void nmea_gpgga_analysis(nmea_gga *gps_gga, char *buffer) {
+char nmea_gpgga_analysis(nmea_gga *gps_gga, char *buffer) {
     char *p;
     char posx;
 
@@ -120,8 +122,17 @@ void nmea_gpgga_analysis(nmea_gga *gps_gga, char *buffer) {
     char a = 1;
     char *decimal_places = &a;
 
+    /* check_sum is calculated, checksum is read from gps */
+    int check_sum = 0;
+
     /* strstr determines whether $GPGGA is a substring of the p array, and if so, returns the address of the first occurrence in $GPGGA */
     p = (char *) strstr((const char *) buffer, "$GNGGA");
+
+    /* If the number of "," is not enough, it means receiving error */
+    posx = nmea_comma_position(p, 15);
+    if (posx != 0XFF) gps_gga->checksum = nmea_get_checksum(buffer);
+    else return 0;
+
     posx = nmea_comma_position(p, 1);
     if (posx != 0XFF)
         gps_gga->positioning_time.uct_time = nmea_str2num(p + posx, &gps_gga->positioning_time.decimal_places_time);
@@ -151,26 +162,48 @@ void nmea_gpgga_analysis(nmea_gga *gps_gga, char *buffer) {
     if (posx != 0XFF) gps_gga->differentially_corrected_data_age = (int) nmea_str2num(p + posx, decimal_places);
     posx = nmea_comma_position(p, 14);
     if (posx != 0XFF) gps_gga->differential_reference_stations_id = (char) nmea_str2num(p + posx, decimal_places);
-    posx = nmea_comma_position(p, 15);
-    if (posx != 0XFF) gps_gga->checksum = nmea_get_checksum(buffer);
+
+
+    /* Verify that the checksum are correct */
+    for (char i = 1; i < 14; i++) {
+        char position = 0;
+        char Decimal_places = 0;
+        int num = 0;
+        position = nmea_comma_position(p, i);
+        num = nmea_str2num(p + position, &Decimal_places);
+        check_sum = check_sum ^ num;
+    }
+    if (check_sum != gps_gga->checksum) return 0;
+    else return 1;
 }
 
 /*!
     \brief      Analyze GPANT information
     \param[in]  buffer: Digital storage area
     \param[in]  gps_ant: antenna status structure
+    \retval     0：Receive gps information error
+                1：Receive gps information without error
 */
-void nema_gpant_analysis(nmea_ant *gps_ant, char *buffer) {
+char nema_gpant_analysis(nmea_ant *gps_ant, char *buffer) {
     char posx;
     char i = 0;
     char ant_message[14] = {0};
     gps_ant->text_message = ant_message;
+
+    /* check_sum is calculated, checksum is read from gps */
+    int check_sum = 0;
 
     /* Variables a and decimal_places are not used */
     unsigned char a = 1;
     char *decimal_places = (char *) &a;
 
     char *p = (char *) strstr((const char *) buffer, "$GNTXT");
+
+    /* If the number of "," is not enough, it means receiving error */
+    posx = nmea_comma_position(p, 5);
+    if (posx != 0XFF) gps_ant->checksum = nmea_get_checksum(buffer);
+    else return 0;
+
     posx = nmea_comma_position(p, 1);
     if (posx != 0XFF) gps_ant->xx = nmea_str2num(p + posx, decimal_places);
     posx = nmea_comma_position(p, 2);
@@ -184,6 +217,16 @@ void nema_gpant_analysis(nmea_ant *gps_ant, char *buffer) {
             i++;
         }
     }
-    posx = nmea_comma_position(p, 5);
-    if (posx != 0XFF) gps_ant->checksum = nmea_get_checksum(buffer);
+
+    /* Verify that the checksum are correct */
+    for (i = 1; i < 4; i++) {
+        char position = 0;
+        char Decimal_places = 0;
+        int num = 0;
+        position = nmea_comma_position(p, i);
+        num = nmea_str2num(p + position, &Decimal_places);
+        check_sum = check_sum ^ num;
+    }
+    if (check_sum != gps_ant->checksum) return 0;
+    else return 1;
 }
