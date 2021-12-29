@@ -23,7 +23,7 @@ void gui_draw_rectangle(unsigned short sx,
                         Filled_Status_e filled);
 void gui_draw_vline(unsigned char x1, unsigned char y1, unsigned char height, unsigned short color);
 void gui_draw_hline(unsigned char x1, unsigned char y1, unsigned char height, unsigned short color);
-void lcd_putchar(unsigned char x,
+void gui_putchar(unsigned char x,
                  unsigned char line,
                  unsigned char value,
                  unsigned int dcolor,

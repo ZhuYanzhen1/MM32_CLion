@@ -121,7 +121,7 @@ void nmea_gpgga_analysis(nmea_gga *gps_gga, char *buffer) {
     char *decimal_places = &a;
 
     /* strstr determines whether $GPGGA is a substring of the p array, and if so, returns the address of the first occurrence in $GPGGA */
-    p = (char *) strstr((const char *) buffer, "$GPGGA");
+    p = (char *) strstr((const char *) buffer, "$GNGGA");
     posx = nmea_comma_position(p, 1);
     if (posx != 0XFF)
         gps_gga->positioning_time.uct_time = nmea_str2num(p + posx, &gps_gga->positioning_time.decimal_places_time);
@@ -170,7 +170,7 @@ void nema_gpant_analysis(nmea_ant *gps_ant, char *buffer) {
     unsigned char a = 1;
     char *decimal_places = (char *) &a;
 
-    char *p = (char *) strstr((const char *) buffer, "$GPTXT");
+    char *p = (char *) strstr((const char *) buffer, "$GNTXT");
     posx = nmea_comma_position(p, 1);
     if (posx != 0XFF) gps_ant->xx = nmea_str2num(p + posx, decimal_places);
     posx = nmea_comma_position(p, 2);

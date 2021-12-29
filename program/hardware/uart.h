@@ -17,4 +17,7 @@ void uart1_sendbyte(unsigned char data);
 void uart3_config(unsigned int baudrate);
 void uart3_sendbyte(unsigned char data);
 
+void uart6_config(unsigned int baudrate);
+void uart6_sendbyte(unsigned char data);
+
 #endif  // MM32F3277_HARDWARE_UART_H_

@@ -15,7 +15,7 @@ void gui_config(void) {
     gui_clear_screan(C_WHITE);
 }
 
-void lcd_putchar(unsigned char x,
+void gui_putchar(unsigned char x,
                  unsigned char line,
                  unsigned char value,
                  unsigned int dcolor,
@@ -49,7 +49,7 @@ void gui_printf(unsigned char row,
     vsnprintf(lcd_tmp_buffer, sizeof(lcd_tmp_buffer), fmt, ap);
     va_end(ap);
     while (lcd_tmp_buffer[n] != '\0') {
-        lcd_putchar(row, column, lcd_tmp_buffer[n], dcolor, bgcolor);
+        gui_putchar(row, column, lcd_tmp_buffer[n], dcolor, bgcolor);
         row += 6;
         n++;
     }

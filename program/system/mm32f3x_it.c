@@ -9,6 +9,9 @@
 #include "mm32f3x_it.h"
 #include "main.h"
 
+unsigned char uart6_buffer[256] = {' '};
+static unsigned char uart6_counter = 0;
+
 /*!
     \brief  this function handles SysTick exception
     \retval none
@@ -44,5 +47,14 @@ void UART3_IRQHandler(void) {
         unsigned char recvbyte = UART_ReceiveData(UART3);
         sdtp_receive_handler(recvbyte);
         UART_ClearITPendingBit(UART3, UART_ISR_RX);
+    }
+}
+
+void UART6_IRQHandler(void) {
+    if (UART_GetITStatus(UART6, UART_ISR_RX) != RESET) {
+        unsigned char recvbyte = UART_ReceiveData(UART6);
+        uart6_buffer[uart6_counter] = ((recvbyte == 10 || recvbyte == 13) ? ' ' : recvbyte);
+        uart6_counter = (uart6_counter + 1) % 0xff;
+        UART_ClearITPendingBit(UART6, UART_ISR_RX);
     }
 }

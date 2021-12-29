@@ -69,9 +69,10 @@ typedef struct {
 typedef struct {
     char xx;
     char yy;
+    char zz;
     char *text_message;
     char checksum;
-    text_identifiers zz;
+
 } nmea_ant;
 
 int nmea_comma_position(char *buffer, char n);
