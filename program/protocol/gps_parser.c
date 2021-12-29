@@ -5,6 +5,10 @@
 #include "gps_parser.h"
 #include "string.h"
 
+#define STRING_TO_NUM(x, y, num)    posx = nmea_comma_position(p, num);\
+                                    if (posx != 0XFF) \
+                                        x = nmea_str2num(p + posx, &y)
+
 /*!
     \brief      Get the position of the nth comma from inside buffer
     \param[in]  buffer: Digital storage area
@@ -61,7 +65,8 @@ long nmea_str2num(char *buffer, char *decimal_places) {
             mask |= 0X02;
             p++;
         }
-        if (*p == ',' || (*p == '*'))break;
+        if (*p == ',' || (*p == '*'))
+            break;
         if (*p == '.') { /* Decimal */
             mask |= 0X01;
             p++;
@@ -79,17 +84,16 @@ long nmea_str2num(char *buffer, char *decimal_places) {
     if (mask & 0X02) buffer++;
 
     /* Get the integer part of the data */
-    for (int i = 0; i < integer_length; i++) {
+    for (int i = 0; i < integer_length; i++)
         integer_data += nmea_pow(10, integer_length - 1 - i) * (buffer[i] - '0');
-    }
 
     /* Maximum 4 decimal places */
     if (decimal_length > 4) decimal_length = 4;
     *decimal_places = decimal_length;
+
     /* Get the decimal part of the data */
-    for (int i = 0; i < decimal_length; i++) {
+    for (int i = 0; i < decimal_length; i++)
         decimal_data += nmea_pow(10, decimal_length - 1 - i) * (buffer[integer_length + 1 + i] - '0');
-    }
     data = integer_data * nmea_pow(10, decimal_length) + decimal_data;
     if (mask & 0X02) data = -data;
     return data;
@@ -135,20 +139,27 @@ char nmea_gpgga_analysis(nmea_gga *gps_gga, char *buffer) {
 
     posx = nmea_comma_position(p, 1);
     if (posx != 0XFF)
-        gps_gga->positioning_time.uct_time = nmea_str2num(p + posx, &gps_gga->positioning_time.decimal_places_time);
-    posx = nmea_comma_position(p, 2);
-    if (posx != 0XFF) gps_gga->latitude = nmea_str2num(p + posx, &gps_gga->decimal_places_latitude);
+        gps_gga->positioning_time.uct_time = nmea_str2num(
+            p + posx, &gps_gga->positioning_time.decimal_places_time);
+
+//    posx = nmea_comma_position(p, 2);
+//    if (posx != 0XFF) gps_gga->latitude = nmea_str2num(p + posx, &gps_gga->decimal_places_latitude);
+//
+    STRING_TO_NUM(gps_gga->latitude, gps_gga->decimal_places_latitude, 2);
+
     posx = nmea_comma_position(p, 3);
     if (posx != 0XFF) gps_gga->latitude_direction = *(p + posx);
     posx = nmea_comma_position(p, 4);
     if (posx != 0XFF) gps_gga->longitude = nmea_str2num(p + posx, &gps_gga->decimal_places_longitude);
     posx = nmea_comma_position(p, 5);
+
     if (posx != 0XFF) gps_gga->longitude_direction = *(p + posx);
     posx = nmea_comma_position(p, 6);
     if (posx != 0XFF) gps_gga->positioning_quality = (int) nmea_str2num(p + posx, decimal_places);
     posx = nmea_comma_position(p, 7);
     if (posx != 0XFF) gps_gga->positioning_satellites_num = (int) nmea_str2num(p + posx, decimal_places);
     posx = nmea_comma_position(p, 8);
+
     if (posx != 0XFF) gps_gga->horizontal_accuracy_factor = nmea_str2num(p + posx, &gps_gga->decimal_places_accuracy);
     posx = nmea_comma_position(p, 9);
     if (posx != 0XFF) gps_gga->altitude = nmea_str2num(p + posx, &gps_gga->decimal_places_altitude);
@@ -188,6 +199,9 @@ char nema_gpant_analysis(nmea_ant *gps_ant, char *buffer) {
     char posx;
     char i = 0;
     char ant_message[14] = {0};
+//
+// TODO: 将字符串改为复制的传递方式
+//
     gps_ant->text_message = ant_message;
 
     /* check_sum is calculated, checksum is read from gps */
@@ -220,8 +234,7 @@ char nema_gpant_analysis(nmea_ant *gps_ant, char *buffer) {
 
     /* Verify that the checksum are correct */
     for (i = 1; i < 4; i++) {
-        char position = 0;
-        char Decimal_places = 0;
+        char position = 0, Decimal_places = 0;
         int num = 0;
         position = nmea_comma_position(p, i);
         num = nmea_str2num(p + position, &Decimal_places);
