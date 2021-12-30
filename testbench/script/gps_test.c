@@ -6,20 +6,24 @@
 #include "CUnit/Basic.h"
 #include "gps_parser.h"
 
+//
+//TODO 增加代码覆盖率
+//
+
 void test_nmea_comma_position() {
     char data[] = "$GPGGA,235316.000,3959.9925,S,12000.0090,E,1,06,1.21,62.77,M,0.00,M,,*7B";
-    int n1 = nmea_comma_position(data, 2);
+    char n1 = nmea_comma_position(data, 2);
     CU_ASSERT_EQUAL(*(data + n1), '3')
     CU_ASSERT_NOT_EQUAL(*(data + n1), 'J')
     CU_ASSERT_EQUAL(n1, 18)
     CU_ASSERT_NOT_EQUAL(n1, 17)
-    int n2 = nmea_comma_position(data, 3);
+    char n2 = nmea_comma_position(data, 3);
     CU_ASSERT_EQUAL(*(data + n2), 'S')
     CU_ASSERT_NOT_EQUAL(*(data + n2), '0')
     CU_ASSERT_EQUAL(n2, 28)
     CU_ASSERT_EQUAL(n2 - n1, 10)
     CU_ASSERT_NOT_EQUAL(n2, 29)
-    int n3 = nmea_comma_position(data, 20);
+    short n3 = nmea_comma_position(data, 20);
     CU_ASSERT_NOT_EQUAL(*(data + n3), '0')
     CU_ASSERT_EQUAL(n3, 0XFF)
     CU_ASSERT_NOT_EQUAL(n3, sizeof(data))

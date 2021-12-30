@@ -12,6 +12,14 @@ typedef enum {
     user_message = 7
 } text_identifiers;
 
+typedef enum {
+    autonomous_mode = 'A',
+    voyage_projection = 'E',
+    invalid_data = 'N',
+    mifferential_mode = 'D',
+    Unlocated = 'M'
+} positioning_mode;
+
 typedef struct {
     int satellite_azimuth;
     char satellite_number;
@@ -70,15 +78,34 @@ typedef struct {
     char xx;
     char yy;
     char zz;
-    char *text_message;
     char checksum;
+    char text_message[16];
 
 } nmea_ant;
 
-char nmea_comma_position(char *buffer, char n);
+typedef struct {
+    int true_north_direction;
+    char decimal_point_direction;
+    char true_north_indication;
+    char to_geomagnetic_north_direction;
+    char magnetic_north_indication;
+
+    char speed_to_ground_section;
+    char decimal_point_speed_section;
+    char speed_unit_knots;
+    char speed_to_ground_kmh;
+
+    char decimal_point_speed_kmh;
+    char speed_unit;
+    char checksum;
+    positioning_mode positioning_mode_flag;
+} nmea_vtg;
+
+int nmea_comma_position(char *buffer, char n);
 int nmea_pow(char m, char n);
-long nmea_str2num(char *buffer, char *decimal_places);
-char nmea_gpgga_analysis(nmea_gga *gpsx, char *buffer);
-char nema_gpant_analysis(nmea_ant *gps_ant, char *buffer);
+int nmea_str2num(char *buffer, char *decimal_places);
+void nmea_gpgga_analysis(nmea_gga *gpsx, char *buffer);
+void nema_gpant_analysis(nmea_ant *gps_ant, char *buffer);
+void nema_gpvtg_analysis(nmea_vtg *gps_vtg, char *buffer);
 
 #endif //MAIN_C_PROTOCOL_GPS_PARSER_H_
