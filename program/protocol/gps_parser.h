@@ -6,6 +6,12 @@
 #define MAIN_C_PROTOCOL_GPS_PARSER_H_
 
 typedef enum {
+    positioning_invalid = 0,
+    sps_positioning_mode = 1,
+    heading_projection = 6
+} positioning_quality_flag;
+
+typedef enum {
     error_message = 0,
     warning_message = 1,
     notification_message = 2,
@@ -19,6 +25,11 @@ typedef enum {
     mifferential_mode = 'D',
     Unlocated = 'M'
 } positioning_mode;
+
+typedef enum {
+    invalid = 'V',
+    valid = 'A'
+} location_valid_flag;
 
 typedef struct {
     int satellite_azimuth;
@@ -39,16 +50,12 @@ typedef struct {
 } nmea_utc_time;
 
 typedef struct {
-    nmea_utc_time positioning_time;
-    long latitude;
-    long longitude;
+    int latitude;
+    int longitude;
     char latitude_direction;
     char longitude_direction;
 
-    /* 0:Positioning is unavailable or invalid */
-    /* 1:SPS positioning mode, positioning effective */
-    /* 6:Estimation mode (heading projection) is only valid for NMEA 2.3 and above */
-    char positioning_quality;
+    positioning_quality_flag positioning_quality;
 
     /* 0~24 */
     char positioning_satellites_num;
@@ -58,11 +65,11 @@ typedef struct {
     char differential_reference_stations_id;
     char decimal_places_distance;
 
-    long altitude;
-    long horizontal_accuracy_factor;
+    int altitude;
+    int horizontal_accuracy_factor;
 
     /* "-" indicates that the geoid is lower than the reference ellipsoid */
-    long distance_reference_ellipsoid_geoid;
+    int distance_reference_ellipsoid_geoid;
 
     /* This field is empty when DGPS is not used */
     int differentially_corrected_data_age;
@@ -71,6 +78,7 @@ typedef struct {
     char decimal_places_longitude;
     char decimal_places_altitude;
     char decimal_places_accuracy;
+    nmea_utc_time positioning_time;
 
 } nmea_gga;
 
@@ -101,9 +109,29 @@ typedef struct {
     positioning_mode positioning_mode_flag;
 } nmea_vtg;
 
+typedef struct {
+    nmea_utc_time positioning_time;
+    location_valid_flag status;
+    int latitude;
+    int longitude;
+    char decimal_places_latitude;
+    char decimal_places_longitude;
+    char latitude_direction;
+    char longitude_direction;
+    int speed_to_ground_section;
+    int direction_of_ground_truth;
+    int date;
+    positioning_mode mode;
+    char checksum;
+    char decimal_places_speed;
+    char decimal_places_direction;
+
+} nmea_rmc;
+
 int nmea_comma_position(char *buffer, char n);
 int nmea_pow(char m, char n);
 int nmea_str2num(char *buffer, char *decimal_places);
+void nmea_gprmc_analysis(nmea_rmc *gps_rmc, char *buffer);
 void nmea_gpgga_analysis(nmea_gga *gpsx, char *buffer);
 void nema_gpant_analysis(nmea_ant *gps_ant, char *buffer);
 void nema_gpvtg_analysis(nmea_vtg *gps_vtg, char *buffer);

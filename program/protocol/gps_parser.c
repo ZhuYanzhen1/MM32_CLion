@@ -14,7 +14,7 @@
 #define STRING_TO_NUM_CHAR(x, num)  posx = nmea_comma_position(p, num);\
                                     if (posx != 0XFF) \
                                         x = (char)nmea_str2num(p + posx, &decimal_places);
-
+                                        
 /*!
     \brief      Get the position of the nth comma from inside buffer
     \param[in]  buffer: Digital storage area
@@ -98,7 +98,8 @@ int nmea_str2num(char *buffer, char *decimal_places) {
         integer_data += nmea_pow(10, integer_length - 1 - i) * (buffer[i] - '0');
 
     /* Maximum 4 decimal places */
-    if (decimal_length > 4) decimal_length = 4;
+    if (decimal_length > 4)
+        decimal_length = 4;
     *decimal_places = decimal_length;
 
     /* Get the decimal part of the data */
@@ -121,11 +122,46 @@ int nmea_get_checksum(char *buffer) {
 }
 
 /*!
+    \brief      Analyze GPRMC information
+    \param[in]  buffer: Digital storage area
+    \param[in]  gps_rmc: Receiver time, location and positioning related data
+*/
+void nmea_gprmc_analysis(nmea_rmc *gps_rmc, char *buffer) {
+    char *p, i = 0, decimal_places = 1, posx = 0, check_sum = 0;
+
+    /* strstr determines whether $GPGGA is a substring of the p array,
+     * and if so, returns the address of the first occurrence in $GPGGA */
+    p = (char *) strstr((const char *) buffer, "$GNRMC");
+
+    /* If the number of "," is not enough, it means receiving error */
+    posx = nmea_comma_position(p, 14);
+    if (posx != 0XFF)
+        gps_rmc->checksum = nmea_get_checksum(buffer);
+    else
+        return;
+
+    /* Verify that the checksum are correct */
+    while (p[++i] != '*')
+        check_sum ^= p[i];
+    if (check_sum != gps_rmc->checksum)
+        return;
+
+    STRING_TO_NUM(gps_rmc->positioning_time.uct_time, gps_rmc->positioning_time.decimal_places_time, 1)
+    STRING_TO_STR(gps_rmc->status, 2)
+    STRING_TO_NUM(gps_rmc->latitude, gps_rmc->decimal_places_latitude, 3)
+    STRING_TO_STR(gps_rmc->latitude_direction, 4)
+    STRING_TO_NUM(gps_rmc->longitude, gps_rmc->decimal_places_longitude, 5)
+    STRING_TO_STR(gps_rmc->longitude_direction, 6)
+    STRING_TO_NUM(gps_rmc->speed_to_ground_section, gps_rmc->decimal_places_speed, 7)
+    STRING_TO_NUM(gps_rmc->direction_of_ground_truth, gps_rmc->decimal_places_direction, 8)
+    STRING_TO_NUM(gps_rmc->date, decimal_places, 9)
+    STRING_TO_STR(gps_rmc->mode, 12)
+}
+
+/*!
     \brief      Analyze GPGGA information
     \param[in]  buffer: Digital storage area
     \param[in]  gps_gga: Receiver time, location and positioning related data
-    \retval     0：Receive gps information error
-                1：Receive gps information without error
 */
 void nmea_gpgga_analysis(nmea_gga *gps_gga, char *buffer) {
     char *p, i = 0, decimal_places = 1, posx = 0, check_sum = 0;
@@ -140,7 +176,6 @@ void nmea_gpgga_analysis(nmea_gga *gps_gga, char *buffer) {
         gps_gga->checksum = nmea_get_checksum(buffer);
     else
         return;
-
 
     /* Verify that the checksum are correct */
     while (p[++i] != '*')
@@ -169,8 +204,6 @@ void nmea_gpgga_analysis(nmea_gga *gps_gga, char *buffer) {
     \brief      Analyze GPANT information
     \param[in]  buffer: Digital storage area
     \param[in]  gps_ant: antenna status structure
-    \retval     0：Receive gps information error
-                1：Receive gps information without error
 */
 void nema_gpant_analysis(nmea_ant *gps_ant, char *buffer) {
     char posx, i = 0, *p, check_sum = 0, decimal_places = 1;
@@ -196,6 +229,7 @@ void nema_gpant_analysis(nmea_ant *gps_ant, char *buffer) {
     STRING_TO_NUM_CHAR(gps_ant->zz, 3)
     posx = nmea_comma_position(p, 4);
     if (posx != 0XFF) {
+        i = 0;
         while (*(p + posx + i) != '*') {
             gps_ant->text_message[i] = *(p + posx + i);
             i++;
@@ -207,8 +241,6 @@ void nema_gpant_analysis(nmea_ant *gps_ant, char *buffer) {
     \brief      Analyze GPANT information
     \param[in]  buffer: Digital storage area
     \param[in]  gps_vtg: Ground speed and ground heading information.
-    \retval     0：Receive gps information error
-                1：Receive gps information without error
 */
 void nema_gpvtg_analysis(nmea_vtg *gps_vtg, char *buffer) {
     char posx = 0, i = 0, check_sum = 0, decimal_places = 1;

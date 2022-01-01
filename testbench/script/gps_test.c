@@ -52,23 +52,40 @@ void test_nmea_str2num() {
 
 }
 
+void test_nmea_gprmc_analysis() {
+    char data[] = "$GNRMC,235316.000,A,2959.9925,S,12000.0090,E,0.009,75.020,020711,,,A,*77";
+    nmea_rmc gps_rmc = {0};
+    nmea_gprmc_analysis(&gps_rmc, data);
+
+    CU_ASSERT_EQUAL(gps_rmc.status, 'A')
+    CU_ASSERT_EQUAL(gps_rmc.latitude, 29599925)
+    CU_ASSERT_EQUAL(gps_rmc.latitude_direction, 'S')
+    CU_ASSERT_EQUAL(gps_rmc.longitude, 120000090)
+    CU_ASSERT_EQUAL(gps_rmc.longitude_direction, 'E')
+    CU_ASSERT_EQUAL(gps_rmc.speed_to_ground_section, 9)
+    CU_ASSERT_EQUAL(gps_rmc.direction_of_ground_truth, 75020)
+    CU_ASSERT_EQUAL(gps_rmc.date, 20711)
+    CU_ASSERT_EQUAL(gps_rmc.mode, 'A')
+    CU_ASSERT_EQUAL(gps_rmc.checksum, 0X77)
+}
+
 void test_nmea_gpgga_analysis() {
-    char data[] = "$GNGGA,235316.000,3959.9925,S,12000.0090,E,1,06,1.21,62.77,M,0.00,M,,*7B";
+    char data[] = "$GNGGA,235316.000,3959.9925,S,12000.0090,E,1,06,1.21,62.77,M,0.00,M,,*64";
     nmea_gga gps_gga = {0};
     nmea_gpgga_analysis(&gps_gga, data);
     CU_ASSERT_EQUAL(gps_gga.latitude_direction, 'S')
-    CU_ASSERT_EQUAL(gps_gga.checksum, 0X7B)
+    CU_ASSERT_EQUAL(gps_gga.checksum, 0X64)
     CU_ASSERT_EQUAL(gps_gga.height_unit_altitude, 'M')
     CU_ASSERT_EQUAL(gps_gga.latitude, 39599925)
 }
 
 void test_nmea_gpant_analysis() {
-    char data[] = "$GNTXT,01,01,01,ANTENNA SHORT*63";
+    char data[] = "$GNTXT,01,01,01,ANTENNA SHORT*7D";
     nmea_ant gps_ant = {0};
     nema_gpant_analysis(&gps_ant, data);
     CU_ASSERT_EQUAL(gps_ant.xx, 1)
     CU_ASSERT_EQUAL(gps_ant.yy, 1)
     CU_ASSERT_EQUAL(gps_ant.zz, 1)
     CU_ASSERT_STRING_EQUAL(gps_ant.text_message, "ANTENNA SHORT")
-    CU_ASSERT_EQUAL(gps_ant.checksum, 0x63)
+    CU_ASSERT_EQUAL(gps_ant.checksum, 0x7D)
 }
