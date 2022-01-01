@@ -14,7 +14,7 @@
 #define STRING_TO_NUM_CHAR(x, num)  posx = nmea_comma_position(p, num);\
                                     if (posx != 0XFF) \
                                         x = (char)nmea_str2num(p + posx, &decimal_places);
-                                        
+
 /*!
     \brief      Get the position of the nth comma from inside buffer
     \param[in]  buffer: Digital storage area
@@ -124,7 +124,8 @@ int nmea_get_checksum(char *buffer) {
 /*!
     \brief      Analyze GPRMC information
     \param[in]  buffer: Digital storage area
-    \param[in]  gps_rmc: Receiver time, location and positioning related data
+    \param[in]  gps_rmc: Recommended minimum positioning information
+                time, status, latitude, longitude, speed, direction, positioning mode
 */
 void nmea_gprmc_analysis(nmea_rmc *gps_rmc, char *buffer) {
     char *p, i = 0, decimal_places = 1, posx = 0, check_sum = 0;
