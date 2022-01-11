@@ -17,7 +17,7 @@
 #include "malloc.h"
 #include "mm32_device.h"
 #include "printf.h"
-#include "string.h"
+
 ///////////// Hardware /////////////
 #include "led.h"
 #include "key.h"
