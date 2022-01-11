@@ -29,3 +29,5 @@ project-rescue.lib
 # Exported BOM files
 *.xml
 *.csv
+
+project-backups
