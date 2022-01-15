@@ -19,6 +19,7 @@ int main(void) {
     delay_config();
     led_config();
     key_config();
+    delayms(2000);
     spi2_config();
 //    xpt2046_config();
     gui_config();
@@ -30,10 +31,16 @@ int main(void) {
     debugger_register_variable(float_32bit, &theta, "theta");
     debugger_register_variable(float_32bit, &sin_theta, "sin_theta");
     UART6_CONFIG_GPS("$PCAS01,5*19\r\n")
-    uart6_config(115200);
+    unsigned int apbclock = RCC_GetPCLK1Freq();
+    UART6->BRR = (apbclock / 115200) / 16;
+    UART6->FRA = (apbclock / 115200) % 16;
+    delayms(100);
     UART6_CONFIG_GPS("$PCAS04,3*1A\r\n")
+    delayms(100);
     UART6_CONFIG_GPS("$PCAS05,2*1A\r\n")
+    delayms(100);
     UART6_CONFIG_GPS("$PCAS03,0,0,0,0,1,0,0,0,0,0,,,0,0*03\r\n")
+    delayms(100);
     UART6_CONFIG_GPS("$PCAS02,100*1E\r\n")
     nmea_rmc gps_rmc = {0};
     while (1) {

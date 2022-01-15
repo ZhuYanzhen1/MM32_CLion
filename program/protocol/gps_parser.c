@@ -134,8 +134,7 @@ int nmea_get_checksum(char *buffer) {
 void change_latitude_longitude_format(int *degree, char decimal_places) {
     int fractional_part = nmea_pow(10, decimal_places);
     int second_latitude = (*degree % fractional_part) * 60;
-    second_latitude /= 10000;
-    *degree = (*degree / fractional_part) * 100 + second_latitude;
+    *degree = (*degree / fractional_part) * 1000000 + second_latitude;
 }
 
 /*!
@@ -292,6 +291,3 @@ void nmea_gnvtg_analysis(nmea_vtg *gps_vtg, unsigned char *buffer) {
     STRING_TO_NUM_CHAR(gps_vtg->speed_unit, 8)
     STRING_TO_NUM_CHAR(gps_vtg->positioning_mode_flag, 9)
 }
-//
-//TODO 待处理的问题：3：时间的处理；
-//
