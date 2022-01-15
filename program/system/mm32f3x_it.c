@@ -9,9 +9,6 @@
 #include "mm32f3x_it.h"
 #include "main.h"
 
-unsigned char uart6_buffer[256] = {' '};
-static unsigned char uart6_counter = 0;
-static unsigned char flag = 0;
 /*!
     \brief  this function handles SysTick exception
     \retval none
@@ -50,18 +47,38 @@ void UART3_IRQHandler(void) {
     }
 }
 
+static unsigned char uart6_byte_counter = 0;
+volatile unsigned char uart6_buffer[128] = {0x00};
+volatile unsigned char uart6_rc_flag = 0;
+static unsigned char uart6_fsm_status = 0;
+
 void UART6_IRQHandler(void) {
     if (UART_GetITStatus(UART6, UART_ISR_RX) != RESET) {
         unsigned char recvbyte = UART_ReceiveData(UART6);
-        if ('$' == recvbyte) {
-            flag = 1;
-        } else if (10 == recvbyte)
-            flag = 0;
-        if (1 == flag) {
-            uart6_buffer[uart6_counter++] = ((recvbyte == 13) ? ' ' : recvbyte);
-//            uart6_counter = (uart6_counter + 1) % 0xff;
-        } else
-            uart6_counter = 0;
+        switch (uart6_fsm_status) {
+            case 0:
+                if (recvbyte == '$') {
+                    uart6_fsm_status = 1;
+                    uart6_byte_counter = 1;
+                    for (unsigned char counter = 0; counter < (unsigned char) sizeof(uart6_buffer); ++counter)
+                        uart6_buffer[counter] = 0x00;
+                    uart6_buffer[0] = '$';
+                } else
+                    uart6_fsm_status = 0;
+                break;
+            case 1:
+                if (recvbyte == '\r') {
+                    uart6_fsm_status = 2;
+                    uart6_rc_flag = 1;
+                } else {
+                    uart6_buffer[uart6_byte_counter] = recvbyte;
+                    uart6_byte_counter++;
+                }
+                break;
+            default:
+            case 2:uart6_fsm_status = 0;
+                break;
+        }
         UART_ClearITPendingBit(UART6, UART_ISR_RX);
     }
 }
