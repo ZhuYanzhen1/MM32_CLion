@@ -26,6 +26,12 @@ int main(void) {
     cm_backtrace_init("mm32f3277", "1.0.1", "1.0.1");
     debugger_register_variable(float_32bit, &theta, "theta");
     debugger_register_variable(float_32bit, &sin_theta, "sin_theta");
+    UART6_CONFIG_GPS("$PCAS01,1*1D\r\n")
+    UART6_CONFIG_GPS("$PCAS04,3*1A\r\n")
+    UART6_CONFIG_GPS("$PCAS05,2*1A\r\n")
+    UART6_CONFIG_GPS("$PCAS03,0,0,0,0,1,0,0,0,0,0,,,0,0*03\r\n")
+    UART6_CONFIG_GPS("$PCAS02,100*1E\r\n")
+
     while (1) {
         theta = theta + 0.1f;
         sin_theta = qfp_fsin(theta);

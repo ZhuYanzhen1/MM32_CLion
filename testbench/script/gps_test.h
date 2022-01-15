@@ -11,10 +11,10 @@ void test_nmea_pow();
 
 void test_nmea_str2num();
 
-void test_nmea_gprmc_analysis();
+void test_nmea_gnrmc_analysis();
 
-void test_nmea_gpgga_analysis();
+void test_nmea_gngga_analysis();
 
-void test_nmea_gpant_analysis();
+void test_nmea_gnant_analysis();
 
 #endif //TESTBENCH_GPS_TEST_H

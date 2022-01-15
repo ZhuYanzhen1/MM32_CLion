@@ -142,3 +142,9 @@ void uart1_sendbyte(unsigned char data) {
     UART_SendData(UART1, data);
     while (!UART_GetFlagStatus(UART1, UART_FLAG_TXEPT));
 }
+
+void uart6_config_gps(char *cmdbuf) {
+    for (unsigned char i = 0; i < (unsigned char) sizeof(cmdbuf); i++) {
+        uart6_sendbyte(cmdbuf[i]);
+    }
+}

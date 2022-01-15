@@ -127,7 +127,7 @@ int nmea_get_checksum(char *buffer) {
     \param[in]  gps_rmc: Recommended minimum positioning information
                 time, status, latitude, longitude, speed, direction, positioning mode
 */
-void nmea_gprmc_analysis(nmea_rmc *gps_rmc, char *buffer) {
+void nmea_gnrmc_analysis(nmea_rmc *gps_rmc, char *buffer) {
     char *p, i = 0, decimal_places = 1, posx = 0, check_sum = 0;
 
     /* strstr determines whether $GPGGA is a substring of the p array,
@@ -164,7 +164,7 @@ void nmea_gprmc_analysis(nmea_rmc *gps_rmc, char *buffer) {
     \param[in]  buffer: Digital storage area
     \param[in]  gps_gga: Receiver time, location and positioning related data
 */
-void nmea_gpgga_analysis(nmea_gga *gps_gga, char *buffer) {
+void nmea_gngga_analysis(nmea_gga *gps_gga, char *buffer) {
     char *p, i = 0, decimal_places = 1, posx = 0, check_sum = 0;
 
     /* strstr determines whether $GPGGA is a substring of the p array,
@@ -206,7 +206,7 @@ void nmea_gpgga_analysis(nmea_gga *gps_gga, char *buffer) {
     \param[in]  buffer: Digital storage area
     \param[in]  gps_ant: antenna status structure
 */
-void nema_gpant_analysis(nmea_ant *gps_ant, char *buffer) {
+void nmea_gnant_analysis(nmea_ant *gps_ant, char *buffer) {
     char posx, i = 0, *p, check_sum = 0, decimal_places = 1;
 
     p = (char *) strstr((const char *) buffer, "$GNTXT");
@@ -243,7 +243,7 @@ void nema_gpant_analysis(nmea_ant *gps_ant, char *buffer) {
     \param[in]  buffer: Digital storage area
     \param[in]  gps_vtg: Ground speed and ground heading information.
 */
-void nema_gpvtg_analysis(nmea_vtg *gps_vtg, char *buffer) {
+void nmea_gnvtg_analysis(nmea_vtg *gps_vtg, char *buffer) {
     char posx = 0, i = 0, check_sum = 0, decimal_places = 1;
     char *p = (char *) strstr((const char *) buffer, "$GNVTG");
 
