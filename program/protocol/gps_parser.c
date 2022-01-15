@@ -152,7 +152,7 @@ void nmea_gnrmc_analysis(nmea_rmc *gps_rmc, char *buffer) {
     p = (char *) strstr((const char *) buffer, "$GNRMC");
 
     /* If the number of "," is not enough, it means receiving error */
-    posx = nmea_comma_position(p, 14);
+    posx = nmea_comma_position(p, 12);
     if (posx != 0XFF)
         gps_rmc->checksum = nmea_get_checksum(buffer);
     else
