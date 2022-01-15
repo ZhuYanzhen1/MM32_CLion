@@ -134,7 +134,7 @@ int nmea_get_checksum(char *buffer) {
 void change_latitude_longitude_format(int *degree, char decimal_places) {
     int fractional_part = nmea_pow(10, decimal_places);
     int second_latitude = (*degree % fractional_part) * 60;
-    second_latitude /= 100;
+    second_latitude /= 10000;
     *degree = (*degree / fractional_part) * 100 + second_latitude;
 }
 
@@ -152,7 +152,7 @@ void nmea_gnrmc_analysis(nmea_rmc *gps_rmc, char *buffer) {
     p = (char *) strstr((const char *) buffer, "$GNRMC");
 
     /* If the number of "," is not enough, it means receiving error */
-    posx = nmea_comma_position(p, 12);
+    posx = nmea_comma_position(p, 13);
     if (posx != 0XFF)
         gps_rmc->checksum = nmea_get_checksum(buffer);
     else
@@ -177,7 +177,6 @@ void nmea_gnrmc_analysis(nmea_rmc *gps_rmc, char *buffer) {
 
     /* Processing Dimension */
     change_latitude_longitude_format(&gps_rmc->latitude, gps_rmc->decimal_places_latitude);
-    gps_rmc->longitude = 120000090;
     change_latitude_longitude_format(&gps_rmc->longitude, gps_rmc->decimal_places_longitude);
 }
 
@@ -293,3 +292,6 @@ void nmea_gnvtg_analysis(nmea_vtg *gps_vtg, unsigned char *buffer) {
     STRING_TO_NUM_CHAR(gps_vtg->speed_unit, 8)
     STRING_TO_NUM_CHAR(gps_vtg->positioning_mode_flag, 9)
 }
+//
+//TODO 待处理的问题：3：时间的处理；
+//

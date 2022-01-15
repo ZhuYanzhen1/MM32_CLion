@@ -110,8 +110,6 @@ typedef struct {
 } nmea_vtg;
 
 typedef struct {
-    nmea_utc_time positioning_time;
-    location_valid_flag status;
     int latitude;
     int longitude;
     char decimal_places_latitude;
@@ -125,6 +123,8 @@ typedef struct {
     char checksum;
     char decimal_places_speed;
     char decimal_places_direction;
+    location_valid_flag status;
+    nmea_utc_time positioning_time;
 
 } nmea_rmc;
 
