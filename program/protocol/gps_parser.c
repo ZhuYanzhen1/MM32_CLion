@@ -4,6 +4,7 @@
 
 #include "gps_parser.h"
 #include "string.h"
+#include "qfplib.h"
 
 #define STRING_TO_NUM(x, y, num)    posx = nmea_comma_position(p, num);\
                                     if (posx != 0XFF) \
@@ -14,6 +15,10 @@
 #define STRING_TO_NUM_CHAR(x, num)  posx = nmea_comma_position(p, num);\
                                     if (posx != 0XFF) \
                                         x = (char)nmea_str2num(p + posx, &decimal_places);
+/*
+ * To be optimized: wait until all the unit tests are finished,
+ * and change the floating-point operations to the four operations in qfplib.h
+ */
 
 /*!
     \brief      Get the position of the nth comma from inside buffer
@@ -122,6 +127,20 @@ int nmea_get_checksum(char *buffer) {
 }
 
 /*!
+    \brief      Convert the latitude and longitude read by gps to int format of hours, minutes and seconds
+    \param[in]  degree: Longitude or Latitude
+    \param[in]  decimal_places: Fractional digits of latitude and longitude
+*/
+void change_latitude_longitude_format(int *degree, char decimal_places) {
+    int fractional_part = nmea_pow(10, decimal_places);
+    int second_latitude = (*degree % fractional_part) * 60;
+    while (second_latitude >= 100) {
+        second_latitude /= 10;
+    }
+    *degree = (*degree / fractional_part) * 100 + second_latitude;
+}
+
+/*!
     \brief      Analyze GPRMC information
     \param[in]  buffer: Digital storage area
     \param[in]  gps_rmc: Recommended minimum positioning information
@@ -157,6 +176,10 @@ void nmea_gnrmc_analysis(nmea_rmc *gps_rmc, char *buffer) {
     STRING_TO_NUM(gps_rmc->direction_of_ground_truth, gps_rmc->decimal_places_direction, 8)
     STRING_TO_NUM(gps_rmc->date, decimal_places, 9)
     STRING_TO_STR(gps_rmc->mode, 12)
+
+    /* Processing Dimension */
+    change_latitude_longitude_format(&gps_rmc->latitude, gps_rmc->decimal_places_latitude);
+    change_latitude_longitude_format(&gps_rmc->longitude, gps_rmc->decimal_places_longitude);
 }
 
 /*!
