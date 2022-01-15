@@ -11,7 +11,7 @@
 
 unsigned char uart6_buffer[256] = {' '};
 static unsigned char uart6_counter = 0;
-
+static unsigned char flag = 0;
 /*!
     \brief  this function handles SysTick exception
     \retval none
@@ -53,8 +53,15 @@ void UART3_IRQHandler(void) {
 void UART6_IRQHandler(void) {
     if (UART_GetITStatus(UART6, UART_ISR_RX) != RESET) {
         unsigned char recvbyte = UART_ReceiveData(UART6);
-        uart6_buffer[uart6_counter] = ((recvbyte == 10 || recvbyte == 13) ? ' ' : recvbyte);
-        uart6_counter = (uart6_counter + 1) % 0xff;
+        if ('$' == recvbyte) {
+            flag = 1;
+        } else if (10 == recvbyte)
+            flag = 0;
+        if (1 == flag) {
+            uart6_buffer[uart6_counter++] = ((recvbyte == 13) ? ' ' : recvbyte);
+//            uart6_counter = (uart6_counter + 1) % 0xff;
+        } else
+            uart6_counter = 0;
         UART_ClearITPendingBit(UART6, UART_ISR_RX);
     }
 }

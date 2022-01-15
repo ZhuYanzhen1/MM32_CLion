@@ -134,9 +134,7 @@ int nmea_get_checksum(char *buffer) {
 void change_latitude_longitude_format(int *degree, char decimal_places) {
     int fractional_part = nmea_pow(10, decimal_places);
     int second_latitude = (*degree % fractional_part) * 60;
-    while (second_latitude >= 100) {
-        second_latitude /= 10;
-    }
+    second_latitude /= 100;
     *degree = (*degree / fractional_part) * 100 + second_latitude;
 }
 
@@ -179,6 +177,7 @@ void nmea_gnrmc_analysis(nmea_rmc *gps_rmc, char *buffer) {
 
     /* Processing Dimension */
     change_latitude_longitude_format(&gps_rmc->latitude, gps_rmc->decimal_places_latitude);
+    gps_rmc->longitude = 120000090;
     change_latitude_longitude_format(&gps_rmc->longitude, gps_rmc->decimal_places_longitude);
 }
 
@@ -187,7 +186,7 @@ void nmea_gnrmc_analysis(nmea_rmc *gps_rmc, char *buffer) {
     \param[in]  buffer: Digital storage area
     \param[in]  gps_gga: Receiver time, location and positioning related data
 */
-void nmea_gngga_analysis(nmea_gga *gps_gga, char *buffer) {
+void nmea_gngga_analysis(nmea_gga *gps_gga, unsigned char *buffer) {
     char *p, i = 0, decimal_places = 1, posx = 0, check_sum = 0;
 
     /* strstr determines whether $GPGGA is a substring of the p array,
@@ -229,7 +228,7 @@ void nmea_gngga_analysis(nmea_gga *gps_gga, char *buffer) {
     \param[in]  buffer: Digital storage area
     \param[in]  gps_ant: antenna status structure
 */
-void nmea_gnant_analysis(nmea_ant *gps_ant, char *buffer) {
+void nmea_gnant_analysis(nmea_ant *gps_ant, unsigned char *buffer) {
     char posx, i = 0, *p, check_sum = 0, decimal_places = 1;
 
     p = (char *) strstr((const char *) buffer, "$GNTXT");
@@ -266,7 +265,7 @@ void nmea_gnant_analysis(nmea_ant *gps_ant, char *buffer) {
     \param[in]  buffer: Digital storage area
     \param[in]  gps_vtg: Ground speed and ground heading information.
 */
-void nmea_gnvtg_analysis(nmea_vtg *gps_vtg, char *buffer) {
+void nmea_gnvtg_analysis(nmea_vtg *gps_vtg, unsigned char *buffer) {
     char posx = 0, i = 0, check_sum = 0, decimal_places = 1;
     char *p = (char *) strstr((const char *) buffer, "$GNVTG");
 

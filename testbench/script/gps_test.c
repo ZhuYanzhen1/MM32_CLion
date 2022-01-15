@@ -58,9 +58,9 @@ void test_nmea_gnrmc_analysis() {
     nmea_gnrmc_analysis(&gps_rmc, data);
 
     CU_ASSERT_EQUAL(gps_rmc.status, 'A')
-    CU_ASSERT_EQUAL(gps_rmc.latitude, 29599925)
+    CU_ASSERT_EQUAL(gps_rmc.latitude, 295959)
     CU_ASSERT_EQUAL(gps_rmc.latitude_direction, 'S')
-    CU_ASSERT_EQUAL(gps_rmc.longitude, 120000090)
+    CU_ASSERT_EQUAL(gps_rmc.longitude, 12000)
     CU_ASSERT_EQUAL(gps_rmc.longitude_direction, 'E')
     CU_ASSERT_EQUAL(gps_rmc.speed_to_ground_section, 9)
     CU_ASSERT_EQUAL(gps_rmc.direction_of_ground_truth, 75020)

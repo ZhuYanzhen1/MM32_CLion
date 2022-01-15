@@ -132,8 +132,8 @@ int nmea_comma_position(char *buffer, char n);
 int nmea_pow(char m, char n);
 int nmea_str2num(char *buffer, char *decimal_places);
 void nmea_gnrmc_analysis(nmea_rmc *gps_rmc, char *buffer);
-void nmea_gngga_analysis(nmea_gga *gpsx, char *buffer);
-void nmea_gnant_analysis(nmea_ant *gps_ant, char *buffer);
-void nmea_gnvtg_analysis(nmea_vtg *gps_vtg, char *buffer);
+void nmea_gngga_analysis(nmea_gga *gpsx, unsigned char *buffer);
+void nmea_gnant_analysis(nmea_ant *gps_ant, unsigned char *buffer);
+void nmea_gnvtg_analysis(nmea_vtg *gps_vtg, unsigned char *buffer);
 
 #endif //MAIN_C_PROTOCOL_GPS_PARSER_H_
