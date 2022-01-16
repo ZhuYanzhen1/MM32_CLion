@@ -291,3 +291,6 @@ void nmea_gnvtg_analysis(nmea_vtg *gps_vtg, unsigned char *buffer) {
     STRING_TO_NUM_CHAR(gps_vtg->speed_unit, 8)
     STRING_TO_NUM_CHAR(gps_vtg->positioning_mode_flag, 9)
 }
+//
+//TODO 1:消除速度的静态误差，速度保留到小数点后两位；2：用DMA代替串口中断（接收）
+//

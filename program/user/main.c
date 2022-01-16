@@ -34,13 +34,13 @@ int main(void) {
     unsigned int apbclock = RCC_GetPCLK1Freq();
     UART6->BRR = (apbclock / 115200) / 16;
     UART6->FRA = (apbclock / 115200) % 16;
-    delayms(100);
+//    delayms(100);
     UART6_CONFIG_GPS("$PCAS04,3*1A\r\n")
-    delayms(100);
+//    delayms(100);
     UART6_CONFIG_GPS("$PCAS05,2*1A\r\n")
-    delayms(100);
+//    delayms(100);
     UART6_CONFIG_GPS("$PCAS03,0,0,0,0,1,0,0,0,0,0,,,0,0*03\r\n")
-    delayms(100);
+//    delayms(100);
     UART6_CONFIG_GPS("$PCAS02,100*1E\r\n")
     nmea_rmc gps_rmc = {0};
     while (1) {

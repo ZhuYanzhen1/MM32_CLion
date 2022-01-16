@@ -82,3 +82,27 @@ void UART6_IRQHandler(void) {
         UART_ClearITPendingBit(UART6, UART_ISR_RX);
     }
 }
+
+typedef enum { buffer_no_1 = 0, buffer_no_2 = 1 } buffer_no;
+buffer_no free_buffer_no;
+unsigned char usart6_dma_buffer_1[74];
+unsigned char usart6_dma_buffer_2[74];
+extern DMA_InitTypeDef DMA_InitStructure;
+void DMA1_Channel1_IRQHandler(void) {
+    if (DMA_GetITStatus(DMA1_IT_TC1)) //通道1传输完成中断TC 还有传输 过半中断HT 错误中断TE 全局中断GL
+    {
+//        unsigned int data_counter = DMA_GetCurrDataCounter(DMA1_Channel1);//获取剩余长度,一般都为0,调试用
+        DMA_ClearITPendingBit(DMA1_IT_GL1);    //清除全部中断标志
+        //转换可操作BUF
+        if (free_buffer_no == buffer_no_1) {
+            dma_receive_config(usart6_dma_buffer_1, 74);
+            free_buffer_no = buffer_no_2;
+        } else {
+            dma_receive_config(usart6_dma_buffer_2, 74);
+            DMA_Init(DMA1_Channel5, &DMA_InitStructure);
+            free_buffer_no = buffer_no_1;
+        }
+//        buffer_ok = TRUE; //有准备好的数据了
+    }
+}
+
