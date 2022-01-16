@@ -6,8 +6,8 @@
 
   (title_block
     (title "MM32_Board")
-    (date "2022-01-11")
-    (rev "1.0.2")
+    (date "2022-01-16")
+    (rev "1.2.1")
   )
 
   (lib_symbols
@@ -1448,7 +1448,7 @@
     (property "Value" "ANT" (id 1) (at 133.35 57.15 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
-    (property "Footprint" "" (id 2) (at 128.905 57.15 0)
+    (property "Footprint" "Connector_Coaxial:SMA_Molex_73251-2200_Horizontal" (id 2) (at 128.905 57.15 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (id 3) (at 128.905 57.15 0)
@@ -1498,7 +1498,7 @@
     (uuid 2f8ebbbf-0f11-4a15-9648-1d28e5593127)
     (property "Reference" "L1" (id 0) (at 123.19 71.12 90))
     (property "Value" "39nH" (id 1) (at 125.095 75.565 90))
-    (property "Footprint" "" (id 2) (at 124.46 73.66 0)
+    (property "Footprint" "Inductor_SMD:L_0603_1608Metric" (id 2) (at 124.46 73.66 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (id 3) (at 124.46 73.66 0)
@@ -1680,7 +1680,7 @@
     (uuid cad44c02-7fd2-4e9a-b93a-e1b73d6a3ee6)
     (property "Reference" "LCD1" (id 0) (at 187.325 53.34 0))
     (property "Value" "1.8inch-TFT-LCD" (id 1) (at 193.675 81.28 0))
-    (property "Footprint" "Display:TFT-LCD1.8inch" (id 2) (at 187.325 53.34 0)
+    (property "Footprint" "MM32_Library:TFT-LCD1.8inch" (id 2) (at 187.325 53.34 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "" (id 3) (at 187.325 53.34 0)

@@ -382,7 +382,15 @@
     "meta": {
       "version": 2
     },
-    "net_colors": null
+    "net_colors": {
+      "+3.3VA": "rgb(0, 255, 255)",
+      "+3.3VADC": "rgb(255, 255, 194)",
+      "+3.3VP": "rgb(255, 229, 191)",
+      "+5V": "rgb(128, 77, 0)",
+      "+5VA": "rgb(72, 72, 0)",
+      "GND": "rgb(194, 194, 194)",
+      "GNDA": "rgb(72, 0, 0)"
+    }
   },
   "pcbnew": {
     "last_paths": {

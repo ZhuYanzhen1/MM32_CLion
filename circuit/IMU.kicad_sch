@@ -6,8 +6,8 @@
 
   (title_block
     (title "MM32_Board")
-    (date "2022-01-11")
-    (rev "1.0.2")
+    (date "2022-01-16")
+    (rev "1.2.1")
   )
 
   (lib_symbols
@@ -1768,7 +1768,7 @@
     (uuid 00000000-0000-0000-0000-0000619c904b)
     (property "Reference" "U4" (id 0) (at 63.5 158.75 0))
     (property "Value" "B0505S-1WR3" (id 1) (at 69.85 168.91 0))
-    (property "Footprint" "Package_SIP:SIP-4_B0505S_1WR3" (id 2) (at 69.85 171.45 0)
+    (property "Footprint" "MM32_Library:SIP-4_B0505S_1WR3" (id 2) (at 69.85 171.45 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "" (id 3) (at 62.23 167.64 0)
@@ -2153,7 +2153,7 @@
     (uuid 00000000-0000-0000-0000-000061a49918)
     (property "Reference" "U3" (id 0) (at 60.96 33.02 0))
     (property "Value" "ADIS16470AMLZ" (id 1) (at 67.31 111.76 0))
-    (property "Footprint" "Sensor_Motion:ADIS16470AMLZ" (id 2) (at 60.96 33.02 0)
+    (property "Footprint" "MM32_Library:ADIS16470AMLZ" (id 2) (at 60.96 33.02 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "" (id 3) (at 60.96 33.02 0)

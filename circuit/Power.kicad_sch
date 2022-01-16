@@ -6,8 +6,8 @@
 
   (title_block
     (title "MM32_Board")
-    (date "2022-01-11")
-    (rev "1.0.2")
+    (date "2022-01-16")
+    (rev "1.2.1")
   )
 
   (lib_symbols
@@ -847,7 +847,7 @@
     (property "Value" "Conn_01x08" (id 1) (at 42.545 116.84 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (property "Footprint" "" (id 2) (at 40.005 105.41 0)
+    (property "Footprint" "Connector_JST:JST_PH_S8B-PH-K_1x08_P2.00mm_Horizontal" (id 2) (at 40.005 105.41 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (id 3) (at 40.005 105.41 0)
@@ -1189,7 +1189,7 @@
     (property "Reference" "C47" (id 0) (at 99.441 103.6066 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "0.1uF" (id 1) (at 99.441 105.918 0)
+    (property "Value" "100nF" (id 1) (at 99.441 105.918 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Footprint" "Capacitor_SMD:C_0603_1608Metric" (id 2) (at 97.4852 108.585 0)
