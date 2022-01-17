@@ -20,7 +20,7 @@
 
 ///////////// Hardware /////////////
 #include "led.h"
-#include "key.h"
+#include "dma.h"
 #include "spi.h"
 #include "uart.h"
 

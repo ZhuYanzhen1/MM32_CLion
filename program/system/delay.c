@@ -9,6 +9,7 @@
 #include "delay.h"
 #include "config.h"
 #include "mm32_device.h"
+#include "hal_conf.h"
 
 extern unsigned int SystemCoreClock;
 static volatile unsigned int delayms_counter = 0;
@@ -17,6 +18,7 @@ static unsigned int delay_ms_factor = 0;
 unsigned int global_time_stamp = 0;
 
 void delay_config(void) {
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
     delay_us_factor = SystemCoreClock / 1000000;
     delay_ms_factor = 1000 / configTICK_RATE_HZ;
     if (SysTick_Config(SystemCoreClock / configTICK_RATE_HZ))

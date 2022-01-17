@@ -7,10 +7,12 @@
 #include "delay.h"
 #include "gui_base.h"
 #include "gps_parser.h"
+#include "dma.h"
+#include "hal_conf.h"
 
 #define UART6_CONFIG_GPS(cmdbuf)    for (unsigned char i = 0; i < (unsigned char) sizeof(cmdbuf); i++)\
                                         uart6_sendbyte(cmdbuf[i]);\
-                                    delayms(100);
+                                    delayms(100)
 
 //
 //TODO 没加冷启动热启动的相关初始化代码
@@ -27,19 +29,19 @@
 extern unsigned char usart6_dma_buffer_1[74];
 extern unsigned char usart6_dma_buffer_2[74];
 void gps_config() {
-    dma_nvic_config(1, 1);
+    unsigned int apbclock = RCC_GetPCLK1Freq();
+    dma_nvic_config(2, 0);
     dma_receive_config(usart6_dma_buffer_1, 74);
     DMA_Cmd(DMA1_Channel1, DISABLE);
 
-    UART6_CONFIG_GPS("$PCAS01,5*19\r\n")
-    unsigned int apbclock = RCC_GetPCLK1Freq();
+    UART6_CONFIG_GPS("$PCAS01,5*19\r\n");
     UART6->BRR = (apbclock / 115200) / 16;
     UART6->FRA = (apbclock / 115200) % 16;
     delayms(10);
-    UART6_CONFIG_GPS("$PCAS04,3*1A\r\n")
-    UART6_CONFIG_GPS("$PCAS05,2*1A\r\n")
-    UART6_CONFIG_GPS("$PCAS03,0,0,0,0,1,0,0,0,0,0,,,0,0*03\r\n")
-    UART6_CONFIG_GPS("$PCAS02,100*1E\r\n")
+    UART6_CONFIG_GPS("$PCAS04,3*1A\r\n");
+    UART6_CONFIG_GPS("$PCAS05,2*1A\r\n");
+    UART6_CONFIG_GPS("$PCAS03,0,0,0,0,1,0,0,0,0,0,,,0,0*03\r\n");
+    UART6_CONFIG_GPS("$PCAS02,100*1E\r\n");
 
     DMA_Cmd(DMA1_Channel1, ENABLE);
 }

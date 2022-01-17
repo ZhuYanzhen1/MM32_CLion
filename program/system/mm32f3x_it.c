@@ -18,16 +18,11 @@ void SysTick_Handler(void) {
     delay_decrease();
 }
 
+#ifdef IS_PROCESS_MCU
+
 void EXTI0_IRQHandler(void) {
     if (EXTI_GetITStatus(EXTI_Line0)) {
         EXTI_ClearFlag(EXTI_Line0);
-    }
-}
-
-void EXTI15_10_IRQHandler(void) {
-    if (EXTI_GetITStatus(EXTI_Line14)) {
-        LED2_TOGGLE();
-        EXTI_ClearFlag(EXTI_Line14);
     }
 }
 
@@ -47,53 +42,13 @@ void UART3_IRQHandler(void) {
     }
 }
 
-static unsigned char uart6_byte_counter = 0;
-volatile unsigned char uart6_buffer[128] = {0x00};
-volatile unsigned char uart6_rc_flag = 0;
-static unsigned char uart6_fsm_status = 0;
-
-void UART6_IRQHandler(void) {
-    if (UART_GetITStatus(UART6, UART_ISR_RX) != RESET) {
-        unsigned char recvbyte = UART_ReceiveData(UART6);
-        switch (uart6_fsm_status) {
-            case 0:
-                if (recvbyte == '$') {
-                    uart6_fsm_status = 1;
-                    uart6_byte_counter = 1;
-                    for (unsigned char counter = 0; counter < (unsigned char) sizeof(uart6_buffer); ++counter)
-                        uart6_buffer[counter] = 0x00;
-                    uart6_buffer[0] = '$';
-                } else
-                    uart6_fsm_status = 0;
-                break;
-            case 1:
-                if (recvbyte == '\r') {
-                    uart6_fsm_status = 2;
-                    uart6_rc_flag = 1;
-                } else {
-                    uart6_buffer[uart6_byte_counter] = recvbyte;
-                    uart6_byte_counter++;
-                }
-                break;
-            default:
-            case 2:uart6_fsm_status = 0;
-                break;
-        }
-        UART_ClearITPendingBit(UART6, UART_ISR_RX);
-    }
-}
-
 typedef enum { buffer_ok = 0, buffer_no_1 = 1, buffer_no_2 = 2 } buffer_no;
 buffer_no free_buffer_no = buffer_no_1;
 unsigned char usart6_dma_buffer_1[74];
 unsigned char usart6_dma_buffer_2[74];
 
 void DMA1_Channel1_IRQHandler(void) {
-    if (DMA_GetITStatus(DMA1_IT_TC1)) {   /* Channel 1 transmission completion interrupt TC;
-         * also transmission half interrupt HT, error interrupt TE, global interrupt GL */
-
-        unsigned int data_counter = DMA_GetCurrDataCounter(DMA1_Channel1);//获取剩余长度,调试用
-
+    if (DMA_GetITStatus(DMA1_IT_TC1)) {
         /* Clear all interrupt flags */
         DMA_ClearITPendingBit(DMA1_IT_GL1);
 
@@ -109,8 +64,6 @@ void DMA1_Channel1_IRQHandler(void) {
             free_buffer_no = buffer_no_1;
             deal_dma_gnrmc();
         }
-//        free_buffer_no = buffer_ok;
-
     }
 }
 
@@ -122,3 +75,5 @@ unsigned char *choose_buffer() {
     else
         return 0;
 }
+
+#endif

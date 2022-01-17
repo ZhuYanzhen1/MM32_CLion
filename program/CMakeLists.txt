@@ -34,7 +34,8 @@ include_directories(library/regs system system/cmsis library/include user hardwa
         math device debug protocol gui)
 
 file(GLOB_RECURSE CONTROL_SOURCES "system/official/startup_mm32f327.s" "library/source/*.c" "math/*.c"
-        "system/*.c" "system/official/*.c" "math/qfplib.s" "debug/*.c" "protocol/*.c" "debug/cmb_fault.S")
+        "system/*.c" "system/official/*.c" "math/qfplib.s" "debug/*.c" "protocol/*.c" "debug/cmb_fault.S"
+        "hardware/*.c" "user/*.c")
 
 file(GLOB_RECURSE PROCESS_SOURCES "system/official/startup_mm32f327.s" "library/source/*.c" "math/*.c"
         "user/*.c" "hardware/*.c" "system/*.c" "system/official/*.c" "math/qfplib.s" "device/*.c"

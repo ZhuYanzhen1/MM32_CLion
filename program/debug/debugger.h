@@ -10,13 +10,13 @@
 #define MM32F3277_DEBUG_DEBUGGER_H_
 
 typedef enum {
-    signed_int8 = 0,
-    signed_int16 = 1,
-    signed_int32 = 2,
-    unsigned_int8 = 3,
-    unsigned_int16 = 4,
-    unsigned_int32 = 5,
-    float_32bit = 6,
+    dbg_int8 = 0,
+    dbg_int16 = 1,
+    dbg_int32 = 2,
+    dbg_uint8 = 3,
+    dbg_uint16 = 4,
+    dbg_uint32 = 5,
+    dbg_float32 = 6,
 } variable_type;
 
 typedef struct DEBUGGER_VARIABLE_T {

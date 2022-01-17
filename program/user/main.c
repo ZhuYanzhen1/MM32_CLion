@@ -11,10 +11,9 @@
 extern nmea_rmc gps_rmc;
 static float theta = 0, sin_theta = 0;
 int main(void) {
-    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
     delay_config();
     led_config();
-    key_config();
+#ifdef IS_PROCESS_MCU
     delayms(2000);
     spi2_config();
 //    xpt2046_config();
@@ -22,14 +21,17 @@ int main(void) {
 //    xpt2046_calibrate();
     uart1_config(115200);
     uart3_config(115200);
-    uart6_dma_init(9600);
+    uart6_config(9600);
     gps_config();
+#endif
     cm_backtrace_init("mm32f3277", "1.0.1", "1.0.1");
-    debugger_register_variable(float_32bit, &theta, "theta");
-    debugger_register_variable(float_32bit, &sin_theta, "sin_theta");
+    debugger_register_variable(dbg_float32, &theta, "theta");
+    debugger_register_variable(dbg_float32, &sin_theta, "sin_theta");
     while (1) {
+#ifdef IS_PROCESS_MCU
         gui_show_gnrmc_information(&gps_rmc);
+#endif
         LED1_TOGGLE();
-        delayms(500);
+        delayms(200);
     }
 }
