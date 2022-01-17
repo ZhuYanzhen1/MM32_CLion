@@ -64,7 +64,7 @@
         "annular_width": "error",
         "clearance": "error",
         "copper_edge_clearance": "error",
-        "courtyards_overlap": "error",
+        "courtyards_overlap": "ignore",
         "diff_pair_gap_out_of_range": "error",
         "diff_pair_uncoupled_length_too_long": "error",
         "drill_out_of_range": "error",
@@ -86,7 +86,7 @@
         "padstack": "error",
         "pth_inside_courtyard": "ignore",
         "shorting_items": "error",
-        "silk_over_copper": "warning",
+        "silk_over_copper": "ignore",
         "silk_overlap": "ignore",
         "skew_out_of_range": "error",
         "through_hole_pad_without_hole": "error",
@@ -114,14 +114,19 @@
         "min_microvia_drill": 0.09999999999999999,
         "min_silk_clearance": 0.0,
         "min_through_hole_diameter": 0.19999999999999998,
-        "min_track_width": 0.19999999999999998,
+        "min_track_width": 0.09999999999999999,
         "min_via_annular_width": 0.049999999999999996,
         "min_via_diameter": 0.44999999999999996,
         "use_height_for_length_calcs": true
       },
       "track_widths": [
         0.0,
-        0.2
+        0.18,
+        0.2,
+        0.27,
+        0.3,
+        0.5,
+        1.0
       ],
       "via_dimensions": [
         {
@@ -363,7 +368,7 @@
     "classes": [
       {
         "bus_width": 12.0,
-        "clearance": 0.1,
+        "clearance": 0.2,
         "diff_pair_gap": 0.2,
         "diff_pair_via_gap": 0.25,
         "diff_pair_width": 0.2,
@@ -389,7 +394,7 @@
       "+5V": "rgb(128, 77, 0)",
       "+5VA": "rgb(72, 72, 0)",
       "GND": "rgb(194, 194, 194)",
-      "GNDA": "rgb(72, 0, 0)"
+      "GNDA": "rgb(72, 72, 72)"
     }
   },
   "pcbnew": {
@@ -469,6 +474,10 @@
     [
       "b932d339-7888-4506-92dc-7b9f4a021ec5",
       "Debugger"
+    ],
+    [
+      "364540f7-0c58-4618-8ce3-bea6d054cb4e",
+      "Compass&Storage"
     ]
   ],
   "text_variables": {}
