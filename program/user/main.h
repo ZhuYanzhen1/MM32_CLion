@@ -32,6 +32,7 @@
 ///////////// Device /////////////
 #include "adis16470.h"
 #include "xpt2046.h"
+#include "gps.h"
 
 ///////////// Debug /////////////
 #include "debugger.h"
