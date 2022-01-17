@@ -62,7 +62,6 @@ typedef struct {
 } nmea_rmc;
 
 void nmea_all_comma_position(char *buffer, char *comma, char n);
-unsigned char nmea_comma_position(char *buffer, char n);
 unsigned char nmea_get_checksum(char *buffer);
 int nmea_pow(char m, char n);
 int nmea_str2num(char *buffer, char *decimal_places);

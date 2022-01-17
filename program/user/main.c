@@ -8,6 +8,7 @@
 
 #include "main.h"
 
+extern nmea_rmc gps_rmc;
 static float theta = 0, sin_theta = 0;
 int main(void) {
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
@@ -27,6 +28,7 @@ int main(void) {
     debugger_register_variable(float_32bit, &theta, "theta");
     debugger_register_variable(float_32bit, &sin_theta, "sin_theta");
     while (1) {
+        gui_show_gnrmc_information(&gps_rmc);
         LED1_TOGGLE();
         delayms(500);
     }
