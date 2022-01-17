@@ -30,12 +30,12 @@ jobs:
       - name: Build Hex
         run: |
           PATH="$PATH:/home/runner/work/MM32_CLion/MM32_CLion/gcc-arm-none-eabi/bin" && echo $PATH 
-          cd build && cmake --build . --target mm32f3277.elf -- -j 2 && ls
+          cd build && cmake --build . --target Process_MM32.elf -- -j 2 && ls
       - name: Upload Hex
         uses: actions/upload-artifact@v2
         with:
-          name: mm32f3277-hex
-          path: build/mm32f3277.hex
+          name: Process_MM32-hex
+          path: build/Process_MM32.hex
 #  deploy:
 #    needs: build
 #    runs-on: ubuntu-20.04
