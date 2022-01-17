@@ -4,15 +4,20 @@
 
 #include "gps_parser.h"
 
-#define STRING_TO_NUM(x, y, num)    posx = nmea_comma_position(p, num);\
-                                    if (posx != 0XFF) \
-                                        (x) = nmea_str2num(p + posx, &(y));
-#define STRING_TO_STR(x, num)       posx = nmea_comma_position(p, num);\
-                                    if (posx != 0XFF) \
-                                        (x) = *(p + posx);
-#define STRING_TO_NUM_CHAR(x, num)  posx = nmea_comma_position(p, num);\
-                                    if (posx != 0XFF) \
-                                        (x) = (char)nmea_str2num(p + posx, &decimal_places);
+#define STRING_TO_NUM(x, y, num)    if(comma_position[num-1]!=0) \
+                                        (x) = nmea_str2num(p + comma_position[num-1] +1, &(y));
+#define STRING_TO_STR(x, num)       if (comma_position[num-1]!=0) \
+                                        (x) = *(p + comma_position[num-1]+1);
+
+//#define STRING_TO_NUM(x, y, num)    posx = nmea_comma_position(p, num);\
+//                                    if (posx != 0XFF) \
+//                                        (x) = nmea_str2num(p + posx, &(y));
+//#define STRING_TO_STR(x, num)       posx = nmea_comma_position(p, num);\
+//                                    if (posx != 0XFF) \
+//                                        (x) = *(p + posx);
+//#define STRING_TO_NUM_CHAR(x, num)  posx = nmea_comma_position(p, num);\
+//                                    if (posx != 0XFF) \
+//                                        (x) = (char)nmea_str2num(p + posx, &decimal_places);
 
 //
 //TODO 优化思路：1、找逗号的算法，可以先一次找齐所有逗号，记下位置；2、乘法和加法运算看看能不能改成位运算；3、高效的字符串转数字算法；
@@ -139,10 +144,6 @@ int nmea_str2num(char *buffer, char *decimal_places) {
     if (mask & 0X02) data = -data;
     return data;
 
-//    while(*p>='0'&&*p<='9')
-//    {num=num*10+(*p-'0');
-//        p++;
-//    }
 }
 
 /*!
@@ -174,21 +175,25 @@ void change_latitude_longitude_format(int *degree, char decimal_places) {
                 time, status, latitude, longitude, speed, direction, positioning mode
 */
 void nmea_gnrmc_analysis(nmea_rmc *gps_rmc, char *buffer) {
-    char i = 0, decimal_places = 1, posx = 0, check_sum = 0;
+    char i = 0, decimal_places = 1, check_sum = 0, comma_position[13] = {0};
     char *p = buffer;
 
-    /* If the number of "," is not enough, it means receiving error */
-    posx = nmea_comma_position(p, 13);
-    if (posx != 0XFF)
+    nmea_all_comma_position(buffer, comma_position, 13);
+    if (comma_position[12 != 0])
         gps_rmc->checksum = nmea_get_checksum(buffer);
     else
         return;
-
-    /* Verify that the checksum are correct */
     while (p[i] != '*')
         check_sum ^= p[i++];
     if (check_sum != gps_rmc->checksum)
         return;
+
+    if (comma_position[2] != 0)
+        (gps_rmc->latitude) = nmea_str2num(p + comma_position[2] + 1,
+                                           &(gps_rmc->decimal_places_latitude));
+//#define STRING_TO_NUM(x, y, num)    if(comma_position[num]!=0) \
+//                                        (x) = nmea_str2num(p + comma_position[num] +1, &(y));
+
 
     STRING_TO_NUM(gps_rmc->positioning_time.uct_time, gps_rmc->positioning_time.decimal_places_time, 1)
     STRING_TO_STR(gps_rmc->status, 2)
@@ -201,17 +206,49 @@ void nmea_gnrmc_analysis(nmea_rmc *gps_rmc, char *buffer) {
     STRING_TO_NUM(gps_rmc->date, decimal_places, 9)
     STRING_TO_STR(gps_rmc->mode, 12)
 
-    /* Processing Dimension */
     change_latitude_longitude_format(&gps_rmc->latitude, gps_rmc->decimal_places_latitude);
     change_latitude_longitude_format(&gps_rmc->longitude, gps_rmc->decimal_places_longitude);
-
 }
+//void nmea_gnrmc_analysis(nmea_rmc *gps_rmc, char *buffer) {
+//    char i = 0, decimal_places = 1, posx = 0, check_sum = 0;
+//    char *p = buffer;
+//
+//    /* If the number of "," is not enough, it means receiving error */
+//    posx = nmea_comma_position(p, 13);
+//    if (posx != 0XFF)
+//        gps_rmc->checksum = nmea_get_checksum(buffer);
+//    else
+//        return;
+//
+//    /* Verify that the checksum are correct */
+//    while (p[i] != '*')
+//        check_sum ^= p[i++];
+//    if (check_sum != gps_rmc->checksum)
+//        return;
+//
+//    STRING_TO_NUM(gps_rmc->positioning_time.uct_time, gps_rmc->positioning_time.decimal_places_time, 1)
+//    STRING_TO_STR(gps_rmc->status, 2)
+//    STRING_TO_NUM(gps_rmc->latitude, gps_rmc->decimal_places_latitude, 3)
+//    STRING_TO_STR(gps_rmc->latitude_direction, 4)
+//    STRING_TO_NUM(gps_rmc->longitude, gps_rmc->decimal_places_longitude, 5)
+//    STRING_TO_STR(gps_rmc->longitude_direction, 6)
+//    STRING_TO_NUM(gps_rmc->speed_to_ground_section, gps_rmc->decimal_places_speed, 7)
+//    STRING_TO_NUM(gps_rmc->direction_of_ground_truth, gps_rmc->decimal_places_direction, 8)
+//    STRING_TO_NUM(gps_rmc->date, decimal_places, 9)
+//    STRING_TO_STR(gps_rmc->mode, 12)
+//
+//    /* Processing Dimension */
+//    change_latitude_longitude_format(&gps_rmc->latitude, gps_rmc->decimal_places_latitude);
+//    change_latitude_longitude_format(&gps_rmc->longitude, gps_rmc->decimal_places_longitude);
+//
+//}
 
 static unsigned char status = 0;
 static unsigned char package_buffer[80];
 static unsigned char package_counter = 0;
 nmea_rmc gps_rmc = {0};
 
+#ifndef RUNNING_UNIT_TEST
 void deal_dma_gnrmc() {
     unsigned char *p = choose_buffer();
     for (unsigned char counter = 0; counter < 74; ++counter) {
@@ -249,7 +286,7 @@ void deal_dma_gnrmc() {
         }
     }
 }
-
+#endif
 //
 //TODO 1:消除速度的静态误差，速度保留到小数点后两位；2：用DMA代替串口中断（接收）
 //

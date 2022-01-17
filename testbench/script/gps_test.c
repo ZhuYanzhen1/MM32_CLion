@@ -29,6 +29,23 @@ void test_nmea_comma_position() {
     CU_ASSERT_NOT_EQUAL(n3, sizeof(data))
 }
 
+void test_nmea_all_comma_position() {
+    char data[] = "GPGGA,235316.000,3959.9925,S,12000.0090,E,1,06,1.21,62.77,M,0.00,M,,*7B";
+    char comma_position[13] = {0};
+    nmea_all_comma_position(data, comma_position, 13);
+//    CU_ASSERT_EQUAL(comma_position[0], 5);
+//    CU_ASSERT_EQUAL(comma_position[1], 16);
+//    CU_ASSERT_EQUAL(comma_position[2], 16 + 10);
+//    CU_ASSERT_EQUAL(comma_position[3], 26 + 2);
+//    CU_ASSERT_EQUAL(comma_position[4], 28 + 11);
+//    CU_ASSERT_EQUAL(comma_position[5], 39 + 2);
+//    CU_ASSERT_EQUAL(comma_position[6], 41 + 2);
+//    CU_ASSERT_EQUAL(comma_position[7], 43 + 3);
+//    CU_ASSERT_EQUAL(comma_position[8], 46 + 5);
+//    CU_ASSERT_EQUAL(comma_position[9], 51 + 6);
+
+}
+
 void test_nmea_pow() {
     CU_ASSERT_EQUAL(nmea_pow(10, 2), 100)
     CU_ASSERT_NOT_EQUAL(nmea_pow(10, 8), 100)
@@ -53,7 +70,7 @@ void test_nmea_str2num() {
 }
 
 void test_nmea_gnrmc_analysis() {
-    char data[] = "$GNRMC,235316.000,A,2959.9925,S,12000.0090,E,0.009,75.020,020711,,,A,*77";
+    char data[] = "GNRMC,235316.000,A,2959.9925,S,12000.0090,E,0.009,75.020,020711,,,A,*77";
 //    char data1[] = "$GNRMC,,V,,,,,,,,,,M,V*34";
     nmea_rmc gps_rmc = {0};
     nmea_gnrmc_analysis(&gps_rmc, data);
