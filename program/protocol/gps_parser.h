@@ -6,6 +6,17 @@
 #define MAIN_C_PROTOCOL_GPS_PARSER_H_
 
 typedef enum {
+    first_ok = 1, second_ok = 2
+} dma_ok;
+
+typedef enum {
+    yes = 1, no = 2
+} dma_no;
+
+extern unsigned char first_data[80], second_data[80];
+extern dma_ok dma_receive_ok;
+
+typedef enum {
     positioning_invalid = 0,
     sps_positioning_mode = 1,
     heading_projection = 6
@@ -135,7 +146,8 @@ void nmea_gnrmc_analysis(nmea_rmc *gps_rmc, char *buffer);
 void nmea_gngga_analysis(nmea_gga *gpsx, unsigned char *buffer);
 void nmea_gnant_analysis(nmea_ant *gps_ant, unsigned char *buffer);
 void nmea_gnvtg_analysis(nmea_vtg *gps_vtg, unsigned char *buffer);
-//
-//TODO 记得把参数的数据类型统一
-//
+
+unsigned char *choose_buffer();
+void deal_dma_gnrmc();
+
 #endif //MAIN_C_PROTOCOL_GPS_PARSER_H_

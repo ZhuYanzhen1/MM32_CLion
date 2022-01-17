@@ -5,6 +5,7 @@
 #include "gps_parser.h"
 #include "string.h"
 #include "qfplib.h"
+#include "mm32f3x_it.h"
 
 #define STRING_TO_NUM(x, y, num)    posx = nmea_comma_position(p, num);\
                                     if (posx != 0XFF) \
@@ -291,6 +292,75 @@ void nmea_gnvtg_analysis(nmea_vtg *gps_vtg, unsigned char *buffer) {
     STRING_TO_NUM_CHAR(gps_vtg->speed_unit, 8)
     STRING_TO_NUM_CHAR(gps_vtg->positioning_mode_flag, 9)
 }
+
+dma_ok dma_receive_ok;
+dma_no dma_receive_no;
+static unsigned char dma_status = 0;
+unsigned char first_data[80] = {0}, second_data[80] = {0};
+unsigned char data_count = 0, buffer_count = 0;
+
+void deal_dma_gnrmc() {
+    unsigned char *p = choose_buffer();
+    volatile unsigned char temporary_data_count = 0;
+    volatile unsigned char end = 0;
+    if (*p == 0)
+        return;
+    while (end != 1) {
+        switch (dma_status) {
+            case 0:
+                for (int i = buffer_count; i < 74; ++i) {
+                    if (p[i] == '$') {
+                        dma_status = 1;
+                        buffer_count = i;
+                        end = 0;
+                        break;
+                    } else
+                        end = 1;
+                }
+                break;
+            case 1://填数据
+                for (int i = data_count; i < data_count + 74 - buffer_count; ++i) {
+//                    (dma_receive_ok != first_ok) ?
+//                    (first_data[i] = p[buffer_count++]) : (second_data[i] = p[buffer_count++]);
+                    if (dma_receive_ok != first_ok)
+                        first_data[i] = p[buffer_count++];
+                    else
+                        second_data[i] = p[buffer_count++];
+                    temporary_data_count++;
+                    if (p[buffer_count] == '\n' && p[buffer_count - 1] == '\r') {
+//                        (dma_receive_ok == second_ok) ? (dma_receive_ok = first_ok) : (dma_receive_ok == second_ok);
+                        if (dma_receive_ok == second_ok)
+                            dma_receive_ok = first_ok;
+//                        else if (dma_receive_ok != second_ok)
+                        else
+                            dma_receive_ok = second_ok;
+                        dma_status = 0;
+                        if (buffer_count == 73) {
+                            buffer_count = 0;
+                            end = 1;
+                        } else {
+                            buffer_count = buffer_count;
+                        }
+                        dma_receive_no = yes;
+                        data_count = 0;
+                        temporary_data_count = 0;
+                        break;
+                    } else
+                        dma_receive_no = no;
+                }
+                if (dma_receive_no == no) {
+//                    (dma_receive_no != first_no) ? (dma_receive_no = first_no) : (dma_receive_no = second_no);
+                    data_count = temporary_data_count;
+                    buffer_count = 0;
+                    end = 1;
+                }
+                break;
+            default:
+                break;
+        }
+    }
+}
+
 //
 //TODO 1:消除速度的静态误差，速度保留到小数点后两位；2：用DMA代替串口中断（接收）
 //
