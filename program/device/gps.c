@@ -24,7 +24,13 @@
             4：Using GPS and BeiDou
             5：Use NMEA version 4.1 compatible protocol
 */
+extern unsigned char usart6_dma_buffer_1[74];
+extern unsigned char usart6_dma_buffer_2[74];
 void gps_config() {
+    dma_nvic_config(1, 1);
+    dma_receive_config(usart6_dma_buffer_1, 74);
+    DMA_Cmd(DMA1_Channel1, DISABLE);
+
     UART6_CONFIG_GPS("$PCAS01,5*19\r\n")
     unsigned int apbclock = RCC_GetPCLK1Freq();
     UART6->BRR = (apbclock / 115200) / 16;
@@ -34,6 +40,8 @@ void gps_config() {
     UART6_CONFIG_GPS("$PCAS05,2*1A\r\n")
     UART6_CONFIG_GPS("$PCAS03,0,0,0,0,1,0,0,0,0,0,,,0,0*03\r\n")
     UART6_CONFIG_GPS("$PCAS02,100*1E\r\n")
+
+    DMA_Cmd(DMA1_Channel1, ENABLE);
 }
 
 /*!

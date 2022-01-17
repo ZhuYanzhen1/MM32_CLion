@@ -11,9 +11,6 @@
 
 #include "hal_conf.h"
 
-#define UART6_CONFIG_GPS(cmdbuf)    for (unsigned char i = 0; i < (unsigned char) sizeof(cmdbuf); i++)\
-                                        uart6_sendbyte(cmdbuf[i]);\
-                                    delayms(100);
 void uart1_config(unsigned int baudrate);
 void uart1_sendbyte(unsigned char data);
 
@@ -23,6 +20,8 @@ void uart3_sendbyte(unsigned char data);
 void uart6_config(unsigned int baudrate);
 void uart6_sendbyte(unsigned char data);
 
-void dma_receive_config(unsigned char *data_address, unsigned short data_length);
+void uart6_dma_init(unsigned int baud_rate);
+void dma_receive_config(const unsigned char *data_address, unsigned short data_length);
+void dma_nvic_config(unsigned char priority, unsigned char sub_priority);
 
 #endif  // MM32F3277_HARDWARE_UART_H_

@@ -3,23 +3,18 @@
 //
 
 #include "gps_parser.h"
-#include "string.h"
 #include "qfplib.h"
 #include "mm32f3x_it.h"
 
 #define STRING_TO_NUM(x, y, num)    posx = nmea_comma_position(p, num);\
                                     if (posx != 0XFF) \
-                                        x = nmea_str2num(p + posx, &y);
+                                        (x) = nmea_str2num(p + posx, &(y));
 #define STRING_TO_STR(x, num)       posx = nmea_comma_position(p, num);\
                                     if (posx != 0XFF) \
-                                        x = *(p + posx);
+                                        (x) = *(p + posx);
 #define STRING_TO_NUM_CHAR(x, num)  posx = nmea_comma_position(p, num);\
                                     if (posx != 0XFF) \
-                                        x = (char)nmea_str2num(p + posx, &decimal_places);
-/*
- * To be optimized: wait until all the unit tests are finished,
- * and change the floating-point operations to the four operations in qfplib.h
- */
+                                        (x) = (char)nmea_str2num(p + posx, &decimal_places);
 
 /*!
     \brief      Get the position of the nth comma from inside buffer
@@ -135,7 +130,7 @@ int nmea_get_checksum(char *buffer) {
 void change_latitude_longitude_format(int *degree, char decimal_places) {
     int fractional_part = nmea_pow(10, decimal_places);
     int second_latitude = (*degree % fractional_part) * 60;
-    *degree = (*degree / fractional_part) * 1000000 + second_latitude;
+    *degree = (*degree / fractional_part) * 100000 + second_latitude;
 }
 
 /*!
@@ -145,11 +140,8 @@ void change_latitude_longitude_format(int *degree, char decimal_places) {
                 time, status, latitude, longitude, speed, direction, positioning mode
 */
 void nmea_gnrmc_analysis(nmea_rmc *gps_rmc, char *buffer) {
-    char *p, i = 0, decimal_places = 1, posx = 0, check_sum = 0;
-
-    /* strstr determines whether $GPGGA is a substring of the p array,
-     * and if so, returns the address of the first occurrence in $GPGGA */
-    p = (char *) strstr((const char *) buffer, "$GNRMC");
+    char i = 0, decimal_places = 1, posx = 0, check_sum = 0;
+    char *p = buffer;
 
     /* If the number of "," is not enough, it means receiving error */
     posx = nmea_comma_position(p, 13);
@@ -159,8 +151,8 @@ void nmea_gnrmc_analysis(nmea_rmc *gps_rmc, char *buffer) {
         return;
 
     /* Verify that the checksum are correct */
-    while (p[++i] != '*')
-        check_sum ^= p[i];
+    while (p[i] != '*')
+        check_sum ^= p[i++];
     if (check_sum != gps_rmc->checksum)
         return;
 
@@ -180,182 +172,44 @@ void nmea_gnrmc_analysis(nmea_rmc *gps_rmc, char *buffer) {
     change_latitude_longitude_format(&gps_rmc->longitude, gps_rmc->decimal_places_longitude);
 }
 
-/*!
-    \brief      Analyze GPGGA information
-    \param[in]  buffer: Digital storage area
-    \param[in]  gps_gga: Receiver time, location and positioning related data
-*/
-void nmea_gngga_analysis(nmea_gga *gps_gga, unsigned char *buffer) {
-    char *p, i = 0, decimal_places = 1, posx = 0, check_sum = 0;
-
-    /* strstr determines whether $GPGGA is a substring of the p array,
-     * and if so, returns the address of the first occurrence in $GPGGA */
-    p = (char *) strstr((const char *) buffer, "$GNGGA");
-
-    /* If the number of "," is not enough, it means receiving error */
-    posx = nmea_comma_position(p, 15);
-    if (posx != 0XFF)
-        gps_gga->checksum = nmea_get_checksum(buffer);
-    else
-        return;
-
-    /* Verify that the checksum are correct */
-    while (p[++i] != '*')
-        check_sum ^= p[i];
-    if (check_sum != gps_gga->checksum)
-        return;
-
-    STRING_TO_NUM(gps_gga->positioning_time.uct_time, gps_gga->positioning_time.decimal_places_time, 1)
-    STRING_TO_NUM(gps_gga->latitude, gps_gga->decimal_places_latitude, 2)
-    STRING_TO_STR(gps_gga->latitude_direction, 3)
-    STRING_TO_NUM(gps_gga->longitude, gps_gga->decimal_places_longitude, 4)
-    STRING_TO_STR(gps_gga->longitude_direction, 5)
-    STRING_TO_NUM_CHAR(gps_gga->positioning_quality, 6)
-    STRING_TO_NUM_CHAR(gps_gga->positioning_satellites_num, 7)
-    STRING_TO_NUM(gps_gga->horizontal_accuracy_factor, gps_gga->decimal_places_accuracy, 8)
-    STRING_TO_NUM(gps_gga->altitude, gps_gga->decimal_places_altitude, 9)
-    STRING_TO_STR(gps_gga->height_unit_altitude, 10)
-    STRING_TO_NUM_CHAR(gps_gga->distance_reference_ellipsoid_geoid, 11)
-    STRING_TO_STR(gps_gga->height_unit_distance, 12)
-    STRING_TO_NUM_CHAR(gps_gga->differentially_corrected_data_age, 13)
-    STRING_TO_NUM_CHAR(gps_gga->differential_reference_stations_id, 14)
-
-}
-
-/*!
-    \brief      Analyze GPANT information
-    \param[in]  buffer: Digital storage area
-    \param[in]  gps_ant: antenna status structure
-*/
-void nmea_gnant_analysis(nmea_ant *gps_ant, unsigned char *buffer) {
-    char posx, i = 0, *p, check_sum = 0, decimal_places = 1;
-
-    p = (char *) strstr((const char *) buffer, "$GNTXT");
-
-    /* If the number of "," is not enough, it means receiving error */
-    posx = nmea_comma_position(p, 5);
-    if (posx != 0XFF)
-        gps_ant->checksum = nmea_get_checksum(buffer);
-    else
-        return;
-
-    /* Verify that the checksum are correct */
-    while (p[++i] != '*') {
-        check_sum ^= p[i];
-    }
-    if (check_sum != gps_ant->checksum)
-        return;
-
-    STRING_TO_NUM_CHAR(gps_ant->xx, 1)
-    STRING_TO_NUM_CHAR(gps_ant->yy, 2)
-    STRING_TO_NUM_CHAR(gps_ant->zz, 3)
-    posx = nmea_comma_position(p, 4);
-    if (posx != 0XFF) {
-        i = 0;
-        while (*(p + posx + i) != '*') {
-            gps_ant->text_message[i] = *(p + posx + i);
-            i++;
-        }
-    }
-}
-
-/*!
-    \brief      Analyze GPANT information
-    \param[in]  buffer: Digital storage area
-    \param[in]  gps_vtg: Ground speed and ground heading information.
-*/
-void nmea_gnvtg_analysis(nmea_vtg *gps_vtg, unsigned char *buffer) {
-    char posx = 0, i = 0, check_sum = 0, decimal_places = 1;
-    char *p = (char *) strstr((const char *) buffer, "$GNVTG");
-
-    /* If the number of "," is not enough, it means receiving error */
-    posx = nmea_comma_position(p, 10);
-    if (posx != 0XFF)
-        gps_vtg->checksum = nmea_get_checksum(buffer);
-    else
-        return;
-
-    /* Verify that the checksum are correct */
-    while (p[++i] != '*') {
-        check_sum ^= p[i];
-    }
-    if (check_sum != gps_vtg->checksum)
-        return;
-
-    STRING_TO_NUM(gps_vtg->true_north_direction, gps_vtg->decimal_point_direction, 1)
-    STRING_TO_NUM_CHAR(gps_vtg->true_north_indication, 2)
-    STRING_TO_NUM_CHAR(gps_vtg->to_geomagnetic_north_direction, 3)
-    STRING_TO_NUM_CHAR(gps_vtg->magnetic_north_indication, 4)
-    STRING_TO_NUM(gps_vtg->speed_to_ground_section, gps_vtg->decimal_point_speed_section, 5)
-    STRING_TO_NUM_CHAR(gps_vtg->speed_unit_knots, 6)
-    STRING_TO_NUM(gps_vtg->speed_to_ground_kmh, gps_vtg->decimal_point_speed_section, 7)
-    STRING_TO_NUM_CHAR(gps_vtg->speed_unit, 8)
-    STRING_TO_NUM_CHAR(gps_vtg->positioning_mode_flag, 9)
-}
-
-dma_ok dma_receive_ok;
-dma_no dma_receive_no;
-static unsigned char dma_status = 0;
-unsigned char first_data[80] = {0}, second_data[80] = {0};
-unsigned char data_count = 0, buffer_count = 0;
+static unsigned char status = 0;
+static unsigned char package_buffer[80];
+static unsigned char package_counter = 0;
+nmea_rmc gps_rmc = {0};
 
 void deal_dma_gnrmc() {
     unsigned char *p = choose_buffer();
-    volatile unsigned char temporary_data_count = 0;
-    volatile unsigned char end = 0;
-    if (*p == 0)
-        return;
-    while (end != 1) {
-        switch (dma_status) {
-            case 0:
-                for (int i = buffer_count; i < 74; ++i) {
-                    if (p[i] == '$') {
-                        dma_status = 1;
-                        buffer_count = i;
-                        end = 0;
-                        break;
-                    } else
-                        end = 1;
+    for (unsigned char counter = 0; counter < 74; ++counter) {
+        switch (status) {
+            case 0:if (p[counter] == '$') status = 1;
+                break;
+            case 1:
+                if (p[counter] == '\r') status = 2;
+                else if (counter == 73) {
+                    status = 3;
+                    goto copy_data_to_package_buffer;
+                } else {
+                        copy_data_to_package_buffer:
+                    package_buffer[package_counter] = p[counter];
+                    package_counter++;
                 }
                 break;
-            case 1://填数据
-                for (int i = data_count; i < data_count + 74 - buffer_count; ++i) {
-//                    (dma_receive_ok != first_ok) ?
-//                    (first_data[i] = p[buffer_count++]) : (second_data[i] = p[buffer_count++]);
-                    if (dma_receive_ok != first_ok)
-                        first_data[i] = p[buffer_count++];
-                    else
-                        second_data[i] = p[buffer_count++];
-                    temporary_data_count++;
-                    if (p[buffer_count] == '\n' && p[buffer_count - 1] == '\r') {
-//                        (dma_receive_ok == second_ok) ? (dma_receive_ok = first_ok) : (dma_receive_ok == second_ok);
-                        if (dma_receive_ok == second_ok)
-                            dma_receive_ok = first_ok;
-//                        else if (dma_receive_ok != second_ok)
-                        else
-                            dma_receive_ok = second_ok;
-                        dma_status = 0;
-                        if (buffer_count == 73) {
-                            buffer_count = 0;
-                            end = 1;
-                        } else {
-                            buffer_count = buffer_count;
-                        }
-                        dma_receive_no = yes;
-                        data_count = 0;
-                        temporary_data_count = 0;
-                        break;
-                    } else
-                        dma_receive_no = no;
-                }
-                if (dma_receive_no == no) {
-//                    (dma_receive_no != first_no) ? (dma_receive_no = first_no) : (dma_receive_no = second_no);
-                    data_count = temporary_data_count;
-                    buffer_count = 0;
-                    end = 1;
-                }
+            case 2:nmea_gnrmc_analysis(&gps_rmc, (char *) package_buffer);
+                package_counter = 0;
+                for (unsigned char p_counter = 0; p_counter < 80; ++p_counter)
+                    package_buffer[package_counter] = 0x00;
+                status = 0;
                 break;
-            default:
+            case 3:
+                if (p[counter] == '\r') status = 2;
+                else if (counter == 73) {
+                    status = 5;
+                    goto copy_data_to_package_buffer;
+                } else goto copy_data_to_package_buffer;
+                break;
+            case 5:
+                if (p[counter] == '\r') status = 2;
+                else goto copy_data_to_package_buffer;
                 break;
         }
     }
