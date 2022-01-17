@@ -23,6 +23,7 @@ int main() {
     add_test_scripts_to_suite(&gps_suite, "gps_nmea_pow", test_nmea_pow);
     add_test_scripts_to_suite(&gps_suite, "gps_nmea_str2num", test_nmea_str2num);
     add_test_scripts_to_suite(&gps_suite, "gps_nmea_gnrmc_analysis", test_nmea_gnrmc_analysis);
+    add_test_scripts_to_suite(&gps_suite, "gps_nmea_all_comma_position", test_nmea_all_comma_position);
 
     CU_pSuite sort_suite = NULL;
     initialize_cunit_suite(&sort_suite, "sort_suit");

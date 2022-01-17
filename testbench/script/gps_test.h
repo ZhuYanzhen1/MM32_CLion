@@ -7,6 +7,8 @@
 
 void test_nmea_comma_position();
 
+void test_nmea_all_comma_position();
+
 void test_nmea_pow();
 
 void test_nmea_str2num();
