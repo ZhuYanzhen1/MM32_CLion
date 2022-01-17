@@ -18,6 +18,16 @@
 //TODO 优化思路：1、找逗号的算法，可以先一次找齐所有逗号，记下位置；2、乘法和加法运算看看能不能改成位运算；3、高效的字符串转数字算法；
 //
 
+/*!
+    \brief      Get the location of all commas in the gps packet at once
+    \param[in]  buffer: Digital storage area
+    \param[in]  comma: Store the array at the location of the comma
+    \param[in]  n: Number of commas to find
+    \retval     0~0XFE,represents the offset of the comma location.
+                0XFF means there is no nth comma
+    \note       The return value type cannot be char, because when the desired target is not found,
+                the return 0xff is greater than the range of char
+*/
 void nmea_all_comma_position(char *buffer, char *comma, char n) {
     char *p = buffer;
     unsigned char i = 0;
