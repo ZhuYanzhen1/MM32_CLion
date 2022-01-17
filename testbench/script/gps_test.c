@@ -71,23 +71,4 @@ void test_nmea_gnrmc_analysis() {
 //    nmea_gnrmc_analysis(&gps_rmc, data1);
 }
 
-void test_nmea_gngga_analysis() {
-    char data[] = "$GNGGA,235316.000,3959.9925,S,12000.0090,E,1,06,1.21,62.77,M,0.00,M,,*64";
-    nmea_gga gps_gga = {0};
-    nmea_gngga_analysis(&gps_gga, data);
-    CU_ASSERT_EQUAL(gps_gga.latitude_direction, 'S')
-    CU_ASSERT_EQUAL(gps_gga.checksum, 0X64)
-    CU_ASSERT_EQUAL(gps_gga.height_unit_altitude, 'M')
-    CU_ASSERT_EQUAL(gps_gga.latitude, 39599925)
-}
 
-void test_nmea_gnant_analysis() {
-    char data[] = "$GNTXT,01,01,01,ANTENNA SHORT*7D";
-    nmea_ant gps_ant = {0};
-    nmea_gnant_analysis(&gps_ant, data);
-    CU_ASSERT_EQUAL(gps_ant.xx, 1)
-    CU_ASSERT_EQUAL(gps_ant.yy, 1)
-    CU_ASSERT_EQUAL(gps_ant.zz, 1)
-    CU_ASSERT_STRING_EQUAL(gps_ant.text_message, "ANTENNA SHORT")
-    CU_ASSERT_EQUAL(gps_ant.checksum, 0x7D)
-}

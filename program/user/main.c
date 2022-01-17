@@ -33,21 +33,19 @@ int main(void) {
 //        theta = theta + 0.1f;
 //        sin_theta = qfp_fsin(theta);
 //        debugger_scan_variable(global_time_stamp);
+
 //        if (uart6_rc_flag == 1) {
 //            nmea_gnrmc_analysis(&gps_rmc, (char *) uart6_buffer);
 //            uart6_rc_flag = 0;
 //            gui_show_gnrmc_information(&gps_rmc);
 //            LED1_TOGGLE();
 //        }
-//        if (dma_receive_ok == first_ok) {
-//            nmea_gnrmc_analysis(&gps_rmc, (char *) first_data);
+
         gui_show_gnrmc_information(&gps_rmc);
         LED1_TOGGLE();
         delayms(200);
-//        } else if (dma_receive_ok == second_ok) {
-//            nmea_gnrmc_analysis(&gps_rmc, (char *) second_data);
-//            gui_show_gnrmc_information(&gps_rmc);
-//            LED1_TOGGLE();
-//        }
+
+//        nmea_gnrmc_analysis(&gps_rmc,
+//                            (char *) "$GNRMC,235316.000,A,2959.9925,S,12000.0090,E,0.009,75.020,020711,,,A,*77");
     }
 }

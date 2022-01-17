@@ -61,10 +61,12 @@ typedef struct {
 
 } nmea_rmc;
 
-int nmea_comma_position(char *buffer, char n);
+unsigned char nmea_comma_position(char *buffer, char n);
+unsigned char nmea_get_checksum(char *buffer);
 int nmea_pow(char m, char n);
 int nmea_str2num(char *buffer, char *decimal_places);
 void nmea_gnrmc_analysis(nmea_rmc *gps_rmc, char *buffer);
+void change_latitude_longitude_format(int *degree, char decimal_places);
 
 unsigned char *choose_buffer();
 void deal_dma_gnrmc();

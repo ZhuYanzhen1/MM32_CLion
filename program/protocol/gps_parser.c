@@ -3,8 +3,6 @@
 //
 
 #include "gps_parser.h"
-#include "qfplib.h"
-#include "mm32f3x_it.h"
 
 #define STRING_TO_NUM(x, y, num)    posx = nmea_comma_position(p, num);\
                                     if (posx != 0XFF) \
@@ -16,6 +14,24 @@
                                     if (posx != 0XFF) \
                                         (x) = (char)nmea_str2num(p + posx, &decimal_places);
 
+//
+//TODO 优化思路：1、找逗号的算法，可以先一次找齐所有逗号，记下位置；2、乘法和加法运算看看能不能改成位运算；3、高效的字符串转数字算法；
+//
+
+void nmea_all_comma_position(char *buffer, char *comma, char n) {
+    char *p = buffer;
+    unsigned char i = 0;
+    while (n) {
+        if (*buffer == '*' || *buffer < ' ' || *buffer > 'z')
+            return;
+        if (*buffer == ',') {
+            comma[i++] = (buffer - p);
+            n--;
+        }
+        buffer++;
+    }
+}
+
 /*!
     \brief      Get the position of the nth comma from inside buffer
     \param[in]  buffer: Digital storage area
@@ -24,7 +40,7 @@
     \note       The return value type cannot be char, because when the desired target is not found,
                 the return 0xff is greater than the range of char
 */
-int nmea_comma_position(char *buffer, char n) {
+unsigned char nmea_comma_position(char *buffer, char n) {
     char *p = buffer;
     while (n) {
         /* If '*' or illegal character is encountered, there is no nth comma */
@@ -46,9 +62,9 @@ int nmea_comma_position(char *buffer, char n) {
     \retval     m^n
 */
 int nmea_pow(char m, char n) {
+    int result = 1;
     if (m == 0)
         return 0;
-    int result = 1;
     while (n > 0) {
         result *= m;
         n--;
@@ -95,8 +111,9 @@ int nmea_str2num(char *buffer, char *decimal_places) {
         buffer++;
 
     /* Get the integer part of the data */
-    for (int i = 0; i < integer_length; i++)
-        integer_data += nmea_pow(10, integer_length - 1 - i) * (buffer[i] - '0');
+
+    for (unsigned char i = 0; i < integer_length; i++)
+        integer_data = integer_data * 10 + (buffer[i] - '0');
 
     /* Maximum 4 decimal places */
     if (decimal_length > 4)
@@ -104,11 +121,18 @@ int nmea_str2num(char *buffer, char *decimal_places) {
     *decimal_places = decimal_length;
 
     /* Get the decimal part of the data */
-    for (int i = 0; i < decimal_length; i++)
-        decimal_data += nmea_pow(10, decimal_length - 1 - i) * (buffer[integer_length + 1 + i] - '0');
+
+    for (unsigned char i = 0; i < decimal_length; i++)
+        decimal_data = decimal_data * 10 + (buffer[integer_length + 1 + i] - '0');
+
     data = integer_data * nmea_pow(10, decimal_length) + decimal_data;
     if (mask & 0X02) data = -data;
     return data;
+
+//    while(*p>='0'&&*p<='9')
+//    {num=num*10+(*p-'0');
+//        p++;
+//    }
 }
 
 /*!
@@ -116,7 +140,7 @@ int nmea_str2num(char *buffer, char *decimal_places) {
     \param[in]  buffer: Digital storage area
     \retval     checksum
 */
-int nmea_get_checksum(char *buffer) {
+unsigned char nmea_get_checksum(char *buffer) {
     while (*buffer++ != '*');
     int checksum = (buffer[0] - (buffer[0] > 58 ? '7' : '0')) * 16 + (buffer[1] - (buffer[1] > 58 ? '7' : '0'));
     return checksum;
@@ -170,6 +194,7 @@ void nmea_gnrmc_analysis(nmea_rmc *gps_rmc, char *buffer) {
     /* Processing Dimension */
     change_latitude_longitude_format(&gps_rmc->latitude, gps_rmc->decimal_places_latitude);
     change_latitude_longitude_format(&gps_rmc->longitude, gps_rmc->decimal_places_longitude);
+
 }
 
 static unsigned char status = 0;
