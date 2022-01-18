@@ -65,7 +65,7 @@ int num_times_nth_power_of_10(int num, int n) {
     switch (n) {
         case 0:num = num;
             break;
-        case 1:num = (num << 3) + (num << 2);
+        case 1:num = (num << 3) + (num << 1);
             break;
         case 2:num = (num << 6) + (num << 5) + (num << 2);
             break;
@@ -134,7 +134,7 @@ int nmea_str2num(char *buffer, char *decimal_places) {
     for (unsigned char i = 0; i < decimal_length; i++)
         decimal_data = num_times_nth_power_of_10(decimal_data, 1) + (buffer[integer_length + 1 + i] - '0');
 
-    data = num_times_nth_power_of_10(integer_data, 10) + decimal_data;
+    data = num_times_nth_power_of_10(integer_data, decimal_length) + decimal_data;
     if (mask & 0X02) data = -data;
     return data;
 
