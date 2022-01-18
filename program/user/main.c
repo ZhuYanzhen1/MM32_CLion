@@ -9,7 +9,6 @@
 #include "main.h"
 
 extern nmea_rmc gps_rmc;
-static float theta = 0, sin_theta = 0;
 int main(void) {
     delay_config();
     led_config();
@@ -25,13 +24,10 @@ int main(void) {
     gps_config();
 #endif
     cm_backtrace_init("mm32f3277", "1.0.1", "1.0.1");
-    debugger_register_variable(dbg_float32, &theta, "theta");
-    debugger_register_variable(dbg_float32, &sin_theta, "sin_theta");
+    debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
     timer2_config();
     while (1) {
 #ifdef IS_PROCESS_MCU
-        theta += 0.01f;
-        sin_theta = qfp_fsin(theta);
         gui_show_gnrmc_information(&gps_rmc);
 #endif
         LED1_TOGGLE();

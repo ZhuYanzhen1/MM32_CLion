@@ -19,7 +19,7 @@ void MainWindow::table_setvalue_variable(unsigned char index, unsigned int value
             variable_list_table->setItem(index, 2, new QStandardItem(QString::number(*(char *)&ptr_u8[0])));
         break;
         case signed_int16:
-            variable_list_table->setItem(index, 2, new QStandardItem(QString::number(*(short *)&ptr_u8[2])));
+            variable_list_table->setItem(index, 2, new QStandardItem(QString::number(*(short *)&ptr_u8[0])));
         break;
         case signed_int32:
             variable_list_table->setItem(index, 2, new QStandardItem(QString::number(*(int *)&value)));
@@ -28,7 +28,7 @@ void MainWindow::table_setvalue_variable(unsigned char index, unsigned int value
             variable_list_table->setItem(index, 2, new QStandardItem(QString::number(*(unsigned char *)&ptr_u8[0])));
         break;
         case unsigned_int16:
-            variable_list_table->setItem(index, 2, new QStandardItem(QString::number(*(unsigned short *)&ptr_u8[2])));
+            variable_list_table->setItem(index, 2, new QStandardItem(QString::number(*(unsigned short *)&ptr_u8[0])));
         break;
         case unsigned_int32:
             variable_list_table->setItem(index, 2, new QStandardItem(QString::number(*(unsigned int *)&value)));
