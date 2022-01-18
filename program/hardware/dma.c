@@ -18,8 +18,8 @@ void dma_receive_config(const unsigned char *data_address, unsigned short data_l
     DMA_InitStruct.DMA_BufferSize = data_length;
     DMA_InitStruct.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
     DMA_InitStruct.DMA_MemoryInc = DMA_MemoryInc_Enable;
-    DMA_InitStruct.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
-    DMA_InitStruct.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
+    DMA_InitStruct.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Word;
+    DMA_InitStruct.DMA_MemoryDataSize = DMA_MemoryDataSize_Word;
     DMA_InitStruct.DMA_Mode = DMA_Mode_Normal;
     DMA_InitStruct.DMA_Priority = DMA_Priority_Medium;
     DMA_InitStruct.DMA_M2M = DMA_M2M_Disable;

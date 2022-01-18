@@ -3,6 +3,7 @@
 //
 
 #include "gps_parser.h"
+#include "mm32f3x_it.h"
 
 #define STRING_TO_NUM(x, y, num)    if(comma_position[num-1]!=0) \
                                         (x) = nmea_str2num(p + comma_position[num-1] +1, &(y));
@@ -176,8 +177,7 @@ static unsigned char package_counter = 0;
 nmea_rmc gps_rmc = {0};
 
 #ifndef RUNNING_UNIT_TEST
-void deal_dma_gnrmc() {
-    unsigned char *p = choose_buffer();
+void deal_dma_gnrmc(const unsigned int *p) {
     for (unsigned char counter = 0; counter < 74; ++counter) {
         switch (status) {
             case 0:if (p[counter] == '$') status = 1;
