@@ -3,7 +3,10 @@
 //
 
 #include "gps_parser.h"
+
+#ifndef RUNNING_UNIT_TEST
 #include "mm32f3x_it.h"
+#endif
 
 #define STRING_TO_NUM(x, y, num)    if(comma_position[(num)-1]!=0) \
                                         (x) = nmea_str2num(p + comma_position[(num)-1] +1, &(y));
@@ -240,6 +243,3 @@ void deal_dma_gnrmc(const unsigned int *p) {
     }
 }
 #endif
-//
-//TODO 1:消除速度的静态误差，速度保留到小数点后两位；2：用DMA代替串口中断（接收）
-//

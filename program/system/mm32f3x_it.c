@@ -54,12 +54,12 @@ void DMA1_Channel1_IRQHandler(void) {
 
         /* Double ping pong buffer */
         if (free_buffer_no == buffer_no_1) {
-            dma_receive_config(usart6_dma_buffer_2, 74);
+            uart6_dma_receive_config(usart6_dma_buffer_2, 74);
             DMA_Cmd(DMA1_Channel1, ENABLE);
             free_buffer_no = buffer_no_2;
             deal_dma_gnrmc(usart6_dma_buffer_1);
         } else {
-            dma_receive_config(usart6_dma_buffer_1, 74);
+            uart6_dma_receive_config(usart6_dma_buffer_1, 74);
             DMA_Cmd(DMA1_Channel1, ENABLE);
             free_buffer_no = buffer_no_1;
             deal_dma_gnrmc(usart6_dma_buffer_2);
