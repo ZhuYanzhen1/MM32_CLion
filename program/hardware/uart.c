@@ -8,6 +8,7 @@
 
 #include "uart.h"
 #include "hal_conf.h"
+#include "config.h"
 
 void uart1_config(unsigned int baudrate) {
     UART_InitTypeDef UART_InitStruct;
@@ -30,7 +31,7 @@ void uart1_config(unsigned int baudrate) {
     GPIO_Init(GPIOA, &GPIO_InitStruct);
 
     NVIC_InitStruct.NVIC_IRQChannel = UART1_IRQn;
-    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = 2;
+    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = UART1_PRIORITY;
     NVIC_InitStruct.NVIC_IRQChannelSubPriority = 0;
     NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStruct);
@@ -70,7 +71,7 @@ void uart3_config(unsigned int baudrate) {
     GPIO_Init(GPIOD, &GPIO_InitStruct);
 
     NVIC_InitStruct.NVIC_IRQChannel = UART3_IRQn;
-    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = 3;
+    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = UART3_PRIORITY;
     NVIC_InitStruct.NVIC_IRQChannelSubPriority = 0;
     NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStruct);

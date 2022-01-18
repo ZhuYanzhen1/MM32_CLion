@@ -10,17 +10,15 @@
 
 
 //
-//TODO 1、如果不注释下列代码，会提示说找不到寄存器 BASEPRI；
-// 2、set_BASEPRI(uint32_t basePri) 这个参数指的是什么；
-// 3、两个串口的DMA中断优先级怎么配置；中断分组要怎么分；
-// 4、哪些地方要防止函数重入；
-// 5、怎么验证是否串口1的DMA可用；
-// 6、
+//TODO  3、两个串口的DMA中断优先级怎么配置；调试的统一优先级往低了设置
+// 4、哪些地方要防止函数重入；main和中断同时用到的函数；用到的时候记得留意一下，然后到Trello里面区评论记录
 //
-
 
 extern nmea_rmc gps_rmc;
 static float theta = 0, sin_theta = 0;
+
+unsigned int debug_dma[12] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1,};
+
 int main(void) {
     delay_config();
     led_config();
@@ -34,14 +32,21 @@ int main(void) {
     uart3_config(115200);
     uart6_config(9600);
     gps_config();
-//    uart1_dma_nvic_config();
-//    uart1_dma_sent_config();
 
 #endif
     cm_backtrace_init("mm32f3277", "1.0.1", "1.0.1");
     debugger_register_variable(dbg_float32, &theta, "theta");
     debugger_register_variable(dbg_float32, &sin_theta, "sin_theta");
     timer2_config();
+
+    /*
+    __set_BASEPRI(6 << 4);//屏蔽所有主优先级号>=x的中断（X根据你的需要来设置）//X只能是偶数：2、4、6、8
+    //临界区
+    __set_BASEPRI(0);//恢复中断状态
+*/
+
+
+    uart1_dma_sent_config(debug_dma, 12);
     while (1) {
 #ifdef IS_PROCESS_MCU
         theta += 0.01f;

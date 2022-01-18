@@ -66,12 +66,3 @@ void uart1_dma_sent_config(const unsigned int *data_address, unsigned short data
     // UARTy_DMA1_Channel enable
     DMA_Cmd(DMA1_Channel4, ENABLE);
 }
-
-void uart1_dma_nvic_config(unsigned char priority, unsigned char sub_priority) {
-    exNVIC_Init_TypeDef NVIC_InitStruct;
-    NVIC_InitStruct.NVIC_IRQChannel = DMA1_Channel4_IRQn;
-    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = priority;
-    NVIC_InitStruct.NVIC_IRQChannelSubPriority = sub_priority;
-    NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
-    exNVIC_Init(&NVIC_InitStruct);
-}

@@ -69,24 +69,6 @@
 /// @addtogroup MM32_Exported_Functions
 /// @{
 
-/*!
-    \brief      Interruption shield
-    \param[in]  basePri:Interrupt priority number
-    \note       __set_BASEPRI(X << 4);//block all interrupts with main priority number >= x
-                (X is set according to your needs)
-*/
-inline void set_BASEPRI(unsigned int basePri) {
-    register unsigned int _regBasePri         __ASM("basepri");
-    _regBasePri = (basePri & 0xff);
-}
-/*!
-    \brief  Backup Interrupt Mask Register
-*/
-inline unsigned int get_BASEPRI(void) {
-    register unsigned int _regBasePri         __ASM("basepri");
-    return (_regBasePri);
-}
-
 uc32 cRCC_ClockPrescalerTable[] = {
     // HAPB2                      LAPB1                         AHB/1                       AHB2                  AHB3
     RCC_CFGR_PPRE2_DIV1, RCC_CFGR_PPRE1_DIV2,

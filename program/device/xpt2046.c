@@ -10,6 +10,7 @@
 #include "delay.h"
 #include "gui_base.h"
 #include "qfplib.h"
+#include "config.h"
 
 static short xoffset = 0, yoffset = 0;
 static float xfactor = 0, yfactor = 0;
@@ -166,7 +167,7 @@ void xpt2046_config(void) {
     EXTI_Init(&EXTI_InitStruct);
 
     NVIC_InitStruct.NVIC_IRQChannel = EXTI0_IRQn;
-    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = 14;
+    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = EXTI0_PRIORITY;
     NVIC_InitStruct.NVIC_IRQChannelSubPriority = 0;
     NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStruct);

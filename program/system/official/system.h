@@ -56,7 +56,4 @@ GLOBAL u32 gSystemClockValue;
 
 void SystemReInit(SYSTEMCLK_TypeDef system_clock);
 
-inline void set_BASEPRI(unsigned int basePri);
-inline unsigned int get_BASEPRI(void);
-
 #endif  // MM32F3277_SYSTEM_SYSTEM_H_

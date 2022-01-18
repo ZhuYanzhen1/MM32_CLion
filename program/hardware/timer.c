@@ -5,6 +5,7 @@
 #include "timer.h"
 #include "hal_conf.h"
 #include "mm32_device.h"
+#include "config.h"
 
 void timer2_config() {
     TIM_TimeBaseInitTypeDef TIM_TimeBaseStruct;
@@ -19,7 +20,7 @@ void timer2_config() {
     TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStruct);
 
     NVIC_StructInit.NVIC_IRQChannel = TIM2_IRQn;
-    NVIC_StructInit.NVIC_IRQChannelPreemptionPriority = 0;
+    NVIC_StructInit.NVIC_IRQChannelPreemptionPriority = TIM2_PRIORITY;
     NVIC_StructInit.NVIC_IRQChannelSubPriority = 0;
     NVIC_StructInit.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_StructInit);

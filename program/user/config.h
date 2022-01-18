@@ -23,4 +23,14 @@
 /* language of print information */
 #define CMB_PRINT_LANGUAGE             CMB_PRINT_LANUUAGE_ENGLISH
 
+//
+//TODO 每一次写优先级的时候，记得用宏封装起来放到这里
+//
+
+#define TIM2_PRIORITY 0
+#define UART1_PRIORITY 2
+#define UART3_PRIORITY 3
+#define UART6_DMA_PRIORITY 2
+#define EXTI0_PRIORITY 14
+
 #endif  // MM32F3277_USER_CONFIG_H_
