@@ -23,6 +23,7 @@
 #include "dma.h"
 #include "spi.h"
 #include "uart.h"
+#include "timer.h"
 
 ///////////// Math /////////////
 #include "fft.h"

@@ -18,12 +18,9 @@ void SysTick_Handler(void) {
     delay_decrease();
 }
 
-#ifdef IS_PROCESS_MCU
-
-void EXTI0_IRQHandler(void) {
-    if (EXTI_GetITStatus(EXTI_Line0)) {
-        EXTI_ClearFlag(EXTI_Line0);
-    }
+void TIM2_IRQHandler(void) {
+    TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+    debugger_scan_variable(global_time_stamp);
 }
 
 void UART1_IRQHandler(void) {
@@ -31,6 +28,14 @@ void UART1_IRQHandler(void) {
         unsigned char recvbyte = UART_ReceiveData(UART1);
         mdtp_receive_handler(recvbyte);
         UART_ClearITPendingBit(UART1, UART_ISR_RX);
+    }
+}
+
+#ifdef IS_PROCESS_MCU
+
+void EXTI0_IRQHandler(void) {
+    if (EXTI_GetITStatus(EXTI_Line0)) {
+        EXTI_ClearFlag(EXTI_Line0);
     }
 }
 
