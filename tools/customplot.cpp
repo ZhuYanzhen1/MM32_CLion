@@ -10,6 +10,10 @@ static const unsigned char unsigned_int32 = 5;
 static const unsigned char float_32bit = 6;
 static unsigned char variable_counter = 0;
 
+static const QColor color_table[12] = {QColor(0xff, 0x00, 0x00), QColor(0x00, 0xff, 0x00), QColor(0x00, 0x00, 0xff), QColor(0x85, 0x52, 0xa1),
+                                       QColor(0x65, 0xc2, 0x94), QColor(0x00, 0xa6, 0xac), QColor(0xf3, 0x6c, 0x21), QColor(0x00, 0x53, 0x44),
+                                       QColor(0xea, 0x66, 0xa6), QColor(0x98, 0x71, 0x65), QColor(0xb2, 0xd2, 0x35), QColor(0xff, 0xd4, 0x00)};
+
 void MainWindow::table_setvalue_variable(unsigned char index, unsigned int value) {
     unsigned char *ptr_u8 = (unsigned char *)&value;
     qDebug() << "0x" + QString::number(ptr_u8[0], 16) << "  0x" + QString::number(ptr_u8[1], 16)
@@ -17,25 +21,25 @@ void MainWindow::table_setvalue_variable(unsigned char index, unsigned int value
     switch (debugger_variable[index]->var_status) {
         case signed_int8:
             variable_list_table->setItem(index, 2, new QStandardItem(QString::number(*(char *)&ptr_u8[0])));
-        break;
+            break;
         case signed_int16:
             variable_list_table->setItem(index, 2, new QStandardItem(QString::number(*(short *)&ptr_u8[0])));
-        break;
+            break;
         case signed_int32:
             variable_list_table->setItem(index, 2, new QStandardItem(QString::number(*(int *)&value)));
-        break;
+            break;
         case unsigned_int8:
             variable_list_table->setItem(index, 2, new QStandardItem(QString::number(*(unsigned char *)&ptr_u8[0])));
-        break;
+            break;
         case unsigned_int16:
             variable_list_table->setItem(index, 2, new QStandardItem(QString::number(*(unsigned short *)&ptr_u8[0])));
-        break;
+            break;
         case unsigned_int32:
             variable_list_table->setItem(index, 2, new QStandardItem(QString::number(*(unsigned int *)&value)));
-        break;
+            break;
         case float_32bit:
             variable_list_table->setItem(index, 2, new QStandardItem(QString::number((*(float *)&value), 'f', 3)));
-        break;
+            break;
     }
 }
 
@@ -72,7 +76,7 @@ void MainWindow::table_append_variable(unsigned char type, unsigned int value, c
     }
     table_setvalue_variable(variable_counter, value);
     variable_list_table->setItem(variable_counter, 3, new QStandardItem("0x" + QString::number(address, 16)));
-    variable_list_item[variable_counter]->setBackground(Qt::green);
+    variable_list_item[variable_counter]->setBackground(color_table[variable_counter]);
     variable_list_item[variable_counter]->setText(name);
     variable_counter++;
 }
@@ -105,23 +109,19 @@ void MainWindow::setup_variable_table(void) {
 }
 
 void MainWindow::setup_custom_plot(void) {
-    QPen pen;
-    pen.setColor(Qt::blue);
     ui->custom_plot->legend->setVisible(true);
-    ui->custom_plot->addGraph();
-    ui->custom_plot->graph(0)->setPen(pen);
-    ui->custom_plot->graph(0)->setName("Speed");
+    QPen pen;
 
-    pen.setColor(Qt::red);
-    ui->custom_plot->addGraph();
-    ui->custom_plot->graph(1)->setPen(pen);
-    ui->custom_plot->graph(1)->setName("Angle");
+//    pen.setColor(color_table[0]);
+//    ui->custom_plot->addGraph();
+//    ui->custom_plot->graph(0)->setPen(pen);
+//    ui->custom_plot->graph(0)->setName("Speed");
 
     ui->custom_plot->xAxis->setLabel("t(s)");
-    ui->custom_plot->yAxis->setLabel("y(rad/s rad)");
+    ui->custom_plot->yAxis->setLabel("y(value)");
 
-    ui->custom_plot->xAxis->setRange(0,1);
-    ui->custom_plot->yAxis->setRange(0,1);
+    ui->custom_plot->xAxis->setRange(0, 10);
+    ui->custom_plot->yAxis->setRange(-10, 10);
 
     connect(ui->custom_plot->xAxis, SIGNAL(rangeChanged(QCPRange)), ui->custom_plot->xAxis2, SLOT(setRange(QCPRange)));
     connect(ui->custom_plot->yAxis, SIGNAL(rangeChanged(QCPRange)), ui->custom_plot->yAxis2, SLOT(setRange(QCPRange)));
