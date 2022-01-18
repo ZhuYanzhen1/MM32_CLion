@@ -25,13 +25,16 @@
             3：Output RMC packages only
             4：Using GPS and BeiDou
             5：Use NMEA version 4.1 compatible protocol
+            6：uart6_dma_receive_config
+            7：dma_nvic_config
+            8：DMA_Cmd
 */
-extern unsigned char usart6_dma_buffer_1[74];
-extern unsigned char usart6_dma_buffer_2[74];
+extern unsigned int usart6_dma_buffer_1[74];
+extern unsigned int usart6_dma_buffer_2[74];
 void gps_config() {
     unsigned int apbclock = RCC_GetPCLK1Freq();
-    dma_nvic_config(2, 0);
-    dma_receive_config(usart6_dma_buffer_1, 74);
+    uart6_dma_nvic_config(2, 0);
+    uart6_dma_receive_config(usart6_dma_buffer_1, 74);
     DMA_Cmd(DMA1_Channel1, DISABLE);
 
     UART6_CONFIG_GPS("$PCAS01,5*19\r\n");
@@ -73,3 +76,4 @@ void gui_show_gnrmc_information(nmea_rmc *gps_rmc) {
     gui_printf(0, 9 * 12, C_BLACK, C_WHITE,
                "positioning_mode:%c", gps_rmc->mode);
 }
+

@@ -4,10 +4,14 @@
 
 #include "gps_parser.h"
 
-#define STRING_TO_NUM(x, y, num)    if(comma_position[num-1]!=0) \
-                                        (x) = nmea_str2num(p + comma_position[num-1] +1, &(y));
-#define STRING_TO_STR(x, num)       if (comma_position[num-1]!=0) \
-                                        (x) = *(p + comma_position[num-1]+1);
+#ifndef RUNNING_UNIT_TEST
+#include "mm32f3x_it.h"
+#endif
+
+#define STRING_TO_NUM(x, y, num)    if(comma_position[(num)-1]!=0) \
+                                        (x) = nmea_str2num(p + comma_position[(num)-1] +1, &(y));
+#define STRING_TO_STR(x, num)       if (comma_position[(num)-1]!=0) \
+                                        (x) = *(p + comma_position[(num)-1]+1);
 
 //
 //TODO 优化思路：1、找逗号的算法，可以先一次找齐所有逗号，记下位置；2、乘法和加法运算看看能不能改成位运算；3、高效的字符串转数字算法；
@@ -55,6 +59,32 @@ int nmea_pow(char m, char n) {
 }
 
 /*!
+    \brief      num*(10^n)
+    \param[in]  num
+    \param[in]  n (n<=3 && n>=0)
+    \retval     num*(10^n)
+*/
+int num_times_nth_power_of_10(int num, int n) {
+    switch (n) {
+        case 0:num = num;
+            break;
+        case 1:num = (num << 3) + (num << 1);
+            break;
+        case 2:num = (num << 6) + (num << 5) + (num << 2);
+            break;
+        case 3:num = (num << 10) - (num << 4) - (num << 3);
+            break;
+        default:
+            while (n > 0) {
+                num *= 10;
+                n--;
+            }
+            break;
+    }
+    return num;
+}
+
+/*!
     \brief      Character to number conversion,end with ',' or '*'
     \param[in]  buffer: Digital storage area
     \param[in]  decimal_places: Number of decimal places,return to the calling function
@@ -95,7 +125,7 @@ int nmea_str2num(char *buffer, char *decimal_places) {
     /* Get the integer part of the data */
 
     for (unsigned char i = 0; i < integer_length; i++)
-        integer_data = integer_data * 10 + (buffer[i] - '0');
+        integer_data = num_times_nth_power_of_10(integer_data, 1) + (buffer[i] - '0');
 
     /* Maximum 4 decimal places */
     if (decimal_length > 4)
@@ -105,9 +135,9 @@ int nmea_str2num(char *buffer, char *decimal_places) {
     /* Get the decimal part of the data */
 
     for (unsigned char i = 0; i < decimal_length; i++)
-        decimal_data = decimal_data * 10 + (buffer[integer_length + 1 + i] - '0');
+        decimal_data = num_times_nth_power_of_10(decimal_data, 1) + (buffer[integer_length + 1 + i] - '0');
 
-    data = integer_data * nmea_pow(10, decimal_length) + decimal_data;
+    data = num_times_nth_power_of_10(integer_data, decimal_length) + decimal_data;
     if (mask & 0X02) data = -data;
     return data;
 
@@ -120,7 +150,7 @@ int nmea_str2num(char *buffer, char *decimal_places) {
 */
 unsigned char nmea_get_checksum(char *buffer) {
     while (*buffer++ != '*');
-    int checksum = (buffer[0] - (buffer[0] > 58 ? '7' : '0')) * 16 + (buffer[1] - (buffer[1] > 58 ? '7' : '0'));
+    int checksum = ((buffer[0] - (buffer[0] > 58 ? '7' : '0')) << 4) + (buffer[1] - (buffer[1] > 58 ? '7' : '0'));
     return checksum;
 }
 
@@ -176,8 +206,7 @@ static unsigned char package_counter = 0;
 nmea_rmc gps_rmc = {0};
 
 #ifndef RUNNING_UNIT_TEST
-void deal_dma_gnrmc() {
-    unsigned char *p = choose_buffer();
+void deal_dma_gnrmc(const unsigned int *p) {
     for (unsigned char counter = 0; counter < 74; ++counter) {
         switch (status) {
             case 0:if (p[counter] == '$') status = 1;
@@ -214,6 +243,3 @@ void deal_dma_gnrmc() {
     }
 }
 #endif
-//
-//TODO 1:消除速度的静态误差，速度保留到小数点后两位；2：用DMA代替串口中断（接收）
-//

@@ -5,7 +5,10 @@
 #ifndef MM32F3277_HARDWARE_DMA_H_
 #define MM32F3277_HARDWARE_DMA_H_
 
-void dma_receive_config(const unsigned char *data_address, unsigned short data_length);
-void dma_nvic_config(unsigned char priority, unsigned char sub_priority);
+void uart6_dma_receive_config(const unsigned int *data_address, unsigned short data_length);
+void uart6_dma_nvic_config(unsigned char priority, unsigned char sub_priority);
+
+void uart1_dma_sent_config(const unsigned int *data_address, unsigned short data_length);
+void uart1_dma_nvic_config(unsigned char priority, unsigned char sub_priority);
 
 #endif // MM32F3277_HARDWARE_DMA_H_

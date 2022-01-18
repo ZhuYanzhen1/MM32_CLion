@@ -63,11 +63,12 @@ typedef struct {
 
 void nmea_all_comma_position(char *buffer, char *comma, char n);
 unsigned char nmea_get_checksum(char *buffer);
+int num_times_nth_power_of_10(int num, int n);
 int nmea_pow(char m, char n);
 int nmea_str2num(char *buffer, char *decimal_places);
 void nmea_gnrmc_analysis(nmea_rmc *gps_rmc, char *buffer);
 void change_latitude_longitude_format(int *degree, char decimal_places);
 
-unsigned char *choose_buffer();
+void deal_dma_gnrmc(const unsigned int *p);
 
 #endif //MAIN_C_PROTOCOL_GPS_PARSER_H_

@@ -17,7 +17,7 @@ void UART1_IRQHandler(void);
 void EXTI0_IRQHandler(void);
 void UART3_IRQHandler(void);
 void DMA1_Channel1_IRQHandler(void);
-void deal_dma_gnrmc();
+
 #endif
 
 #endif  // MINIFOC_SYSTEM_GD32F1X0_IT_H

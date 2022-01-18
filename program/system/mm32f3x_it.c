@@ -49,8 +49,8 @@ void UART3_IRQHandler(void) {
 
 typedef enum { buffer_ok = 0, buffer_no_1 = 1, buffer_no_2 = 2 } buffer_no;
 buffer_no free_buffer_no = buffer_no_1;
-unsigned char usart6_dma_buffer_1[74];
-unsigned char usart6_dma_buffer_2[74];
+unsigned int usart6_dma_buffer_1[74];
+unsigned int usart6_dma_buffer_2[74];
 
 void DMA1_Channel1_IRQHandler(void) {
     if (DMA_GetITStatus(DMA1_IT_TC1)) {
@@ -59,26 +59,17 @@ void DMA1_Channel1_IRQHandler(void) {
 
         /* Double ping pong buffer */
         if (free_buffer_no == buffer_no_1) {
-            dma_receive_config(usart6_dma_buffer_2, 74);
+            uart6_dma_receive_config(usart6_dma_buffer_2, 74);
             DMA_Cmd(DMA1_Channel1, ENABLE);
             free_buffer_no = buffer_no_2;
-            deal_dma_gnrmc();
+            deal_dma_gnrmc(usart6_dma_buffer_1);
         } else {
-            dma_receive_config(usart6_dma_buffer_1, 74);
+            uart6_dma_receive_config(usart6_dma_buffer_1, 74);
             DMA_Cmd(DMA1_Channel1, ENABLE);
             free_buffer_no = buffer_no_1;
-            deal_dma_gnrmc();
+            deal_dma_gnrmc(usart6_dma_buffer_2);
         }
     }
-}
-
-unsigned char *choose_buffer() {
-    if (free_buffer_no == buffer_no_1)
-        return usart6_dma_buffer_1;
-    else if (free_buffer_no == buffer_no_2)
-        return usart6_dma_buffer_2;
-    else
-        return 0;
 }
 
 #endif
