@@ -4,6 +4,7 @@
 
 #include "dma.h"
 #include "hal_conf.h"
+#include "config.h"
 
 void uart6_dma_receive_config(const unsigned int *data_address, unsigned short data_length) {
     DMA_InitTypeDef DMA_InitStruct;
@@ -21,7 +22,7 @@ void uart6_dma_receive_config(const unsigned int *data_address, unsigned short d
     DMA_InitStruct.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Word;
     DMA_InitStruct.DMA_MemoryDataSize = DMA_MemoryDataSize_Word;
     DMA_InitStruct.DMA_Mode = DMA_Mode_Normal;
-    DMA_InitStruct.DMA_Priority = DMA_Priority_Medium;
+    DMA_InitStruct.DMA_Priority = DMA_Priority_High;
     DMA_InitStruct.DMA_M2M = DMA_M2M_Disable;
     DMA_InitStruct.DMA_Auto_reload = DMA_Auto_Reload_Disable;
     DMA_Init(DMA1_Channel1, &DMA_InitStruct);
@@ -30,11 +31,11 @@ void uart6_dma_receive_config(const unsigned int *data_address, unsigned short d
     UART_DMACmd(UART6, UART_GCR_DMA, ENABLE);
 }
 
-void uart6_dma_nvic_config(unsigned char priority, unsigned char sub_priority) {
+void uart6_dma_nvic_config() {
     exNVIC_Init_TypeDef NVIC_InitStruct;
     NVIC_InitStruct.NVIC_IRQChannel = DMA1_Channel1_IRQn;
-    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = priority;
-    NVIC_InitStruct.NVIC_IRQChannelSubPriority = sub_priority;
+    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = UART6_DMA_PRIORITY;
+    NVIC_InitStruct.NVIC_IRQChannelSubPriority = 0;
     NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
     exNVIC_Init(&NVIC_InitStruct);
 }
@@ -46,7 +47,7 @@ void uart1_dma_sent_config(const unsigned int *data_address, unsigned short data
 
     DMA_DeInit(DMA1_Channel4);
     DMA_StructInit(&DMA_InitStruct);
-    DMA_InitStruct.DMA_PeripheralBaseAddr = (unsigned int) &UART1->RDR;
+    DMA_InitStruct.DMA_PeripheralBaseAddr = (unsigned int) &UART1->TDR;
     DMA_InitStruct.DMA_MemoryBaseAddr = (unsigned int) data_address;
     DMA_InitStruct.DMA_DIR = DMA_DIR_PeripheralDST;
     DMA_InitStruct.DMA_BufferSize = data_length;
@@ -67,11 +68,11 @@ void uart1_dma_sent_config(const unsigned int *data_address, unsigned short data
     DMA_Cmd(DMA1_Channel4, ENABLE);
 }
 
-void uart1_dma_nvic_config(unsigned char priority, unsigned char sub_priority) {
+void uart1_dma_nvic_config() {
     exNVIC_Init_TypeDef NVIC_InitStruct;
     NVIC_InitStruct.NVIC_IRQChannel = DMA1_Channel4_IRQn;
-    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = priority;
-    NVIC_InitStruct.NVIC_IRQChannelSubPriority = sub_priority;
+    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = UART1_DMA_PRIORITY;
+    NVIC_InitStruct.NVIC_IRQChannelSubPriority = 0;
     NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
     exNVIC_Init(&NVIC_InitStruct);
 }

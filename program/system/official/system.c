@@ -69,7 +69,6 @@
 /// @addtogroup MM32_Exported_Functions
 /// @{
 
-
 uc32 cRCC_ClockPrescalerTable[] = {
     // HAPB2                      LAPB1                         AHB/1                       AHB2                  AHB3
     RCC_CFGR_PPRE2_DIV1, RCC_CFGR_PPRE1_DIV2,

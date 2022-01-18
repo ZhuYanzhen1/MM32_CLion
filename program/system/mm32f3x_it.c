@@ -9,6 +9,10 @@
 #include "mm32f3x_it.h"
 #include "main.h"
 
+//
+//TODO 每一次在中断内写函数时，留意一下是否会发生重入，然后到Trello里面评论记录
+//
+
 /*!
     \brief  this function handles SysTick exception
     \retval none
@@ -69,6 +73,14 @@ void DMA1_Channel1_IRQHandler(void) {
             free_buffer_no = buffer_no_1;
             deal_dma_gnrmc(usart6_dma_buffer_2);
         }
+    }
+}
+
+unsigned char dma1_ch4_flag = 0;
+void DMA1_Channel4_IRQHandler(void) {
+    if (DMA_GetITStatus(DMA1_IT_TC4)) {
+        DMA_ClearITPendingBit(DMA1_IT_TC4);
+        dma1_ch4_flag = 1;
     }
 }
 

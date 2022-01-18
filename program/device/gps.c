@@ -9,9 +9,10 @@
 #include "gps_parser.h"
 #include "dma.h"
 #include "hal_conf.h"
+#include "config.h"
 
 #define UART6_CONFIG_GPS(cmdbuf)    for (unsigned char i = 0; i < (unsigned char) sizeof(cmdbuf); i++)\
-                                        uart6_sendbyte(cmdbuf[i]);\
+                                        uart6_sendbyte((cmdbuf)[i]);\
                                     delayms(100)
 
 //
@@ -33,7 +34,7 @@ extern unsigned int usart6_dma_buffer_1[74];
 extern unsigned int usart6_dma_buffer_2[74];
 void gps_config() {
     unsigned int apbclock = RCC_GetPCLK1Freq();
-    uart6_dma_nvic_config(2, 0);
+    uart6_dma_nvic_config();
     uart6_dma_receive_config(usart6_dma_buffer_1, 74);
     DMA_Cmd(DMA1_Channel1, DISABLE);
 
