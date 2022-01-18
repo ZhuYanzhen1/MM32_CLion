@@ -56,6 +56,32 @@ int nmea_pow(char m, char n) {
 }
 
 /*!
+    \brief      num*(10^n)
+    \param[in]  num
+    \param[in]  n (n<=3 && n>=0)
+    \retval     num*(10^n)
+*/
+int num_times_nth_power_of_10(int num, int n) {
+    switch (n) {
+        case 0:num = num;
+            break;
+        case 1:num = (num << 3) + (num << 2);
+            break;
+        case 2:num = (num << 6) + (num << 5) + (num << 2);
+            break;
+        case 3:num = (num << 10) - (num << 4) - (num << 3);
+            break;
+        default:
+            while (n > 0) {
+                num *= 10;
+                n--;
+            }
+            break;
+    }
+    return num;
+}
+
+/*!
     \brief      Character to number conversion,end with ',' or '*'
     \param[in]  buffer: Digital storage area
     \param[in]  decimal_places: Number of decimal places,return to the calling function
@@ -96,7 +122,7 @@ int nmea_str2num(char *buffer, char *decimal_places) {
     /* Get the integer part of the data */
 
     for (unsigned char i = 0; i < integer_length; i++)
-        integer_data = integer_data * 10 + (buffer[i] - '0');
+        integer_data = num_times_nth_power_of_10(integer_data, 1) + (buffer[i] - '0');
 
     /* Maximum 4 decimal places */
     if (decimal_length > 4)
@@ -106,9 +132,9 @@ int nmea_str2num(char *buffer, char *decimal_places) {
     /* Get the decimal part of the data */
 
     for (unsigned char i = 0; i < decimal_length; i++)
-        decimal_data = decimal_data * 10 + (buffer[integer_length + 1 + i] - '0');
+        decimal_data = num_times_nth_power_of_10(decimal_data, 1) + (buffer[integer_length + 1 + i] - '0');
 
-    data = integer_data * nmea_pow(10, decimal_length) + decimal_data;
+    data = num_times_nth_power_of_10(integer_data, 10) + decimal_data;
     if (mask & 0X02) data = -data;
     return data;
 
@@ -121,7 +147,7 @@ int nmea_str2num(char *buffer, char *decimal_places) {
 */
 unsigned char nmea_get_checksum(char *buffer) {
     while (*buffer++ != '*');
-    int checksum = (buffer[0] - (buffer[0] > 58 ? '7' : '0')) * 16 + (buffer[1] - (buffer[1] > 58 ? '7' : '0'));
+    int checksum = ((buffer[0] - (buffer[0] > 58 ? '7' : '0')) << 4) + (buffer[1] - (buffer[1] > 58 ? '7' : '0'));
     return checksum;
 }
 
