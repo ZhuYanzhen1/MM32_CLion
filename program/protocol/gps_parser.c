@@ -5,10 +5,10 @@
 #include "gps_parser.h"
 #include "mm32f3x_it.h"
 
-#define STRING_TO_NUM(x, y, num)    if(comma_position[num-1]!=0) \
-                                        (x) = nmea_str2num(p + comma_position[num-1] +1, &(y));
-#define STRING_TO_STR(x, num)       if (comma_position[num-1]!=0) \
-                                        (x) = *(p + comma_position[num-1]+1);
+#define STRING_TO_NUM(x, y, num)    if(comma_position[(num)-1]!=0) \
+                                        (x) = nmea_str2num(p + comma_position[(num)-1] +1, &(y));
+#define STRING_TO_STR(x, num)       if (comma_position[(num)-1]!=0) \
+                                        (x) = *(p + comma_position[(num)-1]+1);
 
 //
 //TODO 优化思路：1、找逗号的算法，可以先一次找齐所有逗号，记下位置；2、乘法和加法运算看看能不能改成位运算；3、高效的字符串转数字算法；

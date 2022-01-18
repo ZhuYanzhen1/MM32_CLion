@@ -5,7 +5,7 @@
 #include "dma.h"
 #include "hal_conf.h"
 
-void dma_receive_config(const unsigned char *data_address, unsigned short data_length) {
+void dma_receive_config(const unsigned int *data_address, unsigned short data_length) {
     DMA_InitTypeDef DMA_InitStruct;
 
     RCC_AHBPeriphClockCmd(RCC_AHBENR_DMA1, ENABLE);
