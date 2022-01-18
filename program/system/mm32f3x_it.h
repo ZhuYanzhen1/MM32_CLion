@@ -10,10 +10,11 @@
 #define MINIFOC_SYSTEM_GD32F1X0_IT_H
 
 void SysTick_Handler(void);
+void TIM2_IRQHandler(void);
+void UART1_IRQHandler(void);
 
 #ifdef IS_PROCESS_MCU
 void EXTI0_IRQHandler(void);
-void UART1_IRQHandler(void);
 void UART3_IRQHandler(void);
 void DMA1_Channel1_IRQHandler(void);
 

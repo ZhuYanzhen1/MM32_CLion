@@ -41,11 +41,14 @@ int main(void) {
     cm_backtrace_init("mm32f3277", "1.0.1", "1.0.1");
     debugger_register_variable(dbg_float32, &theta, "theta");
     debugger_register_variable(dbg_float32, &sin_theta, "sin_theta");
+    timer2_config();
     while (1) {
 #ifdef IS_PROCESS_MCU
+        theta += 0.01f;
+        sin_theta = qfp_fsin(theta);
         gui_show_gnrmc_information(&gps_rmc);
 #endif
         LED1_TOGGLE();
-        delayms(200);
+        delayms(100);
     }
 }
