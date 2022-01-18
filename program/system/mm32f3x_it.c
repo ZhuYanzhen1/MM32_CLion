@@ -76,4 +76,12 @@ void DMA1_Channel1_IRQHandler(void) {
     }
 }
 
+unsigned char dma1_ch4_flag = 0;
+void DMA1_Channel4_IRQHandler(void) {
+    if (DMA_GetITStatus(DMA1_IT_TC4)) {
+        DMA_ClearITPendingBit(DMA1_IT_TC4);
+        dma1_ch4_flag = 1;
+    }
+}
+
 #endif

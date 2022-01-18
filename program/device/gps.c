@@ -34,7 +34,7 @@ extern unsigned int usart6_dma_buffer_1[74];
 extern unsigned int usart6_dma_buffer_2[74];
 void gps_config() {
     unsigned int apbclock = RCC_GetPCLK1Freq();
-    uart6_dma_nvic_config(UART6_DMA_PRIORITY, 0);
+    uart6_dma_nvic_config();
     uart6_dma_receive_config(usart6_dma_buffer_1, 74);
     DMA_Cmd(DMA1_Channel1, DISABLE);
 

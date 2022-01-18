@@ -17,7 +17,7 @@
 extern nmea_rmc gps_rmc;
 static float theta = 0, sin_theta = 0;
 
-unsigned int debug_dma[12] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1,};
+unsigned int debug_dma[12] = {0};
 
 int main(void) {
     delay_config();
@@ -32,7 +32,7 @@ int main(void) {
     uart3_config(115200);
     uart6_config(9600);
     gps_config();
-
+    uart1_dma_nvic_config();
 #endif
     cm_backtrace_init("mm32f3277", "1.0.1", "1.0.1");
     debugger_register_variable(dbg_float32, &theta, "theta");
@@ -45,8 +45,6 @@ int main(void) {
     __set_BASEPRI(0);//恢复中断状态
 */
 
-
-    uart1_dma_sent_config(debug_dma, 12);
     while (1) {
 #ifdef IS_PROCESS_MCU
         theta += 0.01f;
