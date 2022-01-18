@@ -72,7 +72,7 @@
 /*!
     \brief      Interruption shield
     \param[in]  basePri:Interrupt priority number
-    \note       __set_BASEPRI(X << 6);//block all interrupts with main priority number >= x
+    \note       __set_BASEPRI(X << 4);//block all interrupts with main priority number >= x
                 (X is set according to your needs)
 */
 inline void set_BASEPRI(unsigned int basePri) {
