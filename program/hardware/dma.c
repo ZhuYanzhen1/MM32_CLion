@@ -1,9 +1,8 @@
 /**************************************************************************/ /**
     \file       dma.c
-    \brief      dma receive initialization of uart6 and
-                dma send initialization of uart1
+    \brief      DMA function Source File
     \author     ZGL
-    \version    V1.0.1
+    \version    V1.2.2
     \date       19. January 2022
 ******************************************************************************/
 

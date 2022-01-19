@@ -2,7 +2,7 @@
     \file       gpio.c
     \brief      GPIO function Source File
     \author     LaoZhu
-    \version    V1.0.1
+    \version    V1.2.2
     \date       19. January 2022
 ******************************************************************************/
 

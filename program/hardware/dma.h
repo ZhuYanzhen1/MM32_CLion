@@ -2,7 +2,7 @@
     \file       gps.c
     \brief      DMA function Header File
     \author     ZGL
-    \version    V1.0.1
+    \version    V1.2.2
     \date       19. January 2022
 ******************************************************************************/
 

@@ -2,7 +2,7 @@
     \file     adis16470.c
     \brief    ADIS16470 function Source File
     \author   ZGL
-    \version  V1.0.1
+    \version  V1.2.2
     \date     23. November 2021
 ******************************************************************************/
 
