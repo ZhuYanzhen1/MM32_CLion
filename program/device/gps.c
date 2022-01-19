@@ -3,7 +3,7 @@
     \brief      Contains gps initialization and
                 display of received gps related information on the screen
     \author     ZGL
-    \version    V1.0.2
+    \version    V1.2.2
     \date       19. January 2022
 ******************************************************************************/
 
@@ -59,26 +59,26 @@ void gps_config() {
     \param[in]  gps_rmc: Recommended minimum positioning information
                 time, status, latitude, longitude, speed, direction, positioning mode
 */
-void gui_show_gnrmc_information(nmea_rmc *gps_rmc) {
+void gui_show_gnrmc_information() {
     gui_printf(0, 0 * 12, C_BLACK, C_WHITE,
-               "time:%d", gps_rmc->positioning_time.uct_time);
+               "time:%d", gps_rmc.positioning_time.uct_time);
     gui_printf(0, 1 * 12, C_BLACK, C_WHITE,
-               "status:%c", gps_rmc->status);
+               "status:%c", gps_rmc.status);
     gui_printf(0, 2 * 12, C_BLACK, C_WHITE,
-               "latitude:%d", gps_rmc->latitude);
+               "latitude:%d", gps_rmc.latitude);
     gui_printf(0, 3 * 12, C_BLACK, C_WHITE,
-               "latitude_direction:%c", gps_rmc->latitude_direction);
+               "latitude_direction:%c", gps_rmc.latitude_direction);
     gui_printf(0, 4 * 12, C_BLACK, C_WHITE,
-               "longitude:%d", gps_rmc->longitude);
+               "longitude:%d", gps_rmc.longitude);
     gui_printf(0, 5 * 12, C_BLACK, C_WHITE,
-               "longitude_direction:%c", gps_rmc->longitude_direction);
+               "longitude_direction:%c", gps_rmc.longitude_direction);
     gui_printf(0, 6 * 12, C_BLACK, C_WHITE,
-               "status:%c", gps_rmc->status);
+               "status:%c", gps_rmc.status);
     gui_printf(0, 7 * 12, C_BLACK, C_WHITE,
-               "speed:%d", gps_rmc->speed_to_ground_section);
+               "speed:%d", gps_rmc.speed_to_ground_section);
     gui_printf(0, 8 * 12, C_BLACK, C_WHITE,
-               "direction:%d", gps_rmc->direction_of_ground_truth);
+               "direction:%d", gps_rmc.direction_of_ground_truth);
     gui_printf(0, 9 * 12, C_BLACK, C_WHITE,
-               "positioning_mode:%c", gps_rmc->mode);
+               "positioning_mode:%c", gps_rmc.mode);
 }
 

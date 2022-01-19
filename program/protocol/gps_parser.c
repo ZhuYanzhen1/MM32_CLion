@@ -1,17 +1,20 @@
-//
-// Created by 16625 on 2021-12-24.
-//
+/**************************************************************************/ /**
+    \file       gps_parser.c
+    \brief      gps unpacking algorithm,
+                algorithm for processing gps packets truncated by DMA
+    \author     ZGL
+    \version    V1.2.2
+    \date       19. January 2022
+******************************************************************************/
 
 #include "gps_parser.h"
-
-#ifndef RUNNING_UNIT_TEST
-#include "mm32f3x_it.h"
-#endif
 
 #define STRING_TO_NUM(x, y, num)    if(comma_position[(num)-1]!=0) \
                                         (x) = nmea_str2num(p + comma_position[(num)-1] +1, &(y));
 #define STRING_TO_STR(x, num)       if (comma_position[(num)-1]!=0) \
                                         (x) = *(p + comma_position[(num)-1]+1);
+
+nmea_rmc gps_rmc = {0};
 
 /*!
     \brief      Get the location of all commas in the gps packet at once
@@ -167,39 +170,38 @@ void change_latitude_longitude_format(int *degree, char decimal_places) {
     \param[in]  gps_rmc: Recommended minimum positioning information
                 time, status, latitude, longitude, speed, direction, positioning mode
 */
-void nmea_gnrmc_analysis(nmea_rmc *gps_rmc, char *buffer) {
+void nmea_gnrmc_analysis(char *buffer) {
     char i = 0, decimal_places = 1, check_sum = 0, comma_position[13] = {0};
     char *p = buffer;
 
     nmea_all_comma_position(buffer, comma_position, 13);
     if (comma_position[12 != 0])
-        gps_rmc->checksum = nmea_get_checksum(buffer);
+        gps_rmc.checksum = nmea_get_checksum(buffer);
     else
         return;
     while (p[i] != '*')
         check_sum ^= p[i++];
-    if (check_sum != gps_rmc->checksum)
+    if (check_sum != gps_rmc.checksum)
         return;
 
-    STRING_TO_NUM(gps_rmc->positioning_time.uct_time, gps_rmc->positioning_time.decimal_places_time, 1)
-    STRING_TO_STR(gps_rmc->status, 2)
-    STRING_TO_NUM(gps_rmc->latitude, gps_rmc->decimal_places_latitude, 3)
-    STRING_TO_STR(gps_rmc->latitude_direction, 4)
-    STRING_TO_NUM(gps_rmc->longitude, gps_rmc->decimal_places_longitude, 5)
-    STRING_TO_STR(gps_rmc->longitude_direction, 6)
-    STRING_TO_NUM(gps_rmc->speed_to_ground_section, gps_rmc->decimal_places_speed, 7)
-    STRING_TO_NUM(gps_rmc->direction_of_ground_truth, gps_rmc->decimal_places_direction, 8)
-    STRING_TO_NUM(gps_rmc->date, decimal_places, 9)
-    STRING_TO_STR(gps_rmc->mode, 12)
+    STRING_TO_NUM(gps_rmc.positioning_time.uct_time, gps_rmc.positioning_time.decimal_places_time, 1)
+    STRING_TO_STR(gps_rmc.status, 2)
+    STRING_TO_NUM(gps_rmc.latitude, gps_rmc.decimal_places_latitude, 3)
+    STRING_TO_STR(gps_rmc.latitude_direction, 4)
+    STRING_TO_NUM(gps_rmc.longitude, gps_rmc.decimal_places_longitude, 5)
+    STRING_TO_STR(gps_rmc.longitude_direction, 6)
+    STRING_TO_NUM(gps_rmc.speed_to_ground_section, gps_rmc.decimal_places_speed, 7)
+    STRING_TO_NUM(gps_rmc.direction_of_ground_truth, gps_rmc.decimal_places_direction, 8)
+    STRING_TO_NUM(gps_rmc.date, decimal_places, 9)
+    STRING_TO_STR(gps_rmc.mode, 12)
 
-    change_latitude_longitude_format(&gps_rmc->latitude, gps_rmc->decimal_places_latitude);
-    change_latitude_longitude_format(&gps_rmc->longitude, gps_rmc->decimal_places_longitude);
+    change_latitude_longitude_format(&gps_rmc.latitude, gps_rmc.decimal_places_latitude);
+    change_latitude_longitude_format(&gps_rmc.longitude, gps_rmc.decimal_places_longitude);
 }
 
 static unsigned char status = 0;
 static unsigned char package_buffer[80];
 static unsigned char package_counter = 0;
-nmea_rmc gps_rmc = {0};
 
 #ifndef RUNNING_UNIT_TEST
 void deal_dma_gnrmc(const unsigned int *p) {
@@ -218,7 +220,7 @@ void deal_dma_gnrmc(const unsigned int *p) {
                     package_counter++;
                 }
                 break;
-            case 2:nmea_gnrmc_analysis(&gps_rmc, (char *) package_buffer);
+            case 2:nmea_gnrmc_analysis((char *) package_buffer);
                 package_counter = 0;
                 for (unsigned char p_counter = 0; p_counter < 80; ++p_counter)
                     package_buffer[p_counter] = 0x00;
@@ -238,4 +240,4 @@ void deal_dma_gnrmc(const unsigned int *p) {
         }
     }
 }
-#endif
+#endif  // RUNNING_UNIT_TEST

@@ -1,9 +1,9 @@
 /**************************************************************************/ /**
-    \file     decrypt.c
+    \file     mdtp_unpack.c
     \brief    Medium capacity transport protocol unpacking function Source File.
     \author   Lao·Zhu
-    \version  V1.0.3
-    \date     3. December 2021
+    \version  V1.2.2
+    \date     19. January 2022
 ******************************************************************************/
 
 #include "mdtp_unpack.h"
@@ -13,7 +13,7 @@
 #include "debugger.h"
 #else
 extern void mdtp_callback_handler(unsigned char pid, const unsigned char *data);
-#endif
+#endif  // RUNNING_UNIT_TEST
 
 /*!
     \brief  medium capacity transport protocol receive state variable
@@ -22,10 +22,12 @@ extern void mdtp_callback_handler(unsigned char pid, const unsigned char *data);
           2 end status processing the received data
 */
 volatile static unsigned char mdtp_receive_status = 0;
+
 /*!
     \brief  medium capacity transport protocol receive character counter
 */
 volatile static unsigned char mdtp_receive_number_counter = 0;
+
 /*!
     \brief  medium capacity transport protocol receive buffer array
 */

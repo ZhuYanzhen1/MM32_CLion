@@ -1,10 +1,14 @@
-//
-// Created by Lao·Zhu on 2021/9/4.
-//
+/**************************************************************************/ /**
+    \file     sdtp_pack.h
+    \brief    Small capacity transport protocol packing function Header file.
+    \author   Lao·Zhu
+    \version  V1.2.2
+    \date     19. January 2022
+******************************************************************************/
 
-#ifndef _ENCRYPT_H_
-#define _ENCRYPT_H_
+#ifndef MAIN_C_PROTOCOL_SDTP_PACK_H_
+#define MAIN_C_PROTOCOL_SDTP_PACK_H_
 
 void sdtp_data_transmit(const unsigned char *data);
 
-#endif  // _ENCRYPT_H_
+#endif  // MAIN_C_PROTOCOL_SDTP_PACK_H_

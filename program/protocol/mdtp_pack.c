@@ -2,19 +2,18 @@
     \file     mdtp_pack.c
     \brief    Medium capacity transport protocol packing function source file.
     \author   Lao·Zhu
-    \version  V1.0.3
-    \date     3. December 2021
+    \version  V1.2.2
+    \date     19. January 2022
 ******************************************************************************/
 
 #include "mdtp_pack.h"
 
 #ifndef RUNNING_UNIT_TEST
 #include "dma.h"
-#include "hal_conf.h"
 #else
 #define common_sendbyte mdtp_sendbyte
 extern void mdtp_sendbyte(unsigned char data);
-#endif
+#endif  // RUNNING_UNIT_TEST
 
 extern unsigned char dma1_ch4_flag;
 
@@ -55,6 +54,6 @@ void mdtp_data_transmit(unsigned char pid, const unsigned char *buffer) {
         if (dma1_ch4_flag == 1)
             break;
     dma1_ch4_flag = 0;
-#endif
+#endif  // RUNNING_UNIT_TEST
 
 }

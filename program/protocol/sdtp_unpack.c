@@ -1,6 +1,10 @@
-//
-// Created by Lao·Zhu on 2021/9/4.
-//
+/**************************************************************************/ /**
+    \file     sdtp_unpack.c
+    \brief    Small capacity transport protocol unpacking function Source File.
+    \author   Lao·Zhu
+    \version  V1.2.2
+    \date     19. January 2022
+******************************************************************************/
 
 #include "sdtp_unpack.h"
 
@@ -35,6 +39,7 @@ void sdtp_receive_handler(unsigned char data) {
         case 0x04:
             /* separate the first two bits of the byte to obtain valid data */
             receive_buffer[2] |= (data & 0x3f);
+
             /* call user callback function to complete the next step */
             sdtp_callback_handler(receive_buffer);
             break;

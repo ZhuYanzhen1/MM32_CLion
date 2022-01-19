@@ -8,7 +8,6 @@
 
 #include "main.h"
 
-extern nmea_rmc gps_rmc;
 int main(void) {
     delay_config();
     led_config();
@@ -18,9 +17,9 @@ int main(void) {
 //    xpt2046_gpio_config();
     gui_config();
 //    xpt2046_calibrate();
-    uart1_config(115200);
-    uart3_config(115200);
-    uart6_config(9600);
+    uart1_config();
+    uart3_config();
+    uart6_config();
     gps_config();
 #endif  // IS_PROCESS_MCU
     cm_backtrace_config("mm32f3277", "1.0.1", "1.0.1");
@@ -28,7 +27,7 @@ int main(void) {
     timer2_config();
     while (1) {
 #ifdef IS_PROCESS_MCU
-        gui_show_gnrmc_information(&gps_rmc);
+        gui_show_gnrmc_information();
 #endif  // IS_PROCESS_MCU
         LED1_TOGGLE();
         delayms(100);

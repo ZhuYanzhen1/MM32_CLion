@@ -1,6 +1,10 @@
-//
-// Created by 16625 on 2021-12-24.
-//
+/**************************************************************************/ /**
+    \file       gps_parser.h
+    \brief      DMA function Header File
+    \author     ZGL
+    \version    V1.2.2
+    \date       19. January 2022
+******************************************************************************/
 
 #ifndef MAIN_C_PROTOCOL_GPS_PARSER_H_
 #define MAIN_C_PROTOCOL_GPS_PARSER_H_
@@ -48,14 +52,9 @@ typedef struct {
 
 } nmea_rmc;
 
-void nmea_all_comma_position(char *buffer, char *comma, char n);
-unsigned char nmea_get_checksum(char *buffer);
-int num_times_nth_power_of_10(int num, int n);
-int nmea_pow(char m, char n);
-int nmea_str2num(char *buffer, char *decimal_places);
-void nmea_gnrmc_analysis(nmea_rmc *gps_rmc, char *buffer);
-void change_latitude_longitude_format(int *degree, char decimal_places);
+extern nmea_rmc gps_rmc;
 
+void nmea_gnrmc_analysis(char *buffer);
 void deal_dma_gnrmc(const unsigned int *p);
 
-#endif //MAIN_C_PROTOCOL_GPS_PARSER_H_
+#endif // MAIN_C_PROTOCOL_GPS_PARSER_H_
