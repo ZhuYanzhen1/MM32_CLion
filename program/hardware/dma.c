@@ -44,6 +44,12 @@ void uart6_dma_nvic_config() {
     exNVIC_Init(&NVIC_InitStruct);
 }
 
+void uart1_dma_set_transmit_buffer(const unsigned int *data_address, unsigned short data_length) {
+    DMA1_Channel4->CNDTR = (volatile unsigned int) data_length;
+    DMA1_Channel4->CMAR = (volatile unsigned int) data_address;
+    MODIFY_REG(DMA1_Channel4->CCR, DMA_CCR_EN, 1 << DMA_CCR_EN_Pos);
+}
+
 void uart1_dma_sent_config(const unsigned int *data_address, unsigned short data_length) {
     DMA_InitTypeDef DMA_InitStruct;
 
@@ -67,7 +73,7 @@ void uart1_dma_sent_config(const unsigned int *data_address, unsigned short data
 
     DMA_ITConfig(DMA1_Channel4, DMA_IT_TC, ENABLE);
     UART_DMACmd(UART1, UART_GCR_DMA, ENABLE);
-    DMA_Cmd(DMA1_Channel4, ENABLE);
+    DMA_Cmd(DMA1_Channel4, DISABLE);
 }
 
 void uart1_dma_nvic_config() {

@@ -29,7 +29,9 @@ int main(void) {
 #ifdef IS_PROCESS_MCU
         gui_show_gnrmc_information();
 #endif  // IS_PROCESS_MCU
+        printf("printf test.\r\n");
+        fflush(stdout);
         LED1_TOGGLE();
-        delayms(100);
+        delayms(500);
     }
 }
