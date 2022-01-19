@@ -2,8 +2,8 @@
     \file     spi.c
     \brief    SPI function Source File
     \author   Lao·Zhu
-    \version  V1.0.1
-    \date     24. November 2021
+    \version  V1.0.2
+    \date     19. January 2022
 ******************************************************************************/
 
 #include "spi.h"
@@ -49,12 +49,14 @@ void spi2_config(void) {
     SPI_InitStruct.SPI_CPOL = SPI_CPOL_High;
     SPI_InitStruct.SPI_CPHA = SPI_CPHA_2Edge;
     SPI_InitStruct.SPI_NSS = SPI_NSS_Soft;
-    SPI_InitStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_16; /* 120MHz / 16 = 7.5MHz */
+
+    /* 120MHz / 16 = 7.5MHz */
+    SPI_InitStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_16;
     SPI_InitStruct.SPI_FirstBit = SPI_FirstBit_MSB;
     SPI_Init(SPI2, &SPI_InitStruct);
-    if (SPI_InitStruct.SPI_BaudRatePrescaler <= 8) {
+    if (SPI_InitStruct.SPI_BaudRatePrescaler <= 8)
         exSPI_DataEdgeAdjust(SPI2, SPI_DataEdgeAdjust_FAST);
-    }
+
     SPI_BiDirectionalLineConfig(SPI2, SPI_Direction_Rx);
     SPI_BiDirectionalLineConfig(SPI2, SPI_Direction_Tx);
     SPI_Cmd(SPI2, ENABLE);

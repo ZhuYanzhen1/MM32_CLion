@@ -1,6 +1,10 @@
-//
-// Created by Lao·Zhu on 2022/1/18.
-//
+/**************************************************************************/ /**
+    \file       gps.c
+    \brief      DMA function Header File
+    \author     ZGL
+    \version    V1.0.1
+    \date       19. January 2022
+******************************************************************************/
 
 #ifndef MM32F3277_HARDWARE_DMA_H_
 #define MM32F3277_HARDWARE_DMA_H_

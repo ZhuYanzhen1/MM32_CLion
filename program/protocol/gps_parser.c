@@ -221,7 +221,7 @@ void deal_dma_gnrmc(const unsigned int *p) {
             case 2:nmea_gnrmc_analysis(&gps_rmc, (char *) package_buffer);
                 package_counter = 0;
                 for (unsigned char p_counter = 0; p_counter < 80; ++p_counter)
-                    package_buffer[package_counter] = 0x00;
+                    package_buffer[p_counter] = 0x00;
                 status = 0;
                 break;
             case 3:

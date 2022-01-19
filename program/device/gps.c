@@ -1,15 +1,19 @@
-//
-// Created by 16625 on 2022-01-16.
-//
+/**************************************************************************/ /**
+    \file       gps.c
+    \brief      Contains gps initialization and
+                display of received gps related information on the screen
+    \author     ZGL
+    \version    V1.0.2
+    \date       19. January 2022
+******************************************************************************/
 
+#include "gps_parser.h"
 #include "gps.h"
 #include "uart.h"
 #include "delay.h"
 #include "gui_base.h"
-#include "gps_parser.h"
 #include "dma.h"
 #include "hal_conf.h"
-#include "config.h"
 
 #define UART6_CONFIG_GPS(cmdbuf)    for (unsigned char i = 0; i < (unsigned char) sizeof(cmdbuf); i++)\
                                         uart6_sendbyte((cmdbuf)[i]);\
