@@ -52,7 +52,7 @@ void UART3_IRQHandler(void) {
 }
 
 typedef enum { buffer_ok = 0, buffer_no_1 = 1, buffer_no_2 = 2 } buffer_no;
-buffer_no free_buffer_no = buffer_no_1;
+buffer_no uart6_free_buffer_no = buffer_no_1;
 unsigned int usart6_dma_buffer_1[74];
 unsigned int usart6_dma_buffer_2[74];
 
@@ -62,26 +62,46 @@ void DMA1_Channel1_IRQHandler(void) {
         DMA_ClearITPendingBit(DMA1_IT_GL1);
 
         /* Double ping pong buffer */
-        if (free_buffer_no == buffer_no_1) {
+        if (uart6_free_buffer_no == buffer_no_1) {
             uart6_dma_receive_config(usart6_dma_buffer_2, 74);
             DMA_Cmd(DMA1_Channel1, ENABLE);
-            free_buffer_no = buffer_no_2;
+            uart6_free_buffer_no = buffer_no_2;
             deal_dma_gnrmc(usart6_dma_buffer_1);
         } else {
             uart6_dma_receive_config(usart6_dma_buffer_1, 74);
             DMA_Cmd(DMA1_Channel1, ENABLE);
-            free_buffer_no = buffer_no_1;
+            uart6_free_buffer_no = buffer_no_1;
             deal_dma_gnrmc(usart6_dma_buffer_2);
         }
     }
 }
 
+// 双乒乓缓冲：
+// 先是选好两个buffer，
+// 然后怎么拿给那边用呢
+buffer_no uart1_free_buffer_no = buffer_no_1;
 unsigned char dma1_ch4_flag = 0;
+unsigned int usart1_dma_buffer_1[12];
+unsigned int usart1_dma_buffer_2[12];
 void DMA1_Channel4_IRQHandler(void) {
     if (DMA_GetITStatus(DMA1_IT_TC4)) {
         DMA_ClearITPendingBit(DMA1_IT_TC4);
-        dma1_ch4_flag = 1;
+        dma1_ch4_flag = 0;
+        /* Double ping pong buffer */
+        if (uart1_free_buffer_no == buffer_no_1)
+            uart1_free_buffer_no = buffer_no_2;
+        else
+            uart1_free_buffer_no = buffer_no_1;
     }
+}
+
+unsigned int *choose_uart1_buffer() {
+    if (uart1_free_buffer_no == buffer_no_1)
+        return usart1_dma_buffer_1;
+    else if (uart1_free_buffer_no == buffer_no_2)
+        return usart1_dma_buffer_2;
+    else
+        return 0;
 }
 
 #endif  // IS_PROCESS_MCU

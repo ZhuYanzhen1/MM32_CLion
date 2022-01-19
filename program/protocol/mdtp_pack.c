@@ -7,6 +7,7 @@
 ******************************************************************************/
 
 #include "mdtp_pack.h"
+#include "mm32f3x_it.h"
 
 #ifndef RUNNING_UNIT_TEST
 #include "dma.h"
@@ -16,6 +17,8 @@ extern void mdtp_sendbyte(unsigned char data);
 #endif  // RUNNING_UNIT_TEST
 
 extern unsigned char dma1_ch4_flag;
+extern unsigned int usart1_dma_buffer_1[12];
+extern unsigned int usart1_dma_buffer_2[12];
 
 /*!
     \brief      medium capacity data transmission protocol packing function
@@ -24,8 +27,9 @@ extern unsigned char dma1_ch4_flag;
     \retval none
 */
 void mdtp_data_transmit(unsigned char pid, const unsigned char *buffer) {
-    unsigned int temp_buf[12] = {0xff, 0x00, 0x00, 0x00, 0x00, 0x00,
-                                 0x00, 0x00, 0x00, 0x00, 0x00, 0xff};
+    unsigned int *temp_buf = choose_uart1_buffer();
+//    unsigned int *temp_buf[12] = {0xff, 0x00, 0x00, 0x00, 0x00, 0x00,
+//                                  0x00, 0x00, 0x00, 0x00, 0x00, 0xff};
     unsigned char mdtp_pack_counter;
 
     /* traverse the array to determine whether there are bytes to be adjusted */
@@ -49,11 +53,12 @@ void mdtp_data_transmit(unsigned char pid, const unsigned char *buffer) {
     for (mdtp_pack_counter = 0; mdtp_pack_counter < 12; mdtp_pack_counter++)
         common_sendbyte(temp_buf[mdtp_pack_counter]);
 #else
-    uart1_dma_sent_config(temp_buf, 12);
     while (1)
-        if (dma1_ch4_flag == 1)
+        if (dma1_ch4_flag == 0)
             break;
-    dma1_ch4_flag = 0;
+    uart1_dma_sent_config(temp_buf, 12);
+    dma1_ch4_flag = 1;
+
 #endif  // RUNNING_UNIT_TEST
 
 }

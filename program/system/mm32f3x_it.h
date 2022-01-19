@@ -18,6 +18,9 @@ void EXTI0_IRQHandler(void);
 void UART3_IRQHandler(void);
 void DMA1_Channel1_IRQHandler(void);
 void DMA1_Channel4_IRQHandler(void);
+
+unsigned int *choose_uart1_buffer();
+
 #endif  // IS_PROCESS_MCU
 
 #endif  // MM32F3277_SYSTEM_MM32F3X_IT_H_
