@@ -1,5 +1,5 @@
 /**************************************************************************/ /**
-    \file       gps.c
+    \file       dma.h
     \brief      DMA function Header File
     \author     ZGL
     \version    V1.2.2
