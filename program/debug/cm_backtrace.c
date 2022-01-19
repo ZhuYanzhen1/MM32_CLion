@@ -26,11 +26,11 @@
  * Created on: 2016-12-15
  */
 
-#include <cm_backtrace.h>
-#include <stdbool.h>
-#include <string.h>
-#include <cmb_def.h>
-#include <printf.h>
+#include "cm_backtrace.h"
+#include "stdbool.h"
+#include "string.h"
+#include "cmb_def.h"
+#include "printf.h"
 
 #if __STDC_VERSION__ < 199901L
 #error "must be C99 or higher. try to add '-std=c99' to compile parameters"
@@ -168,7 +168,7 @@ static bool on_thread_before_fault = false;
 /**
  * library initialize
  */
-void cm_backtrace_init(const char *firmware_name, const char *hardware_ver, const char *software_ver) {
+void cm_backtrace_config(const char *firmware_name, const char *hardware_ver, const char *software_ver) {
     strncpy(fw_name, firmware_name, CMB_NAME_MAX);
     strncpy(hw_ver, hardware_ver, CMB_NAME_MAX);
     strncpy(sw_ver, software_ver, CMB_NAME_MAX);

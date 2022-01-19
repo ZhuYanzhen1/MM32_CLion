@@ -2,18 +2,17 @@
     \file     debugger.c
     \brief    debugger function Source File
     \author   Lao·Zhu
-    \version  V1.0.1
-    \date     3. December 2021
+    \version  V1.0.2
+    \date     19. January 2022
 ******************************************************************************/
 
 #include "debugger.h"
 #include "config.h"
 #include "mdtp_pack.h"
-#include "malloc.h"
 #include "printf.h"
 #include "string.h"
 
-static debugger_variable_t *variable_buffer[VARIABLE_BUFFER_SIZE];
+static debugger_variable_t variable_buffer[VARIABLE_BUFFER_SIZE];
 static unsigned char variable_index = 0;
 static unsigned char printf_byte_counter = 0;
 static unsigned char printf_byte_buffer[8] = {0};
@@ -25,7 +24,8 @@ static unsigned char printf_byte_buffer[8] = {0};
     \retval none
 */
 void mdtp_callback_handler(unsigned char pid, const unsigned char *data) {
-
+    (void) pid;
+    (void) data;
 }
 
 void _fflush(void) {
@@ -51,11 +51,11 @@ void _putchar(char character) {
 
 static void debugger_report_variable(unsigned char index) {
     unsigned char tmp_buffer[8] = {0};
-    unsigned long variable_physical_addr = (unsigned long) variable_buffer[index]->var_address;
+    unsigned long variable_physical_addr = (unsigned long) variable_buffer[index].var_address;
     tmp_buffer[0] = index;
-    tmp_buffer[1] = (variable_buffer[index]->var_status >> 16) & 0x000000ffUL;
-    tmp_buffer[2] = (variable_buffer[index]->var_status >> 8) & 0x000000ffUL;
-    tmp_buffer[3] = variable_buffer[index]->var_status & 0x000000ffUL;
+    tmp_buffer[1] = (variable_buffer[index].var_status >> 16) & 0x000000ffUL;
+    tmp_buffer[2] = (variable_buffer[index].var_status >> 8) & 0x000000ffUL;
+    tmp_buffer[3] = variable_buffer[index].var_status & 0x000000ffUL;
     tmp_buffer[4] = variable_physical_addr >> 24;
     tmp_buffer[5] = (variable_physical_addr >> 16) & 0x000000ffUL;
     tmp_buffer[6] = (variable_physical_addr >> 8) & 0x000000ffUL;
@@ -63,23 +63,21 @@ static void debugger_report_variable(unsigned char index) {
     mdtp_data_transmit(0x00, tmp_buffer);
 
     for (unsigned char counter = 0; counter < 7; ++counter)
-        tmp_buffer[counter + 1] = variable_buffer[index]->var_name[counter];
+        tmp_buffer[counter + 1] = variable_buffer[index].var_name[counter];
     mdtp_data_transmit(0x01, tmp_buffer);
 
     for (unsigned char counter = 0; counter < 7; ++counter)
-        tmp_buffer[counter + 1] = variable_buffer[index]->var_name[counter + 7];
+        tmp_buffer[counter + 1] = variable_buffer[index].var_name[counter + 7];
     mdtp_data_transmit(0x02, tmp_buffer);
 }
 
 void debugger_register_variable(variable_type var_type, void *variable, const char *name) {
     unsigned char name_length = strlen(name) > 14 ? 14 : strlen(name);
-    debugger_variable_t *new_variable = memalloc(sizeof(debugger_variable_t));
-    new_variable->var_status = var_type;
-    new_variable->var_address = variable;
-    new_variable->var_lastvalue = 0x00000000UL;
+    variable_buffer[variable_index].var_status = var_type;
+    variable_buffer[variable_index].var_address = variable;
+    variable_buffer[variable_index].var_lastvalue = 0x00000000UL;
     for (unsigned char counter = 0; counter < name_length; counter++)
-        new_variable->var_name[counter] = name[counter];
-    variable_buffer[variable_index] = new_variable;
+        variable_buffer[variable_index].var_name[counter] = name[counter];
     variable_index = variable_index + 1;
     debugger_report_variable(variable_index - 1);
 }
@@ -91,23 +89,22 @@ void debugger_scan_variable(unsigned long time_stamp) {
     tmp_buffer[3] = time_stamp & 0x000000ffUL;
     for (unsigned char counter = 0; counter < variable_index; ++counter) {
         unsigned long tmp_variable_u32;
-        switch (variable_buffer[counter]->var_status) {
+        switch (variable_buffer[counter].var_status) {
             case dbg_uint8:
-            case dbg_int8:
-                tmp_variable_u32 = (*((unsigned char *) variable_buffer[counter]->var_address)) & 0x000000FFUL;
+            case dbg_int8:tmp_variable_u32 = (*((unsigned char *) variable_buffer[counter].var_address)) & 0x000000FFUL;
                 break;
             case dbg_uint16:
             case dbg_int16:
-                tmp_variable_u32 = (*((unsigned short *) variable_buffer[counter]->var_address)) & 0x0000FFFFUL;
+                tmp_variable_u32 = (*((unsigned short *) variable_buffer[counter].var_address)) & 0x0000FFFFUL;
                 break;
             case dbg_float32:
             case dbg_uint32:
-            case dbg_int32:tmp_variable_u32 = (*((unsigned long *) variable_buffer[counter]->var_address));
+            case dbg_int32:tmp_variable_u32 = (*((unsigned long *) variable_buffer[counter].var_address));
                 break;
             default:tmp_variable_u32 = 0x00000000UL;
                 break;
         }
-        if (variable_buffer[counter]->var_lastvalue != tmp_variable_u32) {
+        if (variable_buffer[counter].var_lastvalue != tmp_variable_u32) {
             tmp_buffer[0] = counter;
             tmp_buffer[4] = tmp_variable_u32 >> 24;
             tmp_buffer[5] = (tmp_variable_u32 >> 16) & 0x000000ffUL;
@@ -115,6 +112,6 @@ void debugger_scan_variable(unsigned long time_stamp) {
             tmp_buffer[7] = tmp_variable_u32 & 0x000000ffUL;
             mdtp_data_transmit(0x03, tmp_buffer);
         }
-        variable_buffer[counter]->var_lastvalue = tmp_variable_u32;
+        variable_buffer[counter].var_lastvalue = tmp_variable_u32;
     }
 }

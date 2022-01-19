@@ -9,6 +9,7 @@
 #include "uart.h"
 #include "hal_conf.h"
 #include "config.h"
+#include "dma.h"
 
 void uart1_config(unsigned int baudrate) {
     UART_InitTypeDef UART_InitStruct;
@@ -48,6 +49,8 @@ void uart1_config(unsigned int baudrate) {
     UART_Init(UART1, &UART_InitStruct);
     UART_ITConfig(UART1, UART_IT_RXIEN, ENABLE);
     UART_Cmd(UART1, ENABLE);
+
+    uart1_dma_nvic_config();
 }
 
 void uart3_config(unsigned int baudrate) {

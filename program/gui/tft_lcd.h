@@ -1,6 +1,10 @@
-//
-// Created by Lao·Zhu on 2021/4/7.
-//
+/**************************************************************************/ /**
+    \file     tft_lcd.h
+    \brief    lcd access function Header File
+    \author   Lao·Zhu
+    \version  V1.0.1
+    \date     19. January 2022
+ ******************************************************************************/
 
 #ifndef MM32F3277_GUI_LCD_H_
 #define MM32F3277_GUI_LCD_H_

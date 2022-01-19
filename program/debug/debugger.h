@@ -2,8 +2,8 @@
     \file     debugger.h
     \brief    debugger function Header File
     \author   Lao·Zhu
-    \version  V1.0.1
-    \date     3. December 2021
+    \version  V1.0.2
+    \date     19. January 2022
 ******************************************************************************/
 
 #ifndef MM32F3277_DEBUG_DEBUGGER_H_

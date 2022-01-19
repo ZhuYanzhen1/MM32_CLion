@@ -1,6 +1,10 @@
-//
-// Created by Lao·Zhu on 2021/2/26.
-//
+/**************************************************************************/ /**
+    \file     color.h
+    \brief    file that stores RGB565 color macros.
+    \author   Lao·Zhu
+    \version  V1.0.1
+    \date     19. January 2022
+ ******************************************************************************/
 
 #ifndef MM32F3277_GUI_COLOR_H_
 #define MM32F3277_GUI_COLOR_H_

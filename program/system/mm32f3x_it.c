@@ -84,4 +84,4 @@ void DMA1_Channel4_IRQHandler(void) {
     }
 }
 
-#endif
+#endif  // IS_PROCESS_MCU
