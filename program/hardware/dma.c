@@ -64,7 +64,7 @@ void uart1_dma_sent_config(const unsigned int *data_address, unsigned short data
     DMA_ITConfig(DMA1_Channel4, DMA_IT_TC, ENABLE);
 
     UART_DMACmd(UART1, UART_GCR_DMA, ENABLE);
-    // UARTy_DMA1_Channel enable
+    
     DMA_Cmd(DMA1_Channel4, ENABLE);
 }
 
