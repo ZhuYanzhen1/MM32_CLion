@@ -6,19 +6,6 @@
 #define MAIN_C_PROTOCOL_GPS_PARSER_H_
 
 typedef enum {
-    positioning_invalid = 0,
-    sps_positioning_mode = 1,
-    heading_projection = 6
-} positioning_quality_flag;
-
-typedef enum {
-    error_message = 0,
-    warning_message = 1,
-    notification_message = 2,
-    user_message = 7
-} text_identifiers;
-
-typedef enum {
     autonomous_mode = 'A',
     voyage_projection = 'E',
     invalid_data = 'N',

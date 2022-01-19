@@ -22,6 +22,7 @@ int main(void) {
     uart3_config(115200);
     uart6_config(9600);
     gps_config();
+    uart1_dma_nvic_config();
 #endif
     cm_backtrace_init("mm32f3277", "1.0.1", "1.0.1");
     debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
