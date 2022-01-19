@@ -1,6 +1,10 @@
-//
-// Created by Lao·Zhu on 2022/1/19.
-//
+/**************************************************************************/ /**
+    \file     timer.c
+    \brief    TIM function Source File
+    \author   Lao·Zhu
+    \version  V1.0.1
+    \date     19. January 2022
+******************************************************************************/
 
 #include "timer.h"
 #include "hal_conf.h"
@@ -12,7 +16,9 @@ void timer2_config() {
     NVIC_InitTypeDef NVIC_StructInit;
     RCC_APB1PeriphClockCmd(RCC_APB1ENR_TIM2, ENABLE);
     TIM_TimeBaseStructInit(&TIM_TimeBaseStruct);
-    TIM_TimeBaseStruct.TIM_Period = 199;        // 50Hz
+
+    /* 50Hz */
+    TIM_TimeBaseStruct.TIM_Period = 199;
     TIM_TimeBaseStruct.TIM_Prescaler = 11999;
     TIM_TimeBaseStruct.TIM_ClockDivision = TIM_CKD_DIV1;
     TIM_TimeBaseStruct.TIM_CounterMode = TIM_CounterMode_Up;

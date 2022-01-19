@@ -15,7 +15,7 @@ int main(void) {
 #ifdef IS_PROCESS_MCU
     delayms(2000);
     spi2_config();
-//    xpt2046_config();
+//    xpt2046_gpio_config();
     gui_config();
 //    xpt2046_calibrate();
     uart1_config(115200);

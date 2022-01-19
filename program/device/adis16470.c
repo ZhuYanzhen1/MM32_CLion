@@ -7,7 +7,6 @@
 ******************************************************************************/
 
 #include "adis16470.h"
-#include "hal_gpio.h"
 #include "spi.h"
 
 static const unsigned char address[] =
@@ -21,10 +20,7 @@ static const unsigned char address[] =
         0x24, 0x26,  //Delta_X                      /* Note that the angle difference read here is within 2ms */
         0x28, 0x2A,  //Delta_Y
         0x2C, 0x2E,  //Delta_Z
-};
-
-/* Burst Read command */
-static int Send_Cmd = 0x6800;
+    };
 
 /*!
     \brief                          The function to read the registers,
@@ -34,8 +30,10 @@ static int Send_Cmd = 0x6800;
     \param[in]  register_num:       Number of registers to be read
     \retval     none
 */
-void adis16470_read_register(const unsigned char *address_register, unsigned int *rx_point, unsigned char register_num) {
-    unsigned short tm_tmp = 0, rx_tmp = 0;
+void adis16470_read_register(const unsigned char *address_register,
+                             unsigned int *rx_point,
+                             unsigned char register_num) {
+    unsigned short tm_tmp, rx_tmp;
 
     /* The first frame of data is sent, not received. */
     tm_tmp = address_register[0] << 8;
@@ -61,7 +59,8 @@ void adis16470_read_register(const unsigned char *address_register, unsigned int
     \retval     none
 */
 void adis16470_write_register(unsigned char address_, unsigned char value) {
-    address_ |= 0x80; /* Add the "write" flag */
+    /* Add the "write" flag */
+    address_ |= 0x80;
     unsigned short tm_tmp = (address_ << 8) | value;
     spi2_readwrite_byte(tm_tmp);
 }

@@ -1,6 +1,11 @@
-//
-// Created by Lao·Zhu on 2022/1/18.
-//
+/**************************************************************************/ /**
+    \file       dma.c
+    \brief      dma receive initialization of uart6 and
+                dma send initialization of uart1
+    \author     ZGL
+    \version    V1.0.1
+    \date       19. January 2022
+******************************************************************************/
 
 #include "dma.h"
 #include "hal_conf.h"
@@ -62,9 +67,7 @@ void uart1_dma_sent_config(const unsigned int *data_address, unsigned short data
     DMA_Init(DMA1_Channel4, &DMA_InitStruct);
 
     DMA_ITConfig(DMA1_Channel4, DMA_IT_TC, ENABLE);
-
     UART_DMACmd(UART1, UART_GCR_DMA, ENABLE);
-    
     DMA_Cmd(DMA1_Channel4, ENABLE);
 }
 

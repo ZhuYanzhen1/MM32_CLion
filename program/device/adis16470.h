@@ -6,8 +6,8 @@
     \date     23. November 2021
 ******************************************************************************/
 
-#ifndef MM32F3277_DEVICE_ADIS16470_H
-#define MM32F3277_DEVICE_ADIS16470_H
+#ifndef MM32F3277_DEVICE_ADIS16470_H_
+#define MM32F3277_DEVICE_ADIS16470_H_
 
 typedef volatile struct {
     int diag_star;
@@ -39,6 +39,5 @@ extern gyroscope_t gyroscope_data;
 void adis16470_read_register(const unsigned char *addr_register, unsigned int *rx_point, unsigned char register_num);
 void adis16470_write_register(unsigned char addr, unsigned char value);
 void adis16470_single_handle(void);
-void Self_Calibration(void);
 
-#endif  // MM32F3277_DEVICE_ADIS16470_H
+#endif  // MM32F3277_DEVICE_ADIS16470_H_
