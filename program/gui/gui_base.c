@@ -8,10 +8,13 @@
 
 #include "tft_lcd.h"
 #include "gui_base.h"
-#include "string.h"
 #include "stdarg.h"
 #include "font.h"
 #include "printf.h"
+
+#include "led.h"
+#include "hal_conf.h"
+#include "pin.h"
 
 void gui_config(void) {
     lcd_config();
@@ -19,6 +22,7 @@ void gui_config(void) {
     gui_clear_screan(C_WHITE);
 }
 
+// 388us
 void gui_putchar(unsigned char x,
                  unsigned char line,
                  unsigned char value,
@@ -27,7 +31,9 @@ void gui_putchar(unsigned char x,
     unsigned char i, j;
     unsigned char *temp = (unsigned char *) &Font_6_12[0];
     temp += (value - 32) * 12;
-    lcd_set_address(x, line, x + 5, line + 11);
+    LED1_ON();
+    lcd_set_address(x, line, x + 5, line + 11);     // 28us
+    LED1_OFF();
     for (j = 0; j < 12; j++) {
         for (i = 0; i < 6; i++) {
             if ((*temp & (1 << (7 - i))) != 0)
@@ -48,7 +54,6 @@ void gui_printf(unsigned char row,
     char lcd_tmp_buffer[32] = {0};
     unsigned char n = 0;
     va_list ap;
-    memset(lcd_tmp_buffer, '\0', sizeof(lcd_tmp_buffer));
     va_start(ap, fmt);
     vsnprintf(lcd_tmp_buffer, sizeof(lcd_tmp_buffer), fmt, ap);
     va_end(ap);

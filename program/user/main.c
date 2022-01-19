@@ -27,11 +27,11 @@ int main(void) {
     timer2_config();
     while (1) {
 #ifdef IS_PROCESS_MCU
-        gui_show_gnrmc_information();
+        gui_show_gnrmc_information();       // 46.8ms
 #endif  // IS_PROCESS_MCU
         printf("printf test.\r\n");
         fflush(stdout);
-        LED1_TOGGLE();
+//        LED1_TOGGLE();
         delayms(500);
     }
 }

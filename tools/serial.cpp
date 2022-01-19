@@ -6,13 +6,13 @@
 static unsigned char variable_counter_serial = 0;
 
 void MainWindow::mdtp_callback_handler(unsigned char pid, const unsigned char *data) {
-    QString debug_string;
+//    QString debug_string;
     const unsigned char array_buffer[9] = {data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], 0x00};
-    debug_string = "Received PID:" + QString::number(pid) + ", 0x" + QString::number(data[0], 16)
-             + " 0x" + QString::number(data[1], 16) + " 0x" + QString::number(data[2], 16)
-             + " 0x" + QString::number(data[3], 16) + " 0x" + QString::number(data[4], 16)
-             + " 0x" + QString::number(data[5], 16) + " 0x" + QString::number(data[6], 16) + " 0x" + QString::number(data[7], 16);
-    qDebug() << debug_string;
+//    debug_string = "Received PID:" + QString::number(pid) + ", 0x" + QString::number(data[0], 16)
+//             + " 0x" + QString::number(data[1], 16) + " 0x" + QString::number(data[2], 16)
+//             + " 0x" + QString::number(data[3], 16) + " 0x" + QString::number(data[4], 16)
+//             + " 0x" + QString::number(data[5], 16) + " 0x" + QString::number(data[6], 16) + " 0x" + QString::number(data[7], 16);
+//    qDebug() << debug_string;
     switch (pid) {
         case 0:
             if(data[0] == variable_counter_serial) {
