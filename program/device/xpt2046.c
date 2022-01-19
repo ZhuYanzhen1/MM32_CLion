@@ -2,7 +2,7 @@
     \file       xpt2046.c
     \brief      Touch Screen Related Codes
     \author     Lao·Zhu
-    \version    V1.0.2
+    \version    V1.2.2
     \date       19. January 2022
 ******************************************************************************/
 

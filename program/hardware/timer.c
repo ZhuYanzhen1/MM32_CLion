@@ -2,7 +2,7 @@
     \file     timer.c
     \brief    TIM function Source File
     \author   Lao·Zhu
-    \version  V1.0.1
+    \version  V1.2.2
     \date     19. January 2022
 ******************************************************************************/
 

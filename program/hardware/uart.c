@@ -2,7 +2,7 @@
     \file     uart.c
     \brief    UART function Source File
     \author   Lao·Zhu
-    \version  V1.0.1
+    \version  V1.2.2
     \date     14. November 2021
  ******************************************************************************/
 
@@ -11,7 +11,7 @@
 #include "config.h"
 #include "dma.h"
 
-void uart1_config(unsigned int baudrate) {
+void uart1_config() {
     UART_InitTypeDef UART_InitStruct;
     NVIC_InitTypeDef NVIC_InitStruct;
     GPIO_InitTypeDef GPIO_InitStruct;
@@ -39,7 +39,7 @@ void uart1_config(unsigned int baudrate) {
 
     UART_StructInit(&UART_InitStruct);
 
-    UART_InitStruct.BaudRate = baudrate;
+    UART_InitStruct.BaudRate = UART1_BAUDRATE;
     UART_InitStruct.WordLength = UART_WordLength_8b;
     UART_InitStruct.StopBits = UART_StopBits_1;
     UART_InitStruct.Parity = UART_Parity_No;
@@ -53,7 +53,7 @@ void uart1_config(unsigned int baudrate) {
     uart1_dma_nvic_config();
 }
 
-void uart3_config(unsigned int baudrate) {
+void uart3_config() {
     UART_InitTypeDef UART_InitStruct;
     NVIC_InitTypeDef NVIC_InitStruct;
     GPIO_InitTypeDef GPIO_InitStruct;
@@ -80,7 +80,7 @@ void uart3_config(unsigned int baudrate) {
     NVIC_Init(&NVIC_InitStruct);
 
     UART_StructInit(&UART_InitStruct);
-    UART_InitStruct.BaudRate = baudrate;
+    UART_InitStruct.BaudRate = UART3_BAUDRATE;
     UART_InitStruct.WordLength = UART_WordLength_8b;
     UART_InitStruct.StopBits = UART_StopBits_1;
     UART_InitStruct.Parity = UART_Parity_No;
@@ -92,7 +92,7 @@ void uart3_config(unsigned int baudrate) {
     UART_Cmd(UART3, ENABLE);
 }
 
-void uart6_config(unsigned int baudrate) {
+void uart6_config() {
     UART_InitTypeDef UART_InitStruct;
     GPIO_InitTypeDef GPIO_InitStruct;
 
@@ -113,7 +113,7 @@ void uart6_config(unsigned int baudrate) {
 
     UART_StructInit(&UART_InitStruct);
 
-    UART_InitStruct.BaudRate = baudrate;
+    UART_InitStruct.BaudRate = UART6_BAUDRATE;
     UART_InitStruct.WordLength = UART_WordLength_8b;
     UART_InitStruct.StopBits = UART_StopBits_1;
     UART_InitStruct.Parity = UART_Parity_No;
