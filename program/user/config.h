@@ -3,17 +3,22 @@
     \brief    file that stores user configuration macros.
     \author   Lao·Zhu
     \version  V1.0.1
-    \date     14. November 2021
+    \date     19. January 2022
  ******************************************************************************/
 
 #ifndef MM32F3277_USER_CONFIG_H_
 #define MM32F3277_USER_CONFIG_H_
 
-#define USE_FREERTOS 0
-#define configTICK_RATE_HZ 1000
-#define VARIABLE_BUFFER_SIZE 32
-#define configTOTAL_HEAP_SIZE ((unsigned int) (10 * 1024))
+//////////////////////////////////////// System & Debugger Macro ////////////////////////////////////////
+/* not using FreeRTOS */
+#define USE_FREERTOS            0
+/* systick interrupt frequency set to 1000Hz */
+#define configTICK_RATE_HZ      1000
+/* debugger variable maximum size set to 12 */
+#define VARIABLE_BUFFER_SIZE    12
 
+
+//////////////////////////////////////// CMBackTrace Macro ////////////////////////////////////////
 /* enable bare metal(no OS) platform */
 #define CMB_USING_BARE_METAL_PLATFORM
 /* cpu platform type, must config by user */
@@ -23,15 +28,13 @@
 /* language of print information */
 #define CMB_PRINT_LANGUAGE             CMB_PRINT_LANUUAGE_ENGLISH
 
-//
-//TODO 每一次写优先级的时候，记得用宏封装起来放到这里
-//
 
-#define TIM2_PRIORITY 10
-#define UART1_PRIORITY 2
-#define UART3_PRIORITY 3
-#define UART6_DMA_PRIORITY 2
-#define UART1_DMA_PRIORITY 3
-#define EXTI0_PRIORITY 14
+//////////////////////////////////////// Interrupt Priority ////////////////////////////////////////
+#define TIM2_PRIORITY           10
+#define UART1_PRIORITY          2
+#define UART3_PRIORITY          3
+#define UART6_DMA_PRIORITY      2
+#define UART1_DMA_PRIORITY      3
+#define EXTI0_PRIORITY          14
 
 #endif  // MM32F3277_USER_CONFIG_H_

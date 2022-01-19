@@ -1,6 +1,10 @@
-//
-// Created by Lao·Zhu on 2021/4/7.
-//
+/**************************************************************************/ /**
+    \file     tft_lcd.c
+    \brief    lcd access function Source File
+    \author   Lao·Zhu
+    \version  V1.0.1
+    \date     19. January 2022
+ ******************************************************************************/
 
 #include "tft_lcd.h"
 #include "hal_conf.h"

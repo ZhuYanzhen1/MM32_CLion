@@ -1,6 +1,10 @@
-//
-// Created by Lao·Zhu on 2021/12/25.
-//
+/**************************************************************************/ /**
+    \file     sort.c
+    \brief    sort function Source File
+    \author   Lao·Zhu
+    \version  V1.0.1
+    \date     19. January 2022
+ ******************************************************************************/
 
 #include "sort.h"
 

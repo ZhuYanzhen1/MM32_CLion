@@ -22,14 +22,14 @@ int main(void) {
     uart3_config(115200);
     uart6_config(9600);
     gps_config();
-#endif
-    cm_backtrace_init("mm32f3277", "1.0.1", "1.0.1");
+#endif  // IS_PROCESS_MCU
+    cm_backtrace_config("mm32f3277", "1.0.1", "1.0.1");
     debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
     timer2_config();
     while (1) {
 #ifdef IS_PROCESS_MCU
         gui_show_gnrmc_information(&gps_rmc);
-#endif
+#endif  // IS_PROCESS_MCU
         LED1_TOGGLE();
         delayms(100);
     }

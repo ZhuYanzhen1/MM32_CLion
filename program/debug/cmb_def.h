@@ -26,8 +26,8 @@
  * Created on: 2016-12-15
  */
 
-#ifndef _CMB_DEF_H_
-#define _CMB_DEF_H_
+#ifndef MM32F3277_DEBUG_CMB_DEF_H_
+#define MM32F3277_DEBUG_CMB_DEF_H_
 
 #include "cmb_cfg.h"
 #include "config.h"
@@ -369,4 +369,4 @@ __attribute__(( always_inline )) static inline unsigned int cmb_get_sp(void) {
 #error "not supported compiler"
 #endif
 
-#endif /* _CMB_DEF_H_ */
+#endif  // MM32F3277_DEBUG_CMB_DEF_H_

@@ -1,6 +1,10 @@
-//
-// Created by Lao·Zhu on 2021/2/26.
-//
+/**************************************************************************/ /**
+    \file     gui_base.h
+    \brief    gui basic features function Header File
+    \author   Lao·Zhu
+    \version  V1.0.1
+    \date     19. January 2022
+ ******************************************************************************/
 
 #ifndef MM32F3277_GUI_GUI_BASE_H_
 #define MM32F3277_GUI_GUI_BASE_H_
