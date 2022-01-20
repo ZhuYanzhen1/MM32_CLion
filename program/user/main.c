@@ -13,6 +13,7 @@ int main(void) {
     led_config();
 #ifdef IS_PROCESS_MCU
     delayms(2000);
+//    spi1_config();
     spi2_config();
 //    xpt2046_gpio_config();
     gui_config();
@@ -21,6 +22,9 @@ int main(void) {
     uart3_config();
     uart6_config();
     gps_config();
+
+//    gpio3_config();
+
 #endif  // IS_PROCESS_MCU
     cm_backtrace_config("mm32f3277", "1.0.1", "1.0.1");
     debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
@@ -32,6 +36,7 @@ int main(void) {
         printf("printf test.\r\n");
         fflush(stdout);
         LED1_TOGGLE();
+        spi1_readwrite_byte(0xA5A5);
         delayms(500);
     }
 }
