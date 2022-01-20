@@ -14,13 +14,11 @@ int main() {
 
     CU_pSuite mdtp_suite = NULL;
     initialize_cunit_suite(&mdtp_suite, "mdtp_suit");
-    add_test_scripts_to_suite(&mdtp_suite, "mdtp-encrypt", test_mdtp_encrypt);
+//    add_test_scripts_to_suite(&mdtp_suite, "mdtp-encrypt", test_mdtp_encrypt);
     add_test_scripts_to_suite(&mdtp_suite, "mdtp-decrypt", test_mdtp_decrypt);
 
     CU_pSuite gps_suite = NULL;
     initialize_cunit_suite(&gps_suite, "gps_suit");
-    add_test_scripts_to_suite(&gps_suite, "gps_nmea_pow", test_nmea_pow);
-    add_test_scripts_to_suite(&gps_suite, "gps_nmea_str2num", test_nmea_str2num);
     add_test_scripts_to_suite(&gps_suite, "gps_nmea_gnrmc_analysis", test_nmea_gnrmc_analysis);
 
     CU_pSuite sort_suite = NULL;
