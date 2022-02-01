@@ -9,6 +9,7 @@
 #ifndef MAIN_C_HARDWARE_GPIO_H_
 #define MAIN_C_HARDWARE_GPIO_H_
 
+void gpio3_config();
 void xpt2046_gpio_config(void);
 
 #endif //MAIN_C_HARDWARE_GPIO_H_

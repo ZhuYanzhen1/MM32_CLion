@@ -12,6 +12,18 @@
 #include "mm32_device.h"
 #include "pin.h"
 
+void gpio3_config() {
+    GPIO_InitTypeDef GPIO_InitStruct;
+
+    RCC_AHBPeriphClockCmd(RCC_AHBENR_GPIOB, ENABLE);
+
+    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_3;
+    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
+
+    GPIO_Init(GPIOB, &GPIO_InitStruct);
+}
+
 void xpt2046_gpio_config(void) {
     GPIO_InitTypeDef GPIO_InitStruct;
     NVIC_InitTypeDef NVIC_InitStruct;

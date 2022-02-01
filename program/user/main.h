@@ -23,6 +23,7 @@
 #include "spi.h"
 #include "uart.h"
 #include "timer.h"
+#include "gpio.h"
 
 ///////////// Math /////////////
 #include "fft.h"

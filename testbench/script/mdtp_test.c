@@ -29,7 +29,8 @@ void mdtp_sendbyte(unsigned char data) {
             break;
         case 10: CU_ASSERT_EQUAL(data, 0x11)
             break;
-        default:break;
+        default:
+            break;
     }
     rcv_counter++;
 }
@@ -47,10 +48,10 @@ void mdtp_callback_handler(unsigned char pid, const unsigned char *data) {
     CU_ASSERT_EQUAL(data[7], 0x00)
 }
 
-void test_mdtp_encrypt(void) {
-    unsigned char data[8] = {0xff, 0x00, 0x00, 0x01, 0xff, 0x51, 0x88, 0x00};
-    mdtp_data_transmit(0x01, data);
-}
+//void test_mdtp_encrypt(void) {
+//    unsigned char data[8] = {0xff, 0x00, 0x00, 0x01, 0xff, 0x51, 0x88, 0x00};
+//    mdtp_data_transmit(0x01, data);
+//}
 
 void test_mdtp_decrypt(void) {
     unsigned char data[14] = {0xff, 0xff, 0xff, 0x2d, 0x00, 0x00, 0x00, 0x01,
