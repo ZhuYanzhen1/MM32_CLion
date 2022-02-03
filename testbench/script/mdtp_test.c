@@ -7,34 +7,6 @@
 #include "mdtp_pack.h"
 #include "CUnit/Basic.h"
 
-void mdtp_sendbyte(unsigned char data) {
-    static unsigned char rcv_counter = 0;
-    switch (rcv_counter) {
-        case 0:
-        case 11: CU_ASSERT_EQUAL(data, 0xff)
-            break;
-        case 1: CU_ASSERT_EQUAL(data, 0x1e)
-            break;
-        case 2:
-        case 3:
-        case 4:
-        case 6:
-        case 9: CU_ASSERT_EQUAL(data, 0x00)
-            break;
-        case 5: CU_ASSERT_EQUAL(data, 0x01)
-            break;
-        case 7: CU_ASSERT_EQUAL(data, 0x51)
-            break;
-        case 8: CU_ASSERT_EQUAL(data, 0x88)
-            break;
-        case 10: CU_ASSERT_EQUAL(data, 0x11)
-            break;
-        default:
-            break;
-    }
-    rcv_counter++;
-}
-
 void mdtp_callback_handler(unsigned char pid, const unsigned char *data) {
     CU_ASSERT_EQUAL(pid, 0x02)
 
@@ -48,10 +20,23 @@ void mdtp_callback_handler(unsigned char pid, const unsigned char *data) {
     CU_ASSERT_EQUAL(data[7], 0x00)
 }
 
-//void test_mdtp_encrypt(void) {
-//    unsigned char data[8] = {0xff, 0x00, 0x00, 0x01, 0xff, 0x51, 0x88, 0x00};
-//    mdtp_data_transmit(0x01, data);
-//}
+void test_mdtp_encrypt(void) {
+    unsigned int uart_buffer[12];
+    unsigned char data[8] = {0xff, 0x00, 0x00, 0x01, 0xff, 0x51, 0x88, 0x00};
+    mdtp_data_transmit(0x01, data, uart_buffer);
+    CU_ASSERT_EQUAL(uart_buffer[0], 0xff)
+    CU_ASSERT_EQUAL(uart_buffer[11], 0xff)
+    CU_ASSERT_EQUAL(uart_buffer[1], 0x1e)
+    CU_ASSERT_EQUAL(uart_buffer[2], 0x00)
+    CU_ASSERT_EQUAL(uart_buffer[3], 0x00)
+    CU_ASSERT_EQUAL(uart_buffer[4], 0x00)
+    CU_ASSERT_EQUAL(uart_buffer[6], 0x00)
+    CU_ASSERT_EQUAL(uart_buffer[9], 0x00)
+    CU_ASSERT_EQUAL(uart_buffer[5], 0x01)
+    CU_ASSERT_EQUAL(uart_buffer[7], 0x51)
+    CU_ASSERT_EQUAL(uart_buffer[8], 0x88)
+    CU_ASSERT_EQUAL(uart_buffer[10], 0x11)
+}
 
 void test_mdtp_decrypt(void) {
     unsigned char data[14] = {0xff, 0xff, 0xff, 0x2d, 0x00, 0x00, 0x00, 0x01,

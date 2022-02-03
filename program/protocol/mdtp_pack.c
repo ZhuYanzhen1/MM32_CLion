@@ -8,11 +8,6 @@
 
 #include "mdtp_pack.h"
 
-#ifdef RUNNING_UNIT_TEST
-#define common_sendbyte mdtp_sendbyte
-extern void mdtp_sendbyte(unsigned char data);
-#endif  // RUNNING_UNIT_TEST
-
 /*!
     \brief      medium capacity data transmission protocol packing function
     \param[in]    pid: medium capacity transport protocol package id
@@ -41,9 +36,5 @@ void mdtp_data_transmit(unsigned char pid, const unsigned char *buffer, const un
     /* load self checking packet id byte */
     temp_buf[1] = (unsigned char) (pid << 4 | ((~pid) & 0x0f));
 
-    /* traverse the buffer array and send all bytes through UART0 */
-#ifdef RUNNING_UNIT_TEST
-    for (mdtp_pack_counter = 0; mdtp_pack_counter < 12; mdtp_pack_counter++)
-        common_sendbyte(temp_buf[mdtp_pack_counter]);
-#endif  // RUNNING_UNIT_TEST
+    /* traverse the buffer array and send all bytes using DMA */
 }
