@@ -2,7 +2,7 @@
 // Created by Lao·Zhu on 2021/12/9.
 //
 
-#include "solver_test.h"
+#include "main.h"
 
 int main() {
     CU_pSuite operate_suite = NULL;
@@ -26,6 +26,10 @@ int main() {
     add_test_scripts_to_suite(&sort_suite, "sort_heapsort", test_heap_sort);
     add_test_scripts_to_suite(&sort_suite, "sort_mergesort", test_merge_sort);
     add_test_scripts_to_suite(&sort_suite, "sort_quicksort", test_quick_sort);
+
+    CU_pSuite solver_suite = NULL;
+    initialize_cunit_suite(&solver_suite, "solver_suit");
+    add_test_scripts_to_suite(&solver_suite, "riccati_solver", test_riccati_solver);
 
     return generate_statements_report();
 }

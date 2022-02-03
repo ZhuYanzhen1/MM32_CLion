@@ -50,7 +50,6 @@ void solveRiccatiIterationC(Matrix_t *A, Matrix_t *B,
 
         ulapack_subtract(&P_next, P, &Temp_Matrix2);
         ulapack_max_coeff(&Temp_Matrix2, &diff);
-        printf("diff:%lf\r\n", diff);
         diff = fabs(diff);
 //        printf("diff:%lf\r\n", diff);
         ulapack_copy(&P_next, P);

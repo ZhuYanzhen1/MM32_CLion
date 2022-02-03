@@ -1,4 +1,4 @@
-#include "solver_test.h"
+#include "main.h"
 
 int generate_statements_report(void) {
     /* Run all tests using the CUnit Basic interface */

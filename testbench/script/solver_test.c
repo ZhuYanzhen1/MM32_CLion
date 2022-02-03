@@ -1,3 +1,5 @@
+#include "solver_test.h"
+
 #include "ulapack.h"
 #include "stdio.h"
 #include "riccati_solver.h"

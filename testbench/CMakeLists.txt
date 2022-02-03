@@ -6,7 +6,7 @@ add_compile_options(-Wno-pointer-to-int-cast -Wno-int-to-pointer-cast)
 add_link_options(-Wno-pointer-to-int-cast -Wno-int-to-pointer-cast)
 add_definitions(-DRUNNING_UNIT_TEST)
 
-set(COMMON_INCLUDE "script" "../program/protocol" "../program/math" riccati_solver)
+set(COMMON_INCLUDE "script" "../program/protocol" "../program/math" "riccati_solver")
 
 if ("${CMAKE_BUILD_PLATFORM}" STREQUAL "laozhu")
     link_directories(D:/msys64/opt/cunit/lib)
