@@ -18,6 +18,7 @@
 #include "mdtp_test.h"
 #include "gps_test.h"
 #include "sort_test.h"
+#include "solver_test.h"
 
 int initialize_cunit_suite(CU_pSuite *psuite_ptr, const char *strName);
 int generate_statements_report(void);

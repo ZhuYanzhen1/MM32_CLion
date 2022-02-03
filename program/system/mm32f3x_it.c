@@ -22,9 +22,12 @@ void SysTick_Handler(void) {
     delay_decrease();
 }
 
+// 3us
 void TIM2_IRQHandler(void) {
+    LED1_ON();
     TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
     debugger_scan_variable(global_time_stamp);
+    LED1_OFF();
 }
 
 void UART1_IRQHandler(void) {
@@ -56,6 +59,8 @@ buffer_no uart6_free_buffer_no = buffer_no_1;
 unsigned int usart6_dma_buffer_1[74];
 unsigned int usart6_dma_buffer_2[74];
 
+// 70.6us ~ 68.1us in V status
+// 63.5us in A status
 void DMA1_Channel1_IRQHandler(void) {
     if (DMA_GetITStatus(DMA1_IT_TC1)) {
         /* Clear all interrupt flags */
@@ -63,13 +68,11 @@ void DMA1_Channel1_IRQHandler(void) {
 
         /* Double ping pong buffer */
         if (uart6_free_buffer_no == buffer_no_1) {
-            uart6_dma_receive_config(usart6_dma_buffer_2, 74);
-            DMA_Cmd(DMA1_Channel1, ENABLE);
+            uart6_dma_set_transmit_buffer(usart6_dma_buffer_2, 74);
             uart6_free_buffer_no = buffer_no_2;
             deal_dma_gnrmc(usart6_dma_buffer_1);
         } else {
-            uart6_dma_receive_config(usart6_dma_buffer_1, 74);
-            DMA_Cmd(DMA1_Channel1, ENABLE);
+            uart6_dma_set_transmit_buffer(usart6_dma_buffer_1, 74);
             uart6_free_buffer_no = buffer_no_1;
             deal_dma_gnrmc(usart6_dma_buffer_2);
         }

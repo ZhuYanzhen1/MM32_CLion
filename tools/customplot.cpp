@@ -16,8 +16,8 @@ static const QColor color_table[12] = {QColor(0xff, 0x00, 0x00), QColor(0x00, 0x
 
 void MainWindow::table_setvalue_variable(unsigned char index, unsigned int value) {
     unsigned char *ptr_u8 = (unsigned char *)&value;
-    qDebug() << "0x" + QString::number(ptr_u8[0], 16) << "  0x" + QString::number(ptr_u8[1], 16)
-            << "  0x" + QString::number(ptr_u8[2], 16) << "  0x" + QString::number(ptr_u8[3], 16);
+//    qDebug() << "0x" + QString::number(ptr_u8[0], 16) << "  0x" + QString::number(ptr_u8[1], 16)
+//            << "  0x" + QString::number(ptr_u8[2], 16) << "  0x" + QString::number(ptr_u8[3], 16);
     switch (debugger_variable[index]->var_status) {
         case signed_int8:
             variable_list_table->setItem(index, 2, new QStandardItem(QString::number(*(char *)&ptr_u8[0])));
