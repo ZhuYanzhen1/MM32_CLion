@@ -9,17 +9,22 @@
 #ifndef MM32F3277_DEVICE_ADIS16470_H_
 #define MM32F3277_DEVICE_ADIS16470_H_
 
+typedef enum {
+    adis_ok = 0x00U,
+    adis_error = 0x01U,
+} adis_status;
+
 typedef volatile struct {
-    int diag_star;
-    int x_gyro;
-    int y_gyro;
-    int z_gyro;
-    int x_acll;
-    int y_acll;
-    int z_acll;
-    int temp;
-    int data_cntr;
-    int checknum;
+    short diag_star;
+    short x_gyro;
+    short y_gyro;
+    short z_gyro;
+    short x_acll;
+    short y_acll;
+    short z_acll;
+    short temp;
+    short data_cntr;
+    short checknum;
 } adis16470_t;
 
 typedef struct {

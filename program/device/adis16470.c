@@ -8,6 +8,8 @@
 
 #include "adis16470.h"
 #include "spi.h"
+#include "hal_gpio.h"
+#include "delay.h"
 
 static const unsigned char address[] =
     {
@@ -17,14 +19,15 @@ static const unsigned char address[] =
         0x10, 0x12,  //Acc_X
         0x14, 0x16,  //Acc_Y
         0x18, 0x1A,  //Acc_Z
-        0x24, 0x26,  //Delta_X                      /* Note that the angle difference read here is within 2ms */
+        0x24, 0x26,  //Delta_X       /* Note that the angle difference read here is within 2ms */
         0x28, 0x2A,  //Delta_Y
         0x2C, 0x2E,  //Delta_Z
     };
 
 /*!
     \brief                          The function to read the registers,
-                                    because the SPI method is efficient in continuous reading, so it is recommended to read continuously
+                                    because the SPI method is efficient in continuous reading,
+                                    so it is recommended to read continuously
     \param[in]  address_register:   Array of registers to be read
     \param[in]  rx_point:           Location of the read data
     \param[in]  register_num:       Number of registers to be read
@@ -65,6 +68,36 @@ void adis16470_write_register(unsigned char address_, unsigned char value) {
     spi2_readwrite_byte(tm_tmp);
 }
 
+unsigned short tmp_tx[10] = {0};
+char adis_burst_read() {
+//    GPIO_ResetBits(SPI_NSS_GPIO_Port, SPI_NSS_Pin);
+    static unsigned char *u8point = (unsigned char *) &imu;
+    short parity = 0;
+    adis_status check = adis_ok;
+    unsigned short tmp_rx = 0;
+//    check |= HAL_SPI_TransmitReceive(&ADX_SPI,
+//                                     (unsigned char *) &Send_Cmd,
+//                                     (unsigned char *) &tmp_rx,
+//                                     1,
+//                                     0xff);//发送指令,该16位接收无意义,故不保存数据
+    //注意到数据手册中ADXIS16470的发送格式是低地址在前 高地址在后 符合stm32的小端模式 所以不需要做移位处理
+//    if (check != adis_ok)while (1);
+//    delayus(100);
+//    check |= HAL_SPI_TransmitReceive(&ADX_SPI, (unsigned char *) &tmp_tx, u8point, 10, 0xff);//接收20字节的数据放入imu结构体中
+//    if (check != adis_ok)while (1);
+//    GPIO_SetBits(SPI_NSS_GPIO_Port,SPI_NSS_Pin);
+//    delayus(150);
+    //进行数据校验
+    for (unsigned char i = 0; i < 9 * 2; i++) {
+        parity += u8point[i];
+    }
+    if (parity == imu.checknum && !check)return 0;
+    else {
+//        memset(&imu, 0x00, sizeof(imu));
+        return -1;//校验失败
+    }
+}
+
 /*!
     \brief  Read registers to obtain gyroscope three-axis acceleration,
             three-axis angular velocity and three-axis attitude angle, 32-bit accuracy
@@ -78,7 +111,7 @@ void adis16470_single_handle(void) {
 
     static unsigned int data[sizeof(address)];
 
-    /* Synthesize two int16_t types into int type */
+    /* Synthesize two short types into int type */
     int *point32 = (int *) data;
 
     /* Convert int type to float type */
