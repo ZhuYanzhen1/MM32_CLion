@@ -31,8 +31,22 @@ void test_riccati_solver(void) {
 
     ulapack_edit_entry(&R, 0, 0, 1.0f);
 
+    Matrix_t I, Ad, Bd, A_Scale, I_Add_A_Scale, I_Sub_A_Scale, I_A_Scale_Product;
+    ulapack_init(&I, DIM_X, DIM_X);
+    ulapack_init(&Ad, DIM_X, DIM_X);
+    ulapack_init(&Bd, DIM_X, DIM_X);
+    ulapack_eye(&I);
+
+    ulapack_scale(&A, 0.0005, &A_Scale);
+    ulapack_add(&I, &A_Scale, &I_Add_A_Scale);
+    ulapack_subtract(&I, &A_Scale, &I_Sub_A_Scale);
+    ulapack_product(&I_Add_A_Scale, &I_Sub_A_Scale, &I_A_Scale_Product);
+    ulapack_inverse(&I_A_Scale_Product, &Ad);
+//    Ad = (I + 0.5 * dt * A) * (I - 0.5 * dt * A).inverse();
+    ulapack_scale(&B, 0.001, &Bd);
+
     /* == iteration based Riccati solution (continuous) == */
     printf("-- Iteration based method (continuous) --\r\n");
-    solveRiccatiIterationC(&A, &B, &Q, &R, &P);
+    solveRiccatiIteration(&Ad, &Bd, &Q, &R, &P);
     ulapack_print(&P);
 }

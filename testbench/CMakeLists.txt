@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.18)
 project(testbench C)
 set(CMAKE_C_STANDARD 11)
 
-add_compile_options(-Wno-pointer-to-int-cast -Wno-int-to-pointer-cast)
+add_compile_options(-Wno-pointer-to-int-cast -Wno-int-to-pointer-cast -O0)
 add_link_options(-Wno-pointer-to-int-cast -Wno-int-to-pointer-cast)
 add_definitions(-DRUNNING_UNIT_TEST)
 
