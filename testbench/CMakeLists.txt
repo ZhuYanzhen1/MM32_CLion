@@ -6,7 +6,7 @@ add_compile_options(-Wno-pointer-to-int-cast -Wno-int-to-pointer-cast)
 add_link_options(-Wno-pointer-to-int-cast -Wno-int-to-pointer-cast)
 add_definitions(-DRUNNING_UNIT_TEST)
 
-set(COMMON_INCLUDE "script" "../program/protocol" "../program/math")
+set(COMMON_INCLUDE "script" "../program/protocol" "../program/math" riccati_solver)
 
 if ("${CMAKE_BUILD_PLATFORM}" STREQUAL "laozhu")
     link_directories(D:/msys64/opt/cunit/lib)
@@ -23,7 +23,8 @@ elseif ("${CMAKE_BUILD_PLATFORM}" STREQUAL "codeserver")
 endif ()
 
 file(GLOB_RECURSE SOURCES "main.c" "unit_test.c" "script/*.c" "../program/protocol/mdtp_pack.c"
-        "../program/protocol/gps_parser.c" "../program/protocol/mdtp_unpack.c" "../program/math/sort.c")
+        "../program/protocol/gps_parser.c" "../program/protocol/mdtp_unpack.c" "../program/math/sort.c"
+        "riccati_solver/*.c")
 
 add_executable(testbench ${SOURCES})
 target_link_libraries(testbench cunit)

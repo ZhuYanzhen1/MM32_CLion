@@ -5,7 +5,7 @@
 #define DIM_X 4
 #define DIM_U 1
 
-int main() {
+void test_riccati_solver(void) {
     Matrix_t A, B, Q, R, P;
     ulapack_init(&A, DIM_X, DIM_X);
     ulapack_init(&B, DIM_X, DIM_U);
@@ -33,6 +33,4 @@ int main() {
     printf("-- Iteration based method (continuous) --\r\n");
     solveRiccatiIterationC(&A, &B, &Q, &R, &P);
     ulapack_print(&P);
-
-    return 0;
 }
