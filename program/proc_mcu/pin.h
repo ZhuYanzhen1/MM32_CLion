@@ -24,4 +24,9 @@
 #define TOUCH_PEN_PORT  GPIOE
 #define TOUCH_PEN_PIN   GPIO_Pin_0
 
+#define IIC_SDA_PORT    GPIOD
+#define IIC_SDA_PIN     GPIO_Pin_11
+#define IIC_SCL_PORT    GPIOD
+#define IIC_SCL_PIN     GPIO_Pin_10
+
 #endif // MM32F3277_USER_PIN_H_

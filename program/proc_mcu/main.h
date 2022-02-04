@@ -24,6 +24,7 @@
 #include "uart.h"
 #include "timer.h"
 #include "gpio.h"
+#include "iic.h"
 
 ///////////// Math /////////////
 #include "fft.h"

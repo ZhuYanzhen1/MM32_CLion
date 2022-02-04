@@ -12,6 +12,7 @@ int main(void) {
     delay_config();
     led_config();
     delayms(2000);
+    iic1_config(400000);
     spi2_config();
     gui_config();
     uart1_config();

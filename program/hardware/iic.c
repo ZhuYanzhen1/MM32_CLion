@@ -1,0 +1,40 @@
+//
+// Created by Lao·Zhu on 2022/2/4.
+//
+
+#include "iic.h"
+#include "hal_device.h"
+#include "hal_conf.h"
+#include "pin.h"
+
+void iic1_set_slave_addr(unsigned char deviceaddr) {
+    I2C_Cmd(I2C1, DISABLE);
+    I2C_Send7bitAddress(I2C1, deviceaddr, I2C_Direction_Transmitter);
+    I2C_Cmd(I2C1, ENABLE);
+}
+
+void iic1_config(unsigned int iic_speed) {
+    I2C_InitTypeDef I2C_InitStruct;
+    GPIO_InitTypeDef GPIO_InitStruct;
+
+    RCC_AHBPeriphClockCmd(RCC_AHBENR_GPIOD, ENABLE);
+    RCC_APB1PeriphClockCmd(RCC_APB1ENR_I2C1, ENABLE);
+    I2C_StructInit(&I2C_InitStruct);
+
+    GPIO_PinAFConfig(IIC_SCL_PORT, GPIO_PinSource10, GPIO_AF_4);
+    GPIO_PinAFConfig(IIC_SDA_PORT, GPIO_PinSource11, GPIO_AF_4);
+
+    GPIO_InitStruct.GPIO_Pin = IIC_SCL_PIN;
+    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_OD;
+    GPIO_Init(IIC_SCL_PORT, &GPIO_InitStruct);
+    GPIO_InitStruct.GPIO_Pin = IIC_SDA_PIN;
+    GPIO_Init(IIC_SDA_PORT, &GPIO_InitStruct);
+
+    I2C_InitStruct.Mode = I2C_CR_MASTER;
+    I2C_InitStruct.OwnAddress = 0;
+    I2C_InitStruct.Speed = I2C_CR_FAST;
+    I2C_InitStruct.ClockSpeed = iic_speed;
+    I2C_Init(I2C1, &I2C_InitStruct);
+    I2C_Cmd(I2C1, ENABLE);
+}
