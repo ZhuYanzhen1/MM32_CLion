@@ -37,20 +37,24 @@
 extern unsigned int usart6_dma_buffer_1[74];
 extern unsigned int usart6_dma_buffer_2[74];
 void gps_config() {
+    char baud_rate[] = {0xF1, 0xD9, 0x06, 0x00, 0x08, 0x00, 0x00, 0x00, 0x00,
+                        0x00, 0x00, 0xC2, 0x01, 0x00, 0xD1, 0xE0};
+    char output_frequency[] = {0xF1, 0xD9, 0x06, 0x42, 0x14, 0x00, 0x00, 0x0A,
+                               0x38, 0x00, 0x64, 0x00, 0x00, 0x00, 0x00, 0x00,
+                               0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                               0x00, 0x00, 0x02, 0x24};
+    char output_rmc[] = {0xF1, 0xD9, 0x06, 0x01, 0x03, 0x00, 0xF0, 0x05, 0x01, 0x00,
+                         0x1A};
     unsigned int apbclock = RCC_GetPCLK1Freq();
     uart6_dma_nvic_config();
     uart6_dma_receive_config(usart6_dma_buffer_1, 74);
     DMA_Cmd(DMA1_Channel1, DISABLE);
-
-    UART6_CONFIG_GPS("$PCAS01,5*19\r\n");
+    UART6_CONFIG_GPS(baud_rate); /* Baud rate 115200 */
     UART6->BRR = (apbclock / 115200) / 16;
     UART6->FRA = (apbclock / 115200) % 16;
     delayms(10);
-    UART6_CONFIG_GPS("$PCAS04,3*1A\r\n");
-    UART6_CONFIG_GPS("$PCAS05,2*1A\r\n");
-    UART6_CONFIG_GPS("$PCAS03,0,0,0,0,1,0,0,0,0,0,,,0,0*03\r\n");
-    UART6_CONFIG_GPS("$PCAS02,100*1E\r\n");
-
+    UART6_CONFIG_GPS(output_rmc); /* Output RMC packages only */
+    UART6_CONFIG_GPS(output_frequency); /* 10Hz output */
     DMA_Cmd(DMA1_Channel1, ENABLE);
 }
 
