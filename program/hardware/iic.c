@@ -7,6 +7,16 @@
 #include "hal_conf.h"
 #include "pin.h"
 
+void iic1_writebyte(unsigned char dat) {
+    I2C_SendData(I2C1, dat);
+    while (I2C_GetFlagStatus(I2C1, I2C_STATUS_FLAG_TFE) == 0);
+}
+
+void iic1_wait_for_stop(void) {
+    I2C_GenerateSTOP(I2C1, ENABLE);
+    while ((I2C_GetITStatus(I2C1, I2C_IT_STOP_DET)) == 0);
+}
+
 void iic1_set_slave_addr(unsigned char deviceaddr) {
     I2C_Cmd(I2C1, DISABLE);
     I2C_Send7bitAddress(I2C1, deviceaddr, I2C_Direction_Transmitter);
