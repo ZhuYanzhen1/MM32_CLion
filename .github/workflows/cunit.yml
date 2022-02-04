@@ -3,7 +3,8 @@ name: Unit Test
 on: # [ push ]
   schedule:
   - cron: '40 15 * * *'      # compile at 23:50 each day
-
+  workflow_dispatch:
+  
 env:
   BUILD_TYPE: Release
 
