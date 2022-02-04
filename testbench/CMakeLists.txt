@@ -27,4 +27,4 @@ file(GLOB_RECURSE SOURCES "main.c" "unit_test.c" "script/*.c" "../program/protoc
         "riccati_solver/*.c")
 
 add_executable(testbench ${SOURCES})
-target_link_libraries(testbench cunit)
+target_link_libraries(testbench cunit m)
