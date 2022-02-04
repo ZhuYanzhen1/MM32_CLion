@@ -21,7 +21,7 @@ void mdtp_callback_handler(unsigned char pid, const unsigned char *data) {
 }
 
 void test_mdtp_encrypt(void) {
-    unsigned int uart_buffer[12];
+    unsigned int uart_buffer[12] = {0};
     unsigned char data[8] = {0xff, 0x00, 0x00, 0x01, 0xff, 0x51, 0x88, 0x00};
     mdtp_data_transmit(0x01, data, uart_buffer);
     CU_ASSERT_EQUAL(uart_buffer[0], 0xff)

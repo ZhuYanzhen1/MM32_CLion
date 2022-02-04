@@ -20,6 +20,7 @@ void mdtp_data_transmit(unsigned char pid, const unsigned char *buffer, const un
 
     temp_buf[0] = 0xff;
     temp_buf[11] = 0xff;
+    temp_buf[10] = 0x00;
     /* traverse the array to determine whether there are bytes to be adjusted */
     for (mdtp_pack_counter = 0; mdtp_pack_counter < 8; mdtp_pack_counter++) {
         if (buffer[mdtp_pack_counter] == 0xff) {
