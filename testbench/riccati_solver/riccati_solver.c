@@ -1,61 +1,46 @@
-/*
-// solvers for Algebraic Riccati equation
-// - Iteration (continuous)
-// - Iteration (discrete)
-// - Arimoto-Potter
-//
-// author: Horibe Takamasa
-*/
-
 #include "riccati_solver.h"
 #include "ulapack.h"
 #include "math.h"
 
-void solveRiccatiIterationC(Matrix_t *A, Matrix_t *B,
-                            Matrix_t *Q, Matrix_t *R,
-                            Matrix_t *P) {
+void solveRiccatiIteration(Matrix_t *A, Matrix_t *B,
+                           Matrix_t *Q, Matrix_t *R,
+                           Matrix_t *P) {
     double diff = 0;
 
-    Matrix_t AT, BT, Rinv, P_next, P_A, AT_P, P_B_Rinv_BT_P, Temp_Matrix1, Temp_Matrix2;
+    Matrix_t AT, BT, P_next, P_Differ, AT_Pn, AT_Pn_A, Q_AT_Pn_A;
+    Matrix_t AT_Pn_B, BT_Pn, BT_Pn_A, B_Pn_B, R_BT_Pn_B, R_BT_Pn_B_inv;
+    Matrix_t AT_Pn_B_R_BT_Pn_B_inv, AT_Pn_B_R_BT_Pn_B_inv_BT_Pn_A;
 
+    ulapack_init(&P_Differ, 4, 4);
     ulapack_transpose(A, &AT);
     ulapack_transpose(B, &BT);
-    ulapack_inverse(R, &Rinv);
-
-//    ulapack_print(&AT);
-//    ulapack_print(&BT);
-//    ulapack_print(&Rinv);
-
-    ulapack_copy(Q, P);
-
     for (unsigned int counter = 0; counter < 100000; ++counter) {
-        ulapack_product(P, A, &P_A);
-//        ulapack_print(&P_A);
+        ulapack_product(&AT, P, &AT_Pn);
+        ulapack_product(&AT_Pn, A, &AT_Pn_A);
+        ulapack_add(Q, &AT_Pn_A, &Q_AT_Pn_A);
 
-        ulapack_product(P, &AT, &AT_P);
-//        ulapack_print(&AT_P);
+        ulapack_product(&AT_Pn, B, &AT_Pn_B);
 
-        ulapack_product(P, B, &Temp_Matrix1);
-        ulapack_product(&Temp_Matrix1, &Rinv, &P_B_Rinv_BT_P);
-        ulapack_product(&P_B_Rinv_BT_P, &BT, &Temp_Matrix1);
-        ulapack_product(&Temp_Matrix1, P, &P_B_Rinv_BT_P);
-//        ulapack_print(&P_B_Rinv_BT_P);
+        ulapack_product(&BT, P, &BT_Pn);
+        ulapack_product(&BT_Pn, A, &BT_Pn_A);
 
-        ulapack_add(&P_A, &AT_P, &Temp_Matrix1);
-        ulapack_add(&Temp_Matrix1, Q, &Temp_Matrix2);
-        ulapack_subtract(&Temp_Matrix2, &P_B_Rinv_BT_P, &Temp_Matrix1);
-        ulapack_scale(&Temp_Matrix1, 0.001, &Temp_Matrix2);
-        ulapack_add(P, &Temp_Matrix2, &P_next);
-//        P_next = P + (P * A + AT * P + Q - P * B * Rinv * BT * P) * dt;
+        ulapack_product(&BT_Pn, B, &B_Pn_B);
+        ulapack_add(R, &B_Pn_B, &R_BT_Pn_B);
+        ulapack_inverse(&R_BT_Pn_B, &R_BT_Pn_B_inv);
 
-        ulapack_subtract(&P_next, P, &Temp_Matrix2);
-        ulapack_max_coeff(&Temp_Matrix2, &diff);
+        ulapack_product(&AT_Pn_B, &R_BT_Pn_B_inv, &AT_Pn_B_R_BT_Pn_B_inv);
+        ulapack_product(&AT_Pn_B_R_BT_Pn_B_inv, &BT_Pn_A, &AT_Pn_B_R_BT_Pn_B_inv_BT_Pn_A);
+        ulapack_subtract(&Q_AT_Pn_A, &AT_Pn_B_R_BT_Pn_B_inv_BT_Pn_A, &P_next);
+//        P_next = AT * P * A - AT * P * B * (R + BT * P * B).inverse() * BT * P * A + Q;
+//        ulapack_print(&BT_Pn);
+
+        ulapack_subtract(&P_next, P, &P_Differ);
+        ulapack_max_coeff(&P_Differ, &diff);
         diff = fabs(diff);
-//        printf("diff:%lf\r\n", diff);
         ulapack_copy(&P_next, P);
-//        ulapack_print(&P_next);
-        if (diff < 1.E-5 || diff > 1.0) {
-            printf("iteration mumber = %d\r\n", counter);
+        if (diff < 1.E-5 || diff > 1000000.0) {
+//            printf("iteration mumber = %d\r\n", counter);
+//            printf("diff: %f\r\n", diff);
             break;
         }
     }

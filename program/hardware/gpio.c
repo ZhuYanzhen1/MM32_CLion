@@ -12,16 +12,28 @@
 #include "mm32_device.h"
 #include "pin.h"
 
-void gpio3_config() {
+void lcd_gpio_config(void) {
     GPIO_InitTypeDef GPIO_InitStruct;
+    RCC_AHBPeriphClockCmd(RCC_AHBENR_GPIOE, ENABLE);
+    RCC_AHBPeriphClockCmd(RCC_AHBENR_GPIOF, ENABLE);
 
-    RCC_AHBPeriphClockCmd(RCC_AHBENR_GPIOB, ENABLE);
-
-    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_3;
+    GPIO_StructInit(&GPIO_InitStruct);
+    GPIO_InitStruct.GPIO_Pin = LCD_A0_PIN;
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_Init(LCD_A0_PORT, &GPIO_InitStruct);
 
-    GPIO_Init(GPIOB, &GPIO_InitStruct);
+    GPIO_StructInit(&GPIO_InitStruct);
+    GPIO_InitStruct.GPIO_Pin = LCD_CSB_PIN;
+    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_Init(LCD_CSB_PORT, &GPIO_InitStruct);
+
+    GPIO_StructInit(&GPIO_InitStruct);
+    GPIO_InitStruct.GPIO_Pin = LCD_RES_PIN;
+    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_Init(LCD_RES_PORT, &GPIO_InitStruct);
 }
 
 void xpt2046_gpio_config(void) {

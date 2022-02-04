@@ -39,31 +39,31 @@ typedef ULAPACK_INDEX_TYPE Index_t;
 typedef ULAPACK_SIGNED_INDEX_TYPE SIndex_t;
 
 #ifdef ULAPACK_USE_STATIC_ALLOC
-    /*
-     * Definition for the static ulapck_matrix object.
-     */
-    typedef struct ulapack_matrix {
-        /*@{*/
-        MatrixEntry_t entry[ULAPACK_MAX_MATRIX_N_ROWS]
-                           [ULAPACK_MAX_MATRIX_N_COLS]; /**< the matrix elements. */
+/*
+ * Definition for the static ulapck_matrix object.
+ */
+typedef struct ulapack_matrix {
+    /*@{*/
+    volatile MatrixEntry_t entry[ULAPACK_MAX_MATRIX_N_ROWS]
+    [ULAPACK_MAX_MATRIX_N_COLS]; /**< the matrix elements. */
 
-        uint64_t n_rows; /**< number of rows in the matrix. */
-        uint64_t n_cols; /**< number of columns in the matrix. */
-        /*@}*/
-    } Matrix_t;
+    volatile uint64_t n_rows; /**< number of rows in the matrix. */
+    volatile uint64_t n_cols; /**< number of columns in the matrix. */
+    /*@}*/
+} Matrix_t;
 #endif
 
 #ifdef ULAPACK_USE_DYNAMIC_ALLOC
-    /**
-     * Definition for the dynamic ulapck_matrix object.
-     */
-    typedef struct ulapack_matrix {
-        /*@{*/
-        MatrixEntry_t **entry; /**< pointer to the matrix elements. */
-        uint64_t n_rows; /**< number of rows in the matrix. */
-        uint64_t n_cols; /**< number of columns in the matrix. */
-        /*@}*/
-    } Matrix_t;
+/**
+ * Definition for the dynamic ulapck_matrix object.
+ */
+typedef struct ulapack_matrix {
+    /*@{*/
+    MatrixEntry_t **entry; /**< pointer to the matrix elements. */
+    uint64_t n_rows; /**< number of rows in the matrix. */
+    uint64_t n_cols; /**< number of columns in the matrix. */
+    /*@}*/
+} Matrix_t;
 #endif
 
 /*

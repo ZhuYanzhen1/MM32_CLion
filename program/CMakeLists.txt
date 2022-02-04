@@ -30,15 +30,15 @@ add_compile_options(-O2)
 
 #add_definitions(-DUSE_HAL_DRIVER)
 
-include_directories(library/regs system system/cmsis library/include user hardware system/official
-        math device debug protocol gui)
+include_directories(library/regs system system/cmsis library/include proc_mcu hardware system/official
+        math device debug protocol gui ctrl_mcu)
 
 file(GLOB_RECURSE CONTROL_SOURCES "system/official/startup_mm32f327.s" "library/source/*.c" "math/*.c"
         "system/*.c" "system/official/*.c" "math/qfplib.s" "debug/*.c" "protocol/*.c" "debug/cmb_fault.S"
-        "hardware/*.c" "user/*.c")
+        "hardware/*.c" "ctrl_mcu/*.c")
 
 file(GLOB_RECURSE PROCESS_SOURCES "system/official/startup_mm32f327.s" "library/source/*.c" "math/*.c"
-        "user/*.c" "hardware/*.c" "system/*.c" "system/official/*.c" "math/qfplib.s" "device/*.c"
+        "proc_mcu/*.c" "hardware/*.c" "system/*.c" "system/official/*.c" "math/qfplib.s" "device/*.c"
         "debug/*.c" "protocol/*.c" "debug/cmb_fault.S" "gui/*.c")
 
 set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/mm32f3277.ld)

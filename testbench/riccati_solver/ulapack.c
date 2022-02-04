@@ -11,8 +11,7 @@
 /*
  * CLib math required for sqrt() function.
  */
-#include <math.h>
-
+#include "math.h"
 #include "ulapack.h"
 
 /**

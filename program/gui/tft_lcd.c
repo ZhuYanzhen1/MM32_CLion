@@ -12,6 +12,7 @@
 #include "delay.h"
 #include "pin.h"
 #include "spi.h"
+#include "gpio.h"
 
 void LCD_WriteReg(unsigned int Com) {
     GPIO_WriteBit(LCD_A0_PORT, LCD_A0_PIN, Bit_RESET);
@@ -89,26 +90,7 @@ void lcd_set_direction(unsigned char mode) {
 }
 
 void lcd_config() {
-    GPIO_InitTypeDef GPIO_InitStruct;
-    RCC_AHBPeriphClockCmd(RCC_AHBENR_GPIOE, ENABLE);
-
-    GPIO_StructInit(&GPIO_InitStruct);
-    GPIO_InitStruct.GPIO_Pin = LCD_A0_PIN;
-    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
-    GPIO_Init(LCD_A0_PORT, &GPIO_InitStruct);
-
-    GPIO_StructInit(&GPIO_InitStruct);
-    GPIO_InitStruct.GPIO_Pin = LCD_CSB_PIN;
-    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
-    GPIO_Init(LCD_CSB_PORT, &GPIO_InitStruct);
-
-    GPIO_StructInit(&GPIO_InitStruct);
-    GPIO_InitStruct.GPIO_Pin = LCD_RES_PIN;
-    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
-    GPIO_Init(LCD_RES_PORT, &GPIO_InitStruct);
+    lcd_gpio_config();
 
     GPIO_WriteBit(LCD_RES_PORT, LCD_RES_PIN, Bit_SET);
     delayus(1000);

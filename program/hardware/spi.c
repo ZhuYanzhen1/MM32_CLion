@@ -102,8 +102,8 @@ void spi2_config(void) {
     SPI_InitStruct.SPI_CPHA = SPI_CPHA_2Edge;
     SPI_InitStruct.SPI_NSS = SPI_NSS_Soft;
 
-    /* 120MHz / 128 < 1MHz, Burst mode read */
-    SPI_InitStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_128;
+    /* 120MHz / 16 = 7.5MHz */
+    SPI_InitStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_16;
     SPI_InitStruct.SPI_FirstBit = SPI_FirstBit_MSB;
     SPI_Init(SPI2, &SPI_InitStruct);
     if (SPI_InitStruct.SPI_BaudRatePrescaler <= 8)

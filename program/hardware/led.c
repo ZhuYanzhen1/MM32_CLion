@@ -13,7 +13,7 @@
 
 void led_config(void) {
     GPIO_InitTypeDef GPIO_InitStruct;
-    RCC_AHBPeriphClockCmd(RCC_AHBENR_GPIOF, ENABLE);
+    RCC_AHBPeriphClockCmd(RCC_AHBENR_GPIOA, ENABLE);
 
     GPIO_StructInit(&GPIO_InitStruct);
     GPIO_InitStruct.GPIO_Pin = LED1_PIN;
@@ -21,12 +21,5 @@ void led_config(void) {
     GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
     GPIO_Init(LED1_PORT, &GPIO_InitStruct);
 
-    GPIO_StructInit(&GPIO_InitStruct);
-    GPIO_InitStruct.GPIO_Pin = LED2_PIN;
-    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
-    GPIO_Init(LED2_PORT, &GPIO_InitStruct);
-
     LED1_OFF();
-    LED2_OFF();
 }
