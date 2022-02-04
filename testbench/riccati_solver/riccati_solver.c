@@ -39,8 +39,8 @@ void solveRiccatiIteration(Matrix_t *A, Matrix_t *B,
         diff = fabs(diff);
         ulapack_copy(&P_next, P);
         if (diff < 1.E-5 || diff > 1000000.0) {
-            printf("iteration mumber = %d\r\n", counter);
-            printf("diff: %f\r\n", diff);
+//            printf("iteration mumber = %d\r\n", counter);
+//            printf("diff: %f\r\n", diff);
             break;
         }
     }

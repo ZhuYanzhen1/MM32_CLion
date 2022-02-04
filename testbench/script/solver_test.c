@@ -1,4 +1,5 @@
 #include "solver_test.h"
+#include "CUnit/Basic.h"
 
 #include "ulapack.h"
 #include "stdio.h"
@@ -46,7 +47,7 @@ void test_riccati_solver(void) {
     ulapack_scale(&B, 0.001, &Bd);
 
     /* == iteration based Riccati solution (continuous) == */
-    printf("-- Iteration based method (continuous) --\r\n");
+    CU_PASS("-- Iteration based method (continuous) --")
     solveRiccatiIteration(&Ad, &Bd, &Q, &R, &P);
-    ulapack_print(&P);
+//    ulapack_print(&P);
 }
