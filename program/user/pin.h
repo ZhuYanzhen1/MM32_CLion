@@ -9,17 +9,15 @@
 #ifndef MM32F3277_USER_PIN_H_
 #define MM32F3277_USER_PIN_H_
 
-#define LED1_PORT       GPIOF
-#define LED1_PIN        GPIO_Pin_11
-#define LED2_PORT       GPIOF
-#define LED2_PIN        GPIO_Pin_12
+#define LED1_PORT       GPIOA
+#define LED1_PIN        GPIO_Pin_3
 
-#define LCD_RES_PORT    GPIOE
-#define LCD_RES_PIN     GPIO_Pin_3
+#define LCD_RES_PORT    GPIOF
+#define LCD_RES_PIN     GPIO_Pin_0
 #define LCD_A0_PORT     GPIOE
 #define LCD_A0_PIN      GPIO_Pin_4
 #define LCD_CSB_PORT    GPIOE
-#define LCD_CSB_PIN     GPIO_Pin_9
+#define LCD_CSB_PIN     GPIO_Pin_3
 
 #define TOUCH_CS_PORT   GPIOE
 #define TOUCH_CS_PIN    GPIO_Pin_1
