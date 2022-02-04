@@ -19,12 +19,12 @@ int main(void) {
     uart6_config();
     gps_config();
     cm_backtrace_config("mm32f3277", "1.0.1", "1.0.1");
-    debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
-    timer2_config();
+//    debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
+//    timer2_config();
     while (1) {
         gui_show_gnrmc_information();       // 46.8ms
-        printf("printf test.\r\n");
-        fflush(stdout);
+//        printf("printf test.\r\n");
+//        fflush(stdout);
         LED1_TOGGLE();
         delayms(500);
     }
