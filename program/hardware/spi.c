@@ -162,7 +162,7 @@ void spi3_config(void) {
     SPI_InitStruct.SPI_NSS = SPI_NSS_Soft;
 
     SPI_InitStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_128;
-    SPI_InitStruct.SPI_FirstBit = SPI_FirstBit_MSB;
+    SPI_InitStruct.SPI_FirstBit = SPI_FirstBit_LSB;
     SPI_Init(SPI3, &SPI_InitStruct);
     if (SPI_InitStruct.SPI_BaudRatePrescaler <= 8)
         exSPI_DataEdgeAdjust(SPI3, SPI_DataEdgeAdjust_FAST);

@@ -28,10 +28,9 @@ int main(void) {
 //        gui_show_gnrmc_information();       // 46.8ms
 //        printf("printf test.\r\n");
 //        fflush(stdout);
-//        spi3_readwrite_byte(111);
-        unsigned int a = 0;
-        const unsigned char add = 0x72;
-        adis16470_read_register(&add, &a, 1);
+
+        adis_read_prod_id();
+        adis_burst_read();
         LED1_TOGGLE();
         delayms(500);
     }
