@@ -14,6 +14,7 @@ int main(void) {
     delayms(2000);
     iic1_config(400000);
     spi2_config();
+    spi3_config();
     gui_config();
     uart1_config();
     uart3_config();
@@ -22,10 +23,13 @@ int main(void) {
     cm_backtrace_config("mm32f3277", "1.0.1", "1.0.1");
 //    debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
 //    timer2_config();
+
     while (1) {
-        gui_show_gnrmc_information();       // 46.8ms
+//        gui_show_gnrmc_information();       // 46.8ms
 //        printf("printf test.\r\n");
 //        fflush(stdout);
+//        spi3_readwrite_byte(111);
+        adis_burst_read();
         LED1_TOGGLE();
         delayms(500);
     }

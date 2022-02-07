@@ -19,5 +19,7 @@ void spi2_config(void);
 unsigned int spi2_readwrite_byte(unsigned int tx_data);
 void spi1_config(void);
 unsigned int spi1_readwrite_byte(unsigned int tx_data);
+void spi3_config(void);
+unsigned int spi3_readwrite_byte(unsigned int tx_data);
 
 #endif  // MM32F3277_HARDWARE_SPI_H_

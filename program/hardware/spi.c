@@ -114,6 +114,14 @@ void spi2_config(void) {
     SPI_Cmd(SPI2, ENABLE);
 }
 
+unsigned int spi3_readwrite_byte(unsigned int tx_data) {
+    SPI_SendData(SPI3, tx_data);
+    while (1) {
+        if (SPI_GetFlagStatus(SPI3, SPI_FLAG_RXAVL))
+            return SPI_ReceiveData(SPI3);
+    }
+}
+
 void spi3_config(void) {
     SPI_InitTypeDef SPI_InitStruct;
     GPIO_InitTypeDef GPIO_InitStruct;
@@ -137,12 +145,12 @@ void spi3_config(void) {
     GPIO_Init(GPIOD, &GPIO_InitStruct);
     GPIO_InitStruct.GPIO_Pin = GPIO_Pin_6;
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IPU;
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IPU;//GPIO_MODE_AF_PP
     GPIO_Init(GPIOD, &GPIO_InitStruct);
-    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_7;
-    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;
-    GPIO_Init(GPIOD, &GPIO_InitStruct);
+//    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_7;
+//    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+//    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;
+//    GPIO_Init(GPIOD, &GPIO_InitStruct);
 
     SPI_StructInit(&SPI_InitStruct);
     SPI_InitStruct.SPI_Mode = SPI_Mode_Master;
