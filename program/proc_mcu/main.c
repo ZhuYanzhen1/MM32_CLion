@@ -29,7 +29,9 @@ int main(void) {
 //        printf("printf test.\r\n");
 //        fflush(stdout);
 //        spi3_readwrite_byte(111);
-        adis_burst_read();
+        unsigned int a = 0;
+        const unsigned char add = 0x72;
+        adis16470_read_register(&add, &a, 1);
         LED1_TOGGLE();
         delayms(500);
     }

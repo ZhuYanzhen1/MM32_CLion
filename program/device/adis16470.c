@@ -16,12 +16,12 @@
 
 static const unsigned char address[] =
     {
-        (unsigned char) SPI3_BASE + 0x04, (unsigned char) SPI3_BASE + 0x06,  //Gyro_X
-        (unsigned char) SPI3_BASE + 0x08, (unsigned char) SPI3_BASE + 0x0A,  //Gyro_Y
-        (unsigned char) SPI3_BASE + 0x0C, (unsigned char) SPI3_BASE + 0x0E,  //Gyro_Z
-        (unsigned char) SPI3_BASE + 0x10, (unsigned char) SPI3_BASE + 0x12,  //Acc_X
-        (unsigned char) SPI3_BASE + 0x14, (unsigned char) SPI3_BASE + 0x16,  //Acc_Y
-        (unsigned char) SPI3_BASE + 0x18, (unsigned char) SPI3_BASE + 0x1A,  //Acc_Z
+        0x04, 0x06,  //Gyro_X
+        0x08, 0x0A,  //Gyro_Y
+        0x0C, 0x0E,  //Gyro_Z
+        0x10, 0x12,  //Acc_X
+        0x14, 0x16,  //Acc_Y
+        0x18, 0x1A,  //Acc_Z
     };
 
 /*!
@@ -73,7 +73,5 @@ void adis_burst_read() {
     SPI3_NSS_RESET
     short rx_point[12];
     adis16470_read_register(address, (unsigned int *) &rx_point, 12);
-//    imu.x_acll = rx_point[0];
     SPI3_NSS_SET
-
 }
