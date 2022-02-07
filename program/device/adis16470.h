@@ -34,6 +34,7 @@ typedef volatile struct {
 extern adis16470_t imu;
 //extern gyroscope_t gyroscope_data;
 
+unsigned short adis_read_prod_id(void);
 void adis16470_read_register(const unsigned char *addr_register, unsigned int *rx_point, unsigned char register_num);
 void adis16470_write_register(unsigned char addr, unsigned char value);
 void adis_burst_read();
