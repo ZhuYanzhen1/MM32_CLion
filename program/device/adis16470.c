@@ -10,19 +10,10 @@
 #include "spi.h"
 #include "hal_gpio.h"
 #include "hal_conf.h"
+#include "delay.h"
 
-#define SPI3_NSS_SET GPIO_SetBits(GPIOD,GPIO_Pin_7);
-#define SPI3_NSS_RESET GPIO_ResetBits(GPIOD,GPIO_Pin_7);
-
-static const unsigned char address[] =
-    {
-        0x04, 0x06,  //Gyro_X
-        0x08, 0x0A,  //Gyro_Y
-        0x0C, 0x0E,  //Gyro_Z
-        0x10, 0x12,  //Acc_X
-        0x14, 0x16,  //Acc_Y
-        0x18, 0x1A,  //Acc_Z
-    };
+#define SPI3_NSS_SET()      GPIO_SetBits(GPIOD, GPIO_Pin_7)
+#define SPI3_NSS_RESET()    GPIO_ResetBits(GPIOD, GPIO_Pin_7)
 
 /*!
     \brief                          The function to read the registers,
@@ -68,10 +59,23 @@ void adis16470_write_register(unsigned char address_, unsigned char value) {
     spi3_readwrite_byte(tx_tmp);
 }
 
-unsigned short tmp_tx[10] = {0};
+unsigned short adis_read_prod_id(void) {
+    unsigned short prod_id;
+    SPI3_NSS_RESET();
+    delayus(1);         // CS时序要求tcs>200ns
+    spi3_readwrite_byte(0x72);
+    prod_id = spi3_readwrite_byte(0x00);
+    SPI3_NSS_SET();
+    return prod_id;
+}
+
+// 突发传输模式不需要发寄存器的地址。只需要发0x6800启动突发传输，后续的176个位就是寄存器的值。仔细看手册
 void adis_burst_read() {
-    SPI3_NSS_RESET
-    short rx_point[12];
-    adis16470_read_register(address, (unsigned int *) &rx_point, 12);
-    SPI3_NSS_SET
+//    突发读取功能提供了一种读取一批输出数据寄存器的方法，使用连续的比特流，速率高达1MHz（SCLK）。
+//    这种方法不需要每个16位段之间的停顿时间（见图3）。
+//    如图27所示，通过设置DIN=0x6800来启动这种模式，然后从DOUT中读出序列中的每个寄存器，同时在整个176位的序列中保持CS为低电平。
+
+    SPI3_NSS_RESET();
+//    adis16470_read_register(address, (unsigned int *) &rx_point, 12);
+    SPI3_NSS_SET();
 }

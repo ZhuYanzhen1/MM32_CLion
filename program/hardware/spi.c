@@ -133,7 +133,7 @@ void spi3_config(void) {
     GPIO_PinAFConfig(GPIOD, GPIO_PinSource4, GPIO_AF_5);
     GPIO_PinAFConfig(GPIOD, GPIO_PinSource5, GPIO_AF_5);
     GPIO_PinAFConfig(GPIOD, GPIO_PinSource6, GPIO_AF_5);
-    GPIO_PinAFConfig(GPIOD, GPIO_PinSource7, GPIO_AF_5);
+    // 如果你的CS引脚由软件控制，不要把它复用了
 
     GPIO_InitStruct.GPIO_Pin = GPIO_Pin_4;
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
@@ -141,16 +141,17 @@ void spi3_config(void) {
     GPIO_Init(GPIOD, &GPIO_InitStruct);
     GPIO_InitStruct.GPIO_Pin = GPIO_Pin_5;
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IPU;      // PD5才是MISO，要配置成上拉输入
     GPIO_Init(GPIOD, &GPIO_InitStruct);
     GPIO_InitStruct.GPIO_Pin = GPIO_Pin_6;
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IPU;//GPIO_MODE_AF_PP
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;
     GPIO_Init(GPIOD, &GPIO_InitStruct);
-//    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_7;
-//    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-//    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;
-//    GPIO_Init(GPIOD, &GPIO_InitStruct);
+
+    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_7;
+    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;   // 如果你的CS引脚由软件控制，记得初始化成通用推挽输出
+    GPIO_Init(GPIOD, &GPIO_InitStruct);
 
     SPI_StructInit(&SPI_InitStruct);
     SPI_InitStruct.SPI_Mode = SPI_Mode_Master;
@@ -162,11 +163,11 @@ void spi3_config(void) {
 
     SPI_InitStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_128;
     SPI_InitStruct.SPI_FirstBit = SPI_FirstBit_MSB;
-    SPI_Init(SPI1, &SPI_InitStruct);
+    SPI_Init(SPI3, &SPI_InitStruct);
     if (SPI_InitStruct.SPI_BaudRatePrescaler <= 8)
-        exSPI_DataEdgeAdjust(SPI1, SPI_DataEdgeAdjust_FAST);
+        exSPI_DataEdgeAdjust(SPI3, SPI_DataEdgeAdjust_FAST);
 
-    SPI_BiDirectionalLineConfig(SPI1, SPI_Direction_Rx);
-    SPI_BiDirectionalLineConfig(SPI1, SPI_Direction_Tx);
-    SPI_Cmd(SPI1, ENABLE);
+    SPI_BiDirectionalLineConfig(SPI3, SPI_Direction_Rx);
+    SPI_BiDirectionalLineConfig(SPI3, SPI_Direction_Tx);
+    SPI_Cmd(SPI3, ENABLE);
 }
