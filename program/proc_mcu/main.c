@@ -13,6 +13,8 @@ int main(void) {
     led_config();
     delayms(2000);
     iic1_config(400000);
+    xpt2046_gpio_config();
+    spi1_config();
     spi2_config();
     spi3_config();
     gui_config();

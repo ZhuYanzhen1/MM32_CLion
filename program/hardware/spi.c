@@ -44,12 +44,13 @@ void spi1_config(void) {
 
     SPI_StructInit(&SPI_InitStruct);
     SPI_InitStruct.SPI_Mode = SPI_Mode_Master;
-    SPI_InitStruct.SPI_DataSize = SPI_DataSize_32b;
-    SPI_InitStruct.SPI_DataWidth = SPI_DataWidth_16b;
+    SPI_InitStruct.SPI_DataSize = SPI_DataSize_8b;
+    SPI_InitStruct.SPI_DataWidth = SPI_DataWidth_8b;
     SPI_InitStruct.SPI_CPOL = SPI_CPOL_High;
     SPI_InitStruct.SPI_CPHA = SPI_CPHA_2Edge;
     SPI_InitStruct.SPI_NSS = SPI_NSS_Soft;
 
+    // 120MHz / 64 = 1.875MHz
     SPI_InitStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_16;
     SPI_InitStruct.SPI_FirstBit = SPI_FirstBit_MSB;
     SPI_Init(SPI1, &SPI_InitStruct);
