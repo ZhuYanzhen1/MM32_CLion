@@ -195,6 +195,7 @@ void software_spi3_init(void) {
     GPIO_StructInit(&GPIO_InitStruct);
 
     RCC_AHBPeriphClockCmd(RCC_AHBENR_GPIOD, ENABLE);
+    RCC_AHBPeriphClockCmd(RCC_AHBENR_GPIOG, ENABLE);
 
     GPIO_InitStruct.GPIO_Pin = GPIO_Pin_4;
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
@@ -214,6 +215,19 @@ void software_spi3_init(void) {
     GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;   // 如果你的CS引脚由软件控制，记得初始化成通用推挽输出
     GPIO_Init(GPIOD, &GPIO_InitStruct);
 
+    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_9;
+    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_Init(GPIOG, &GPIO_InitStruct);     // PG9接到了RST引脚
+
+    GPIO_SetBits(GPIOD, GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7);
+
+    GPIO_SetBits(GPIOG, GPIO_Pin_9);
+    delayms(100);
+    GPIO_ResetBits(GPIOG, GPIO_Pin_9);
+    delayms(100);
+    GPIO_SetBits(GPIOG, GPIO_Pin_9);
+    delayms(100);
 }
 
 /* CPOL = 1, CPHA = 1, MSB first */
