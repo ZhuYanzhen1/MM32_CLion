@@ -175,36 +175,30 @@ void spi3_config(void) {
     SPI_Cmd(SPI3, ENABLE);
 }
 
-#define SPI3_SCK_PIN                     GPIO_Pin_4
-#define SPI3_SCK_GPIO_PORT               GPIOD
-#define SPI3_MISO_PIN                    GPIO_Pin_5
-#define SPI3_MISO_GPIO_PORT              GPIOD
-#define SPI3_MOSI_PIN                    GPIO_Pin_6
-#define SPI3_MOSI_GPIO_PORT              GPIOD
-#define SPI3_NSS_PIN                     GPIO_Pin_7
-#define SPI3_NSS_GPIO_PORT               GPIOD
+#define SPI3_SCK_PIN        GPIO_Pin_4
+#define SPI3_SCK_GPIO_PORT  GPIOD
+#define SPI3_MISO_PIN       GPIO_Pin_5
+#define SPI3_MISO_GPIO_PORT GPIOD
+#define SPI3_MOSI_PIN       GPIO_Pin_6
+#define SPI3_MOSI_GPIO_PORT GPIOD
+#define SPI3_NSS_PIN        GPIO_Pin_7
+#define SPI3_NSS_GPIO_PORT  GPIOD
 
-#define SPI3_MOSI_HIGH  GPIO_SetBits(SPI3_MOSI_GPIO_PORT, SPI3_MOSI_PIN)
-#define SPI3_MOSI_LOW  GPIO_ResetBits(SPI3_MOSI_GPIO_PORT, SPI3_MOSI_PIN)
-#define SPI3_SCK_HIGH   GPIO_SetBits(SPI3_SCK_GPIO_PORT, SPI3_SCK_PIN)
-#define SPI3_SCK_LOW   GPIO_ResetBits(SPI3_SCK_GPIO_PORT, SPI3_SCK_PIN)
-#define SPI3_MISO    GPIO_ReadOutputDataBit(SPI3_MISO_GPIO_PORT, SPI3_MISO_PIN)
+#define SPI3_MOSI_HIGH      GPIO_SetBits(SPI3_MOSI_GPIO_PORT, SPI3_MOSI_PIN)
+#define SPI3_MOSI_LOW       GPIO_ResetBits(SPI3_MOSI_GPIO_PORT, SPI3_MOSI_PIN)
+#define SPI3_SCK_HIGH       GPIO_SetBits(SPI3_SCK_GPIO_PORT, SPI3_SCK_PIN)
+#define SPI3_SCK_LOW        GPIO_ResetBits(SPI3_SCK_GPIO_PORT, SPI3_SCK_PIN)
+#define SPI3_MISO           GPIO_ReadInputDataBit(SPI3_MISO_GPIO_PORT, SPI3_MISO_PIN)
 
 void software_spi3_init(void) {
     GPIO_InitTypeDef GPIO_InitStruct;
     GPIO_StructInit(&GPIO_InitStruct);
 
     RCC_AHBPeriphClockCmd(RCC_AHBENR_GPIOD, ENABLE);
-    RCC_APB1PeriphClockCmd(RCC_APB1ENR_SPI3, ENABLE);
-
-    GPIO_PinAFConfig(GPIOD, GPIO_PinSource4, GPIO_AF_5);
-    GPIO_PinAFConfig(GPIOD, GPIO_PinSource5, GPIO_AF_5);
-    GPIO_PinAFConfig(GPIOD, GPIO_PinSource6, GPIO_AF_5);
-    // 如果你的CS引脚由软件控制，不要把它复用了
 
     GPIO_InitStruct.GPIO_Pin = GPIO_Pin_4;
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
     GPIO_Init(GPIOD, &GPIO_InitStruct);
     GPIO_InitStruct.GPIO_Pin = GPIO_Pin_5;
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
@@ -212,7 +206,7 @@ void software_spi3_init(void) {
     GPIO_Init(GPIOD, &GPIO_InitStruct);
     GPIO_InitStruct.GPIO_Pin = GPIO_Pin_6;
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
     GPIO_Init(GPIOD, &GPIO_InitStruct);
 
     GPIO_InitStruct.GPIO_Pin = GPIO_Pin_7;
@@ -224,20 +218,20 @@ void software_spi3_init(void) {
 
 /* CPOL = 1, CPHA = 1, MSB first */
 unsigned int software_spi3_mode3(unsigned int write_data) {
-    unsigned char i, read_dat = 0;
-    for (i = 0; i < 16; i++) {
+    unsigned int read_data = 0;
+    for (unsigned char i = 0; i < 16; i++) {
         SPI3_SCK_LOW;
         if (write_data & 0x8000)
             SPI3_MOSI_HIGH;
         else
             SPI3_MOSI_LOW;
         write_data <<= 1;
-        delayus(1);
+        delayus(1);     // min：25ns
         SPI3_SCK_HIGH;
-        read_dat <<= 1;
-        if (SPI3_MISO)
-            read_dat++;  //若从从机接收到高电平，数据自加一
-        delayus(1);
+        read_data <<= 1;
+        if (SPI3_MISO)      // GPIO_ReadOutputDataBit(SPI3_MISO_GPIO_PORT, SPI3_MISO_PIN)
+            read_data++;    //若从从机接收到高电平，数据自加一
+        delayus(1);     // max：12.5ns
     }
-    return read_dat;
+    return read_data;
 }

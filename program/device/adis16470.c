@@ -12,8 +12,8 @@
 #include "hal_conf.h"
 #include "delay.h"
 
-#define SPI3_NSS_SET()      GPIO_SetBits(GPIOD, GPIO_Pin_7)
-#define SPI3_NSS_RESET()    GPIO_ResetBits(GPIOD, GPIO_Pin_7)
+#define SPI3_NSS_SET()      GPIO_SetBits(GPIOD, GPIO_Pin_7);
+#define SPI3_NSS_RESET()    GPIO_ResetBits(GPIOD, GPIO_Pin_7);
 
 static const unsigned char address[] =
     {
@@ -84,16 +84,30 @@ unsigned short adis_read_prod_id(void) {
     return prod_id;
 }
 
+#define BURST_READ(x)   delayus(1);\
+                        (x) = (short) software_spi3_mode3(0x0000);
+
 // 突发传输模式不需要发寄存器的地址。只需要发0x6800启动突发传输，后续的176个位就是寄存器的值。仔细看手册
 void adis_burst_read() {
 //    突发读取功能提供了一种读取一批输出数据寄存器的方法，使用连续的比特流，速率高达1MHz（SCLK）。
 //    这种方法不需要每个16位段之间的停顿时间（见图3）。
 //    如图27所示，通过设置DIN=0x6800来启动这种模式，然后从DOUT中读出序列中的每个寄存器，同时在整个176位的序列中保持CS为低电平。
-    spi3_readwrite_byte(0x6800);// 小端模式，得翻转
-    SPI3_NSS_RESET();
-//    adis16470_read_register(address, (unsigned int *) &rx_point, 12);
-    spi3_readwrite_byte(address[0]);
-    unsigned int a = spi3_readwrite_byte(0x00);
-//    imu.x_gyro = (short) spi3_readwrite_byte(0x00);
-    SPI3_NSS_SET();
+
+    SPI3_NSS_RESET()
+    spi3_readwrite_byte(0x6800);
+
+//    delayus(1);         // burst_read 两次读取中间不确定要多久，所以需要dealy吗？应该不需要？
+//    imu.diag_star = (short) software_spi3_mode3(0x00);
+    BURST_READ(imu.diag_star)
+    BURST_READ(imu.x_gyro)
+    BURST_READ(imu.y_gyro)
+    BURST_READ(imu.z_gyro)
+    BURST_READ(imu.x_acll)
+    BURST_READ(imu.y_acll)
+    BURST_READ(imu.z_acll)
+    BURST_READ(imu.temp)
+    BURST_READ(imu.data_cntr)
+    BURST_READ(imu.checknum)
+
+    SPI3_NSS_SET()
 }

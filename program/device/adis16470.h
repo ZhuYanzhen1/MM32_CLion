@@ -22,17 +22,7 @@ typedef volatile struct {
     short checknum;
 } adis16470_t;
 
-//typedef struct {
-//    float angular_speed_x;  //角速度
-//    float angular_speed_y;
-//    float angular_speed_z;
-//    float acceleration_x;  //加速度
-//    float acceleration_y;
-//    float acceleration_z;
-//} gyroscope_t;
-
 extern adis16470_t imu;
-//extern gyroscope_t gyroscope_data;
 
 unsigned short adis_read_prod_id(void);
 void adis16470_read_register(const unsigned char *addr_register, unsigned int *rx_point, unsigned char register_num);
