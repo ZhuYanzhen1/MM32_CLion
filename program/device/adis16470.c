@@ -73,8 +73,13 @@ unsigned short adis_read_prod_id(void) {
     unsigned short prod_id;
     SPI3_NSS_RESET();
     delayus(1);         // CS时序要求tcs>200ns
-    spi3_readwrite_byte(0x004E);
-    prod_id = spi3_readwrite_byte(0x00);
+    software_spi3_mode3(0x7200);
+    SPI3_NSS_SET();
+    delayus(25);
+
+    SPI3_NSS_RESET();
+    delayus(1);         // CS时序要求tcs>200ns
+    prod_id = software_spi3_mode3(0x7200);
     SPI3_NSS_SET();
     return prod_id;
 }
@@ -84,7 +89,7 @@ void adis_burst_read() {
 //    突发读取功能提供了一种读取一批输出数据寄存器的方法，使用连续的比特流，速率高达1MHz（SCLK）。
 //    这种方法不需要每个16位段之间的停顿时间（见图3）。
 //    如图27所示，通过设置DIN=0x6800来启动这种模式，然后从DOUT中读出序列中的每个寄存器，同时在整个176位的序列中保持CS为低电平。
-    spi3_readwrite_byte(0x6800);
+    spi3_readwrite_byte(0x6800);// 小端模式，得翻转
     SPI3_NSS_RESET();
 //    adis16470_read_register(address, (unsigned int *) &rx_point, 12);
     spi3_readwrite_byte(address[0]);

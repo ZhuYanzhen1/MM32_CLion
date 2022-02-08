@@ -14,7 +14,8 @@ int main(void) {
     delayms(2000);
     iic1_config(400000);
     spi2_config();
-    spi3_config();
+//    spi3_config();
+    software_spi3_init();
     gui_config();
     uart1_config();
     uart3_config();
@@ -30,7 +31,7 @@ int main(void) {
 //        fflush(stdout);
 
         adis_read_prod_id();
-        adis_burst_read();
+//        adis_burst_read();
         LED1_TOGGLE();
         delayms(500);
     }
