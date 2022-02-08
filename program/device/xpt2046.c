@@ -25,10 +25,12 @@ unsigned short xpt2046_read(unsigned short cmd) {
 
     for (i = 0; i < TOUCH_READ_TIMES; i++) {
         GPIO_WriteBit(TOUCH_CS_PORT, TOUCH_CS_PIN, Bit_RESET);
-        spi2_readwrite_byte(cmd);
-        value[i] = spi2_readwrite_byte(TOUCH_Continue_Read) << 8;
-        value[i] |= spi2_readwrite_byte(TOUCH_Continue_Read);
+        delayus(2);
+        spi1_readwrite_byte(cmd);
+        value[i] = spi1_readwrite_byte(TOUCH_Continue_Read) << 8;
+        value[i] |= spi1_readwrite_byte(TOUCH_Continue_Read);
         value[i] >>= 3;
+        delayus(2);
         GPIO_WriteBit(TOUCH_CS_PORT, TOUCH_CS_PIN, Bit_SET);
     }
 
@@ -51,15 +53,10 @@ unsigned short xpt2046_read(unsigned short cmd) {
 
 unsigned char xpt2046_readxy(unsigned short *x, unsigned short *y) {
     unsigned short valueX1, valueY1, valueX2, valueY2;
-
-    MODIFY_REG(SPI2->BRR, BRR_Mask, SPI_BaudRatePrescaler_256);
-    delayms(1);
     valueX1 = xpt2046_read(TOUCH_X_CMD);
     valueY1 = xpt2046_read(TOUCH_Y_CMD);
     valueX2 = xpt2046_read(TOUCH_X_CMD);
     valueY2 = xpt2046_read(TOUCH_Y_CMD);
-    delayms(1);
-    MODIFY_REG(SPI2->BRR, BRR_Mask, SPI_BaudRatePrescaler_16);
 
     *x = valueX1 > valueX2 ? (valueX1 - valueX2) : (valueX2 - valueX1);
     *y = valueY1 > valueY2 ? (valueY1 - valueY2) : (valueY2 - valueY1);
