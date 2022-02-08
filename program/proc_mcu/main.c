@@ -32,8 +32,12 @@ int main(void) {
 //        printf("printf test.\r\n");
 //        fflush(stdout);
 
-        adis_read_prod_id();
-//        adis_burst_read();
+//        unsigned int X = adis_read_register(0x1200);
+//        unsigned int Y = adis_read_register(0x1600);
+//        unsigned int Z = adis_read_register(0x1A00);
+
+        adis_burst_read();
+
         LED1_TOGGLE();
         delayms(500);
     }

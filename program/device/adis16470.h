@@ -17,14 +17,14 @@ typedef volatile struct {
     short x_acll;
     short y_acll;
     short z_acll;
-    short temp;
+    short temp_out;
     short data_cntr;
     short checknum;
 } adis16470_t;
 
-extern adis16470_t imu;
+//extern adis16470_t imu;
 
-unsigned short adis_read_prod_id(void);
+unsigned int adis_read_register(unsigned int register_address);
 void adis16470_read_register(const unsigned char *addr_register, unsigned int *rx_point, unsigned char register_num);
 void adis16470_write_register(unsigned char addr, unsigned char value);
 void adis_burst_read();
