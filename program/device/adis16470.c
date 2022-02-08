@@ -94,7 +94,7 @@ void adis_burst_read() {
 //    如图27所示，通过设置DIN=0x6800来启动这种模式，然后从DOUT中读出序列中的每个寄存器，同时在整个176位的序列中保持CS为低电平。
 
     SPI3_NSS_RESET()
-    spi3_readwrite_byte(0x6800);
+    software_spi3_mode3(0x6800);
 
 //    delayus(1);         // burst_read 两次读取中间不确定要多久，所以需要dealy吗？应该不需要？
 //    imu.diag_star = (short) software_spi3_mode3(0x00);

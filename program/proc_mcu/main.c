@@ -32,8 +32,8 @@ int main(void) {
 //        printf("printf test.\r\n");
 //        fflush(stdout);
 
-        adis_read_prod_id();
-//        adis_burst_read();
+//        adis_read_prod_id();
+        adis_burst_read();
         LED1_TOGGLE();
         delayms(500);
     }
