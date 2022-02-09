@@ -1,12 +1,23 @@
 #include "riccati_solver.h"
+
+#ifndef RUN_CUNIT_TEST
+#include "printf.h"
+#else
 #include "stdio.h"
-#include "math.h"
+#endif
 
 //  P = 96.7181   16.2375   -2.0601
 //      16.2375   31.0814    8.2303
 //      -2.0601    8.2303   11.3719
 
 #define ITERATION_ACCURACY  0.01f
+
+float uabs(float value) {
+    if (value < 0)
+        return -1 * value;
+    else
+        return value;
+}
 
 void solveRiccatiIteration(float A[3][3], float B[3][2], float Q[3][3], float R[2][2]) {
     float matrix_p_next[3][3] = {0}, matrix_p[3][3] = {{Q[0][0], Q[0][1], Q[0][2]},
@@ -113,19 +124,19 @@ void solveRiccatiIteration(float A[3][3], float B[3][2], float Q[3][3], float R[
         matrix_p_next[2][1] = matrix_at_pn_a[2][1] - another_matrix[2][1];
         matrix_p_next[2][2] = matrix_at_pn_a[2][2] - another_matrix[2][2] + Q[0][0];
 
-        float p_next_max_coefficient = fabsf(matrix_p_next[0][0]);
+        float p_next_max_coefficient = uabs(matrix_p_next[0][0]);
         for (unsigned char counter1 = 0; counter1 < 3; ++counter1)
             for (unsigned char counter2 = 0; counter2 < 3; ++counter2)
-                if (p_next_max_coefficient < fabsf(matrix_p_next[counter1][counter2]))
-                    p_next_max_coefficient = fabsf(matrix_p_next[counter1][counter2]);
+                if (p_next_max_coefficient < uabs(matrix_p_next[counter1][counter2]))
+                    p_next_max_coefficient = uabs(matrix_p_next[counter1][counter2]);
 
-        float p_max_coefficient = fabsf(matrix_p[0][0]);
+        float p_max_coefficient = uabs(matrix_p[0][0]);
         for (unsigned char counter1 = 0; counter1 < 3; ++counter1)
             for (unsigned char counter2 = 0; counter2 < 3; ++counter2)
-                if (p_max_coefficient < fabsf(matrix_p[counter1][counter2]))
-                    p_max_coefficient = fabsf(matrix_p[counter1][counter2]);
+                if (p_max_coefficient < uabs(matrix_p[counter1][counter2]))
+                    p_max_coefficient = uabs(matrix_p[counter1][counter2]);
 
-        if (fabsf(p_max_coefficient - p_next_max_coefficient) < ITERATION_ACCURACY) {
+        if (uabs(p_max_coefficient - p_next_max_coefficient) < ITERATION_ACCURACY) {
             printf("\r\niteration counter:%d\r\n", counter);
             break;
         }

@@ -18,5 +18,4 @@ void test_riccati_solver(void) {
     float Matrix_R[2][2] = {{1, 0},
                             {0, 1}};
     solveRiccatiIteration(Matrix_A, Matrix_B, Matrix_Q, Matrix_R);
-    CU_PASS("Riccati Solver")
 }
