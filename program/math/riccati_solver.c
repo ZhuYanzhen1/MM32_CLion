@@ -1,6 +1,6 @@
 #include "riccati_solver.h"
 
-#ifndef RUN_CUNIT_TEST
+#ifndef RUNNING_UNIT_TEST
 #include "printf.h"
 #else
 #include "stdio.h"
