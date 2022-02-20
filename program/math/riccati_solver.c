@@ -10,6 +10,7 @@
 //      16.2375   31.0814    8.2303
 //      -2.0601    8.2303   11.3719
 
+#define OUTPUT_DEBUG_INFO   0
 #define ITERATION_ACCURACY  0.01f
 
 float uabs(float value) {
@@ -31,20 +32,30 @@ void solveRiccatiIteration(float A[3][3], float B[3][2], float Q[3][3], float R[
               A[0][2] * matrix_p[0][1] + A[1][2] * matrix_p[1][1] + matrix_p[2][1],
               A[0][2] * matrix_p[0][2]
                   + A[1][2] * matrix_p[1][2]
-                  + A[0][2] * (A[0][2] * matrix_p[0][0] + A[1][2] * matrix_p[1][0] + matrix_p[2][0])
-                  + A[1][2] * (A[0][2] * matrix_p[0][1] + A[1][2] * matrix_p[1][1] + matrix_p[2][1]) + matrix_p[2][2]}};
+                  + A[0][2] * (A[0][2] * matrix_p[0][0] + A[1][2] * matrix_p[1][0] +
+                      matrix_p[2][0])
+                  + A[1][2] * (A[0][2] * matrix_p[0][1] + A[1][2] * matrix_p[1][1] +
+                      matrix_p[2][1]) + matrix_p[2][2]}};
         float
             matrix_at_pn_b[3][2] =
-            {{B[0][0] * matrix_p[0][0] + B[1][0] * matrix_p[0][1] + B[2][0] * matrix_p[0][2], B[2][1] * matrix_p[0][2]},
-             {B[0][0] * matrix_p[1][0] + B[1][0] * matrix_p[1][1] + B[2][0] * matrix_p[1][2], B[2][1] * matrix_p[1][2]},
+            {{B[0][0] * matrix_p[0][0] + B[1][0] * matrix_p[0][1] + B[2][0] * matrix_p[0][2],
+              B[2][1] *
+                  matrix_p[0][2]},
+             {B[0][0] * matrix_p[1][0] + B[1][0] * matrix_p[1][1] + B[2][0] * matrix_p[1][2], B[2][1] *
+                 matrix_p[1][2]},
              {B[0][0] * (A[0][2] * matrix_p[0][0] + A[1][2] * matrix_p[1][0] + matrix_p[2][0])
                   + B[1][0] * (A[0][2] * matrix_p[0][1] + A[1][2] * matrix_p[1][1] + matrix_p[2][1])
                   + B[2][0] * (A[0][2] * matrix_p[0][2] + A[1][2] * matrix_p[1][2] + matrix_p[2][2]),
-              B[2][1] * (A[0][2] * matrix_p[0][2] + A[1][2] * matrix_p[1][2] + matrix_p[2][2])}};
+              B[2][1] * (A[0][2] *
+                  matrix_p[0][2] +
+                  A[1][2] *
+                      matrix_p[1][2] +
+                  matrix_p[2][2])}};
         float matrix_r_bt_pn_b[2][2] =
             {{B[0][0] * (B[0][0] * matrix_p[0][0] + B[1][0] * matrix_p[1][0]
-                + B[2][0] * matrix_p[2][0]) + B[1][0] * (B[0][0] * matrix_p[0][1] + B[1][0] * matrix_p[1][1]
-                + B[2][0] * matrix_p[2][1])
+                + B[2][0] * matrix_p[2][0]) +
+                B[1][0] * (B[0][0] * matrix_p[0][1] + B[1][0] * matrix_p[1][1]
+                    + B[2][0] * matrix_p[2][1])
                   + B[2][0] * (B[0][0] * matrix_p[0][2] + B[1][0] * matrix_p[1][2] + B[2][0] * matrix_p[2][2])
                   + R[0][0],
               B[2][1] * (B[0][0] * matrix_p[0][2] + B[1][0] * matrix_p[1][2] + B[2][0] * matrix_p[2][2])},
@@ -62,21 +73,28 @@ void solveRiccatiIteration(float A[3][3], float B[3][2], float Q[3][3], float R[
                       + B[1][0] * matrix_p[1][0]
                       + B[2][0] * matrix_p[2][0])
                   + A[1][2] * (B[0][0] * matrix_p[0][1]
-                      + B[1][0] * matrix_p[1][1] + B[2][0] * matrix_p[2][1]) + B[2][0] * matrix_p[2][2]},
+                      + B[1][0] * matrix_p[1][1] + B[2][0] * matrix_p[2][1]) +
+                  B[2][0] * matrix_p[2][2]},
              {B[2][1] * matrix_p[2][0],
               B[2][1] * matrix_p[2][1],
-              A[0][2] * B[2][1] * matrix_p[2][0] + A[1][2] * B[2][1] * matrix_p[2][1] + B[2][1] * matrix_p[2][2]}};
+              A[0][2] * B[2][1] * matrix_p[2][0] + A[1][2] * B[2][1] * matrix_p[2][1] +
+                  B[2][1] * matrix_p[2][2]}};
         float matrix_inv_r_bt_pn_b[2][2] =
             {{matrix_r_bt_pn_b[1][1]
                   / (-matrix_r_bt_pn_b[0][1] * matrix_r_bt_pn_b[1][0]
                       + matrix_r_bt_pn_b[0][0] * matrix_r_bt_pn_b[1][1]), -(matrix_r_bt_pn_b[0][1]
-                / (-matrix_r_bt_pn_b[0][1] * matrix_r_bt_pn_b[1][0]
-                    + matrix_r_bt_pn_b[0][0] * matrix_r_bt_pn_b[1][1]))},
+                / (-matrix_r_bt_pn_b[0][1] *
+                    matrix_r_bt_pn_b[1][0]
+                    + matrix_r_bt_pn_b[0][0] *
+                        matrix_r_bt_pn_b[1][1]))},
              {-(matrix_r_bt_pn_b[1][0]
                  / (-matrix_r_bt_pn_b[0][1] * matrix_r_bt_pn_b[1][0]
                      + matrix_r_bt_pn_b[0][0] * matrix_r_bt_pn_b[1][1])),
-              matrix_r_bt_pn_b[0][0] / (-matrix_r_bt_pn_b[0][1] * matrix_r_bt_pn_b[1][0]
-                  + matrix_r_bt_pn_b[0][0] * matrix_r_bt_pn_b[1][1])}};
+              matrix_r_bt_pn_b[0][0] /
+                  (-matrix_r_bt_pn_b[0][1] *
+                      matrix_r_bt_pn_b[1][0]
+                      + matrix_r_bt_pn_b[0][0] *
+                          matrix_r_bt_pn_b[1][1])}};
         float another_matrix[3][3] =
             {{(matrix_at_pn_b[0][0] * matrix_inv_r_bt_pn_b[0][0]
                 + matrix_at_pn_b[0][1] * matrix_inv_r_bt_pn_b[1][0]) * matrix_bt_pn_a[0][0]
@@ -137,7 +155,9 @@ void solveRiccatiIteration(float A[3][3], float B[3][2], float Q[3][3], float R[
                     p_max_coefficient = uabs(matrix_p[counter1][counter2]);
 
         if (uabs(p_max_coefficient - p_next_max_coefficient) < ITERATION_ACCURACY) {
+#if OUTPUT_DEBUG_INFO == 1
             printf("\r\niteration counter:%d\r\n", counter);
+#endif
             break;
         }
 
@@ -146,10 +166,12 @@ void solveRiccatiIteration(float A[3][3], float B[3][2], float Q[3][3], float R[
                 matrix_p[counter1][counter2] = matrix_p_next[counter1][counter2];
     }
 
+#if OUTPUT_DEBUG_INFO == 1
     printf("------------Matrix P------------\r\n");
     for (int counter1 = 0; counter1 < 3; ++counter1) {
         for (int counter2 = 0; counter2 < 3; ++counter2)
             printf("%f   ", matrix_p[counter1][counter2]);
         printf("\r\n");
     }
+#endif
 }
