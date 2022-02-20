@@ -36,9 +36,13 @@
 #define UART6_DMA_PRIORITY      2
 #define UART1_DMA_PRIORITY      3
 #define EXTI0_PRIORITY          14
+#define IIC1_DMA_PRIORITY       4
 
+//////////////////////////////////////// Peripherals Speed ////////////////////////////////////////
 #define UART1_BAUDRATE          115200
 #define UART3_BAUDRATE          115200
 #define UART6_BAUDRATE          115200
+
+#define IIC1_SPEED              400000
 
 #endif  // MM32F3277_USER_CONFIG_H_
