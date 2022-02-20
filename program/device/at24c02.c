@@ -11,43 +11,18 @@
 #define EEPROM_ADDR 0xA0
 #define PAGESIZE    8
 
-typedef struct {
-    unsigned char busy;
-    unsigned char ack;
-    unsigned char fault;
-    unsigned char opt;
-    unsigned char sub;
-    unsigned char cnt;
-    unsigned char *ptr;
-    unsigned char sadd;
-} gEepromTypeDef;
-
-enum { WR };
-
-gEepromTypeDef gEeprom;
-
-void EEPROM_WaitEEready(void) {
-    unsigned int i = 10000;
-    while (i--);
-}
-
-void EEPROM_ReadBuff(void) {
+void EEPROM_ReadBuff(unsigned char counter, unsigned char *buf) {
     unsigned char i, flag = 0, _cnt = 0;
-    for (i = 0; i < gEeprom.cnt; i++) {
+    for (i = 0; i < counter; i++) {
         while (1) {
-            //Write command is sent when RX FIFO is not full
             if ((I2C_GetFlagStatus(I2C1, I2C_STATUS_FLAG_TFNF)) && (flag == 0)) {
-                //Configure to read
                 I2C_ReadCmd(I2C1);
                 _cnt++;
-                //When flag is set, receive complete
-                if (_cnt == gEeprom.cnt)
+                if (_cnt == counter)
                     flag = 1;
             }
-            //Check receive FIFO not empty
             if (I2C_GetFlagStatus(I2C1, I2C_STATUS_FLAG_RFNE)) {
-                //read data to gEeprom.ptr
-                gEeprom.ptr[i] = I2C_ReceiveData(I2C1);
+                buf[i] = I2C_ReceiveData(I2C1);
                 break;
             }
         }
@@ -55,101 +30,60 @@ void EEPROM_ReadBuff(void) {
 }
 
 unsigned char EEPROM_WriteBuff(unsigned char sub, unsigned char *ptr, unsigned short cnt) {
-    //Send sub address
     iic1_writebyte(sub);
     while (cnt--) {
-        //Send data
         iic1_writebyte(*ptr);
-        //Point to the next data
         ptr++;
     }
     iic1_wait_for_stop();
-    gEeprom.ack = 1;
-    //I2C operation stops
-    gEeprom.busy = 0;
-    //Wait for EEPROM getting ready.
-    EEPROM_WaitEEready();
+    delayus(100);
     return 1;
 }
 
-unsigned char EEPROM_SendPacket(unsigned char sub, unsigned char *ptr, unsigned short cnt) {
-    unsigned char i;
-    //i2c option flag set to write
-    gEeprom.opt = WR;
-    //number to send
-    gEeprom.cnt = cnt;
-    //sub address
-    gEeprom.sub = sub;
-    //I2C operation starts
-    gEeprom.busy = 1;
-    gEeprom.ack = 0;
-
-    if ((sub % PAGESIZE) > 0) {
-        //Need temp number of data, just right to the page address
+unsigned char EEPROM_SendPacket(unsigned char address, unsigned char *ptr, unsigned short counter) {
+    if ((address % PAGESIZE) > 0) {
         unsigned char
-            temp = ((PAGESIZE - sub % PAGESIZE) < (gEeprom.cnt) ? (PAGESIZE - sub % PAGESIZE) : (gEeprom.cnt));
-        //If WRITE successful
-        EEPROM_WriteBuff(sub, ptr, temp);
-        //Point to the next page
+            temp = ((PAGESIZE - address % PAGESIZE) < (counter) ? (PAGESIZE - address % PAGESIZE) : (counter));
+        EEPROM_WriteBuff(address, ptr, temp);
         ptr += temp;
-        gEeprom.cnt -= temp;
-        sub += temp;
-        //gEeprom.cnt = 0 means transmition complete
-        if (gEeprom.cnt == 0) return 1;
+        counter -= temp;
+        address += temp;
+        if (counter == 0)
+            return 1;
     }
-    for (i = 0; i < (gEeprom.cnt / PAGESIZE); i++) {
-        //Full page write
-        EEPROM_WriteBuff(sub, ptr, PAGESIZE);
-        //Point to the next page
+    for (unsigned char i = 0; i < (counter / PAGESIZE); i++) {
+        EEPROM_WriteBuff(address, ptr, PAGESIZE);
         ptr += PAGESIZE;
-        sub += PAGESIZE;
-        gEeprom.cnt -= PAGESIZE;
-        if (gEeprom.cnt == 0) return 1;
+        address += PAGESIZE;
+        counter -= PAGESIZE;
+        if (counter == 0)
+            return 1;
     }
-    if (gEeprom.cnt > 0) {
-        EEPROM_WriteBuff(sub, ptr, gEeprom.cnt);
-        return 1;
-    }
-    //I2C operation ends
-    gEeprom.busy = 0;
-    gEeprom.ack = 1;
+    if (counter > 0)
+        EEPROM_WriteBuff(address, ptr, counter);
     return 0;
 }
 
-void EEPROM_ReadPacket(unsigned char sub, unsigned char *ptr, unsigned short cnt) {
-    //I2C operation starts
-    gEeprom.busy = 1;
-    gEeprom.ack = 0;
-    gEeprom.sub = sub;
-    gEeprom.ptr = ptr;
-    gEeprom.cnt = cnt;
-
-    //Send sub address
-    iic1_writebyte(gEeprom.sub);
-    //receive bytes
-    EEPROM_ReadBuff();
+void EEPROM_ReadPacket(unsigned char address, unsigned char *ptr, unsigned short counter) {
+    iic1_writebyte(address);
+    EEPROM_ReadBuff(counter, ptr);
     iic1_wait_for_stop();
-
-    //I2C operation ends
-    gEeprom.busy = 0;
-    gEeprom.ack = 1;
-    EEPROM_WaitEEready();
+    delayus(100);
 }
 
-void EEPROM_Write(unsigned char sub, unsigned char *ptr, unsigned short len) {
+unsigned char at24c02_test_memory(void) {
+    unsigned char send_buf[128] = {0};
+    unsigned char read_buf[128] = {0};
+    for (unsigned char counter = 0; counter < 128; ++counter)
+        send_buf[counter] = counter;
     iic1_set_slave_addr(EEPROM_ADDR);
-    delayms(2);
-    do {
-        EEPROM_SendPacket(sub, ptr, len);
-        while (gEeprom.busy);
-    } while (!gEeprom.ack);
-}
-
-void EEPROM_Read(unsigned char sub, unsigned char *ptr, unsigned short len) {
-    iic1_set_slave_addr(EEPROM_ADDR);
-    delayms(2);
-    do {
-        EEPROM_ReadPacket(sub, ptr, len);
-        while (gEeprom.busy);
-    } while (!gEeprom.ack);
+    delayms(1);
+    EEPROM_SendPacket(0x00, send_buf, 16);
+    delayms(1);
+    EEPROM_ReadPacket(0x00, read_buf, 16);
+    delayms(1);
+    for (unsigned char counter = 0; counter < 128; ++counter)
+        if (read_buf[counter] != counter)
+            return 1;
+    return 0;
 }

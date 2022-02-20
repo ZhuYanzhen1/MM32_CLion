@@ -6,6 +6,7 @@
 #include "hal_device.h"
 #include "hal_conf.h"
 #include "pin.h"
+#include "config.h"
 
 void iic1_writebyte(unsigned char dat) {
     I2C_SendData(I2C1, dat);
@@ -23,7 +24,7 @@ void iic1_set_slave_addr(unsigned char deviceaddr) {
     I2C_Cmd(I2C1, ENABLE);
 }
 
-void iic1_config(unsigned int iic_speed) {
+void iic1_config(void) {
     I2C_InitTypeDef I2C_InitStruct;
     GPIO_InitTypeDef GPIO_InitStruct;
 
@@ -44,7 +45,7 @@ void iic1_config(unsigned int iic_speed) {
     I2C_InitStruct.Mode = I2C_CR_MASTER;
     I2C_InitStruct.OwnAddress = 0;
     I2C_InitStruct.Speed = I2C_CR_FAST;
-    I2C_InitStruct.ClockSpeed = iic_speed;
+    I2C_InitStruct.ClockSpeed = IIC1_SPEED;
     I2C_Init(I2C1, &I2C_InitStruct);
     I2C_Cmd(I2C1, ENABLE);
 }

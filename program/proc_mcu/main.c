@@ -12,11 +12,11 @@ int main(void) {
     delay_config();
     led_config();
     delayms(2000);
-    iic1_config(400000);
+    iic1_config();
+    at24c02_test_memory();
     xpt2046_gpio_config();
     spi1_config();
     spi2_config();
-//    spi3_config();
     software_spi3_init();
     gui_config();
     uart1_config();
