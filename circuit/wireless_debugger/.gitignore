@@ -30,4 +30,4 @@ project-rescue.lib
 *.xml
 *.csv
 
-project-backups
+*-backups
