@@ -24,12 +24,6 @@ void lcd_gpio_config(void) {
     GPIO_Init(LCD_A0_PORT, &GPIO_InitStruct);
 
     GPIO_StructInit(&GPIO_InitStruct);
-    GPIO_InitStruct.GPIO_Pin = LCD_CSB_PIN;
-    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
-    GPIO_Init(LCD_CSB_PORT, &GPIO_InitStruct);
-
-    GPIO_StructInit(&GPIO_InitStruct);
     GPIO_InitStruct.GPIO_Pin = LCD_RES_PIN;
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;

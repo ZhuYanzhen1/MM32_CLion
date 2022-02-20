@@ -91,3 +91,44 @@ void uart1_dma_nvic_config() {
     NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
     exNVIC_Init(&NVIC_InitStruct);
 }
+
+void spi2_dma_set_transmit_buffer(const unsigned int *data_address, unsigned short data_length) {
+    DMA1_Channel5->CNDTR = (volatile unsigned int) data_length;
+    DMA1_Channel5->CMAR = (volatile unsigned int) data_address;
+    MODIFY_REG(DMA1_Channel5->CCR, DMA_CCR_EN, 1 << DMA_CCR_EN_Pos);
+}
+
+void spi2_dma_sent_config(const unsigned int *data_address, unsigned short data_length) {
+    DMA_InitTypeDef DMA_InitStruct;
+
+    RCC_AHBPeriphClockCmd(RCC_AHBENR_DMA1, ENABLE);
+
+    DMA_DeInit(DMA1_Channel5);
+    DMA_StructInit(&DMA_InitStruct);
+    DMA_InitStruct.DMA_PeripheralBaseAddr = (unsigned int) &(SPI2->TDR);
+    DMA_InitStruct.DMA_MemoryBaseAddr = (unsigned int) data_address;
+    DMA_InitStruct.DMA_DIR = DMA_DIR_PeripheralDST;
+    DMA_InitStruct.DMA_BufferSize = data_length;
+    DMA_InitStruct.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+    DMA_InitStruct.DMA_MemoryInc = DMA_MemoryInc_Enable;
+    DMA_InitStruct.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+    DMA_InitStruct.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
+    DMA_InitStruct.DMA_Mode = DMA_Mode_Normal;
+    DMA_InitStruct.DMA_Priority = DMA_Priority_Low;
+    DMA_InitStruct.DMA_M2M = DMA_M2M_Disable;
+    DMA_InitStruct.DMA_Auto_reload = DMA_Auto_Reload_Disable;
+    DMA_Init(DMA1_Channel5, &DMA_InitStruct);
+
+    DMA_ITConfig(DMA1_Channel5, DMA_IT_TC, ENABLE);
+    SPI_DMACmd(SPI2, ENABLE);
+    DMA_Cmd(DMA1_Channel5, DISABLE);
+}
+
+void spi2_dma_nvic_config() {
+    exNVIC_Init_TypeDef NVIC_InitStruct;
+    NVIC_InitStruct.NVIC_IRQChannel = DMA1_Channel5_IRQn;
+    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = SPI2_DMA_PRIORITY;
+    NVIC_InitStruct.NVIC_IRQChannelSubPriority = 0;
+    NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
+    exNVIC_Init(&NVIC_InitStruct);
+}

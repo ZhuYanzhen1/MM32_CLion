@@ -95,3 +95,12 @@ void DMA1_Channel4_IRQHandler(void) {
         }
     }
 }
+
+extern volatile unsigned char lcd_buffer[128 * 160 * 2];
+void DMA1_Channel5_IRQHandler(void) {
+    if (DMA_GetITStatus(DMA1_IT_TC5)) {
+        DMA_ClearITPendingBit(DMA1_IT_TC5);
+        lcd_set_address(0, 0, 127, 159);
+        spi2_dma_set_transmit_buffer((unsigned int *) lcd_buffer, 128 * 160 * 2);
+    }
+}

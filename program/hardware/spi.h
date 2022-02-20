@@ -16,7 +16,8 @@
 #define SPI_CS_Pin GPIO_Pin_0
 
 void spi2_config(void);
-unsigned int spi2_readwrite_byte(unsigned int tx_data);
+void spi2_write_byte(unsigned int tx_data);
+void spi2_dma_sendbuffer(void);
 void spi1_config(void);
 unsigned int spi1_readwrite_byte(unsigned int tx_data);
 void spi3_config(void);

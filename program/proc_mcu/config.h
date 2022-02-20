@@ -37,6 +37,7 @@
 #define UART1_DMA_PRIORITY      3
 #define EXTI0_PRIORITY          14
 #define IIC1_DMA_PRIORITY       4
+#define SPI2_DMA_PRIORITY       13
 
 //////////////////////////////////////// Peripherals Speed ////////////////////////////////////////
 #define UART1_BAUDRATE          115200
