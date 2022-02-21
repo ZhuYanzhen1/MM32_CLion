@@ -14,7 +14,7 @@
 
 #define SPI3_NSS_SET()      GPIO_SetBits(GPIOD, GPIO_Pin_7);
 #define SPI3_NSS_RESET()    GPIO_ResetBits(GPIOD, GPIO_Pin_7);
-#define BURST_READ(x)       (x) = (short) software_spi3_mode3(0x0000);\
+#define BURST_READ(x)       (x) = (short) spi3_software_mode3(0x0000);\
 //                            checksum += (x);
 
 adis16470_t imu;
@@ -67,13 +67,13 @@ unsigned int adis_read_register(unsigned int register_address) {
     unsigned short register_num;
     SPI3_NSS_RESET();
     delayus(1);         // CS时序要求tcs>200ns
-    software_spi3_mode3(register_address);
+    spi3_software_mode3(register_address);
     SPI3_NSS_SET();
     delayus(25);
 
     SPI3_NSS_RESET();
     delayus(1);         // CS时序要求tcs>200ns
-    register_num = software_spi3_mode3(register_address);
+    register_num = spi3_software_mode3(register_address);
     SPI3_NSS_SET();
     return register_num;
 }
@@ -89,7 +89,7 @@ void adis_burst_read() {
 // 如图27所示，通过设置DIN=0x6800来启动这种模式，然后从DOUT中读出序列中的每个寄存器，同时在整个176位的序列中保持CS为低电平。
     unsigned int checksum = 0;
     SPI3_NSS_RESET()
-    software_spi3_mode3(0x6800);
+    spi3_software_mode3(0x6800);
 
     BURST_READ(imu.diag_star)
     BURST_READ(imu.x_gyro)
@@ -101,7 +101,7 @@ void adis_burst_read() {
     BURST_READ(imu.temp_out)
     BURST_READ(imu.data_cntr)
 //    BURST_READ(imu.checknum)
-    imu.checknum = (short) software_spi3_mode3(0x0000);
+    imu.checknum = (short) spi3_software_mode3(0x0000);
 
 //
 //TODO 计算checksum是否正确

@@ -27,4 +27,11 @@
 #define IIC_SCL_PORT    GPIOD
 #define IIC_SCL_PIN     GPIO_Pin_10
 
+#define SPI3_SCK_PIN    GPIO_Pin_4
+#define SPI3_SCK_PORT   GPIOD
+#define SPI3_MISO_PIN   GPIO_Pin_5
+#define SPI3_MISO_PORT  GPIOD
+#define SPI3_MOSI_PIN   GPIO_Pin_6
+#define SPI3_MOSI_PORT  GPIOD
+
 #endif // MM32F3277_USER_PIN_H_
