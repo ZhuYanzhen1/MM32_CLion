@@ -13,6 +13,7 @@ int main(void) {
     led_config();
     delayms(2000);
     iic1_software_config();
+    hmc5883l_config();
 //    iic1_config();
 //    at24c02_test_memory();
     xpt2046_gpio_config();
