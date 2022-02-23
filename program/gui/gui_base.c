@@ -72,21 +72,17 @@ void gui_clear_screan(unsigned short color) {
 //    lcd_set_address(x, y, x, y);
 //    lcd_write_data(color);
 //}
-//
-//void gui_draw_hline(unsigned char x1, unsigned char y1, unsigned char width, unsigned short color) {
-//    unsigned char temp;
-//    lcd_set_address(x1, y1, x1 + width - 1, y1);
-//    for (temp = 0; temp < width; temp++)
-//        lcd_write_data(color);
-//}
-//
-//void gui_draw_vline(unsigned char x1, unsigned char y1, unsigned char height, unsigned short color) {
-//    unsigned char temp;
-//    lcd_set_address(x1, y1, x1, y1 + height - 1);
-//    for (temp = 0; temp < height; temp++)
-//        lcd_write_data(color);
-//}
-//
+
+void gui_draw_hline(unsigned char x1, unsigned char y1, unsigned char width, unsigned short color) {
+    for (unsigned char temp = 0; temp < width; temp++)
+        ((unsigned short *) lcd_buffer)[y1 * 128 + x1 + temp] = color;
+}
+
+void gui_draw_vline(unsigned char x1, unsigned char y1, unsigned char height, unsigned short color) {
+    for (unsigned char temp = 0; temp < height; temp++)
+        ((unsigned short *) lcd_buffer)[(y1 + temp) * 128 + x1] = color;
+}
+
 //void gui_draw_rectangle(unsigned short sx,
 //                        unsigned short sy,
 //                        unsigned short width,

@@ -49,15 +49,15 @@ void xpt2046_gpio_config(void) {
     GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IPU;
     GPIO_Init(TOUCH_PEN_PORT, &GPIO_InitStruct);
 
-    SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOE, EXTI_PinSource0);
-    EXTI_InitStruct.EXTI_Line = EXTI_Line0;
+    SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOE, EXTI_PinSource1);
+    EXTI_InitStruct.EXTI_Line = EXTI_Line1;
     EXTI_InitStruct.EXTI_Mode = EXTI_Mode_Interrupt;
     EXTI_InitStruct.EXTI_Trigger = EXTI_Trigger_Falling;
     EXTI_InitStruct.EXTI_LineCmd = ENABLE;
     EXTI_Init(&EXTI_InitStruct);
 
-    NVIC_InitStruct.NVIC_IRQChannel = EXTI0_IRQn;
-    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = EXTI0_PRIORITY;
+    NVIC_InitStruct.NVIC_IRQChannel = EXTI1_IRQn;
+    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = EXTI1_PRIORITY;
     NVIC_InitStruct.NVIC_IRQChannelSubPriority = 0;
     NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStruct);

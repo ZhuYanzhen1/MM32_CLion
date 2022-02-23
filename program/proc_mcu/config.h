@@ -35,7 +35,7 @@
 #define UART3_PRIORITY          3
 #define UART6_DMA_PRIORITY      2
 #define UART1_DMA_PRIORITY      3
-#define EXTI0_PRIORITY          14
+#define EXTI1_PRIORITY          14
 #define IIC1_DMA_PRIORITY       4
 #define SPI2_DMA_PRIORITY       13
 
