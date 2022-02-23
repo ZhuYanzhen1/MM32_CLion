@@ -18,7 +18,7 @@ void timer2_config() {
     TIM_TimeBaseStructInit(&TIM_TimeBaseStruct);
 
     /* 50Hz */
-    TIM_TimeBaseStruct.TIM_Period = 199;
+    TIM_TimeBaseStruct.TIM_Period = 1999;
     TIM_TimeBaseStruct.TIM_Prescaler = 11999;
     TIM_TimeBaseStruct.TIM_ClockDivision = TIM_CKD_DIV1;
     TIM_TimeBaseStruct.TIM_CounterMode = TIM_CounterMode_Up;

@@ -8,6 +8,9 @@
 
 #include "main.h"
 
+extern hmc5883l magnetometer;
+#define MAG_COEFFICIENT     0.00073f
+
 int main(void) {
     delay_config();
     led_config();
@@ -41,6 +44,13 @@ int main(void) {
 
 //        adis_burst_read();
         iic_read_hmc5883l();
+//        printf("%f %f %f\r\n", (float) magnetometer.x * MAG_COEFFICIENT,
+//               (float) magnetometer.y * MAG_COEFFICIENT, (float) magnetometer.z * MAG_COEFFICIENT);
+//        __set_BASEPRI(4 << 4);
+//        printf("%d %d %d\r\n", magnetometer.x, magnetometer.y, magnetometer.z);
+//        fflush(stdout);
+//        __set_BASEPRI(0);
+        delayms(200);
 
 //        LED1_TOGGLE();
 //        gui_clear_screan(C_BLACK);

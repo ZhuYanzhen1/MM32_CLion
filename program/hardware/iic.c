@@ -155,7 +155,7 @@ char iic_read_byte() {
         IIC_SCL_LOW()                //钳住总线，准备下一此读取
         delayus(2);
     }
-    iic_ack();
+//    iic_ack();
     return value;               //返回读取到的值
 }
 

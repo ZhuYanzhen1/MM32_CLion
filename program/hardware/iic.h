@@ -19,6 +19,8 @@ void iic1_config(void);
 void iic1_software_config(void);
 void iic_start(void);
 void iic_stop(void);
+void iic_not_ack(void);
+void iic_ack(void);
 void iic_send_byte(unsigned char byte);
 char iic_wait_ack(void);
 char iic_read_byte();
