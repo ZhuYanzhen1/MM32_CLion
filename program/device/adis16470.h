@@ -24,9 +24,7 @@ typedef volatile struct {
 
 //extern adis16470_t imu;
 
-unsigned int adis_read_register(unsigned int register_address);
-void adis16470_read_register(const unsigned char *addr_register, unsigned int *rx_point, unsigned char register_num);
-void adis16470_write_register(unsigned char addr, unsigned char value);
+unsigned int adis_read_uid(unsigned int register_address);
 void adis_burst_read();
 
 #endif  // MM32F3277_DEVICE_ADIS16470_H_

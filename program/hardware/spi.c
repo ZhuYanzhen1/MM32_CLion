@@ -53,7 +53,7 @@ void spi1_config(void) {
     SPI_InitStruct.SPI_NSS = SPI_NSS_Soft;
 
     // 120MHz / 64 = 1.875MHz
-    SPI_InitStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_16;
+    SPI_InitStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_256;
     SPI_InitStruct.SPI_FirstBit = SPI_FirstBit_MSB;
     SPI_Init(SPI1, &SPI_InitStruct);
     if (SPI_InitStruct.SPI_BaudRatePrescaler <= 8)
