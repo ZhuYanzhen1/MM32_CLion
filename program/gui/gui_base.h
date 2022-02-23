@@ -17,8 +17,8 @@ typedef enum {
 } Filled_Status_e;
 
 void gui_config(void);
+void gui_flush(void);
 void gui_clear_screan(unsigned short color);
-void gui_draw_point(unsigned short x, unsigned short y, unsigned short color);
 void gui_draw_rectangle(unsigned short sx,
                         unsigned short sy,
                         unsigned short width,

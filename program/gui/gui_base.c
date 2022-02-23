@@ -18,10 +18,15 @@ volatile unsigned char lcd_buffer[128 * 160 * 2] = {0};
 void gui_config(void) {
     lcd_config();
     lcd_set_direction(4);
-    gui_clear_screan(C_WHITE);
+    for (unsigned short i = 0; i < 128 * 160; i++)
+        ((unsigned short *) lcd_buffer)[i] = C_WHITE;
     lcd_set_address(0, 0, 127, 159);
-    spi2_dma_nvic_config();
     spi2_dma_sent_config((unsigned int *) lcd_buffer, 128 * 160 * 2);
+    spi2_dma_set_transmit_buffer((unsigned int *) lcd_buffer, 128 * 160 * 2);
+}
+
+void gui_flush(void) {
+    lcd_set_address(0, 0, 127, 159);
     spi2_dma_set_transmit_buffer((unsigned int *) lcd_buffer, 128 * 160 * 2);
 }
 
@@ -66,12 +71,9 @@ void gui_printf(unsigned char row,
 void gui_clear_screan(unsigned short color) {
     for (unsigned short i = 0; i < 128 * 160; i++)
         ((unsigned short *) lcd_buffer)[i] = color;
+    lcd_set_address(0, 0, 127, 159);
+    spi2_dma_set_transmit_buffer((unsigned int *) lcd_buffer, 128 * 160 * 2);
 }
-
-//void gui_draw_point(unsigned short x, unsigned short y, unsigned short color) {
-//    lcd_set_address(x, y, x, y);
-//    lcd_write_data(color);
-//}
 
 void gui_draw_hline(unsigned char x1, unsigned char y1, unsigned char width, unsigned short color) {
     for (unsigned char temp = 0; temp < width; temp++)
@@ -83,22 +85,22 @@ void gui_draw_vline(unsigned char x1, unsigned char y1, unsigned char height, un
         ((unsigned short *) lcd_buffer)[(y1 + temp) * 128 + x1] = color;
 }
 
-//void gui_draw_rectangle(unsigned short sx,
-//                        unsigned short sy,
-//                        unsigned short width,
-//                        unsigned short height,
-//                        unsigned short color,
-//                        Filled_Status_e filled) {
-//    if (filled == Filled) {
+void gui_draw_rectangle(unsigned short sx,
+                        unsigned short sy,
+                        unsigned short width,
+                        unsigned short height,
+                        unsigned short color,
+                        Filled_Status_e filled) {
+    if (filled == Filled) {
 //        unsigned short temp, temp1;
 //        lcd_set_address(sx, sy, sx + width - 1, sy + height - 1);
 //        for (temp = 0; temp < width; temp++)
 //            for (temp1 = 0; temp1 < height; temp1++)
 //                lcd_write_data(color);
-//    } else {
-//        gui_draw_hline(sx, sy, width, color);
-//        gui_draw_vline(sx, sy, height, color);
-//        gui_draw_hline(sx, sy + height - 1, width, color);
-//        gui_draw_vline(sx + width - 1, sy, height, color);
-//    }
-//}
+    } else {
+        gui_draw_hline(sx, sy, width, color);
+        gui_draw_vline(sx, sy, height, color);
+        gui_draw_hline(sx, sy + height - 1, width, color);
+        gui_draw_vline(sx + width - 1, sy, height, color);
+    }
+}
