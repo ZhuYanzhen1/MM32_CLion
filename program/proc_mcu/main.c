@@ -30,7 +30,10 @@ int main(void) {
 
     gps_config();
     cm_backtrace_config("mm32f3277", "1.0.1", "1.0.1");
-    debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
+//    debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
+    debugger_register_variable(dbg_int16, (void *) &magnetometer.x, "mag_x");
+    debugger_register_variable(dbg_int16, (void *) &magnetometer.y, "mag_y");
+    debugger_register_variable(dbg_int16, (void *) &magnetometer.z, "mag_z");
     timer2_config();
 
     while (1) {
@@ -44,6 +47,12 @@ int main(void) {
 
 //        adis_burst_read();
         iic_read_hmc5883l();
+//        iic_read_hmc5883l_verification();
+
+        gui_printf(0, 0, C_BLACK, C_WHITE, "%d   ", magnetometer.x);
+        gui_printf(0, 12, C_BLACK, C_WHITE, "%d   ", magnetometer.y);
+        gui_printf(0, 24, C_BLACK, C_WHITE, "%d   ", magnetometer.z);
+
 //        printf("%f %f %f\r\n", (float) magnetometer.x * MAG_COEFFICIENT,
 //               (float) magnetometer.y * MAG_COEFFICIENT, (float) magnetometer.z * MAG_COEFFICIENT);
 //        __set_BASEPRI(4 << 4);

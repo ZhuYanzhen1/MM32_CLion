@@ -100,13 +100,14 @@ void iic_not_ack(void) {
     IIC_SCL_HIGH()            //拉高SCL
     delayus(2);
     IIC_SCL_LOW()            //钳住总线
+    IIC_SDA_HIGH();//CPU释放数据总线
 }
 
 char iic_wait_ack(void) {
-    unsigned char temp = 0;                    //定义临时计数变量
-    IIC_SDA_HIGH()                  //先拉高SDA
-    delayus(2);              //延时稳定
-    IIC_SCL_HIGH()                   //拉高SCL准备读取SDA线，SDA和SCL同时为高，释放总线控制权
+    unsigned char temp = 0;
+    IIC_SDA_HIGH()
+    delayus(2);
+    IIC_SCL_HIGH()         //拉高SCL准备读取SDA线，SDA和SCL同时为高，释放总线控制权
     delayus(2);
     while (IIC_SDA)                //当SDA拉低变为低电平的时候表示有效答应，调出循环
     {
@@ -122,7 +123,6 @@ char iic_wait_ack(void) {
 }
 
 void iic_send_byte(unsigned char byte) {
-    unsigned char ack;
     for (unsigned char t = 0; t < 8; t++) {
         if (byte & 0x80) { // 判断字节的最高位，如果为1，输出高电平，如果为0，输出低电平
             IIC_SDA_HIGH();
@@ -139,11 +139,12 @@ void iic_send_byte(unsigned char byte) {
 }
 
 char iic_read_byte() {
-    unsigned char i, value, ack;
+    unsigned char i, value;
     IIC_SDA_HIGH()
-    /* 读到第1个bit为数据的bit7 ，先读高位后读低位*/
     value = 0;
     for (i = 0; i < 8; i++) {
+        IIC_SCL_LOW()                //钳住总线，准备下一此读取
+        delayus(2);
         value <<= 1;
         // 数据左移，为下一此读取腾出位置
         IIC_SCL_HIGH()
@@ -152,8 +153,8 @@ char iic_read_byte() {
         {
             value++;
         }
-        IIC_SCL_LOW()                //钳住总线，准备下一此读取
-        delayus(2);
+//        IIC_SCL_LOW()                //钳住总线，准备下一此读取
+//        delayus(2);
     }
 //    iic_ack();
     return value;               //返回读取到的值

@@ -59,7 +59,33 @@ void iic_read_hmc5883l() {
 
     /* The read order is xzy */
     magnetometer.x = (short) ((xyz_data[0] << 8) | xyz_data[1]);
-
     magnetometer.y = (short) ((xyz_data[4] << 8) | xyz_data[5]);
     magnetometer.z = (short) ((xyz_data[2] << 8) | xyz_data[3]);
 }
+
+void iic_read_hmc5883l_verification() {
+    unsigned char num_a, num_b, num_c;
+
+    iic_start();
+    iic_send_byte(0x3c);// 0x3c是写信号 ；ox3d是读信号
+    iic_send_byte(0x0a);// 地址位
+//    iic_stop();
+
+    delayms(1);
+
+    iic_start();
+    iic_send_byte(0x3d);
+    num_a = iic_read_byte();
+    iic_ack();
+    num_b = iic_read_byte();
+    iic_ack();
+    num_c = iic_read_byte();
+    iic_not_ack();
+    iic_stop();
+
+    (void) num_a;
+    (void) num_b;
+    (void) num_c;
+}
+
+
