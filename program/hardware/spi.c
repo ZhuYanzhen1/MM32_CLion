@@ -10,6 +10,7 @@
 #include "hal_conf.h"
 #include "hal_gpio.h"
 #include "delay.h"
+#include "pin.h"
 
 unsigned int spi1_readwrite_byte(unsigned int tx_data) {
     SPI_SendData(SPI1, tx_data);
@@ -173,22 +174,7 @@ void spi3_config(void) {
     SPI_Cmd(SPI3, ENABLE);
 }
 
-#define SPI3_SCK_PIN        GPIO_Pin_4
-#define SPI3_SCK_GPIO_PORT  GPIOD
-#define SPI3_MISO_PIN       GPIO_Pin_5
-#define SPI3_MISO_GPIO_PORT GPIOD
-#define SPI3_MOSI_PIN       GPIO_Pin_6
-#define SPI3_MOSI_GPIO_PORT GPIOD
-#define SPI3_NSS_PIN        GPIO_Pin_7
-#define SPI3_NSS_GPIO_PORT  GPIOD
-
-#define SPI3_MOSI_HIGH      GPIO_SetBits(SPI3_MOSI_GPIO_PORT, SPI3_MOSI_PIN)
-#define SPI3_MOSI_LOW       GPIO_ResetBits(SPI3_MOSI_GPIO_PORT, SPI3_MOSI_PIN)
-#define SPI3_SCK_HIGH       GPIO_SetBits(SPI3_SCK_GPIO_PORT, SPI3_SCK_PIN)
-#define SPI3_SCK_LOW        GPIO_ResetBits(SPI3_SCK_GPIO_PORT, SPI3_SCK_PIN)
-#define SPI3_MISO           GPIO_ReadInputDataBit(SPI3_MISO_GPIO_PORT, SPI3_MISO_PIN)
-
-void software_spi3_init(void) {
+void spi3_software_init(void) {
     GPIO_InitTypeDef GPIO_InitStruct;
     GPIO_StructInit(&GPIO_InitStruct);
 
@@ -229,7 +215,7 @@ void software_spi3_init(void) {
 }
 
 /* CPOL = 1, CPHA = 1, MSB first */
-unsigned int software_spi3_mode3(unsigned int write_data) {
+unsigned int spi3_software_mode3(unsigned int write_data) {
     unsigned int read_data = 0;
     for (unsigned char i = 0; i < 16; i++) {
         SPI3_SCK_LOW;
@@ -241,7 +227,7 @@ unsigned int software_spi3_mode3(unsigned int write_data) {
         delayus(1);     // min：25ns
         SPI3_SCK_HIGH;
         read_data <<= 1;
-        if (SPI3_MISO)      // GPIO_ReadOutputDataBit(SPI3_MISO_GPIO_PORT, SPI3_MISO_PIN)
+        if (SPI3_MISO)      // GPIO_ReadOutputDataBit(SPI3_MISO_PORT, SPI3_MISO_PIN)
             read_data++;    //若从从机接收到高电平，数据自加一
         delayus(1);     // max：12.5ns
     }

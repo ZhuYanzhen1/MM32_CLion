@@ -36,6 +36,7 @@
 #include "xpt2046.h"
 #include "gps.h"
 #include "at24c02.h"
+#include "hmc5883l.h"
 
 ///////////// Debug /////////////
 #include "debugger.h"
