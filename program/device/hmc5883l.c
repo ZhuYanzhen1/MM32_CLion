@@ -17,19 +17,21 @@ void hmc5883l_config() {
     iic_send_byte(0x3c);
     iic_send_byte(0x00);
     iic_send_byte(0x14);  //输出速率75hz,MAX 0x78
-//    iic_stop();
+
     delayms(2);
     iic_start();
     iic_send_byte(0x3c); //写指令
     iic_send_byte(0x01);
     iic_send_byte(0x00); //测量范围
-//    iic_stop();
+
     delayms(2);
     iic_start();
     iic_send_byte(0x3c); //写指令
     iic_send_byte(0x02);
     iic_send_byte(0x00); //连续测量模式
     iic_stop();
+
+    iic_read_hmc5883l_verification();
 }
 
 hmc5883l magnetometer = {0};
@@ -63,13 +65,12 @@ void iic_read_hmc5883l() {
     magnetometer.z = (short) ((xyz_data[2] << 8) | xyz_data[3]);
 }
 
-void iic_read_hmc5883l_verification() {
+unsigned char iic_read_hmc5883l_verification() {
     unsigned char num_a, num_b, num_c;
 
     iic_start();
     iic_send_byte(0x3c);// 0x3c是写信号 ；ox3d是读信号
     iic_send_byte(0x0a);// 地址位
-//    iic_stop();
 
     delayms(1);
 
@@ -83,9 +84,10 @@ void iic_read_hmc5883l_verification() {
     iic_not_ack();
     iic_stop();
 
-    (void) num_a;
-    (void) num_b;
-    (void) num_c;
+    if (num_a == 'H' && num_b == '4' && num_c == '3')
+        return 0;
+    else
+        return 1;
 }
 
 
