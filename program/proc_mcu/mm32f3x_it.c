@@ -39,9 +39,9 @@ void UART1_IRQHandler(void) {
     }
 }
 
-void EXTI0_IRQHandler(void) {
-    if (EXTI_GetITStatus(EXTI_Line0)) {
-        EXTI_ClearFlag(EXTI_Line0);
+void EXTI1_IRQHandler(void) {
+    if (EXTI_GetITStatus(EXTI_Line1)) {
+        EXTI_ClearFlag(EXTI_Line1);
     }
 }
 

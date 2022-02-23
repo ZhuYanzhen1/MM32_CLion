@@ -14,7 +14,6 @@ int main(void) {
     delayms(2000);
 //    iic1_config();
 //    at24c02_test_memory();
-    xpt2046_gpio_config();
     spi1_config();
     spi2_config();
     software_spi3_init();
@@ -23,6 +22,8 @@ int main(void) {
     uart3_config();
     uart6_config();
     gps_config();
+    xpt2046_gpio_config();
+    xpt2046_calibrate();
     cm_backtrace_config("mm32f3277", "1.0.1", "1.0.1");
     debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
     timer2_config();
@@ -32,9 +33,9 @@ int main(void) {
 //        printf("printf test.\r\n");
 //        fflush(stdout);
 
-//        unsigned int X = adis_read_register(0x1200);
-//        unsigned int Y = adis_read_register(0x1600);
-//        unsigned int Z = adis_read_register(0x1A00);
+//        unsigned int X = adis_read_uid(0x1200);
+//        unsigned int Y = adis_read_uid(0x1600);
+//        unsigned int Z = adis_read_uid(0x1A00);
 
 //        adis_burst_read();
         LED1_TOGGLE();
