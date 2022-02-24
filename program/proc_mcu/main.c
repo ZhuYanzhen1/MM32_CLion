@@ -59,6 +59,7 @@ int main(void) {
 //        printf("%d %d %d\r\n", magnetometer.x, magnetometer.y, magnetometer.z);
 //        fflush(stdout);
 //        __set_BASEPRI(0);
+
         delayms(200);
 
 //        LED1_TOGGLE();
