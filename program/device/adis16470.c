@@ -19,52 +19,8 @@
 
 adis16470_t imu;
 
-/*!
-    \brief                          The function to read the registers,
-                                    because the SPI method is efficient in continuous reading,
-                                    so it is recommended to read continuously
-    \param[in]  address_register:   Array of registers to be read
-    \param[in]  rx_point:           Location of the read data
-    \param[in]  register_num:       Number of registers to be read
-    \retval     none
-*/
-void adis16470_read_register(const unsigned char *address_register,
-                             unsigned int *rx_point,
-                             unsigned char register_num) {
-    unsigned short tx_tmp, rx_tmp;
-
-    /* The first frame of data is sent, not received. */
-    tx_tmp = address_register[0] << 8;
-    spi3_readwrite_byte(tx_tmp);
-
-    /* +1 because spi has a frame delay */
-    for (unsigned char i = 1; i < register_num; i++) {
-        /* Ready to send frame format */
-        tx_tmp = address_register[i] << 8;
-        rx_tmp = spi3_readwrite_byte(tx_tmp);
-        rx_point[i - 1] = rx_tmp;
-    }
-
-    /* The last frame of data, only receive and not send */
-    tx_tmp = 0;
-    rx_point[register_num - 1] = spi3_readwrite_byte(tx_tmp);
-}
-
-/*!
-    \brief                  Internal write operation function for ADIS16470 register
-    \param[in]  address:    Address of the register to be written
-    \param[in]  value:      The value written to the register
-    \retval     none
-*/
-void adis16470_write_register(unsigned char address_, unsigned char value) {
-    /* Add the "write" flag */
-    address_ |= 0x80;
-    unsigned short tx_tmp = (address_ << 8) | value;
-    spi3_readwrite_byte(tx_tmp);
-}
-
-unsigned int adis_read_register(unsigned int register_address) {
-    unsigned short register_num;
+unsigned int adis_read_uid(unsigned int register_address) {
+    unsigned short uid;
     SPI3_NSS_RESET();
     delayus(1);         // CS时序要求tcs>200ns
     spi3_software_mode3(register_address);
@@ -73,9 +29,9 @@ unsigned int adis_read_register(unsigned int register_address) {
 
     SPI3_NSS_RESET();
     delayus(1);         // CS时序要求tcs>200ns
-    register_num = spi3_software_mode3(register_address);
+    uid = spi3_software_mode3(register_address);
     SPI3_NSS_SET();
-    return register_num;
+    return uid;
 }
 
 // 突发传输模式不需要发寄存器的地址。只需要发0x6800启动突发传输，后续的176个位就是寄存器的值。仔细看手册

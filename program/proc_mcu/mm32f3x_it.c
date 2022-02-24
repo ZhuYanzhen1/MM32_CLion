@@ -24,10 +24,8 @@ void SysTick_Handler(void) {
 
 // 3us
 void TIM2_IRQHandler(void) {
-    LED1_ON();
     TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
     debugger_scan_variable(global_time_stamp);
-    LED1_OFF();
 }
 
 void UART1_IRQHandler(void) {
@@ -39,9 +37,9 @@ void UART1_IRQHandler(void) {
     }
 }
 
-void EXTI0_IRQHandler(void) {
-    if (EXTI_GetITStatus(EXTI_Line0)) {
-        EXTI_ClearFlag(EXTI_Line0);
+void EXTI1_IRQHandler(void) {
+    if (EXTI_GetITStatus(EXTI_Line1)) {
+        EXTI_ClearFlag(EXTI_Line1);
     }
 }
 
@@ -85,22 +83,14 @@ unsigned char printf_sending_flag = 0;
 void DMA1_Channel4_IRQHandler(void) {
     if (DMA_GetITStatus(DMA1_IT_TC4)) {
         DMA_ClearITPendingBit(DMA1_IT_TC4);
-        if (printf_sending_flag == 1) {
+        if (printf_sending_flag == 1 && printf_dma_counter == 0) {
             printf_sending_flag = 0;
             printf_dma_counter = 0;
         }
         if (printf_dma_counter != 0) {
             uart1_dma_set_transmit_buffer(printf_mdtp_dma_buffer[0], printf_dma_counter * 12);
+            printf_dma_counter = 0;
             printf_sending_flag = 1;
         }
-    }
-}
-
-extern volatile unsigned char lcd_buffer[128 * 160 * 2];
-void DMA1_Channel5_IRQHandler(void) {
-    if (DMA_GetITStatus(DMA1_IT_TC5)) {
-        DMA_ClearITPendingBit(DMA1_IT_TC5);
-        lcd_set_address(0, 0, 127, 159);
-        spi2_dma_set_transmit_buffer((unsigned int *) lcd_buffer, 128 * 160 * 2);
     }
 }

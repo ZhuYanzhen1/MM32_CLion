@@ -6,6 +6,6 @@ typedef struct{
 	double radius;     //sphere radius
 } calpara_t;
 
-#define COMPASS_CAL_NUM_SAMPLES 300   //总采样数
+#define COMPASS_CAL_NUM_SAMPLES 2048   //总采样数
 
 char CompassCal(double sample[3]);

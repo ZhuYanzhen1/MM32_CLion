@@ -17,6 +17,6 @@ typedef volatile struct {
 
 void hmc5883l_config();
 void iic_read_hmc5883l();
-void iic_read_hmc5883l_verification();
+unsigned char iic_read_hmc5883l_verification();
 
 #endif // MAIN_C_DEVICE_HMC5883L_H_

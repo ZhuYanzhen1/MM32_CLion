@@ -13,7 +13,7 @@
 calpara_t params;
 
 double sample_buffer[3][COMPASS_CAL_NUM_SAMPLES];
-unsigned int samples_collected;
+volatile unsigned int samples_collected;
 
 void Initial_CompassCal(calpara_t *calibrate_param) {
     for (int i = 0; i < 3; i++) {
@@ -25,6 +25,8 @@ void Initial_CompassCal(calpara_t *calibrate_param) {
     calibrate_param->radius = 200;
     samples_collected = 0;
 }
+
+//static volatile unava_data_counter = 0;
 
 char accept_sample(double sample[3], double mag_sphere_radius) {
     double min_sample_dist, dist;
@@ -45,6 +47,8 @@ char accept_sample(double sample[3], double mag_sphere_radius) {
         dist = sqrt(dx * dx + dy * dy + dz * dz);
 
         if (dist < min_sample_dist) {
+//            unava_data_counter++;
+//            printf("unava_data_counter:%d\r\n", unava_data_counter);
             return 0;
         }
     }
@@ -70,8 +74,8 @@ void calc_initial_para(calpara_t *calibrate_param) {
     avr_radius = 0;
     for (i = 0; i < samples_collected; i++) {
         avr_radius += sqrt(sample_buffer[0][i] * sample_buffer[0][i] +
-                           sample_buffer[1][i] * sample_buffer[1][i] +
-                           sample_buffer[2][i] * sample_buffer[2][i]);
+            sample_buffer[1][i] * sample_buffer[1][i] +
+            sample_buffer[2][i] * sample_buffer[2][i]);
     }
     avr_radius /= samples_collected;
     calibrate_param->radius = avr_radius;
@@ -237,7 +241,7 @@ char run_gn_sphere_fit(const double x[], const double y[], const double z[], uns
     double fit_params[4] = {*sphere_radius, *offset_x, *offset_y, *offset_z};
 
     if (!InverseMatrix(4, JTJ)) {
-        printf("Mat can not inverse!!");
+//        printf("Mat can not inverse!!");
         return 0;
     }
 
@@ -254,8 +258,8 @@ char run_gn_sphere_fit(const double x[], const double y[], const double z[], uns
 
     deltavalue = sqrt(deltavalue);
 
-    fitness = calc_mean_residual(x, y, z, size, *offset_x, *offset_y, *offset_z, *sphere_radius,
-                                 *diag_x, *diag_y, *diag_z, *offdiag_x, *offdiag_y, *offdiag_z);
+    calc_mean_residual(x, y, z, size, *offset_x, *offset_y, *offset_z, *sphere_radius,
+                       *diag_x, *diag_y, *diag_z, *offdiag_x, *offdiag_y, *offdiag_z);
 
 #if OUTPUT_DEBUG_INFO == 1
     printf("The objective value = %lf, increment = %lf\r\n", fitness, deltavalue);
@@ -338,8 +342,8 @@ char run_gn_ellipsoid_fit(const double x[], const double y[], const double z[], 
     }
     deltavalue = sqrt(deltavalue);
 
-    fitness = calc_mean_residual(x, y, z, size, *offset_x, *offset_y, *offset_z, *sphere_radius,
-                                 *diag_x, *diag_y, *diag_z, *offdiag_x, *offdiag_y, *offdiag_z);
+    calc_mean_residual(x, y, z, size, *offset_x, *offset_y, *offset_z, *sphere_radius,
+                       *diag_x, *diag_y, *diag_z, *offdiag_x, *offdiag_y, *offdiag_z);
 #if OUTPUT_DEBUG_INFO == 1
     printf("The objective value = %lf, increment = %lf\r\n", fitness, deltavalue);
 #endif
@@ -367,9 +371,11 @@ void ellipsoid_fit_least_squares(double x[],
                                  calpara_t *calibrate_param,
                                  double *finalfitness) {
     double max_iterations = 100;
-    double offset_x = calibrate_param->offset[0], offset_y = calibrate_param->offset[1], offset_z = calibrate_param->offset[2];
+    double offset_x = calibrate_param->offset[0], offset_y = calibrate_param->offset[1],
+        offset_z = calibrate_param->offset[2];
     double diag_x = calibrate_param->diag[0], diag_y = calibrate_param->diag[1], diag_z = calibrate_param->diag[2];
-    double offdiag_x = calibrate_param->offdiag[0], offdiag_y = calibrate_param->offdiag[1], offdiag_z = calibrate_param->offdiag[2];
+    double offdiag_x = calibrate_param->offdiag[0], offdiag_y = calibrate_param->offdiag[1],
+        offdiag_z = calibrate_param->offdiag[2];
     double sphere_radius = calibrate_param->radius;
     char stopflag;
 
