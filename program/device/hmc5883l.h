@@ -6,8 +6,10 @@
     \date     22. February 2022
 ******************************************************************************/
 
-#ifndef MAIN_C_DEVICE_HMC5883L_H_
-#define MAIN_C_DEVICE_HMC5883L_H_
+#ifndef MM32F3277_DEVICE_HMC5883L_H_
+#define MM32F3277_DEVICE_HMC5883L_H_
+
+#define FACTOR_MAGNETOMETER 0.0073f
 
 typedef volatile struct {
     short x;

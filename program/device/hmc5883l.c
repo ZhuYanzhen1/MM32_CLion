@@ -10,7 +10,7 @@
 #include "iic.h"
 #include "delay.h"
 
-hmc5883l Magnetometer = {0};
+hmc5883l magnetometer = {0};
 
 void hmc5883l_config() {
     iic_start();
@@ -33,8 +33,6 @@ void hmc5883l_config() {
 
     iic_read_hmc5883l_verification();
 }
-
-hmc5883l magnetometer = {0};
 
 void iic_read_hmc5883l() {
     short xyz_data[6] = {0};

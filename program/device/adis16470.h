@@ -9,6 +9,9 @@
 #ifndef MM32F3277_DEVICE_ADIS16470_H_
 #define MM32F3277_DEVICE_ADIS16470_H_
 
+#define FACTOR_ALLC 1.25f
+#define FACTOR_GYRO 0.1f
+
 typedef volatile struct {
     short diag_star;
     short x_gyro;
