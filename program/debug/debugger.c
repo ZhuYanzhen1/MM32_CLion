@@ -33,6 +33,7 @@ void mdtp_callback_handler(unsigned char pid, const unsigned char *data) {
     (void) data;
 }
 
+#if DEBUG_USE_PROTOCOL == 1
 void _fflush(void) {
     if (printf_byte_counter != 8) {
         for (unsigned char counter = printf_byte_counter; counter < 8; counter++)
@@ -55,6 +56,9 @@ void _putchar(char character) {
         printf_byte_counter++;
     }
 }
+#else
+void _fflush(void) { }
+#endif
 
 static void debugger_report_variable(unsigned char index) {
     unsigned char tmp_buffer[8] = {0};
@@ -89,11 +93,15 @@ void debugger_register_variable(variable_type var_type, void *variable, const ch
     for (unsigned char counter = 0; counter < name_length; counter++)
         variable_buffer[variable_index].var_name[counter] = name[counter];
     variable_index = variable_index + 1;
+#if DEBUG_USE_PROTOCOL == 1
     debugger_report_variable(variable_index - 1);
     uart1_dma_sent_config(variable_mdtp_dma_buffer[0], variable_dma_counter * 12);
+#endif
 }
 
 void debugger_scan_variable(unsigned long time_stamp) {
+    (void) time_stamp;
+#if DEBUG_USE_PROTOCOL == 1
     unsigned char tmp_buffer[8] = {0};
     tmp_buffer[1] = (time_stamp >> 16) & 0x000000ffUL;
     tmp_buffer[2] = (time_stamp >> 8) & 0x000000ffUL;
@@ -128,4 +136,5 @@ void debugger_scan_variable(unsigned long time_stamp) {
     }
     uart1_dma_set_transmit_buffer(variable_mdtp_dma_buffer[0], variable_dma_counter * 12);
     variable_dma_counter = 0;
+#endif
 }

@@ -16,7 +16,7 @@
 #define configTICK_RATE_HZ      1000
 /* debugger variable maximum size set to 12 */
 #define VARIABLE_BUFFER_SIZE    12
-
+#define DEBUG_USE_PROTOCOL      0
 
 //////////////////////////////////////// CMBackTrace Macro ////////////////////////////////////////
 /* enable bare metal(no OS) platform */

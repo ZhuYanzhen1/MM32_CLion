@@ -134,6 +134,13 @@ void uart3_sendbyte(unsigned char data) {
     while (!UART_GetFlagStatus(UART3, UART_FLAG_TXEPT));
 }
 
+#if DEBUG_USE_PROTOCOL == 0
+void _putchar(char character) {
+    UART_SendData(UART1, character);
+    while (!UART_GetFlagStatus(UART1, UART_FLAG_TXEPT));
+}
+#endif
+
 void uart1_sendbyte(unsigned char data) {
     UART_SendData(UART1, data);
     while (!UART_GetFlagStatus(UART1, UART_FLAG_TXEPT));
