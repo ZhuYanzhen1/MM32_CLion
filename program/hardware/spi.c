@@ -215,8 +215,9 @@ void spi3_software_init(void) {
 }
 
 /* CPOL = 1, CPHA = 1, MSB first */
-unsigned int spi3_software_mode3(unsigned int write_data) {
-    unsigned int read_data = 0;
+/* Stores 16 bits of data in one register */
+short spi3_software_mode3(unsigned int write_data) {
+    short read_data = 0;
     for (unsigned char i = 0; i < 16; i++) {
         SPI3_SCK_LOW;
         if (write_data & 0x8000)

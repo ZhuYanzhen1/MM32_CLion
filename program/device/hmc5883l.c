@@ -9,8 +9,10 @@
 #include "hmc5883l.h"
 #include "iic.h"
 #include "delay.h"
+#include "qfplib.h"
 
-hmc5883l Magnetometer = {0};
+hmc5883l magnetometer = {0};
+hmc_correction magnetometer_correction = {0};
 
 void hmc5883l_config() {
     iic_start();
@@ -33,8 +35,6 @@ void hmc5883l_config() {
 
     iic_read_hmc5883l_verification();
 }
-
-hmc5883l magnetometer = {0};
 
 void iic_read_hmc5883l() {
     short xyz_data[6] = {0};
@@ -90,4 +90,39 @@ unsigned char iic_read_hmc5883l_verification() {
         return 1;
 }
 
+// 单位：毫高斯
+void hmc5883l_correction() {
+    /* Zero-Deflection Correction */
+    magnetometer_correction.x = qfp_fadd(qfp_fmul((float) magnetometer.x, FACTOR_MAGNETOMETER_MGS), -21.2995438f);
+    magnetometer_correction.y = qfp_fadd(qfp_fmul((float) magnetometer.y, FACTOR_MAGNETOMETER_MGS), -127.8024953f);
+    magnetometer_correction.z = qfp_fadd(qfp_fmul((float) magnetometer.z, FACTOR_MAGNETOMETER_MGS), 64.934083f);
 
+    /* Ellipsoid correction */ // 右乘
+    float stretch_matrix[3][3] = {0.9990217f, 0.0157003f, 0.0176384f,
+                                  0.0157003f, 0.9833404f, 0.0071299f,
+                                  0.0176384f, 0.0071299f, 1.0185523f};
+    magnetometer_correction.x = qfp_fadd(qfp_fadd(
+                                             qfp_fmul(magnetometer_correction.x, stretch_matrix[0][0]),
+                                             qfp_fmul(magnetometer_correction.y, stretch_matrix[1][0])),
+                                         qfp_fmul(magnetometer_correction.z, stretch_matrix[2][0]));
+    magnetometer_correction.y = qfp_fadd(qfp_fadd(
+                                             qfp_fmul(magnetometer_correction.x, stretch_matrix[0][1]),
+                                             qfp_fmul(magnetometer_correction.y, stretch_matrix[1][1])),
+                                         qfp_fmul(magnetometer_correction.z, stretch_matrix[2][1]));
+    magnetometer_correction.z = qfp_fadd(qfp_fadd(
+                                             qfp_fmul(magnetometer_correction.x, stretch_matrix[0][2]),
+                                             qfp_fmul(magnetometer_correction.y, stretch_matrix[1][2])),
+                                         qfp_fmul(magnetometer_correction.z, stretch_matrix[2][2]));
+//    magnetometer_correction.x = magnetometer_correction.x * stretch_matrix[0][0]
+//        + magnetometer_correction.y * stretch_matrix[1][0] + magnetometer_correction.z * stretch_matrix[2][0];
+//    magnetometer_correction.y = magnetometer_correction.x * stretch_matrix[0][1]
+//        + magnetometer_correction.y * stretch_matrix[1][1] + magnetometer_correction.z * stretch_matrix[2][1];
+//    magnetometer_correction.z = magnetometer_correction.x * stretch_matrix[0][2]
+//        + magnetometer_correction.y * stretch_matrix[1][2] + magnetometer_correction.z * stretch_matrix[2][2];
+}
+
+//0.999021682066348	0.0157002752659036	0.0176383824129075
+//0.0157002752659036	0.983340438649245	0.00712986540998682
+//0.0176383824129075	0.00712986540998682	1.01855234014303
+
+// -21.2995438741399	-127.802495363660	64.9340830051145
