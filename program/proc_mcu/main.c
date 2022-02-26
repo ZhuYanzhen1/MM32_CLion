@@ -44,9 +44,10 @@ int main(void) {
 //        gui_show_gnrmc_information();       // 46.8ms
 
         iic_read_hmc5883l();
-        hmc5883l_correction();
+//        hmc5883l_correction();
 
-        printf("%f,%f,%f\r\n", magnetometer_correction.x, magnetometer_correction.y, magnetometer_correction.z);
+//        printf("%f %f %f\r\n", magnetometer_correction.x, magnetometer_correction.y, magnetometer_correction.z);
+        printf("%d %d %d\r\n", magnetometer.x, magnetometer.y, magnetometer.z);
         delayms(50);
 
 //        if (!DR_HIGH) {
@@ -62,8 +63,6 @@ int main(void) {
 //            text_wz = 0;
 //        }
 
-
-//            printf("%d %d %d\r\n", imu.x_acll, imu.y_acll, imu.z_acll);
 //        delayms(50);
 //        adis_burst_read();
 //        gui_printf(5, 0, C_BLACK, C_WHITE, "roll: %f  ", roll);

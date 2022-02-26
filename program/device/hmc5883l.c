@@ -93,14 +93,14 @@ unsigned char iic_read_hmc5883l_verification() {
 // 单位：毫高斯
 void hmc5883l_correction() {
     /* Zero-Deflection Correction */
-    magnetometer_correction.x = qfp_fadd(qfp_fmul((float) magnetometer.x, FACTOR_MAGNETOMETER_MGS), -21.2995438f);
-    magnetometer_correction.y = qfp_fadd(qfp_fmul((float) magnetometer.y, FACTOR_MAGNETOMETER_MGS), -127.8024953f);
-    magnetometer_correction.z = qfp_fadd(qfp_fmul((float) magnetometer.z, FACTOR_MAGNETOMETER_MGS), 64.934083f);
+    magnetometer_correction.x = qfp_fadd(qfp_fmul((float) magnetometer.x, FACTOR_MAGNETOMETER_MGS), 29.5794438f);
+    magnetometer_correction.y = qfp_fadd(qfp_fmul((float) magnetometer.y, FACTOR_MAGNETOMETER_MGS), 116.3653953f);
+    magnetometer_correction.z = qfp_fadd(qfp_fmul((float) magnetometer.z, FACTOR_MAGNETOMETER_MGS), -12.0118083f);
 
     /* Ellipsoid correction */ // 右乘
-    float stretch_matrix[3][3] = {0.9990217f, 0.0157003f, 0.0176384f,
-                                  0.0157003f, 0.9833404f, 0.0071299f,
-                                  0.0176384f, 0.0071299f, 1.0185523f};
+    float stretch_matrix[3][3] = {1.0218902f, 0.0229290f, 0.0071673f,
+                                  0.0229290f, 0.9457933f, 0.0011582f,
+                                  0.0071674f, 0.0011582f, 1.0352788f};
     magnetometer_correction.x = qfp_fadd(qfp_fadd(
                                              qfp_fmul(magnetometer_correction.x, stretch_matrix[0][0]),
                                              qfp_fmul(magnetometer_correction.y, stretch_matrix[1][0])),
@@ -121,8 +121,7 @@ void hmc5883l_correction() {
 //        + magnetometer_correction.y * stretch_matrix[1][2] + magnetometer_correction.z * stretch_matrix[2][2];
 }
 
-//0.999021682066348	0.0157002752659036	0.0176383824129075
-//0.0157002752659036	0.983340438649245	0.00712986540998682
-//0.0176383824129075	0.00712986540998682	1.01855234014303
+//1.02189024751036	0.0229290463970983	0.00716736222389364
+//0.0229290463970983	0.945793309848168	0.00115824318613781
+//0.00716736222389364	0.00115824318613781	1.03527885474558
 
-// -21.2995438741399	-127.802495363660	64.9340830051145
