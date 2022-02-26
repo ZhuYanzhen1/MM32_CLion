@@ -10,7 +10,11 @@
 
 extern hmc5883l magnetometer;
 extern adis16470_t imu;
-extern float roll, yaw, pitch;
+
+fix16_t roll, pitch, yaw;
+qf16 orientation;
+fix16_t last_fusion_time;
+fix16_t current_time;
 
 int main(void) {
     delay_config();
@@ -35,14 +39,26 @@ int main(void) {
 //    debugger_register_variable(dbg_int16, &imu.z_acll, "imu.z_acll");
     timer2_config();
 
-    kalman_init();
-
     while (1) {
 //        gui_show_gnrmc_information();       // 46.8ms
 
         iic_read_hmc5883l();
         adis_burst_read();
-        MadgwickAHRSupdate();
+//        MadgwickAHRSupdate();
+
+        current_time = systemTime();
+        const fix16_t deltaT_ms = fix16_from_int(current_time - last_fusion_time);
+        const fix16_t deltaT = fix16_mul(deltaT_ms, F16(0.001));
+
+        last_fusion_time = current_time;
+
+        get_sensors();//是否会起作用
+        fusion_predict(deltaT);
+        fusion_update(deltaT);
+
+        fusion_fetch_angles(&roll, &pitch, &yaw);
+//        fusion_fetch_quaternion(&orientation);
+
         printf("%d %d %d\r\n", imu.x_acll, imu.y_acll, imu.z_acll);
         delayms(50);
         adis_burst_read();

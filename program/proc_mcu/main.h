@@ -32,6 +32,7 @@
 #include "verification.h"
 #include "ahrs.h"
 #include "kalman.h"
+#include "fusion_sensor.h"
 
 ///////////// Device /////////////
 #include "adis16470.h"
