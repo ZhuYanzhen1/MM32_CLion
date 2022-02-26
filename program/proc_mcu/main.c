@@ -11,6 +11,7 @@
 extern hmc5883l magnetometer;
 extern adis16470_t imu;
 extern adis_point imu_point;
+extern hmc_correction magnetometer_correction;
 extern int text_wz;
 extern float roll, pitch, yaw;
 
@@ -42,19 +43,17 @@ int main(void) {
     while (1) {
 //        gui_show_gnrmc_information();       // 46.8ms
 
-        if (count % 10 == 0)
-            iic_read_hmc5883l();
+        iic_read_hmc5883l();
+        hmc5883l_correction();
 
-        adis_burst_read();
-        MadgwickAHRSupdateIMU();
-        count++;
+        printf("%f,%f,%f\r\n", magnetometer_correction.x, magnetometer_correction.y, magnetometer_correction.z);
+        delayms(50);
 
 //        if (!DR_HIGH) {
 //            adis_read_v_and_angle();
 //            count++;
 //            while (DR_HIGH);
 //        }
-//        if (count == 0) global_time_stamp = 0;
 //        if (count >= 2000) {
 //            printf("%d \r\n", imu_point.delta_angle_z);
 //            count = 0;
@@ -62,14 +61,8 @@ int main(void) {
 //            accumulator += text_wz;
 //            text_wz = 0;
 //        }
-        if (count >= 60) {
-            gui_printf(5, 0, C_BLACK, C_WHITE, "roll: %f  ", roll);
-            gui_printf(5, 12, C_BLACK, C_WHITE, "yaw: %f  ", yaw);
-            gui_printf(5, 24, C_BLACK, C_WHITE, "pitch:%f", pitch);
-            gui_flush();
-            count = 0;
-        }
-        delayms(2);
+
+
 //            printf("%d %d %d\r\n", imu.x_acll, imu.y_acll, imu.z_acll);
 //        delayms(50);
 //        adis_burst_read();
