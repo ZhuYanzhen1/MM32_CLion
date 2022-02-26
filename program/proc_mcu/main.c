@@ -46,8 +46,9 @@ int main(void) {
         adis_burst_read();
 //        MadgwickAHRSupdate();
 
-        current_time = systemTime();
-        const fix16_t deltaT_ms = fix16_from_int(current_time - last_fusion_time);
+//        current_time = systemTime(); //获得实时时间
+//        const fix16_t deltaT_ms = fix16_from_int(current_time - last_fusion_time);
+        const fix16_t deltaT_ms = 100;
         const fix16_t deltaT = fix16_mul(deltaT_ms, F16(0.001));
 
         last_fusion_time = current_time;

@@ -164,9 +164,11 @@ extern v3d m_magnetometer;
 fix16_t fix16_mul(fix16_t inArg0, fix16_t inArg1);
 
 void get_sensors();
-void fusion_fetch_angles(register fix16_t *const roll, register fix16_t *const pitch, register fix16_t *const yaw);
-void fusion_fetch_quaternion(register qf16 *const quat);
-void fusion_update(register const fix16_t deltaT);
-void fusion_predict(register const fix16_t deltaT);
+void fusion_fetch_angles(register fix16_t *roll, register fix16_t *pitch, register fix16_t *yaw);
+void fusion_fetch_quaternion(qf16 register *quat);
+void fusion_update(register fix16_t deltaT);
+void fusion_predict(register fix16_t deltaT);
+
+//register const fix16_t 和 register fix16_t  const有什么区别吗？
 
 #endif //MAIN_C_MATH_FUSION_SENSOR_H_

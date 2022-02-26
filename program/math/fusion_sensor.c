@@ -52,8 +52,8 @@ mf16 *kalman_get_state_vector_uc(kalman16_uc_t *kf) {
 mf16 *kalman_get_system_covariance_uc(kalman16_uc_t *kf) {
     return &(kf->P);
 }
-static fix16_t _fix16_atan_cache_value[4096] = {0};
-static fix16_t _fix16_atan_cache_index[2][4096] = {{0}, {0}};
+static fix16_t fix16_atan_cache_value[4096] = {0};
+static fix16_t fix16_atan_cache_index[2][4096] = {{0}, {0}};
 fix16_t fix16_sub(fix16_t a, fix16_t b) {
     uint32_t _a = a, _b = b;
     uint32_t diff = _a - _b;
@@ -242,8 +242,8 @@ fix16_t fix16_atan2(fix16_t inY, fix16_t inX) {
     uintptr_t hash = (inX ^ inY);
     hash ^= hash >> 20;
     hash &= 0x0FFF;
-    if ((_fix16_atan_cache_index[0][hash] == inX) && (_fix16_atan_cache_index[1][hash] == inY))
-        return _fix16_atan_cache_value[hash];
+    if ((fix16_atan_cache_index[0][hash] == inX) && (fix16_atan_cache_index[1][hash] == inY))
+        return fix16_atan_cache_value[hash];
 #endif
 
     /* Absolute inY */
@@ -266,9 +266,9 @@ fix16_t fix16_atan2(fix16_t inY, fix16_t inX) {
     }
 
 #ifndef FIXMATH_NO_CACHE
-    _fix16_atan_cache_index[0][hash] = inX;
-    _fix16_atan_cache_index[1][hash] = inY;
-    _fix16_atan_cache_value[hash] = angle;
+    fix16_atan_cache_index[0][hash] = inX;
+    fix16_atan_cache_index[1][hash] = inY;
+    fix16_atan_cache_value[hash] = angle;
 #endif
 
     return angle;
@@ -369,7 +369,7 @@ fix16_t fa16_norm(const fix16_t *a, uint_fast8_t a_stride, uint_fast8_t n) {
     uint32_t highpart = (uint32_t) (sum >> 32);
     uint32_t lowpart = (uint32_t) sum;
     if (highpart)
-        scale = 33 - clz(highpart);
+        scale = (int_fast8_t) (33 - clz(highpart));
     else if (lowpart & 0x80000000)
         scale = 1;
 
@@ -546,7 +546,7 @@ void mf16_invert_lt(mf16 *dest, const mf16 *matrix) {
     // https://code.google.com/p/efficient-java-matrix-library
 
     int_fast8_t i, j, k;
-    const uint_fast8_t n = matrix->rows;
+    const int n = matrix->rows;
 
     // If dest and input matrices alias, we have to use a temp matrix.
     mf16 tmp;
@@ -1310,6 +1310,6 @@ void get_sensors() {
  * @brief Returns the current system time in milliseconds
  * @return The time.
  */
-static inline uint32_t systemTime() {
-    return SystemMilliseconds;
-}
+//static inline uint32_t systemTime() {
+//    return SystemMilliseconds;
+//}
