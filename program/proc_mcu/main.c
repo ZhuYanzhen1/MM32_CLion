@@ -44,10 +44,10 @@ int main(void) {
 //        gui_show_gnrmc_information();       // 46.8ms
 
         iic_read_hmc5883l();
-//        hmc5883l_correction();
+        hmc5883l_correction();
 
-//        printf("%f %f %f\r\n", magnetometer_correction.x, magnetometer_correction.y, magnetometer_correction.z);
-        printf("%d %d %d\r\n", magnetometer.x, magnetometer.y, magnetometer.z);
+        printf("%f %f %f\r\n", magnetometer_correction.x, magnetometer_correction.y, magnetometer_correction.z);
+//        printf("%d %d %d\r\n", magnetometer.x, magnetometer.y, magnetometer.z);
         delayms(50);
 
 //        if (!DR_HIGH) {

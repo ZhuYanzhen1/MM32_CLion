@@ -98,9 +98,9 @@ void hmc5883l_correction() {
     magnetometer_correction.z = qfp_fadd(qfp_fmul((float) magnetometer.z, FACTOR_MAGNETOMETER_MGS), -12.0118083f);
 
     /* Ellipsoid correction */ // 右乘
-    float stretch_matrix[3][3] = {1.0218902f, 0.0229290f, 0.0071673f,
-                                  0.0229290f, 0.9457933f, 0.0011582f,
-                                  0.0071674f, 0.0011582f, 1.0352788f};
+    float stretch_matrix[3][3] = {0.9990217f, 0.0157003f, 0.0176384f,
+                                  0.0157003f, 0.9833404f, 0.0071299f,
+                                  0.0176384f, 0.0071299f, 1.0185523f};
     magnetometer_correction.x = qfp_fadd(qfp_fadd(
                                              qfp_fmul(magnetometer_correction.x, stretch_matrix[0][0]),
                                              qfp_fmul(magnetometer_correction.y, stretch_matrix[1][0])),
