@@ -33,5 +33,7 @@
 #define SPI3_MISO_PORT  GPIOD
 #define SPI3_MOSI_PIN   GPIO_Pin_6
 #define SPI3_MOSI_PORT  GPIOD
+#define IMU_DR_PIN      GPIO_Pin_10
+#define IMU_DR_PORT     GPIOG
 
 #endif // MM32F3277_USER_PIN_H_

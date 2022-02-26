@@ -22,11 +22,9 @@ volatile float q0 = 1.0f, q1 = 0.0f, q2 = 0.0f, q3 = 0.0f;    // quaternion of s
 extern hmc5883l magnetometer;
 extern adis16470_t imu;
 
-static float roll, yaw, pitch;
+float roll, yaw, pitch;
 
 // AHRS algorithm update
-
-
 
 void MadgwickAHRSupdate_optimization() {
     float recipNorm;
@@ -266,8 +264,8 @@ void MadgwickAHRSupdate() {
         gz = (float) imu.z_gyro * FACTOR_GYRO;
     float ax = (float) imu.x_acll * FACTOR_ALLC, ay = (float) imu.y_acll * FACTOR_ALLC,
         az = (float) imu.z_acll * FACTOR_ALLC;
-    float mx = (float) magnetometer.x * FACTOR_MAGNETOMETER, my = (float) magnetometer.y * FACTOR_MAGNETOMETER,
-        mz = (float) magnetometer.x * FACTOR_MAGNETOMETER;
+    float mx = (float) magnetometer.x * FACTOR_MAGNETOMETER_MGS, my = (float) magnetometer.y * FACTOR_MAGNETOMETER_MGS,
+        mz = (float) magnetometer.x * FACTOR_MAGNETOMETER_MGS;
 
 
     // Use IMU algorithm if magnetometer measurement invalid (avoids NaN in magnetometer normalisation)
@@ -393,8 +391,10 @@ void MadgwickAHRSupdateIMU() {
     float s0, s1, s2, s3;
     float qDot1, qDot2, qDot3, qDot4;
     float _2q0, _2q1, _2q2, _2q3, _4q0, _4q1, _4q2, _8q1, _8q2, q0q0, q1q1, q2q2, q3q3;
-    float gx = (float) imu.x_gyro, gy = (float) imu.y_gyro, gz = (float) imu.z_gyro;
-    float ax = (float) imu.x_acll, ay = (float) imu.y_acll, az = (float) imu.z_acll;
+    float gx = (float) imu.x_gyro * FACTOR_GYRO, gy = (float) imu.y_gyro * FACTOR_GYRO,
+        gz = (float) imu.z_gyro * FACTOR_GYRO;
+    float ax = (float) imu.x_acll * FACTOR_ALLC, ay = (float) imu.y_acll * FACTOR_ALLC,
+        az = (float) imu.z_acll * FACTOR_ALLC;
 
     // Rate of change of quaternion from gyroscope
     qDot1 = 0.5f * (-q1 * gx - q2 * gy - q3 * gz);
@@ -460,6 +460,10 @@ void MadgwickAHRSupdateIMU() {
     pitch = my_asinf(2 * (q1 * q2 - q1 * q3));
     roll = qfp_fatan2(2 * (q0 * q1 + q2 * q3), 1 - 2 * (q1 * q1 + q2 * q2));
     yaw = qfp_fatan2(2 * (q0 * q3 + q1 * q2), 1 - 2 * (q2 * q2 + q3 * q3));
+
+    pitch *= ARC_TO_ANGLE;
+    roll *= ARC_TO_ANGLE;
+    yaw *= ARC_TO_ANGLE;
 
     (void) pitch;
     (void) roll;

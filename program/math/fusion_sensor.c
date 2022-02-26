@@ -1057,7 +1057,7 @@ void qf16_normalize(qf16 *dest, const qf16 *q) {
     qf16_div_s(dest, q, qf16_norm(q));
 }
 
-void calculate_roll_pitch(register fix16_t *const roll, register fix16_t *const pitch) {
+void calculate_roll_pitch(register fix16_t *roll, register fix16_t *pitch) {
     const mf16 *const x = kalman_get_state_vector_uc(&kf_attitude);
 
     // fetch axes
@@ -1072,7 +1072,7 @@ void calculate_roll_pitch(register fix16_t *const roll, register fix16_t *const 
     *roll = -fix16_atan2(c32, -c33);
 }
 
-void calculate_yaw(register const fix16_t roll, register const fix16_t pitch, register fix16_t *const yaw) {
+void calculate_yaw(register fix16_t roll, register fix16_t pitch, register fix16_t *yaw) {
     const mf16 *const x2 = kalman_get_state_vector_uc(&kf_orientation);
     const mf16 *const x3 = kalman_get_state_vector_uc(&kf_attitude);
 
@@ -1286,7 +1286,7 @@ void fusion_fetch_quaternion(register qf16 *const quat) {
     fetch_quaternion_opt2(quat);
 }
 
-void fusion_fetch_angles(register fix16_t *const roll, register fix16_t *const pitch, register fix16_t *const yaw) {
+void fusion_fetch_angles(register fix16_t *roll, register fix16_t *pitch, register fix16_t *yaw) {
     // calculate roll and pitch
     calculate_roll_pitch(roll, pitch);
 
@@ -1305,11 +1305,3 @@ void get_sensors() {
     m_gyroscope.y = imu.y_gyro;
     m_gyroscope.z = imu.z_gyro;
 }
-
-/**
- * @brief Returns the current system time in milliseconds
- * @return The time.
- */
-//static inline uint32_t systemTime() {
-//    return SystemMilliseconds;
-//}

@@ -10,11 +10,11 @@
 
 extern hmc5883l magnetometer;
 extern adis16470_t imu;
+extern adis_point imu_point;
+extern int text_wz;
+extern float roll, pitch, yaw;
 
-fix16_t roll, pitch, yaw;
-qf16 orientation;
-fix16_t last_fusion_time;
-fix16_t current_time;
+unsigned int count = 0;
 
 int main(void) {
     delay_config();
@@ -34,40 +34,56 @@ int main(void) {
 //    xpt2046_calibrate();
     cm_backtrace_config("mm32f3277", "1.0.1", "1.0.1");
     debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
-//    debugger_register_variable(dbg_int16, &imu.x_acll, "imu.x_acll");
-//    debugger_register_variable(dbg_int16, &imu.y_acll, "imu.y_acll");
-//    debugger_register_variable(dbg_int16, &imu.z_acll, "imu.z_acll");
+    debugger_register_variable(dbg_int16, (void *) &imu_point.delta_angle_z, "angle_z");
     timer2_config();
+
+    imu_dr_gpio_config();
 
     while (1) {
 //        gui_show_gnrmc_information();       // 46.8ms
 
-        iic_read_hmc5883l();
+        if (count % 10 == 0)
+            iic_read_hmc5883l();
+
         adis_burst_read();
-//        MadgwickAHRSupdate();
+        MadgwickAHRSupdateIMU();
+        count++;
 
-//        current_time = systemTime(); //获得实时时间
-//        const fix16_t deltaT_ms = fix16_from_int(current_time - last_fusion_time);
-        const fix16_t deltaT_ms = 100;
-        const fix16_t deltaT = fix16_mul(deltaT_ms, F16(0.001));
-
-        last_fusion_time = current_time;
-
-        get_sensors();//是否会起作用
-        fusion_predict(deltaT);
-        fusion_update(deltaT);
-
-        fusion_fetch_angles(&roll, &pitch, &yaw);
-//        fusion_fetch_quaternion(&orientation);
-
-        printf("%d %d %d\r\n", imu.x_acll, imu.y_acll, imu.z_acll);
-        delayms(50);
-        adis_burst_read();
-        gui_printf(5, 0, C_BLACK, C_WHITE, "roll: %f   ", roll);
-        gui_printf(5, 12, C_BLACK, C_WHITE, "yaw: %f   ", yaw);
-        gui_printf(5, 24, C_BLACK, C_WHITE, "pitch: %f   ", pitch);
-        gui_flush();            // 错开GUI的DMA刷新，但是UART6的DMA可能会受到这个的影响。
-        delayms(50);
+//        if (!DR_HIGH) {
+//            adis_read_v_and_angle();
+//            count++;
+//            while (DR_HIGH);
+//        }
+//        if (count == 0) global_time_stamp = 0;
+//        if (count >= 2000) {
+//            printf("%d \r\n", imu_point.delta_angle_z);
+//            count = 0;
+//            text_wz /= 2000;
+//            accumulator += text_wz;
+//            text_wz = 0;
+//        }
+        if (count >= 60) {
+            gui_printf(5, 0, C_BLACK, C_WHITE, "roll: %f  ", roll);
+            gui_printf(5, 12, C_BLACK, C_WHITE, "yaw: %f  ", yaw);
+            gui_printf(5, 24, C_BLACK, C_WHITE, "pitch:%f", pitch);
+            gui_flush();
+            count = 0;
+        }
+        delayms(2);
+//            printf("%d %d %d\r\n", imu.x_acll, imu.y_acll, imu.z_acll);
+//        delayms(50);
+//        adis_burst_read();
+//        gui_printf(5, 0, C_BLACK, C_WHITE, "roll: %f  ", roll);
+//        gui_printf(5, 12, C_BLACK, C_WHITE, "yaw: %f  ", yaw);
+//        gui_printf(5, 24, C_BLACK, C_WHITE, "pitch:%f", pitch);
+//        gui_printf(5, 24 + 12 * 1, C_BLACK, C_WHITE, "angle_x:%d", imu_point.delta_angle_x);
+//        gui_printf(5, 24 + 12 * 2, C_BLACK, C_WHITE, "angle_y:%d", imu_point.delta_angle_y);
+//        gui_printf(5, 24 + 12 * 3, C_BLACK, C_WHITE, "angle_z:%d", imu_point.delta_angle_z);
+//        gui_printf(5, 24 + 12 * 4, C_BLACK, C_WHITE, "v_x:%d", imu_point.delta_v_x);
+//        gui_printf(5, 24 + 12 * 5, C_BLACK, C_WHITE, "v_y:%d", imu_point.delta_v_y);
+//        gui_printf(5, 24 + 12 * 6, C_BLACK, C_WHITE, "v_z:%d", imu_point.delta_v_z);
+//        gui_flush();            // 错开GUI的DMA刷新，但是UART6的DMA可能会受到这个的影响。
+//        delayms(50);
 
     }
 }

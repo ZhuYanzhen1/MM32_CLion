@@ -65,3 +65,17 @@ void xpt2046_gpio_config(void) {
     GPIO_SetBits(TOUCH_CS_PORT, TOUCH_CS_PIN);
     GPIO_SetBits(TOUCH_PEN_PORT, TOUCH_PEN_PIN);
 }
+
+void imu_dr_gpio_config() {
+    GPIO_InitTypeDef GPIO_InitStruct;
+
+    RCC_AHBPeriphClockCmd(RCC_AHBENR_GPIOG, ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2ENR_SYSCFG, ENABLE);
+
+    GPIO_StructInit(&GPIO_InitStruct);
+    GPIO_InitStruct.GPIO_Pin = IMU_DR_PIN;
+    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IPU;
+    GPIO_Init(IMU_DR_PORT, &GPIO_InitStruct);
+}
+
