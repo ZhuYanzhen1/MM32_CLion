@@ -32,3 +32,32 @@ void MainWindow::on_open_serial_btn_clicked() {
 void MainWindow::on_refresh_serial_btn_clicked() {
     refresh_serial_port();
 }
+
+void MainWindow::on_variable_list_clicked(const QModelIndex &index) {
+    for(int counter = 0; counter < index.model()->rowCount(); counter++) {
+        QStandardItem *item = variable_list_table->item(counter, 0);
+        qDebug() << item->text() << item->checkState();
+    }
+}
+
+void MainWindow::on_clear_btn_clicked() {
+    ui->debug_info_txt->clear();
+    clear_debugger_variable();
+    variable_list_table->clear();
+    variable_list_table->setColumnCount(4);
+    variable_list_table->setRowCount(0);
+    variable_list_table->setHeaderData(0,Qt::Horizontal,"name");
+    variable_list_table->setHeaderData(1,Qt::Horizontal,"type");
+    variable_list_table->setHeaderData(2,Qt::Horizontal,"value");
+    variable_list_table->setHeaderData(3,Qt::Horizontal,"address");
+    for(int i = 0; i < 32; i++) {
+        variable_list_item[i]->setCheckable(true);
+        variable_list_item[i]->setCheckState(Qt::Unchecked);
+    }
+    ui->variable_list->horizontalHeader()->setDefaultAlignment(Qt::AlignCenter);
+    ui->variable_list->setModel(variable_list_table);
+    ui->variable_list->setColumnWidth(0, 90);
+    ui->variable_list->setColumnWidth(1, 55);
+    ui->variable_list->setColumnWidth(2, 90);
+    ui->variable_list->setColumnWidth(3, 100);
+}
