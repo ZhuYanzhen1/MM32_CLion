@@ -29,6 +29,6 @@ void hmc5883l_config();
 void iic_read_hmc5883l();
 unsigned char iic_read_hmc5883l_verification();
 void hmc5883l_correction();
-void coordinate_system_transformation_b_to_n();
+float coordinate_system_transformation_b_to_n();
 
 #endif // MAIN_C_DEVICE_HMC5883L_H_
