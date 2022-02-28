@@ -9,6 +9,8 @@
 #ifndef MM32F3277_DEVICE_HMC5883L_H_
 #define MM32F3277_DEVICE_HMC5883L_H_
 
+#define PI                      3.1415926f
+#define AVERAGE_NUM_TURE_NORTH  20
 #define FACTOR_MAGNETOMETER_MGS 0.73f
 
 typedef volatile struct {
@@ -27,5 +29,6 @@ void hmc5883l_config();
 void iic_read_hmc5883l();
 unsigned char iic_read_hmc5883l_verification();
 void hmc5883l_correction();
+void coordinate_system_transformation_b_to_n();
 
 #endif // MAIN_C_DEVICE_HMC5883L_H_

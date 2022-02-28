@@ -27,7 +27,7 @@ typedef volatile struct {
 } adis16470_t;
 
 typedef volatile struct {
-    short delta_angle_x;  //0x64  2160/2^15
+    short delta_angle_x;
     short delta_angle_y;
     short delta_angle_z;
     short delta_v_x;
@@ -35,11 +35,9 @@ typedef volatile struct {
     short delta_v_z;
 } adis_point;
 
-//extern adis16470_t imu;
-
 short adis_read_uid();
 short adis_read_register(unsigned int register_address);
 void adis_burst_read();
-void adis_read_v_and_angle();
+void adis_point_wz(void);
 
 #endif  // MM32F3277_DEVICE_ADIS16470_H_

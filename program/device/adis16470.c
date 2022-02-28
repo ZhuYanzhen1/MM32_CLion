@@ -15,13 +15,6 @@
 #define SPI3_NSS_SET()              GPIO_SetBits(GPIOD, GPIO_Pin_7);
 #define SPI3_NSS_RESET()            GPIO_ResetBits(GPIOD, GPIO_Pin_7);
 #define BURST_READ(x)               (x) = (short) spi3_software_mode3(0x0000);
-#define CONTINUOUS_READ_ADD(x, y, z)    SPI3_NSS_RESET();\
-                                    delayus(1);      \
-                                    (y) = spi3_software_mode3(z); \
-                                    SPI3_NSS_SET();  \
-                                    (x) += (y);      \
-                                    delayus(25);
-
 #define CONTINUOUS_READ(x, y)       SPI3_NSS_RESET();\
                                     delayus(1);      \
                                     (x) = spi3_software_mode3(y); \
@@ -29,9 +22,9 @@
                                     delayus(25);
 
 adis16470_t imu;
-adis_point imu_point;
 
-int text_wz;
+int wz_cumulative;
+int last_wz;
 
 short adis_read_uid() {
     short uid;
@@ -52,55 +45,20 @@ short adis_read_register(unsigned int register_address) {
     short value;
     SPI3_NSS_RESET();
     delayus(1);         // CS时序要求tcs>200ns
-    spi3_software_mode3(register_address);
-    SPI3_NSS_SET();
-    delayus(25);
-
-    SPI3_NSS_RESET();
-    delayus(1);         // CS时序要求tcs>200ns
     value = spi3_software_mode3(register_address);
     SPI3_NSS_SET();
     return value;
 }
 
-void adis_read_v_and_angle() {
-    short temp;
-//    SPI3_NSS_RESET();
-//    delayus(1);         // CS时序要求tcs>200ns
-//    spi3_software_mode3(0x0C00);
-//    SPI3_NSS_SET();
-//    delayus(25);
-//
-//    SPI3_NSS_RESET();
-//    delayus(1);
-//    temp = spi3_software_mode3(0x0E00);
-////    SPI3_NSS_SET();
-//    delayus(25);
-//
-//    (void) temp;
-//
-////    SPI3_NSS_RESET();
-//    delayus(1);
-//    temp = spi3_software_mode3(0x0E00);
-//    SPI3_NSS_SET();
-//    delayus(25);
-//
-//    (void) temp;
-
+void adis_point_wz(void) {
+    int wz, cumulative;
     SPI3_NSS_RESET();
     delayus(1);
-    (temp) = spi3_software_mode3(0x0E00);
+    (wz) = spi3_software_mode3(0x0E00);
     SPI3_NSS_SET();
-    text_wz += temp;
-    delayus(25);
-
-//    CONTINUOUS_READ(temp, 0x2600);
-//    CONTINUOUS_READ(imu_point.delta_angle_x, 0x2A00);
-//    CONTINUOUS_READ(imu_point.delta_angle_y, 0x2E00);
-//    CONTINUOUS_READ(imu_point.delta_angle_z, 0x3200);
-//    CONTINUOUS_READ(imu_point.delta_v_x, 0x3600);
-//    CONTINUOUS_READ(imu_point.delta_v_y, 0x3A00);
-//    CONTINUOUS_READ(imu_point.delta_v_z, 0x3C00);
+    cumulative = (wz + last_wz) / 2;
+    wz_cumulative += cumulative;
+    last_wz = wz;
 }
 
 // 突发传输模式不需要发寄存器的地址。只需要发0x6800启动突发传输，后续的176个位就是寄存器的值。仔细看手册

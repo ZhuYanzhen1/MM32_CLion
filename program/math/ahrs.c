@@ -22,7 +22,7 @@ volatile float q0 = 1.0f, q1 = 0.0f, q2 = 0.0f, q3 = 0.0f;    // quaternion of s
 extern hmc5883l magnetometer;
 extern adis16470_t imu;
 
-float roll, yaw, pitch;
+static float roll, yaw, pitch;
 
 // AHRS algorithm update
 

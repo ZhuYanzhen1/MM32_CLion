@@ -11,6 +11,7 @@
 #include "delay.h"
 #include "qfplib.h"
 
+float rotation_angle_b_to_n;
 hmc5883l magnetometer = {0};
 hmc_correction magnetometer_correction = {0};
 
@@ -113,15 +114,20 @@ void hmc5883l_correction() {
                                              qfp_fmul(magnetometer_correction.x, stretch_matrix[0][2]),
                                              qfp_fmul(magnetometer_correction.y, stretch_matrix[1][2])),
                                          qfp_fmul(magnetometer_correction.z, stretch_matrix[2][2]));
-//    magnetometer_correction.x = magnetometer_correction.x * stretch_matrix[0][0]
-//        + magnetometer_correction.y * stretch_matrix[1][0] + magnetometer_correction.z * stretch_matrix[2][0];
-//    magnetometer_correction.y = magnetometer_correction.x * stretch_matrix[0][1]
-//        + magnetometer_correction.y * stretch_matrix[1][1] + magnetometer_correction.z * stretch_matrix[2][1];
-//    magnetometer_correction.z = magnetometer_correction.x * stretch_matrix[0][2]
-//        + magnetometer_correction.y * stretch_matrix[1][2] + magnetometer_correction.z * stretch_matrix[2][2];
 }
 
-//1.02189024751036	0.0229290463970983	0.00716736222389364
-//0.0229290463970983	0.945793309848168	0.00115824318613781
-//0.00716736222389364	0.00115824318613781	1.03527885474558
+/* b:机体坐标系；n：东北天 */
+void coordinate_system_transformation_b_to_n() {
+    for (unsigned char i = 0; i < AVERAGE_NUM_TURE_NORTH; i++) {
+        iic_read_hmc5883l();
+        hmc5883l_correction();
+        rotation_angle_b_to_n = qfp_fadd(rotation_angle_b_to_n,
+                                         qfp_fadd(qfp_fmul(qfp_fatan2(magnetometer_correction.y,
+                                                                      magnetometer_correction.x),
+                                                           qfp_fdiv(180, PI)), 180));
 
+    }
+    rotation_angle_b_to_n = qfp_fdiv(rotation_angle_b_to_n, AVERAGE_NUM_TURE_NORTH);
+    rotation_angle_b_to_n *= 10;
+}
+//        angle = (atan2(Mag[1],Mag[0])*(180 / pi)+180);

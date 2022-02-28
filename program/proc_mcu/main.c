@@ -8,14 +8,12 @@
 
 #include "main.h"
 
-extern hmc5883l magnetometer;
-extern adis16470_t imu;
-extern adis_point imu_point;
 extern hmc_correction magnetometer_correction;
-extern int text_wz;
-extern float roll, pitch, yaw;
 
-unsigned int count = 0;
+short wz_gyro;
+float true_north_final;
+float true_north;
+kalman_filter_t kalman;
 
 int main(void) {
     delay_config();
@@ -34,48 +32,27 @@ int main(void) {
     xpt2046_gpio_config();
 //    xpt2046_calibrate();
     cm_backtrace_config("mm32f3277", "1.0.1", "1.0.1");
-    debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
-    debugger_register_variable(dbg_int16, (void *) &imu_point.delta_angle_z, "angle_z");
+//    debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
+    debugger_register_variable(dbg_float32, &true_north, "mag");
+    debugger_register_variable(dbg_float32, &true_north_final, "true_north_final");
     timer2_config();
 
-    imu_dr_gpio_config();
+    kalman_config(&kalman);
 
     while (1) {
 //        gui_show_gnrmc_information();       // 46.8ms
 
+        wz_gyro = adis_read_register(0x0E00);
         iic_read_hmc5883l();
         hmc5883l_correction();
+        true_north = qfp_fadd(qfp_fmul(qfp_fatan2(magnetometer_correction.y, magnetometer_correction.x),
+                                       qfp_fdiv(180, PI)), 180);
+        true_north_final = kalman_update(&kalman, true_north, wz_gyro, 0.01f);
 
-        printf("%f %f %f\r\n", magnetometer_correction.x, magnetometer_correction.y, magnetometer_correction.z);
-//        printf("%d %d %d\r\n", magnetometer.x, magnetometer.y, magnetometer.z);
-        delayms(50);
-
-//        if (!DR_HIGH) {
-//            adis_read_v_and_angle();
-//            count++;
-//            while (DR_HIGH);
-//        }
-//        if (count >= 2000) {
-//            printf("%d \r\n", imu_point.delta_angle_z);
-//            count = 0;
-//            text_wz /= 2000;
-//            accumulator += text_wz;
-//            text_wz = 0;
-//        }
-
-//        delayms(50);
-//        adis_burst_read();
-//        gui_printf(5, 0, C_BLACK, C_WHITE, "roll: %f  ", roll);
-//        gui_printf(5, 12, C_BLACK, C_WHITE, "yaw: %f  ", yaw);
-//        gui_printf(5, 24, C_BLACK, C_WHITE, "pitch:%f", pitch);
-//        gui_printf(5, 24 + 12 * 1, C_BLACK, C_WHITE, "angle_x:%d", imu_point.delta_angle_x);
-//        gui_printf(5, 24 + 12 * 2, C_BLACK, C_WHITE, "angle_y:%d", imu_point.delta_angle_y);
-//        gui_printf(5, 24 + 12 * 3, C_BLACK, C_WHITE, "angle_z:%d", imu_point.delta_angle_z);
-//        gui_printf(5, 24 + 12 * 4, C_BLACK, C_WHITE, "v_x:%d", imu_point.delta_v_x);
-//        gui_printf(5, 24 + 12 * 5, C_BLACK, C_WHITE, "v_y:%d", imu_point.delta_v_y);
-//        gui_printf(5, 24 + 12 * 6, C_BLACK, C_WHITE, "v_z:%d", imu_point.delta_v_z);
+//        printf("%f %f %f", magnetometer_correction.x, magnetometer_correction.y, magnetometer_correction.z);
+//        gui_printf(5, 12, C_BLACK, C_WHITE, "true_north:%.4f", true_north);
 //        gui_flush();            // 错开GUI的DMA刷新，但是UART6的DMA可能会受到这个的影响。
-//        delayms(50);
 
+        delayms(10);
     }
 }
