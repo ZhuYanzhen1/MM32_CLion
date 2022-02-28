@@ -31,7 +31,6 @@ void TIM2_IRQHandler(void) {
 void UART1_IRQHandler(void) {
     if (UART_GetITStatus(UART1, UART_ISR_RX) != RESET) {
         unsigned char recvbyte = UART_ReceiveData(UART1);
-//        uart3_sendbyte(recvbyte);
         mdtp_receive_handler(recvbyte);
         UART_ClearITPendingBit(UART1, UART_ISR_RX);
     }
@@ -46,8 +45,6 @@ void EXTI1_IRQHandler(void) {
 void UART3_IRQHandler(void) {
     if (UART_GetITStatus(UART3, UART_ISR_RX) != RESET) {
         unsigned char recvbyte = UART_ReceiveData(UART3);
-//        uart1_sendbyte(recvbyte);
-        sdtp_receive_handler(recvbyte);
         UART_ClearITPendingBit(UART3, UART_ISR_RX);
     }
 }

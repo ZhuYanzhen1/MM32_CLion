@@ -58,7 +58,7 @@ void uart3_config() {
     NVIC_InitTypeDef NVIC_InitStruct;
     GPIO_InitTypeDef GPIO_InitStruct;
 
-    RCC_APB2PeriphClockCmd(RCC_APB1ENR_UART3, ENABLE);
+    RCC_APB1PeriphClockCmd(RCC_APB1ENR_UART3, ENABLE);
     RCC_AHBPeriphClockCmd(RCC_AHBENR_GPIOD, ENABLE);
 
     GPIO_PinAFConfig(GPIOD, GPIO_PinSource8, GPIO_AF_7);
