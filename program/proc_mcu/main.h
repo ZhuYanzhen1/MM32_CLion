@@ -27,7 +27,6 @@
 #include "iic.h"
 
 ///////////// Math /////////////
-#include "fft.h"
 #include "qfplib.h"
 #include "verification.h"
 #include "ahrs.h"

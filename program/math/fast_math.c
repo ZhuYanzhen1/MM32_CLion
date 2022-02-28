@@ -31,32 +31,6 @@ float LUT[102] = {
 
 float atan_fast(float x) {
     /*
-    A fast look-up method with enough accuracy
-    */
-    if (x > 0) {
-        if (x <= 1) {
-            int index = (int) (x * 100);
-            return LUT[index];
-        } else {
-            float re_x = 1 / x;
-            int index = (int) (re_x * 100);
-            return (M_PI_2 - LUT[index]);
-        }
-    } else {
-        if (x >= -1) {
-            float abs_x = -x;
-            int index = (int) (abs_x * 100);
-            return -(LUT[index]);
-        } else {
-            float re_x = 1 / (-x);
-            int index = (int) (re_x * 100);
-            return (LUT[index] - M_PI_2);
-        }
-    }
-}
-
-float atan_single(float x) {
-    /*
     Linear interpolation is used for higher accuracy
     */
     if (x >= 0) {
