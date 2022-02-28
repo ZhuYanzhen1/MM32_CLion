@@ -40,7 +40,7 @@ void test_mag_calibration(void) {
         fclose(infile);
 
         if (calflg == 1) CU_PASS("Calibrate success, parameters as below:\r\n")
-        else CU_FAIL("Calibrate success, please retry. Parameters as below:\r\n")
+        else CU_FAIL("Calibrate failed, please retry. Parameters as below:\r\n")
 
 //        printf("diag_x = %lf  diag_y = %lf  diag_z = %lf\r\n", params.diag[0], params.diag[1],
 //               params.diag[2]);

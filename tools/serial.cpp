@@ -52,12 +52,28 @@ void MainWindow::mdtp_callback_handler(unsigned char pid, const unsigned char *d
                 table_setvalue_variable(data[0], debugger_variable[data[0]]->var_value);
             }
             break;
-        case 4:
-            ui->debug_info_txt->setText(ui->debug_info_txt->toPlainText() + QString::fromLocal8Bit((const char *)array_buffer));
+        case 4: {
+                ui->debug_info_txt->setText(ui->debug_info_txt->toPlainText() + QString::fromLocal8Bit((const char *)array_buffer));
+                QTextCursor cursor = ui->debug_info_txt->textCursor();
+                cursor.movePosition(QTextCursor::End);
+                ui->debug_info_txt->setTextCursor(cursor);
+            }
             break;
         default:
             break;
     }
+}
+
+void MainWindow::clear_debugger_variable(void) {
+    for(unsigned char counter = 0; counter < variable_counter_serial; counter++) {
+        for(unsigned char counter2 = 0; counter2 < 16; counter2++)
+            debugger_variable[counter]->var_name[counter2] = 0x00;
+        debugger_variable[counter]->var_value = 0x00000000UL;
+        debugger_variable[counter]->var_status = 0x00000000UL;
+        debugger_variable[counter]->var_address = 0x00000000UL;
+        delete debugger_variable[counter]->value_item;
+    }
+    variable_counter_serial = 0;
 }
 
 bool MainWindow::set_serial_badurate(void) {

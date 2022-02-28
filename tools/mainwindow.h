@@ -18,6 +18,7 @@ typedef struct DEBUGGER_VARIABLE_T {
     unsigned int var_address;
     unsigned int var_value;
     char var_name[16];
+    QStandardItem *value_item;
 } debugger_variable_t;
 
 class MainWindow : public QMainWindow
@@ -30,8 +31,9 @@ public:
 
 private slots:
     void on_open_serial_btn_clicked();
-
     void on_refresh_serial_btn_clicked();
+    void on_variable_list_clicked(const QModelIndex &index);
+    void on_clear_btn_clicked();
 
 public slots:
     void serial_received();
@@ -47,6 +49,7 @@ private:
     /* serial configure functions */
     void refresh_serial_port();
     bool set_serial_badurate();
+    void clear_debugger_variable(void);
 
     /* mdtp related functions */
     void mdtp_data_transmit(unsigned char pid, const unsigned char *data);

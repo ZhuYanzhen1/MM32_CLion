@@ -16,41 +16,68 @@ static const QColor color_table[12] = {QColor(0xff, 0x00, 0x00), QColor(0x00, 0x
 
 void MainWindow::table_setvalue_variable(unsigned char index, unsigned int value) {
     unsigned char *ptr_u8 = (unsigned char *)&value;
-//    qDebug() << "0x" + QString::number(ptr_u8[0], 16) << "  0x" + QString::number(ptr_u8[1], 16)
-//            << "  0x" + QString::number(ptr_u8[2], 16) << "  0x" + QString::number(ptr_u8[3], 16);
-    switch (debugger_variable[index]->var_status) {
-        case signed_int8:
-            variable_list_table->setItem(index, 2, new QStandardItem(QString::number(*(char *)&ptr_u8[0])));
-            break;
-        case signed_int16:
-            variable_list_table->setItem(index, 2, new QStandardItem(QString::number(*(short *)&ptr_u8[0])));
-            break;
-        case signed_int32:
-            variable_list_table->setItem(index, 2, new QStandardItem(QString::number(*(int *)&value)));
-            break;
-        case unsigned_int8:
-            variable_list_table->setItem(index, 2, new QStandardItem(QString::number(*(unsigned char *)&ptr_u8[0])));
-            break;
-        case unsigned_int16:
-            variable_list_table->setItem(index, 2, new QStandardItem(QString::number(*(unsigned short *)&ptr_u8[0])));
-            break;
-        case unsigned_int32:
-            variable_list_table->setItem(index, 2, new QStandardItem(QString::number(*(unsigned int *)&value)));
-            break;
-        case float_32bit:
-            variable_list_table->setItem(index, 2, new QStandardItem(QString::number((*(float *)&value), 'f', 3)));
-            break;
+    if(index < variable_counter) {
+        switch (debugger_variable[index]->var_status) {
+            case signed_int8:
+                debugger_variable[index]->value_item->setText(QString::number(*(char *)&ptr_u8[0]));
+                break;
+            case signed_int16:
+                debugger_variable[index]->value_item->setText(QString::number(*(short *)&ptr_u8[0]));
+                break;
+            case signed_int32:
+                debugger_variable[index]->value_item->setText(QString::number(*(int *)&value));
+                break;
+            case unsigned_int8:
+                debugger_variable[index]->value_item->setText(QString::number(*(unsigned char *)&ptr_u8[0]));
+                break;
+            case unsigned_int16:
+                debugger_variable[index]->value_item->setText(QString::number(*(unsigned short *)&ptr_u8[0]));
+                break;
+            case unsigned_int32:
+                debugger_variable[index]->value_item->setText(QString::number(*(unsigned int *)&value));
+                break;
+            case float_32bit:
+                debugger_variable[index]->value_item->setText(QString::number((*(float *)&value), 'f', 3));
+                break;
+        }
     }
 }
 
 void MainWindow::table_append_variable(unsigned char type, unsigned int value, const char *name, unsigned int address) {
+    unsigned char *ptr_u8 = (unsigned char *)&value;
+
     debugger_variable[variable_counter]->var_status = type;
     debugger_variable[variable_counter]->var_address = address;
     debugger_variable[variable_counter]->var_value = value;
     for(unsigned char counter = 0; counter < 14; counter++)
         debugger_variable[variable_counter]->var_name[counter] = name[counter];
+
+    switch (debugger_variable[variable_counter]->var_status) {
+        case signed_int8:
+            debugger_variable[variable_counter]->value_item = new QStandardItem(QString::number(*(char *)&ptr_u8[0]));
+            break;
+        case signed_int16:
+            debugger_variable[variable_counter]->value_item = new QStandardItem(QString::number(*(short *)&ptr_u8[0]));
+            break;
+        case signed_int32:
+            debugger_variable[variable_counter]->value_item = new QStandardItem(QString::number(*(int *)&value));
+            break;
+        case unsigned_int8:
+            debugger_variable[variable_counter]->value_item = new QStandardItem(QString::number(*(unsigned char *)&ptr_u8[0]));
+            break;
+        case unsigned_int16:
+            debugger_variable[variable_counter]->value_item = new QStandardItem(QString::number(*(unsigned short *)&ptr_u8[0]));
+            break;
+        case unsigned_int32:
+            debugger_variable[variable_counter]->value_item = new QStandardItem(QString::number(*(unsigned int *)&value));
+            break;
+        case float_32bit:
+            debugger_variable[variable_counter]->value_item = new QStandardItem(QString::number((*(float *)&value), 'f', 3));
+            break;
+    }
+
     variable_list_table->setRowCount(variable_counter + 1);
-    variable_list_table->setItem(variable_counter, variable_list_item[variable_counter]);
+    variable_list_table->setItem(variable_counter, 0, variable_list_item[variable_counter]);
     switch(type) {
         case signed_int8:
             variable_list_table->setItem(variable_counter, 1, new QStandardItem("int8"));
@@ -75,6 +102,7 @@ void MainWindow::table_append_variable(unsigned char type, unsigned int value, c
         break;
     }
     table_setvalue_variable(variable_counter, value);
+    variable_list_table->setItem(variable_counter, 2, debugger_variable[variable_counter]->value_item);
     variable_list_table->setItem(variable_counter, 3, new QStandardItem("0x" + QString::number(address, 16)));
     variable_list_item[variable_counter]->setBackground(color_table[variable_counter]);
     variable_list_item[variable_counter]->setText(name);
