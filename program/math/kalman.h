@@ -5,6 +5,8 @@
 #ifndef MAIN_C_MATH_KALMAN_H_
 #define MAIN_C_MATH_KALMAN_H_
 
+#define PRECISION_FLOAT_TO_INT 100000
+
 typedef struct {
     /* Kalman filter variables */
     float QPos; // Process noise variance for the position
@@ -37,6 +39,6 @@ float kalman_update(kalman_filter_float *kalman, float newPos, float newVel, flo
 
 void kalman_config_int(kalman_filter_int *kalman);
 
-int kalman_update_int(kalman_filter_int *kalman, int newpos, int newVel, int dt);
+int kalman_update_int(kalman_filter_int *kalman, int newpos, int newVel, int f);
 
 #endif //MAIN_C_MATH_KALMAN_H_

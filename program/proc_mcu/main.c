@@ -12,6 +12,7 @@ extern hmc_correction magnetometer_correction;
 
 int wz_gyro;
 int true_north_final_int;
+int true_north_final_int_temp;
 float true_north_final;
 float true_north;
 kalman_filter_float kalman_float;
@@ -37,7 +38,7 @@ int main(void) {
 //    debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
     debugger_register_variable(dbg_float32, &true_north, "mag");
     debugger_register_variable(dbg_float32, &true_north_final, "north_f");
-    debugger_register_variable(dbg_int32, &true_north_final_int, "north_i");
+    debugger_register_variable(dbg_int32, &true_north_final_int_temp, "north_i");
     timer2_config();
 
     kalman_config(&kalman_float);
@@ -52,7 +53,13 @@ int main(void) {
         true_north = qfp_fadd(qfp_fmul(qfp_fatan2(magnetometer_correction.y, magnetometer_correction.x),
                                        qfp_fdiv(180, PI)), 180);
         true_north_final = kalman_update(&kalman_float, true_north, -(float) wz_gyro * 0.1f, 0.1f);
-        true_north_final_int = kalman_update_int(&kalman_int, (int) (true_north * 10000), -wz_gyro * 1000, 1000);
+        true_north_final_int = kalman_update_int(&kalman_int, (int) (true_north * PRECISION_FLOAT_TO_INT),
+                                                 -wz_gyro * PRECISION_FLOAT_TO_INT / 10, 10);
+
+        true_north_final_int_temp = true_north_final_int * 100 / PRECISION_FLOAT_TO_INT;
+        true_north_final_int_temp >= 0 ? (true_north_final_int_temp = true_north_final_int_temp % 36000) :
+        (true_north_final_int_temp = 36000 + true_north_final_int_temp);
+
 //        printf("%f %f %f", magnetometer_correction.x, magnetometer_correction.y, magnetometer_correction.z);
 //        gui_printf(5, 12, C_BLACK, C_WHITE, "true_north:%.4f", true_north);
 //        gui_flush();            // 错开GUI的DMA刷新，但是UART6的DMA可能会受到这个的影响。
