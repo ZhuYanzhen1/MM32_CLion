@@ -478,6 +478,10 @@
     [
       "364540f7-0c58-4618-8ce3-bea6d054cb4e",
       "Compass&Storage"
+    ],
+    [
+      "7c560bda-f929-4e77-960a-fa15837ad328",
+      "Coprocessor"
     ]
   ],
   "text_variables": {}
