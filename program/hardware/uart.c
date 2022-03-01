@@ -55,7 +55,6 @@ void uart1_config() {
 
 void uart3_config() {
     UART_InitTypeDef UART_InitStruct;
-    NVIC_InitTypeDef NVIC_InitStruct;
     GPIO_InitTypeDef GPIO_InitStruct;
 
     RCC_APB1PeriphClockCmd(RCC_APB1ENR_UART3, ENABLE);
@@ -73,12 +72,6 @@ void uart3_config() {
     GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IPU;
     GPIO_Init(GPIOD, &GPIO_InitStruct);
 
-    NVIC_InitStruct.NVIC_IRQChannel = UART3_IRQn;
-    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = UART3_PRIORITY;
-    NVIC_InitStruct.NVIC_IRQChannelSubPriority = 0;
-    NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
-    NVIC_Init(&NVIC_InitStruct);
-
     UART_StructInit(&UART_InitStruct);
     UART_InitStruct.BaudRate = UART3_BAUDRATE;
     UART_InitStruct.WordLength = UART_WordLength_8b;
@@ -88,7 +81,6 @@ void uart3_config() {
     UART_InitStruct.Mode = UART_Mode_Rx | UART_Mode_Tx;
 
     UART_Init(UART3, &UART_InitStruct);
-    UART_ITConfig(UART3, UART_IT_RXIEN, ENABLE);
     UART_Cmd(UART3, ENABLE);
 }
 
@@ -112,7 +104,6 @@ void uart6_config() {
     GPIO_Init(GPIOB, &GPIO_InitStruct);
 
     UART_StructInit(&UART_InitStruct);
-
     UART_InitStruct.BaudRate = UART6_BAUDRATE;
     UART_InitStruct.WordLength = UART_WordLength_8b;
     UART_InitStruct.StopBits = UART_StopBits_1;
