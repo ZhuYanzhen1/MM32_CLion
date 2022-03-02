@@ -6,8 +6,8 @@
 
   (title_block
     (title "MM32_Board")
-    (date "2022-02-28")
-    (rev "1.3.1")
+    (date "2022-03-02")
+    (rev "1.3.2")
   )
 
   (lib_symbols
@@ -34,10 +34,6 @@
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 11dffbc5-70bc-4a78-9c8c-f686aecf722f)
   )
-  (wire (pts (xy 201.295 91.44) (xy 213.36 91.44))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 12e48925-b6d5-4201-bd2d-aa49e76d9560)
-  )
   (wire (pts (xy 80.645 99.695) (xy 125.73 99.695))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 1c607ca0-f4c9-4d99-92ac-72da3a395c3a)
@@ -45,6 +41,10 @@
   (wire (pts (xy 114.3 88.9) (xy 125.73 88.9))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 1e86b4c5-7cc5-4cd3-9127-b2df4b25ab31)
+  )
+  (wire (pts (xy 201.295 86.995) (xy 213.36 86.995))
+    (stroke (width 0) (type default) (color 0 0 0 0))
+    (uuid 20c6bb01-a123-4858-a06c-a8b3d0d49c9c)
   )
   (wire (pts (xy 114.3 125.095) (xy 125.73 125.095))
     (stroke (width 0) (type default) (color 0 0 0 0))
@@ -62,6 +62,10 @@
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 2cc5b21f-91f8-46f9-a230-409a5e5c1b8a)
   )
+  (wire (pts (xy 201.295 94.615) (xy 213.36 94.615))
+    (stroke (width 0) (type default) (color 0 0 0 0))
+    (uuid 393133ef-b69a-4bb5-9e76-4690f4cec465)
+  )
   (wire (pts (xy 201.295 133.985) (xy 213.36 133.985))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 3c97148e-22d8-44e6-b996-a8029f2f87ec)
@@ -78,9 +82,13 @@
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 460d7fce-30c9-4900-ab48-ade8d5538ac9)
   )
-  (wire (pts (xy 201.295 96.52) (xy 213.36 96.52))
+  (wire (pts (xy 201.295 89.535) (xy 213.36 89.535))
     (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 49b7e8aa-b567-4ff3-8146-6a2ac18c8cce)
+    (uuid 53a0707b-2b9e-4a26-82a5-a88b8ffa9fa8)
+  )
+  (wire (pts (xy 201.295 92.075) (xy 213.36 92.075))
+    (stroke (width 0) (type default) (color 0 0 0 0))
+    (uuid 57b9e5a4-0c1e-44c1-a602-479c573aeadd)
   )
   (wire (pts (xy 201.295 120.65) (xy 213.36 120.65))
     (stroke (width 0) (type default) (color 0 0 0 0))
@@ -166,13 +174,13 @@
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid e1d7e63f-15e0-40f2-bb37-8218f7ab6a5a)
   )
-  (wire (pts (xy 201.295 93.98) (xy 213.36 93.98))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid e2b16510-4cf6-4097-8e13-4007f27066f4)
-  )
   (wire (pts (xy 172.085 67.945) (xy 213.36 67.945))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid e7502a15-9dd2-4f40-a327-3feb045c3230)
+  )
+  (wire (pts (xy 201.295 97.79) (xy 213.36 97.79))
+    (stroke (width 0) (type default) (color 0 0 0 0))
+    (uuid ede576b3-ee99-4478-b612-80fd052f3155)
   )
 
   (sheet (at 91.44 83.82) (size 22.86 12.7) (fields_autoplaced)
@@ -469,18 +477,6 @@
     (property "Sheet file" "Compass&Storage.kicad_sch" (id 1) (at 213.36 89.535 0)
       (effects (font (size 1.27 1.27)) (justify left top) hide)
     )
-    (pin "COMPASS_RDY" output (at 213.36 96.52 180)
-      (effects (font (size 1.27 1.27)) (justify left))
-      (uuid 5209d585-69bd-4247-8045-3d135c7359d0)
-    )
-    (pin "COMPASS_SDA" bidirectional (at 213.36 93.98 180)
-      (effects (font (size 1.27 1.27)) (justify left))
-      (uuid 6e706488-c11f-415d-a18b-2213d7910635)
-    )
-    (pin "COMPASS_SCL" input (at 213.36 91.44 180)
-      (effects (font (size 1.27 1.27)) (justify left))
-      (uuid 84d661f8-8cad-423e-8f45-5708e8db964d)
-    )
     (pin "EEPROM_SCL" input (at 213.36 67.945 180)
       (effects (font (size 1.27 1.27)) (justify left))
       (uuid 56d95dcb-8027-4346-b675-a9531585163a)
@@ -489,13 +485,33 @@
       (effects (font (size 1.27 1.27)) (justify left))
       (uuid a30a8619-b67f-4d27-ac67-1a1ca117d055)
     )
+    (pin "Compass_MISO" output (at 213.36 94.615 180)
+      (effects (font (size 1.27 1.27)) (justify left))
+      (uuid 98ccebb5-b43d-4e5e-b17e-63f51d32e1d2)
+    )
+    (pin "Compass_MOSI" input (at 213.36 92.075 180)
+      (effects (font (size 1.27 1.27)) (justify left))
+      (uuid b903a159-3278-4cf1-8143-fc4c78e65522)
+    )
+    (pin "Compass_CS" input (at 213.36 86.995 180)
+      (effects (font (size 1.27 1.27)) (justify left))
+      (uuid ec0b0953-1895-43b0-9929-f811859a6e2c)
+    )
+    (pin "Compass_CLK" input (at 213.36 89.535 180)
+      (effects (font (size 1.27 1.27)) (justify left))
+      (uuid b62c9b46-77b4-4423-97e3-67dd778040de)
+    )
+    (pin "Compass_DR" output (at 213.36 97.79 180)
+      (effects (font (size 1.27 1.27)) (justify left))
+      (uuid c7e37063-614c-4c32-9d84-1f9e1b69f6db)
+    )
   )
 
-  (sheet (at 183.515 86.36) (size 17.78 60.325) (fields_autoplaced)
+  (sheet (at 183.515 82.55) (size 17.78 64.135) (fields_autoplaced)
     (stroke (width 0.1524) (type solid) (color 0 0 0 0))
     (fill (color 0 0 0 0.0000))
     (uuid 7c560bda-f929-4e77-960a-fa15837ad328)
-    (property "Sheet name" "Coprocessor" (id 0) (at 183.515 85.6484 0)
+    (property "Sheet name" "Coprocessor" (id 0) (at 183.515 81.8384 0)
       (effects (font (size 1.27 1.27)) (justify left bottom))
     )
     (property "Sheet file" "Coprocessor.kicad_sch" (id 1) (at 183.515 147.2696 0)
@@ -517,18 +533,6 @@
       (effects (font (size 1.27 1.27)) (justify right))
       (uuid c30b9174-ed9c-4b39-938d-dbf535b3bc3a)
     )
-    (pin "IIC1_SCL" output (at 201.295 91.44 0)
-      (effects (font (size 1.27 1.27)) (justify right))
-      (uuid b7280c43-5ea0-42ea-b3ff-0443e929cc3d)
-    )
-    (pin "IIC1_SDA" bidirectional (at 201.295 93.98 0)
-      (effects (font (size 1.27 1.27)) (justify right))
-      (uuid 1bfb72a2-be1f-407b-8aa5-272a0a3e342d)
-    )
-    (pin "PB2" input (at 201.295 96.52 0)
-      (effects (font (size 1.27 1.27)) (justify right))
-      (uuid 90304d3f-2b49-4fa7-b3d1-86f64fce0291)
-    )
     (pin "PA6" input (at 201.295 136.525 0)
       (effects (font (size 1.27 1.27)) (justify right))
       (uuid 3dbdc98e-5c04-4989-95ad-f1be9e032cda)
@@ -544,6 +548,26 @@
     (pin "UART1_TX" output (at 183.515 106.045 180)
       (effects (font (size 1.27 1.27)) (justify left))
       (uuid ceac9c61-e5ad-4947-8129-bf4e87ce6ae8)
+    )
+    (pin "SPI2_NSS" output (at 201.295 86.995 0)
+      (effects (font (size 1.27 1.27)) (justify right))
+      (uuid f50842a4-650a-44c1-bed7-41fb4c9dba0a)
+    )
+    (pin "SPI2_MISO" input (at 201.295 94.615 0)
+      (effects (font (size 1.27 1.27)) (justify right))
+      (uuid 5371b507-c12f-4b96-847d-27f057a64011)
+    )
+    (pin "SPI2_MOSI" output (at 201.295 92.075 0)
+      (effects (font (size 1.27 1.27)) (justify right))
+      (uuid d37e6e2d-afc3-4a82-a774-9020c804f07b)
+    )
+    (pin "SPI2_CLK" output (at 201.295 89.535 0)
+      (effects (font (size 1.27 1.27)) (justify right))
+      (uuid 9db09603-193f-4939-bc7d-0fe40ab23a10)
+    )
+    (pin "PC6" input (at 201.295 97.79 0)
+      (effects (font (size 1.27 1.27)) (justify right))
+      (uuid c8d9b44b-7439-44f7-9e79-337550a67b06)
     )
   )
 
@@ -754,17 +778,14 @@
     (path "/00000000-0000-0000-0000-000061a493c9/00000000-0000-0000-0000-000061e8076f"
       (reference "#PWR047") (unit 1) (value "GNDA") (footprint "")
     )
-    (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/45d738b8-f947-423e-a920-41cf36d2f4de"
+    (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/a6775428-a60b-4f97-b264-253b40d8e192"
       (reference "#PWR048") (unit 1) (value "+3.3VADC") (footprint "")
     )
-    (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/c3b0e43d-9a6a-4a9f-a714-e08909d82f1b"
-      (reference "#PWR049") (unit 1) (value "+3.3VADC") (footprint "")
+    (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/41bd3c43-0fc4-48be-bb81-2828e90c227c"
+      (reference "#PWR049") (unit 1) (value "GNDA") (footprint "")
     )
-    (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/d01e7679-d450-4cdf-b461-a0157d013803"
-      (reference "#PWR050") (unit 1) (value "+3.3VADC") (footprint "")
-    )
-    (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/ed340206-14a4-455b-8ea9-39768ecd0f28"
-      (reference "#PWR051") (unit 1) (value "GNDA") (footprint "")
+    (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/acb8ee8f-b6db-4402-856e-8cc0d08027b9"
+      (reference "#PWR050") (unit 1) (value "GNDA") (footprint "")
     )
     (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/4fcaf938-c8f0-4844-b67d-d08f4c665a24"
       (reference "#PWR052") (unit 1) (value "GNDA") (footprint "")
@@ -1396,9 +1417,6 @@
     (path "/b932d339-7888-4506-92dc-7b9f4a021ec5/f0f75b81-72fe-4a7f-8a1a-a9c6f0a003a6"
       (reference "C68") (unit 1) (value "100nF") (footprint "ControlBoard:C_0603_1608Metric")
     )
-    (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/4eb8beb8-e1a5-4685-9ad8-287b2764f530"
-      (reference "C70") (unit 1) (value "220nF") (footprint "ControlBoard:C_0603_1608Metric")
-    )
     (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/1f65eb4c-5fc9-47ce-9c25-03b83f3814a4"
       (reference "C71") (unit 1) (value "4.7uF") (footprint "ControlBoard:C_0603_1608Metric")
     )
@@ -1465,11 +1483,11 @@
     (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/9fda019a-5350-4524-b5e4-0e13d75d61d1"
       (reference "R10") (unit 1) (value "10kR") (footprint "ControlBoard:R_0603_1608Metric")
     )
-    (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/dffb8a34-d8bd-480f-84de-ac0e68ea6ade"
-      (reference "R11") (unit 1) (value "10kR") (footprint "ControlBoard:R_0603_1608Metric")
+    (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/67b0ea81-3642-46a2-8355-d60793417e57"
+      (reference "R11") (unit 1) (value "121R") (footprint "ControlBoard:R_0603_1608Metric")
     )
     (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/2275492a-6359-4cd4-b350-01dd400f86da"
-      (reference "R12") (unit 1) (value "10kR") (footprint "ControlBoard:R_0603_1608Metric")
+      (reference "R12") (unit 1) (value "33kR") (footprint "ControlBoard:R_0603_1608Metric")
     )
     (path "/7c560bda-f929-4e77-960a-fa15837ad328/64061abf-a031-4cf4-b8c4-a6b55a09d428"
       (reference "R13") (unit 1) (value "10kR") (footprint "ControlBoard:R_0603_1608Metric")
@@ -1479,6 +1497,30 @@
     )
     (path "/7c560bda-f929-4e77-960a-fa15837ad328/aff8739e-353d-4154-a5a0-d640b8d4acd6"
       (reference "R15") (unit 1) (value "10kR") (footprint "ControlBoard:R_0603_1608Metric")
+    )
+    (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/dc301244-5e61-4fd0-8b27-8600aa8a128e"
+      (reference "R16") (unit 1) (value "121R") (footprint "ControlBoard:R_0603_1608Metric")
+    )
+    (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/550032b8-ac1a-4add-998e-66bec0bec8ee"
+      (reference "R17") (unit 1) (value "121R") (footprint "ControlBoard:R_0603_1608Metric")
+    )
+    (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/9968087a-1796-4fc1-a61c-12224b3cfb36"
+      (reference "R18") (unit 1) (value "121R") (footprint "ControlBoard:R_0603_1608Metric")
+    )
+    (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/4ef7ac11-d4ed-4ace-be37-e21d7f63f921"
+      (reference "R19") (unit 1) (value "121R") (footprint "ControlBoard:R_0603_1608Metric")
+    )
+    (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/c5318030-0c39-492d-82c8-f5e8f484d6df"
+      (reference "R20") (unit 1) (value "121R") (footprint "ControlBoard:R_0603_1608Metric")
+    )
+    (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/72a8a79e-a772-48b4-ab19-23f2cc1e83e2"
+      (reference "R21") (unit 1) (value "PN13101(Z)") (footprint "")
+    )
+    (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/502d3ff1-5239-4490-b785-a16dc791dfd7"
+      (reference "R22") (unit 1) (value "PN13104(XY)") (footprint "")
+    )
+    (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/6152da4d-452d-4939-aedd-70eddfb32f6a"
+      (reference "R23") (unit 1) (value "PN13104(XY)") (footprint "")
     )
     (path "/b932d339-7888-4506-92dc-7b9f4a021ec5/5be3d2d4-2465-422c-8da7-9722bb04468f"
       (reference "SW1") (unit 1) (value "SW_DIP_x02") (footprint "ControlBoard:SW_DIP_SPSTx02_Slide_Copal_CHS-02B_W7.62mm_P1.27mm")
@@ -1519,8 +1561,8 @@
     (path "/b932d339-7888-4506-92dc-7b9f4a021ec5/33a172fa-a27c-4f1b-a064-556bfc13e664"
       (reference "U12") (unit 1) (value "CH440R") (footprint "ControlBoard:TSSOP-16_4.4x5mm_P0.65mm")
     )
-    (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/e9849458-b660-4143-bb2d-8de2b914ecd0"
-      (reference "U13") (unit 1) (value "HMC5883L") (footprint "ControlBoard:QFN-16_3x3_Pitch0.5mm")
+    (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/9181ff88-2f85-4129-b483-720f264e83b2"
+      (reference "U13") (unit 1) (value "RM3100_13156") (footprint "")
     )
     (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/0c3ba1b6-7976-4c67-9efa-1457c99ef463"
       (reference "U14") (unit 1) (value "AT24C02") (footprint "ControlBoard:SOP-8_3.9x4.9mm_P1.27mm")
