@@ -9,7 +9,6 @@
 #ifndef MM32F3277_DEVICE_ADIS16470_H_
 #define MM32F3277_DEVICE_ADIS16470_H_
 
-#define FACTOR_ALLC 1.25f
 #define FACTOR_GYRO 0.0017452f
 #define DR_HIGH     GPIO_ReadInputDataBit(IMU_DR_PORT, IMU_DR_PIN)
 
@@ -34,6 +33,8 @@ typedef volatile struct {
     short delta_v_y;
     short delta_v_z;
 } adis_point;
+
+extern adis16470_t imu;
 
 short adis_read_uid();
 short adis_read_register(unsigned int register_address);

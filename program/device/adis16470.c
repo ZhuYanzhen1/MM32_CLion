@@ -11,6 +11,7 @@
 #include "hal_gpio.h"
 #include "hal_conf.h"
 #include "delay.h"
+#include "qfplib.h"
 
 #define SPI3_NSS_SET()              GPIO_SetBits(GPIOD, GPIO_Pin_7);
 #define SPI3_NSS_RESET()            GPIO_ResetBits(GPIOD, GPIO_Pin_7);
@@ -89,7 +90,5 @@ void adis_burst_read() {
 //
 //TODO 计算checksum是否正确
 //
-
     SPI3_NSS_SET()
-
 }
