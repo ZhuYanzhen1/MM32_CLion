@@ -49,27 +49,27 @@ void UART3_IRQHandler(void) {
     }
 }
 
-typedef enum { buffer_ok = 0, buffer_no_1 = 1, buffer_no_2 = 2 } buffer_no;
+typedef enum { buffer_no_1 = 1, buffer_no_2 = 2 } buffer_no;
 buffer_no uart6_free_buffer_no = buffer_no_1;
-unsigned int usart6_dma_buffer_1[74];
-unsigned int usart6_dma_buffer_2[74];
+unsigned int usart3_dma_buffer_1[74];
+unsigned int usart3_dma_buffer_2[74];
 
 // 70.6us ~ 68.1us in V status
 // 63.5us in A status
-void DMA1_Channel1_IRQHandler(void) {
-    if (DMA_GetITStatus(DMA1_IT_TC1)) {
+void DMA1_Channel3_IRQHandler(void) {
+    if (DMA_GetITStatus(DMA1_IT_TC3)) {
         /* Clear all interrupt flags */
-        DMA_ClearITPendingBit(DMA1_IT_GL1);
+        DMA_ClearITPendingBit(DMA1_IT_GL3);
 
         /* Double ping pong buffer */
         if (uart6_free_buffer_no == buffer_no_1) {
-            uart6_dma_set_transmit_buffer(usart6_dma_buffer_2, 74);
+            uart3_dma_set_transmit_buffer(usart3_dma_buffer_2, 74);
             uart6_free_buffer_no = buffer_no_2;
-            deal_dma_gnrmc(usart6_dma_buffer_1);
+            deal_dma_gnrmc(usart3_dma_buffer_1);
         } else {
-            uart6_dma_set_transmit_buffer(usart6_dma_buffer_1, 74);
+            uart3_dma_set_transmit_buffer(usart3_dma_buffer_1, 74);
             uart6_free_buffer_no = buffer_no_1;
-            deal_dma_gnrmc(usart6_dma_buffer_2);
+            deal_dma_gnrmc(usart3_dma_buffer_2);
         }
     }
 }

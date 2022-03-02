@@ -15,14 +15,14 @@
 #include "dma.h"
 #include "hal_conf.h"
 
-#define UART6_CONFIG_GPS(cmdbuf)            for (unsigned char i = 0; i < (unsigned char) sizeof(cmdbuf); i++)\
-                                                uart6_sendbyte((cmdbuf)[i]);\
+#define UART3_CONFIG_GPS(cmdbuf)            for (unsigned char i = 0; i < (unsigned char) sizeof(cmdbuf); i++)\
+                                                uart3_sendbyte((cmdbuf)[i]);\
                                             delayms(100);
 #define CLOSE_PACKAGE_OUTPUT(a, b, c, d)    output_rmc[7]=a;\
                                             output_rmc[8]=b;\
                                             output_rmc[9]=c;\
                                             output_rmc[10]=d;\
-                                            UART6_CONFIG_GPS(output_rmc)
+                                            UART3_CONFIG_GPS(output_rmc)
 //
 //TODO 没加冷启动热启动的相关初始化代码
 //
@@ -34,12 +34,12 @@
             3：Output RMC packages only
             4：Using GPS and BeiDou
             5：Use NMEA version 4.1 compatible protocol
-            6：uart6_dma_receive_config
+            6：uart3_dma_receive_config
             7：dma_nvic_config
             8：DMA_Cmd
 */
-extern unsigned int usart6_dma_buffer_1[74];
-extern unsigned int usart6_dma_buffer_2[74];
+extern unsigned int usart3_dma_buffer_1[74];
+extern unsigned int usart3_dma_buffer_2[74];
 void gps_config() {
     char output_frequency_10Hz[] = {0xF1, 0xD9, 0x06, 0x42, 0x14, 0x00, 0x00, 0x0A,
                                     0x38, 0x00, 0x64, 0x00, 0x00, 0x00, 0x00,
@@ -47,12 +47,12 @@ void gps_config() {
                                     0x00, 0x00, 0x00, 0x00, 0x02, 0x24};
     char output_rmc[] = {0xF1, 0xD9, 0x06, 0x01, 0x03, 0x00, 0xF0,
                          0x05, 0x01, 0x00, 0x1A};
-    uart6_dma_nvic_config();
-    uart6_dma_receive_config(usart6_dma_buffer_1, 74);
-    DMA_Cmd(DMA1_Channel1, DISABLE);
+    uart3_dma_nvic_config();
+    uart3_dma_receive_config(usart3_dma_buffer_1, 74);
+    DMA_Cmd(DMA1_Channel3, DISABLE);
     delayms(10);
-    UART6_CONFIG_GPS(output_frequency_10Hz)
-    UART6_CONFIG_GPS(output_rmc)
+    UART3_CONFIG_GPS(output_frequency_10Hz)
+    UART3_CONFIG_GPS(output_rmc)
     CLOSE_PACKAGE_OUTPUT(0x00, 0x00, 0xFA, 0x0F)
     CLOSE_PACKAGE_OUTPUT(0x01, 0x00, 0xFB, 0x11)
     CLOSE_PACKAGE_OUTPUT(0x02, 0x00, 0xFC, 0x13)
@@ -61,7 +61,7 @@ void gps_config() {
     CLOSE_PACKAGE_OUTPUT(0x07, 0x00, 0x01, 0x1D)
     CLOSE_PACKAGE_OUTPUT(0x08, 0x00, 0x02, 0x1F)
     CLOSE_PACKAGE_OUTPUT(0x20, 0x00, 0x1A, 0x4F)
-    DMA_Cmd(DMA1_Channel1, ENABLE);
+    DMA_Cmd(DMA1_Channel3, ENABLE);
 }
 
 /*!

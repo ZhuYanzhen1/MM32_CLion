@@ -33,7 +33,7 @@
 #define TIM2_PRIORITY           10
 #define UART1_PRIORITY          2
 #define UART3_PRIORITY          3
-#define UART6_DMA_PRIORITY      2
+#define UART3_DMA_PRIORITY      2
 #define UART1_DMA_PRIORITY      3
 #define EXTI0_PRIORITY          14
 

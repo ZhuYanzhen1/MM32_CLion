@@ -10,6 +10,7 @@
 #include "iic.h"
 #include "delay.h"
 #include "qfplib.h"
+#include "kalman.h"
 
 hmc5883l magnetometer = {0};
 hmc_correction magnetometer_correction = {0};
@@ -131,7 +132,7 @@ void hmc5883l_correction() {
 }
 
 /* b:机体坐标系；n：东北天 */
-float coordinate_system_transformation_b_to_n() {
+float ture_north_begin() {
     float initial_ture_north;
     for (unsigned char i = 0; i < AVERAGE_NUM_TURE_NORTH; i++) {
         iic_read_hmc5883l();
@@ -140,12 +141,9 @@ float coordinate_system_transformation_b_to_n() {
                                       qfp_fadd(qfp_fmul(qfp_fatan2(magnetometer_correction.y,
                                                                    magnetometer_correction.x),
                                                         qfp_fdiv(180, PI)), 180));
-
     }
     initial_ture_north = qfp_fdiv(initial_ture_north, AVERAGE_NUM_TURE_NORTH);
-    initial_ture_north *= 10;
     return initial_ture_north;
 }
 //        angle = (atan2(Mag[1],Mag[0])*(180 / pi)+180);
-
 

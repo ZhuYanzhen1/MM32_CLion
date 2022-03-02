@@ -154,14 +154,25 @@ unsigned char nmea_get_checksum(char *buffer) {
 }
 
 /*!
-    \brief      Convert the latitude and longitude read by gps to int format of hours, minutes and seconds
+    \brief      Convert the latitude and longitude read by gps to int format of degree,
+                The highest two to three digits are integer parts, the rest are fractional parts
     \param[in]  degree: Longitude or Latitude
     \param[in]  decimal_places: Fractional digits of latitude and longitude
+    \retval     Decimal places
 */
-void change_latitude_longitude_format(int *degree, char decimal_places) {
-    int fractional_part = nmea_pow(10, decimal_places);
-    int second_latitude = (*degree % fractional_part) * 60;
-    *degree = (*degree / fractional_part) * 100000 + second_latitude;
+unsigned char change_latitude_longitude_format(int *degree, char decimal_places) {
+    int fractional_part = nmea_pow(10, decimal_places + 2);
+    int decimal_latitude = (*degree % fractional_part) / 60;
+    int temp_decimal = decimal_latitude;
+    unsigned char n = 0;
+    while (temp_decimal > 0) {
+        temp_decimal /= 10;
+        n++;
+    }
+//    *degree = (*degree / fractional_part) * nmea_pow(10, decimal_places) + decimal_latitude;
+    int int_degree = *degree / fractional_part;
+    *degree = num_times_nth_power_of_10(int_degree, n) + decimal_latitude;
+    return n;
 }
 
 /*!
@@ -194,9 +205,6 @@ void nmea_gnrmc_analysis(char *buffer) {
     STRING_TO_NUM(gps_rmc.direction_of_ground_truth, gps_rmc.decimal_places_direction, 8)
     STRING_TO_NUM(gps_rmc.date, decimal_places, 9)
     STRING_TO_STR(gps_rmc.mode, 12)
-
-    change_latitude_longitude_format(&gps_rmc.latitude, gps_rmc.decimal_places_latitude);
-    change_latitude_longitude_format(&gps_rmc.longitude, gps_rmc.decimal_places_longitude);
 }
 
 static unsigned char status = 0;
@@ -235,7 +243,10 @@ void deal_dma_gnrmc(const unsigned int *p) {
                 if (p[counter] == '\r') status = 2;
                 else goto copy_data_to_package_buffer;
                 break;
+            default:break;
         }
     }
 }
 #endif  // RUNNING_UNIT_TEST
+
+
