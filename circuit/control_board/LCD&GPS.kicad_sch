@@ -5,9 +5,9 @@
   (paper "A4")
 
   (title_block
-    (title "MM32_Board")
-    (date "2022-03-02")
-    (rev "1.3.2")
+    (title "MM32 Control Board")
+    (date "2022-03-03")
+    (rev "1.3.3")
   )
 
   (lib_symbols
