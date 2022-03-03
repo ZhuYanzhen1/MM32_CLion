@@ -57,6 +57,6 @@ void nmea_gnrmc_analysis(char *buffer);
 void deal_dma_gnrmc(const unsigned int *p);
 int nmea_pow(char m, char n);
 int num_times_nth_power_of_10(int num, int n);
-unsigned char change_latitude_longitude_format(int *degree, char decimal_places);
+unsigned char change_latitude_longitude_format(unsigned int *degree, char decimal_places);
 
 #endif // MAIN_C_PROTOCOL_GPS_PARSER_H_
