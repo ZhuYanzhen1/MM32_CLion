@@ -7,14 +7,14 @@
 #include "adis16470.h"
 #include "gps_parser.h"
 
-neu_infomation neu;
+neu_infomation neu = {0};
 
-void kalman_config_angle(kalman_filter_float *kalman) {
+void kalman_config_angle(kalman_filter_float *kalman, float pos_0) {
     kalman->QPos = 0.0065f;
     kalman->QVel = 0.01f;
     kalman->RPos = 0.56f;    //0.03f;
 
-    kalman->pos = 0.0f;  // Reset the pos
+    kalman->pos = pos_0;  // Reset the pos
     kalman->vel = 0.0f;  // Reset speed
     kalman->bias = 0.0f; // Reset bias of velocity
 
@@ -83,8 +83,6 @@ float kalman_update(kalman_filter_float *kalman, float newpos, float newVel, flo
         if (y >= 300 || y <= -300)
             kalman->pos = newpos;
 
-
-
     // Calculate estimation error covariance - Update the error covariance
     /* Step 7 */
     float P00_temp = kalman->P[0][0];
@@ -97,8 +95,6 @@ float kalman_update(kalman_filter_float *kalman, float newpos, float newVel, flo
 
     return kalman->pos;
 };
-
-#include "math.h"
 
 // 经纬度的格式是最高2、3位为整数，其余为小数
 float get_distance_m(float lon_or_lat) {
@@ -113,32 +109,56 @@ float get_distance_m(float lon_or_lat) {
     return earth_radius * c;
 }
 
+float get_distance_m_lat(float lat) {
+    float distance = GEO_ANGLE(lat);
+    return EARTH_RADIUS * distance;
+}
+
+float get_distance_m_lon(float lon) {
+    float distance = GEO_ANGLE(lon);
+    return EARTH_RADIUS * distance;
+}
+
 /* 将载体坐标系转换为北东天 */
 // 参数是计算出来的真北角
 // 将要转换的数据提前变化为合适的单位
-// 精度可能不够，建议加多一位，不能多加，因为这样下去经度要超过int的范围了
-#if 0
-void coordinate_system_transformation_neu(float delta) {
-    unsigned char lat_decimal_place = 0, lon_decimal_place = 0;
-    int lat_decimal = 1, lon_decimal = 1, gps_v_decimal = 1;
-    lat_decimal_place = change_latitude_longitude_format(&gps_rmc.latitude, gps_rmc.decimal_places_latitude);
-    lon_decimal_place = change_latitude_longitude_format(&gps_rmc.longitude, gps_rmc.decimal_places_longitude);
+
+void coordinate_system_transformation_neu(float delta, float dt) {
+    unsigned char lat_decimal_place, lon_decimal_place;
+    int lat_decimal = 1, lon_decimal = 1;
+    int temp_lat = gps_rmc.latitude, temp_lon = gps_rmc.longitude;
+    lat_decimal_place =
+        change_latitude_longitude_format((unsigned int *) &temp_lat, gps_rmc.decimal_places_latitude);
+    lon_decimal_place =
+        change_latitude_longitude_format((unsigned int *) &temp_lon, gps_rmc.decimal_places_longitude);
     lat_decimal = num_times_nth_power_of_10(lat_decimal, lat_decimal_place);
     lon_decimal = num_times_nth_power_of_10(lon_decimal, lon_decimal_place);
-    gps_v_decimal = num_times_nth_power_of_10(gps_v_decimal, gps_rmc.decimal_places_speed);
+    neu.north_distance = get_distance_m_lat((float) temp_lat / (float) lat_decimal);
+    neu.east_distance = get_distance_m_lon((float) temp_lon / (float) lon_decimal);
 
-    /* Convert latitude and longitude to units of° */
-    gps_rmc.speed_to_ground_section =
-        KNOT_TO_M_S(gps_rmc.speed_to_ground_section); // Converting the units of speed to m/s
-    //    neu.north_acceleration =
-    (float) imu.x_acll * FACTOR_ALLC * cos((double) delta) + (float) imu.y_acll * FACTOR_ALLC * cos((double) delta);
     neu.north_acceleration = MG_TO_M_S_2
-    ((float) imu.x_acll * FACTOR_ALLC * qfp_fcos(delta) + (float) imu.y_acll * FACTOR_ALLC * qfp_fcos(delta));
-    neu.earth_acceleration = MG_TO_M_S_2
-    ((float) imu.x_acll * FACTOR_ALLC * qfp_fsin(delta) + (float) imu.y_acll * FACTOR_ALLC * qfp_fsin(delta));
-    neu.north_v = (float) gps_rmc.speed_to_ground_section / (float) gps_v_decimal * qfp_fcos(delta);
-    neu.earth_v = (float) gps_rmc.speed_to_ground_section / (float) gps_v_decimal * qfp_fsin(delta);
-    neu.north_distance = get_distance_m((float) gps_rmc.latitude / (float) lat_decimal);
-    neu.earth_distance = get_distance_m((float) gps_rmc.longitude / (float) lon_decimal);
+    ((float) imu.x_acll * FACTOR_ALLC * qfp_fcos(delta) + (float) imu.y_acll * FACTOR_ALLC * qfp_fcos(delta + 90));
+    neu.east_acceleration = MG_TO_M_S_2
+    ((float) imu.x_acll * FACTOR_ALLC * qfp_fsin(delta) + (float) imu.y_acll * FACTOR_ALLC * qfp_fsin(delta + 90));
+
+
+
+//    if (neu.north_acceleration >= 1 || neu.north_acceleration <= -1) {
+//        neu.north_v += neu.north_acceleration * dt;
+//    } else {
+//        if (neu.north_v <= 0.5 || neu.north_v >= -0.5) { neu.north_v = 0; }
+//    }
+//    if (neu.east_acceleration >= 1 || neu.east_acceleration <= -1) {
+//        neu.east_v += neu.east_acceleration * dt;
+//    } else {
+//        if (neu.east_v <= 0.5 || neu.east_v >= -0.5) { neu.east_v = 0; }
+//    }
+
+/* 用GPS得到速度，转换单位后，再把坐标系转换为北东天 */
+//    gps_rmc.speed_to_ground_section =
+//        KNOT_TO_M_S(gps_rmc.speed_to_ground_section); // Converting the units of speed to m/s
+//    gps_v_decimal = num_times_nth_power_of_10(gps_v_decimal, gps_rmc.decimal_places_speed);
+//    neu.north_v = (float) gps_rmc.speed_to_ground_section / (float) gps_v_decimal * qfp_fcos(delta);
+//    neu.east_v = (float) gps_rmc.speed_to_ground_section / (float) gps_v_decimal * qfp_fsin(delta);
+
 }
-#endif
