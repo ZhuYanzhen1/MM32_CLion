@@ -33,9 +33,9 @@
         "other_text_thickness": 0.15,
         "other_text_upright": false,
         "pads": {
-          "drill": 0.762,
-          "height": 1.524,
-          "width": 1.524
+          "drill": 0.0,
+          "height": 2.45,
+          "width": 2.45
         },
         "silk_line_width": 0.15,
         "silk_text_italic": false,
@@ -106,7 +106,7 @@
         "allow_blind_buried_vias": false,
         "allow_microvias": false,
         "max_error": 0.005,
-        "min_clearance": 0.19999999999999998,
+        "min_clearance": 0.15,
         "min_copper_edge_clearance": 0.19999999999999998,
         "min_hole_clearance": 0.25,
         "min_hole_to_hole": 0.25,
@@ -114,7 +114,7 @@
         "min_microvia_drill": 0.09999999999999999,
         "min_silk_clearance": 0.0,
         "min_through_hole_diameter": 0.19999999999999998,
-        "min_track_width": 0.09999999999999999,
+        "min_track_width": 0.15,
         "min_via_annular_width": 0.049999999999999996,
         "min_via_diameter": 0.44999999999999996,
         "use_height_for_length_calcs": true
@@ -368,7 +368,7 @@
     "classes": [
       {
         "bus_width": 12.0,
-        "clearance": 0.2,
+        "clearance": 0.15,
         "diff_pair_gap": 0.2,
         "diff_pair_via_gap": 0.25,
         "diff_pair_width": 0.2,
@@ -387,15 +387,7 @@
     "meta": {
       "version": 2
     },
-    "net_colors": {
-      "+3.3VA": "rgb(0, 255, 255)",
-      "+3.3VADC": "rgb(255, 255, 194)",
-      "+3.3VP": "rgb(255, 229, 191)",
-      "+5V": "rgb(128, 77, 0)",
-      "+5VA": "rgb(72, 72, 0)",
-      "GND": "rgb(194, 194, 194)",
-      "GNDA": "rgb(72, 72, 72)"
-    }
+    "net_colors": null
   },
   "pcbnew": {
     "last_paths": {
