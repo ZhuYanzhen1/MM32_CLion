@@ -27,9 +27,9 @@ void kalman_config_angle(kalman_filter_float *kalman, float pos_0) {
 }
 
 void kalman_config_v(kalman_filter_float *kalman) {
-    kalman->QPos = 0;
-    kalman->QVel = 0;
-    kalman->RPos = 0;    //0.03f;
+    kalman->QPos = 0.001f;
+    kalman->QVel = 0.01f;
+    kalman->RPos = 0.01595f;    //0.03f;
 
     kalman->pos = 0;  // Reset the pos
     kalman->vel = 0.0f;  // Reset speed
@@ -55,10 +55,10 @@ void kalman_config_distance(kalman_filter_float *kalman, float pos_0) {
 
     // Since we assume that the speed is 0 and we know the starting pos (use setpos),
     // the error covariance matrix is set like so
-    kalman->P[0][0] = 0.0049525f;
-    kalman->P[0][1] = 0.0032382f;
-    kalman->P[1][0] = 0.0032382f;
-    kalman->P[1][1] = 0.0048883f;
+    kalman->P[0][0] = 0.0049525f;//0.0526622012
+    kalman->P[0][1] = 0.0032382f;//-0.022636503
+    kalman->P[1][0] = 0.0032382f;//-0.022636503
+    kalman->P[1][1] = 0.0048883f;//0.0232642889
 }
 
 // The pos should be in degrees and the rate should be in degrees per second and the delta time in seconds
@@ -142,6 +142,8 @@ float get_distance_m_lon(float lon) {
 // 将要转换的数据提前变化为合适的单位
 
 void coordinate_system_transformation_neu(float delta, float dt) {
+    float temp_delta = GEO_ANGLE(delta);
+
     int lat_decimal = 1, lon_decimal = 1;
     int temp_lat = gps_rmc.latitude, temp_lon = gps_rmc.longitude;
     unsigned char lat_decimal_place =
@@ -154,21 +156,23 @@ void coordinate_system_transformation_neu(float delta, float dt) {
     neu.east_distance = get_distance_m_lon((float) temp_lon / (float) lon_decimal);
 
     neu.north_acceleration = MG_TO_M_S_2
-    ((float) imu.x_acll * FACTOR_ALLC * qfp_fcos(delta) + (float) imu.y_acll * FACTOR_ALLC * qfp_fcos(delta + 90));
+    ((float) imu.x_acll * FACTOR_ALLC * qfp_fcos(temp_delta)
+         + (float) imu.y_acll * FACTOR_ALLC * qfp_fcos(temp_delta + PI / 2));
     neu.east_acceleration = MG_TO_M_S_2
-    ((float) imu.x_acll * FACTOR_ALLC * qfp_fsin(delta) + (float) imu.y_acll * FACTOR_ALLC * qfp_fsin(delta + 90));
+    ((float) imu.x_acll * FACTOR_ALLC * qfp_fsin(temp_delta)
+         + (float) imu.y_acll * FACTOR_ALLC * qfp_fsin(temp_delta + PI / 2));
 
 /* 用GPS得到速度，转换单位后，再把坐标系转换为北东天 */
     float temp_v = (float) gps_rmc.speed_to_ground_section;
     int v_decimal = num_times_nth_power_of_10(1, gps_rmc.decimal_places_speed);
     temp_v = KNOT_TO_M_S(temp_v / v_decimal);
-    neu.north_v = temp_v * qfp_fcos(delta);
-    neu.east_v = temp_v * qfp_fsin(delta);
+    neu.north_v = temp_v * qfp_fcos(temp_delta);
+    neu.east_v = temp_v * qfp_fsin(temp_delta);
 
 //    int temp_v = KNOT_TO_M_S(gps_rmc.speed_to_ground_section); // Converting the units of speed to m/s
 //    gps_v_decimal = num_times_nth_power_of_10(gps_v_decimal, gps_rmc.decimal_places_speed);
-//    neu.north_v = (float) gps_rmc.speed_to_ground_section / (float) gps_v_decimal * qfp_fcos(delta);
-//    neu.east_v = (float) gps_rmc.speed_to_ground_section / (float) gps_v_decimal * qfp_fsin(delta);
+//    neu.north_v = (float) gps_rmc.speed_to_ground_section / (float) gps_v_decimal * qfp_fcos(temp_delta);
+//    neu.east_v = (float) gps_rmc.speed_to_ground_section / (float) gps_v_decimal * qfp_fsin(temp_delta);
 
 //    if (neu.north_acceleration >= 1 || neu.north_acceleration <= -1) {
 //        neu.north_v += neu.north_acceleration * dt;
