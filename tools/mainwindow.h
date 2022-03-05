@@ -19,6 +19,8 @@ typedef struct DEBUGGER_VARIABLE_T {
     unsigned int var_value;
     char var_name[16];
     QStandardItem *value_item;
+    QVector<double> *x;
+    QVector<double> *y;
 } debugger_variable_t;
 
 class MainWindow : public QMainWindow
@@ -46,6 +48,13 @@ private:
     QStandardItem *variable_list_item[32];
     debugger_variable_t *debugger_variable[32];
 
+    const QColor back_color_table[12] = {QColor(0xff, 0x00, 0x00), QColor(0x00, 0xff, 0x00), QColor(0x00, 0x00, 0xff), QColor(0x85, 0x52, 0xa1),
+                                           QColor(0x65, 0xc2, 0x94), QColor(0x00, 0xa6, 0xac), QColor(0xf3, 0x6c, 0x21), QColor(0x00, 0x53, 0x44),
+                                           QColor(0xea, 0x66, 0xa6), QColor(0x98, 0x71, 0x65), QColor(0xb2, 0xd2, 0x35), QColor(0xff, 0xd4, 0x00)};
+    const QColor font_color_table[12] = {QColor(0x00, 0x00, 0x00), QColor(0x00, 0x00, 0x00), QColor(0xf0, 0xf0, 0xf0), QColor(0xf0, 0xf0, 0xf0),
+                                           QColor(0x00, 0x00, 0x00), QColor(0x00, 0x00, 0x00), QColor(0x00, 0x00, 0x00), QColor(0xf0, 0xf0, 0xf0),
+                                           QColor(0x00, 0x00, 0x00), QColor(0xf0, 0xf0, 0xf0), QColor(0x00, 0x00, 0x00), QColor(0x00, 0x00, 0x00)};
+
     /* serial configure functions */
     void refresh_serial_port();
     bool set_serial_badurate();
@@ -62,6 +71,7 @@ private:
     void table_append_variable(unsigned char type, unsigned int value, const char *name, unsigned int address);
     void setup_variable_table(void);
     void setup_custom_plot(void);
+    void clear_table_variable(void);
 };
 
 #endif // MAINWINDOW_H

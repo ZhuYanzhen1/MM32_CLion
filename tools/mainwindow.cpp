@@ -5,6 +5,8 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow) {
     ui->setupUi(this);
+    setWindowFlags(windowFlags() & ~Qt::WindowMaximizeButtonHint);
+    setFixedSize(this->width(), this->height());
     refresh_serial_port();
     setup_serial_wire("115200");
     setup_variable_table();
@@ -33,31 +35,32 @@ void MainWindow::on_refresh_serial_btn_clicked() {
     refresh_serial_port();
 }
 
+static unsigned char plot_curve_counter = 0;
+static unsigned char checked_list[12] = {0};
+static unsigned char checked_counter = 0;
 void MainWindow::on_variable_list_clicked(const QModelIndex &index) {
+    plot_curve_counter = 0;
+    checked_counter = 0;
     for(int counter = 0; counter < index.model()->rowCount(); counter++) {
         QStandardItem *item = variable_list_table->item(counter, 0);
-        qDebug() << item->text() << item->checkState();
+        if(item->checkState() == Qt::CheckState::Checked) {
+//            if(checked_list[checked_counter] != counter)        // 这次操作后删掉的元素
+            checked_list[checked_counter] = counter;
+            checked_counter++;
+//            QPen pen;
+//            pen.setColor(color_table[counter]);
+//            ui->custom_plot->addGraph();
+//            // 添加、删除graph还没有做
+//            ui->custom_plot->graph(plot_curve_counter)->setData(*debugger_variable[counter]->x, *debugger_variable[counter]->y);
+//            ui->custom_plot->graph(plot_curve_counter)->setPen(pen);
+//            ui->custom_plot->graph(plot_curve_counter)->setName(debugger_variable[counter]->var_name);
+//            plot_curve_counter++;
+        }
     }
 }
 
 void MainWindow::on_clear_btn_clicked() {
     ui->debug_info_txt->clear();
     clear_debugger_variable();
-    variable_list_table->clear();
-    variable_list_table->setColumnCount(4);
-    variable_list_table->setRowCount(0);
-    variable_list_table->setHeaderData(0,Qt::Horizontal,"name");
-    variable_list_table->setHeaderData(1,Qt::Horizontal,"type");
-    variable_list_table->setHeaderData(2,Qt::Horizontal,"value");
-    variable_list_table->setHeaderData(3,Qt::Horizontal,"address");
-    for(int i = 0; i < 32; i++) {
-        variable_list_item[i]->setCheckable(true);
-        variable_list_item[i]->setCheckState(Qt::Unchecked);
-    }
-    ui->variable_list->horizontalHeader()->setDefaultAlignment(Qt::AlignCenter);
-    ui->variable_list->setModel(variable_list_table);
-    ui->variable_list->setColumnWidth(0, 90);
-    ui->variable_list->setColumnWidth(1, 55);
-    ui->variable_list->setColumnWidth(2, 90);
-    ui->variable_list->setColumnWidth(3, 100);
+    clear_table_variable();     // 这一步可能会导致程序崩溃，还没测试
 }
