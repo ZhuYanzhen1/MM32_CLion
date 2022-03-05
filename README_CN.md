@@ -10,12 +10,12 @@
 
 + 集成开发环境：CLion CL-213.6461.75
 + 操作系统：Windows_NT x64 10.0.19041
-+ Make工具：GNU Make 4.2.1 x86_64-w64-mingw32
++ Make工具：GNU Make 4.3 x86_64-w64-mingw32
 + 编译工具链：gcc-arm-none-eabi 10.3.1 20210824
-+ 烧录工具：OpenOCD 0.11.0+dev-00449-gb2ab2241f-dirty
++ 烧录工具：OpenOCD 0.11.0+dev-00571-g254883597-dirty
 + 文档生成工具：Doxygen GUI 1.9.3（Qt version 5.15.2）
-+ EDA工具：KiCAD 6.0.1 （VC++ 1929, 64bit）
-+ Qt环境：Qt 5.14.1（MSVC 2017, 32bit）
++ EDA工具：KiCAD 6.0.2 （VC++ 1928, 64bit）
++ Qt环境：Qt 5.14.2（MinGW73, 64bit）
 + Python版本：Python 3.8.10 [MSC v.1928 64 bit (AMD64)] on win32
 
 ***
@@ -23,14 +23,18 @@
 ### 目录结构
 
 + .github：用于存放Github Actions持续集成的配置文件。
-+ circuit：基于MM32F3277G9P芯片设计的主控板电路原理图及PCB。
++ circuit：项目有关的电路原理图及PCB文件。
+  + control_board：主控板的电路原理图及PCB文件。
+  + wireless_debugger：无线调试器的电路原理图及PCB文件。
+
 + docs：由Doxygen生成的html文档及相关图片。
 + mechanical：非标准机械部件的3D模型文件。
 + program：主控制器程序源文件及配置文件。
   + hardware：与MM32F3277G9P芯片外设相关的初始化及读写代码。
   + library：由MindMotion提供的MM32F3277G9P芯片HAL库代码。
   + system：与MM32F3277G9P系统有关初始化及操作代码。
-  + user：用户层代码，主要逻辑实现。
+  + ctrl_mcu：控制MCU用户层代码，主要逻辑实现。
+  + proc_mcu：处理MCU用户层代码，主要逻辑实现。
   + math：与数学计算有关的代码和函数，如校验计算、FFT等。
   + debug：用于实现串口调参的传输层代码和CMBackTrace程序文件。
   + device：针对器件的数据链路层协议，实现对器件级别的寄存器读写。
@@ -45,7 +49,7 @@
 ### 许可证
 
 **组织：AcmeTech <br>
-作者：朱彦臻<br>
-维护人：朱彦臻, 2208213223@qq.com**
+作者：朱彦臻，赵癸林<br>
+维护人：朱彦臻，赵癸林, 2208213223@qq.com，1662568794@qq.com**
 
 &nbsp;&nbsp;&nbsp;&nbsp;本项目的源代码根据[AGPL-3.0许可证](https://github.com/ZhuYanzhen1/MM32_CLion/blob/master/LICENSE)发布。本项目已经在Windows10、Ubuntu 18.04和20.04下进行了测试。这是一个学习型代码，希望它经常更改，并且不承认任何特定用途的适用性。
