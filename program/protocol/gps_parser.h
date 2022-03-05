@@ -17,7 +17,7 @@ typedef enum {
     Unlocated = 'M'
 } positioning_mode;
 
-typedef enum {
+typedef volatile enum {
     invalid = 'V',
     valid = 'A'
 } location_valid_flag;
@@ -34,8 +34,8 @@ typedef struct {
 } nmea_utc_time;
 
 typedef struct {
-    int latitude;
-    int longitude;
+    unsigned int latitude;
+    unsigned int longitude;
     char decimal_places_latitude;
     char decimal_places_longitude;
     char latitude_direction;
@@ -58,5 +58,6 @@ void deal_dma_gnrmc(const unsigned int *p);
 int nmea_pow(char m, char n);
 int num_times_nth_power_of_10(int num, int n);
 unsigned char change_latitude_longitude_format(unsigned int *degree, char decimal_places);
+float unit_to_degree(unsigned int degree, char decimal_places);
 
 #endif // MAIN_C_PROTOCOL_GPS_PARSER_H_

@@ -53,21 +53,22 @@ int main(void) {
     kalman_config_angle(&kalman_angle_north, temp_angle_north);
     kalman_config_v(&kalman_v_north);
     kalman_config_v(&kalman_v_east);
-    kalman_config_distance(&kalman_distance_north, 2599405);     //2599405    工一楼顶 //384400 西八楼顶
-    kalman_config_distance(&kalman_distance_earth, 12608766);    //12608766            //1487900
+    kalman_config_distance(&kalman_distance_north, 384400);//得改     //337785    工一楼顶 //384400 西八楼顶
+    kalman_config_distance(&kalman_distance_earth, 1487900);//得改    //377330            //1487900
 
     cm_backtrace_config("mm32f3277", "1.0.1", "1.0.1");
     debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
     debugger_register_variable(dbg_float32, (void *) (&true_north_final), "angle");
     debugger_register_variable(dbg_int32, (void *) (&gps_rmc.latitude), "latitude");
-    debugger_register_variable(dbg_float32, (void *) (&distance_north), "n_distance");
-    debugger_register_variable(dbg_float32, (void *) (&distance_east), "e_distance");
+//    debugger_register_variable(dbg_float32, (void *) (&distance_north), "kalman_nd");
+//    debugger_register_variable(dbg_float32, (void *) (&distance_east), "kalman_ed");
+//    debugger_register_variable(dbg_float32, (void *) (&neu.north_distance), "n_distance");
 //    debugger_register_variable(dbg_float32, (void *) &neu.north_v, "n_v");
 //    debugger_register_variable(dbg_float32, (void *) &neu.east_v, "e_v");
-    debugger_register_variable(dbg_float32, (void *) &v_north_final, "vn_final");
-    debugger_register_variable(dbg_float32, (void *) &v_east_final, "ve_final");
-    debugger_register_variable(dbg_float32, (void *) &v_north, "kalman_vn");
-    debugger_register_variable(dbg_float32, (void *) &v_east, "kalman_ve");
+//    debugger_register_variable(dbg_float32, (void *) &v_north_final, "vn_final");
+//    debugger_register_variable(dbg_float32, (void *) &v_east_final, "ve_final");
+//    debugger_register_variable(dbg_float32, (void *) &v_north, "kalman_vn");
+//    debugger_register_variable(dbg_float32, (void *) &v_east, "kalman_ve");
 //    debugger_register_variable(dbg_float32, (void *) (&neu.north_acceleration), "n_a");
 //    debugger_register_variable(dbg_float32, (void *) (&neu.east_acceleration), "e_a");
 
@@ -87,7 +88,7 @@ int main(void) {
                                          -(float) imu.z_gyro * 0.1f, 0.101f, 1);
 
         while (gps_rmc.status != 'A');  //用到GPS的时候开这个，不用的时候不开
-        coordinate_system_transformation_neu(true_north_final, 0.101f);
+        coordinate_system_transformation_neu(true_north_final);
 
         v_north = kalman_update(&kalman_v_north, neu.north_v, neu.north_acceleration,
                                 0.101f, 0);
@@ -102,11 +103,11 @@ int main(void) {
         distance_east = kalman_update(&kalman_distance_earth, neu.east_distance,
                                       v_east_final, 0.101f, 0);
 
-//        printf("%f  %f\r\n", neu.north_v, v_north);
+        printf("%f  %f\r\n", neu.east_distance, distance_east);
+//        printf("%f  %f\r\n", neu.east_v, v_east_final);
 //        gui_printf(5, 12, C_BLACK, C_WHITE, "true_north:%.4f", true_north);
 //        gui_flush();            // 错开GUI的DMA刷新，但是UART6的DMA可能会受到这个的影响。
 
-//在delay这里卡住过2次
         delayms(100);
 
         time[1] = global_time_stamp;

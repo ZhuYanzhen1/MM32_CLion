@@ -20,6 +20,7 @@ int main() {
     CU_pSuite gps_suite = NULL;
     initialize_cunit_suite(&gps_suite, "gps_suit");
     add_test_scripts_to_suite(&gps_suite, "gps_nmea_gnrmc_analysis", test_nmea_gnrmc_analysis);
+    add_test_scripts_to_suite(&gps_suite, "lat_and_lon_rotation_shift", test_lat_and_lon_rotation_shift);
 
     CU_pSuite sort_suite = NULL;
     initialize_cunit_suite(&sort_suite, "sort_suit");

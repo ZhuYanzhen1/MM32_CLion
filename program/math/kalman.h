@@ -1,6 +1,12 @@
-//
-// Created by 16625 on 2022-02-27.
-//
+/**************************************************************************/ /**
+    \file       kalman.h
+    \brief      Kalman Fusion
+                Coordinate system transformation
+                Data Transformation
+    \author     ZGL
+    \version    V1.0.1
+    \date       05. March 2022
+******************************************************************************/
 
 #ifndef MAIN_C_MATH_KALMAN_H_
 #define MAIN_C_MATH_KALMAN_H_
@@ -10,7 +16,7 @@
 #define EARTH_RADIUS    6371000
 #define FACTOR_ALLC     1.25f
 #define QRIGIN_LAT      20  // 起点设为(20°N,100°E)
-#define QRIGIN_LON      100
+#define QRIGIN_LON      110 // 可以设置成110，这样计算的时候精度问题会小一点（保证减了之后整数部分只有1位）（到不同的地方记得改） TODO
 #define KNOT_TO_M_S(x)  ((x)* 0.514444)
 #define MG_TO_M_S_2(x)  ((x)/102.1627f)
 
@@ -59,7 +65,7 @@ void kalman_config_angle(kalman_filter_float *kalman, float pos_0);
 void kalman_config_v(kalman_filter_float *kalman);
 void kalman_config_distance(kalman_filter_float *kalman, float pos_0);
 float kalman_update(kalman_filter_float *kalman, float newpos, float newVel, float dt, unsigned char angle_flag);
-void coordinate_system_transformation_neu(float delta, float dt);
+void coordinate_system_transformation_neu(float delta);
 float get_distance_m_lat(float lat);
 float get_distance_m_lon(float lon);
 

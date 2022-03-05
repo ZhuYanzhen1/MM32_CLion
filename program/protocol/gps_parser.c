@@ -65,13 +65,17 @@ int nmea_pow(char m, char n) {
 */
 int num_times_nth_power_of_10(int num, int n) {
     switch (n) {
-        case 0:num = num;
+        case 0:
+            num = num;
             break;
-        case 1:num = (num << 3) + (num << 1);
+        case 1:
+            num = (num << 3) + (num << 1);
             break;
-        case 2:num = (num << 6) + (num << 5) + (num << 2);
+        case 2:
+            num = (num << 6) + (num << 5) + (num << 2);
             break;
-        case 3:num = (num << 10) - (num << 4) - (num << 3);
+        case 3:
+            num = (num << 10) - (num << 4) - (num << 3);
             break;
         default:
             while (n > 0) {
@@ -161,7 +165,7 @@ unsigned char nmea_get_checksum(char *buffer) {
     \retval     Decimal places
 */
 unsigned char change_latitude_longitude_format(unsigned int *degree, char decimal_places) {
-    unsigned int fractional_part = nmea_pow(10, decimal_places + 2);
+    unsigned int fractional_part = nmea_pow(10, (char) (decimal_places + 2));
     unsigned int decimal_latitude = (*degree) % fractional_part / 60;
     unsigned int temp_decimal = decimal_latitude;
     unsigned char n = 0;
@@ -170,9 +174,24 @@ unsigned char change_latitude_longitude_format(unsigned int *degree, char decima
         n++;
     }
 //    *degree = (*degree / fractional_part) * nmea_pow(10, decimal_places) + decimal_latitude;
-    unsigned int int_degree = *degree / fractional_part;
+    unsigned int int_degree = *degree / fractional_part; //计算整数部分
     *degree = num_times_nth_power_of_10((int) int_degree, n) + decimal_latitude;
     return n;
+}
+
+/*!
+    \brief      Convert latitude and longitude of int type to float type and convert units to degrees
+    \param[in]  degree: Longitude or Latitude
+    \param[in]  decimal_places: Fractional digits of latitude and longitude
+    \retval     Converted data
+*/
+float unit_to_degree(unsigned int degree, char decimal_places) {
+    unsigned int fractional_part = num_times_nth_power_of_10(1, decimal_places + 2);
+    float decimal_latitude = ((float) ((degree) % fractional_part) / 60);
+    decimal_latitude /= (float) num_times_nth_power_of_10(1, decimal_places);
+    unsigned int int_degree = degree / fractional_part;
+    float angle = (float) int_degree + decimal_latitude;
+    return angle;
 }
 
 /*!

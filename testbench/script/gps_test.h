@@ -11,4 +11,6 @@ void test_nmea_str2num();
 
 void test_nmea_gnrmc_analysis();
 
+void test_lat_and_lon_rotation_shift();
+
 #endif //TESTBENCH_GPS_TEST_H
