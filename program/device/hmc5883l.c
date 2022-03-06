@@ -10,7 +10,7 @@
 #include "iic.h"
 #include "delay.h"
 #include "qfplib.h"
-#include "kalman.h"
+#include "data_conversion.h"
 
 hmc5883l magnetometer = {0};
 hmc_correction magnetometer_correction = {0};
