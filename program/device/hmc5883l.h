@@ -24,6 +24,8 @@ typedef volatile struct {
     float z;
 } hmc_correction;
 
+extern hmc_correction magnetometer_correction;
+
 void hmc5883l_config();
 void iic_read_hmc5883l();
 unsigned char iic_read_hmc5883l_verification();

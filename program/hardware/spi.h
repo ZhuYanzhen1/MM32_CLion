@@ -2,8 +2,8 @@
     \file     spi.h
     \brief    SPI function Header File
     \author   Lao·Zhu
-    \version  V1.2.2
-    \date     19. January 2022
+    \version  V1.3.2
+    \date     06. March 2022
 ******************************************************************************/
 
 #ifndef MM32F3277_HARDWARE_SPI_H_

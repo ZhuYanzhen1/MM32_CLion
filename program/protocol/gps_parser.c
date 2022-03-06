@@ -3,8 +3,8 @@
     \brief      gps unpacking algorithm,
                 algorithm for processing gps packets truncated by DMA
     \author     ZGL
-    \version    V1.2.2
-    \date       19. January 2022
+    \version    V1.3.2
+    \date       06. March 2022
 ******************************************************************************/
 
 #include "gps_parser.h"
@@ -65,17 +65,13 @@ int nmea_pow(char m, char n) {
 */
 int num_times_nth_power_of_10(int num, int n) {
     switch (n) {
-        case 0:
-            num = num;
+        case 0:num = num;
             break;
-        case 1:
-            num = (num << 3) + (num << 1);
+        case 1:num = (num << 3) + (num << 1);
             break;
-        case 2:
-            num = (num << 6) + (num << 5) + (num << 2);
+        case 2:num = (num << 6) + (num << 5) + (num << 2);
             break;
-        case 3:
-            num = (num << 10) - (num << 4) - (num << 3);
+        case 3:num = (num << 10) - (num << 4) - (num << 3);
             break;
         default:
             while (n > 0) {
@@ -163,6 +159,7 @@ unsigned char nmea_get_checksum(char *buffer) {
     \param[in]  degree: Longitude or Latitude
     \param[in]  decimal_places: Fractional digits of latitude and longitude
     \retval     Decimal places
+    \note       Integer arithmetic, will lose precision
 */
 unsigned char change_latitude_longitude_format(unsigned int *degree, char decimal_places) {
     unsigned int fractional_part = nmea_pow(10, (char) (decimal_places + 2));
@@ -203,7 +200,6 @@ float unit_to_degree(unsigned int degree, char decimal_places) {
 void nmea_gnrmc_analysis(char *buffer) {
     char i = 0, decimal_places = 1, check_sum = 0, comma_position[13] = {0};
     char *p = buffer;
-
     nmea_all_comma_position(buffer, comma_position, 13);
     if (comma_position[12 != 0])
         gps_rmc.checksum = nmea_get_checksum(buffer);
@@ -224,7 +220,6 @@ void nmea_gnrmc_analysis(char *buffer) {
     STRING_TO_NUM(gps_rmc.direction_of_ground_truth, gps_rmc.decimal_places_direction, 8)
     STRING_TO_NUM(gps_rmc.date, decimal_places, 9)
     STRING_TO_STR(gps_rmc.mode, 12)
-
 }
 
 static unsigned char status = 0;
@@ -268,5 +263,3 @@ void deal_dma_gnrmc(const unsigned int *p) {
     }
 }
 #endif  // RUNNING_UNIT_TEST
-
-

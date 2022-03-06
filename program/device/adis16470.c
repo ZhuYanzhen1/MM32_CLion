@@ -2,8 +2,8 @@
     \file     adis16470.c
     \brief    ADIS16470 function Source File
     \author   ZGL
-    \version  V1.2.2
-    \date     23. November 2021
+    \version  V1.3.2
+    \date     06. March 2021
 ******************************************************************************/
 
 #include "adis16470.h"
@@ -11,58 +11,56 @@
 #include "hal_gpio.h"
 #include "hal_conf.h"
 #include "delay.h"
-#include "qfplib.h"
 
 #define SPI3_NSS_SET()              GPIO_SetBits(GPIOD, GPIO_Pin_7);
 #define SPI3_NSS_RESET()            GPIO_ResetBits(GPIOD, GPIO_Pin_7);
 #define BURST_READ(x)               (x) = (short) spi3_software_mode3(0x0000);
-#define CONTINUOUS_READ(x, y)       SPI3_NSS_RESET();\
-                                    delayus(1);      \
-                                    (x) = spi3_software_mode3(y); \
-                                    SPI3_NSS_SET();  \
-                                    delayus(25);
 
-adis16470_t imu;
+adis16470_t imu = {0};
 
-int wz_cumulative;
-int last_wz;
-
+/*!
+    \brief  Read the uid of adis16470,
+            you can use this method to verify whether adis16470 can be used properly
+    \retval uid of adis16470
+*/
 short adis_read_uid() {
     short uid;
     SPI3_NSS_RESET();
-    delayus(1);         // CS时序要求tcs>200ns
+
+    /* CS timing requirement tcs>200ns */
+    delayus(1);
     spi3_software_mode3(0x7200);
     SPI3_NSS_SET();
     delayus(25);
 
     SPI3_NSS_RESET();
-    delayus(1);         // CS时序要求tcs>200ns
+    delayus(1);
     uid = spi3_software_mode3(0x7200);
     SPI3_NSS_SET();
     return uid;
 }
 
+/*!
+    \brief      Read data from a register of adis16470
+    \param[in]  register_address
+    \retval     Data on registers
+    \note       Cannot be used in conjunction with burst read mode
+*/
 short adis_read_register(unsigned int register_address) {
     short value;
     SPI3_NSS_RESET();
-    delayus(1);         // CS时序要求tcs>200ns
+    delayus(1);
     value = spi3_software_mode3(register_address);
     SPI3_NSS_SET();
     return value;
 }
 
-void adis_point_wz(void) {
-    int wz, cumulative;
-    SPI3_NSS_RESET();
-    delayus(1);
-    (wz) = spi3_software_mode3(0x0E00);
-    SPI3_NSS_SET();
-    cumulative = (wz + last_wz) / 2;
-    wz_cumulative += cumulative;
-    last_wz = wz;
-}
-
-// 突发传输模式不需要发寄存器的地址。只需要发0x6800启动突发传输，后续的176个位就是寄存器的值。仔细看手册
+/*!
+    \brief  Use the burst read function of adis16470 to read all the required data at once
+    \note   When the burst read function is enabled,
+            you can no longer use spi to read data from other registers directly,
+            and an exception will be generated.
+*/
 void adis_burst_read() {
 // 出厂默认配置为用户提供了一个DR 信号（见表5），该信号在输出数据寄存器更新时发出脉冲。将其与嵌入式处理器上的一个引脚相连，
 // 在这个脉冲的第二个边沿触发数据采集。MSC_CTRL寄存器的第0位（见表101），控制这个信号的极性。
@@ -74,7 +72,6 @@ void adis_burst_read() {
     unsigned int checksum = 0;
     SPI3_NSS_RESET()
     spi3_software_mode3(0x6800);
-
     BURST_READ(imu.diag_star)
     BURST_READ(imu.x_gyro)
     BURST_READ(imu.y_gyro)
@@ -84,11 +81,5 @@ void adis_burst_read() {
     BURST_READ(imu.z_acll)
     BURST_READ(imu.temp_out)
     BURST_READ(imu.data_cntr)
-//    BURST_READ(imu.checknum)
-    imu.checknum = (short) spi3_software_mode3(0x0000);
-
-//
-//TODO 计算checksum是否正确
-//
     SPI3_NSS_SET()
 }

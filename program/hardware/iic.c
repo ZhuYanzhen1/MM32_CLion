@@ -1,6 +1,10 @@
-//
-// Created by Lao·Zhu on 2022/2/4.
-//
+/**************************************************************************/ /**
+    \file       iic.c
+    \brief      iic function Source File
+    \author     ZGL & LaoZhu
+    \version    V1.3.2
+    \date       06. March 2022
+******************************************************************************/
 
 #include "iic.h"
 #include "hal_device.h"
@@ -53,7 +57,6 @@ void iic1_config(void) {
 
 void iic1_software_config(void) {
     GPIO_InitTypeDef GPIO_InitStruct;
-
     RCC_AHBPeriphClockCmd(RCC_AHBENR_GPIOD, ENABLE);
 
     GPIO_InitStruct.GPIO_Pin = IIC_SCL_PIN;
@@ -65,75 +68,73 @@ void iic1_software_config(void) {
 }
 
 void iic_start(void) {
-    IIC_SDA_HIGH()       //先将SDA和SCL都拉高为起始信号做准备
+    IIC_SDA_HIGH()
     IIC_SCL_HIGH()
-    delayus(2);    //延时稳定
-    IIC_SDA_LOW()        //拉低SDA线,又高到低跳变,起始
-    delayus(2);   //延时稳定
-    IIC_SCL_LOW()       //拉低SCL线,钳住IIC总线
+    delayus(2);
+    IIC_SDA_LOW()
+    delayus(2);
+    IIC_SCL_LOW()
 }
 
 void iic_stop(void) {
-    IIC_SCL_LOW()        //先将SDA和SCL都拉低为起始信号做准备
+    IIC_SCL_LOW()
     IIC_SDA_LOW()
-    delayus(2);    //延时稳定
-    IIC_SCL_HIGH()        //拉高SCL等待SDA上升沿
-    delayus(2);    //延时稳定
-    IIC_SDA_HIGH()        //拉高SDA
     delayus(2);
-    IIC_SCL_LOW()         //拉低SCL，钳住总线
+    IIC_SCL_HIGH()
+    delayus(2);
+    IIC_SDA_HIGH()
+    delayus(2);
+    IIC_SCL_LOW()
 }
 
 void iic_ack(void) {
-    IIC_SCL_LOW()                //先将SDA和SCL都拉低为起始信号做准备
+    IIC_SCL_LOW()
     IIC_SDA_LOW()
-    delayus(2);           //延时稳定
-    IIC_SCL_HIGH()                //将SCL拉高
-    delayus(2);               //在此延时阶段，SDA一直为低
-    IIC_SCL_LOW()                    //拉低SCL，钳住总线
+    delayus(2);
+    IIC_SCL_HIGH()
+    delayus(2);
+    IIC_SCL_LOW()
 }
 
 void iic_not_ack(void) {
-    IIC_SCL_LOW()                //将SCL拉低为高电平做准备
-    IIC_SDA_HIGH()                //将SDA先拉高
+    IIC_SCL_LOW()
+    IIC_SDA_HIGH()
     delayus(2);
-    IIC_SCL_HIGH()            //拉高SCL
+    IIC_SCL_HIGH()
     delayus(2);
-    IIC_SCL_LOW()            //钳住总线
-    IIC_SDA_HIGH();//CPU释放数据总线
+    IIC_SCL_LOW()
+    IIC_SDA_HIGH();
 }
 
 char iic_wait_ack(void) {
     unsigned char temp = 0;
     IIC_SDA_HIGH()
     delayus(2);
-    IIC_SCL_HIGH()         //拉高SCL准备读取SDA线，SDA和SCL同时为高，释放总线控制权
+    IIC_SCL_HIGH()
     delayus(2);
-    while (IIC_SDA)                //当SDA拉低变为低电平的时候表示有效答应，调出循环
-    {
+    while (IIC_SDA) {
         temp++;
-        if (temp > 250)        //当循环250次后SDA还没有拉低，则表示没有答应信号（不准确的延时）
-        {
+        if (temp > 250) {
             iic_stop();
-            return 1;           //没有答应返回1
+            return 1;
         }
     }
     IIC_SCL_LOW()
-    return 0;               //有答应，返回0
+    return 0;
 }
 
 void iic_send_byte(unsigned char byte) {
     for (unsigned char t = 0; t < 8; t++) {
-        if (byte & 0x80) { // 判断字节的最高位，如果为1，输出高电平，如果为0，输出低电平
-            IIC_SDA_HIGH();
+        if (byte & 0x80) {
+            IIC_SDA_HIGH()
         } else {
-            IIC_SDA_LOW();
+            IIC_SDA_LOW()
         }
         byte <<= 1;
         delayus(2);
-        IIC_SCL_HIGH(); // 钳住数据，高电平数据线上的状态就改变不了了
+        IIC_SCL_HIGH()
         delayus(2);
-        IIC_SCL_LOW(); // 置低位，为下次数据线上的状态改变做准备
+        IIC_SCL_LOW()
     }
     iic_wait_ack();
 }
@@ -143,20 +144,15 @@ char iic_read_byte() {
     IIC_SDA_HIGH()
     value = 0;
     for (i = 0; i < 8; i++) {
-        IIC_SCL_LOW()                //钳住总线，准备下一此读取
+        IIC_SCL_LOW()
         delayus(2);
         value <<= 1;
-        // 数据左移，为下一此读取腾出位置
         IIC_SCL_HIGH()
         delayus(2);
-        if (IIC_SDA)                //如果SDA为1，则value自加
-        {
+        if (IIC_SDA) {
             value++;
         }
-//        IIC_SCL_LOW()                //钳住总线，准备下一此读取
-//        delayus(2);
     }
-//    iic_ack();
-    return value;               //返回读取到的值
+    return value;
 }
 

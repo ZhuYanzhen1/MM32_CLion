@@ -2,8 +2,8 @@
     \file     spi.c
     \brief    SPI function Source File
     \author   Lao·Zhu
-    \version  V1.2.2
-    \date     19. January 2022
+    \version  V1.3.2
+    \date     06. March 2022
 ******************************************************************************/
 
 #include "spi.h"
@@ -52,8 +52,6 @@ void spi1_config(void) {
     SPI_InitStruct.SPI_CPOL = SPI_CPOL_High;
     SPI_InitStruct.SPI_CPHA = SPI_CPHA_2Edge;
     SPI_InitStruct.SPI_NSS = SPI_NSS_Soft;
-
-    // 120MHz / 64 = 1.875MHz
     SPI_InitStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_256;
     SPI_InitStruct.SPI_FirstBit = SPI_FirstBit_MSB;
     SPI_Init(SPI1, &SPI_InitStruct);
@@ -135,15 +133,17 @@ void spi3_config(void) {
     GPIO_PinAFConfig(GPIOD, GPIO_PinSource4, GPIO_AF_5);
     GPIO_PinAFConfig(GPIOD, GPIO_PinSource5, GPIO_AF_5);
     GPIO_PinAFConfig(GPIOD, GPIO_PinSource6, GPIO_AF_5);
-    // 如果你的CS引脚由软件控制，不要把它复用了
 
+    /* If your CS pin is controlled by software, don't multiplex it */
     GPIO_InitStruct.GPIO_Pin = GPIO_Pin_4;
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;
     GPIO_Init(GPIOD, &GPIO_InitStruct);
     GPIO_InitStruct.GPIO_Pin = GPIO_Pin_5;
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IPU;      // PD5才是MISO，要配置成上拉输入
+
+    /* MISO, to be configured as a pull-up input */
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IPU;
     GPIO_Init(GPIOD, &GPIO_InitStruct);
     GPIO_InitStruct.GPIO_Pin = GPIO_Pin_6;
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
@@ -152,7 +152,10 @@ void spi3_config(void) {
 
     GPIO_InitStruct.GPIO_Pin = GPIO_Pin_7;
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;   // 如果你的CS引脚由软件控制，记得初始化成通用推挽输出
+
+    /* If your CS pin is controlled by software,
+     * remember to initialize it to a generic push-pull output */
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
     GPIO_Init(GPIOD, &GPIO_InitStruct);
 
     SPI_StructInit(&SPI_InitStruct);
@@ -187,7 +190,9 @@ void spi3_software_init(void) {
     GPIO_Init(GPIOD, &GPIO_InitStruct);
     GPIO_InitStruct.GPIO_Pin = GPIO_Pin_5;
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IPU;      // PD5才是MISO，要配置成上拉输入
+
+    /* MISO, to be configured as a pull-up input */
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IPU;
     GPIO_Init(GPIOD, &GPIO_InitStruct);
     GPIO_InitStruct.GPIO_Pin = GPIO_Pin_6;
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
@@ -196,13 +201,16 @@ void spi3_software_init(void) {
 
     GPIO_InitStruct.GPIO_Pin = GPIO_Pin_7;
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;   // 如果你的CS引脚由软件控制，记得初始化成通用推挽输出
+
+    /* If your CS pin is controlled by software,
+     * remember to initialize it to a generic push-pull output */
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
     GPIO_Init(GPIOD, &GPIO_InitStruct);
 
     GPIO_InitStruct.GPIO_Pin = GPIO_Pin_9;
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
-    GPIO_Init(GPIOG, &GPIO_InitStruct);     // PG9接到了RST引脚
+    GPIO_Init(GPIOG, &GPIO_InitStruct);
 
     GPIO_SetBits(GPIOD, GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7);
 
@@ -225,12 +233,12 @@ short spi3_software_mode3(unsigned int write_data) {
         else
             SPI3_MOSI_LOW;
         write_data <<= 1;
-        delayus(1);     // min：25ns
+        delayus(1);
         SPI3_SCK_HIGH;
         read_data <<= 1;
-        if (SPI3_MISO)      // GPIO_ReadOutputDataBit(SPI3_MISO_PORT, SPI3_MISO_PIN)
-            read_data++;    //若从从机接收到高电平，数据自加一
-        delayus(1);     // max：12.5ns
+        if (SPI3_MISO)
+            read_data++;
+        delayus(1);
     }
     return read_data;
 }

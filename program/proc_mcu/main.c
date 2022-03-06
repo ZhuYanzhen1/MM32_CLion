@@ -8,15 +8,16 @@
 
 #include "main.h"
 
-// 矫正之后的地磁计 计算得到真北角
-extern hmc_correction magnetometer_correction;
+/* Geomagnetometer after correction Calculation of the true north angle */
 float true_north;
 
-// 卡尔曼融合真北角（地磁计所得的真北角+陀螺仪的z轴角速度）
+/* Kalman fusion true north angle
+ * (true north angle from geomagnetometer + z-axis angular velocity from gyroscope) */
 float true_north_final;
 kalman_filter_float kalman_angle_north = {0};
 
-// 卡尔曼融合得到北向速度和东向速度（GPS速度 +imu加速度）
+/* Kalman fusion to obtain northward and eastward velocities
+ * (GPS velocity + imu acceleration) */
 float v_north;
 float v_east;
 kalman_filter_float kalman_v_north = {0};
@@ -24,7 +25,7 @@ kalman_filter_float kalman_v_east = {0};
 float v_north_final;
 float v_east_final;
 
-// 卡尔曼融合得到北向位移和东向位移（GPS经纬度->北东天 位移+速度）
+/* Kalman fusion to obtain northward displacement and eastward displacement */
 float distance_north;
 float distance_east;
 kalman_filter_float kalman_distance_north = {0};
@@ -58,19 +59,6 @@ int main(void) {
 
     cm_backtrace_config("mm32f3277", "1.0.1", "1.0.1");
     debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
-    debugger_register_variable(dbg_float32, (void *) (&true_north_final), "angle");
-    debugger_register_variable(dbg_int32, (void *) (&gps_rmc.latitude), "latitude");
-//    debugger_register_variable(dbg_float32, (void *) (&distance_north), "kalman_nd");
-//    debugger_register_variable(dbg_float32, (void *) (&distance_east), "kalman_ed");
-//    debugger_register_variable(dbg_float32, (void *) (&neu.north_distance), "n_distance");
-//    debugger_register_variable(dbg_float32, (void *) &neu.north_v, "n_v");
-//    debugger_register_variable(dbg_float32, (void *) &neu.east_v, "e_v");
-//    debugger_register_variable(dbg_float32, (void *) &v_north_final, "vn_final");
-//    debugger_register_variable(dbg_float32, (void *) &v_east_final, "ve_final");
-//    debugger_register_variable(dbg_float32, (void *) &v_north, "kalman_vn");
-//    debugger_register_variable(dbg_float32, (void *) &v_east, "kalman_ve");
-//    debugger_register_variable(dbg_float32, (void *) (&neu.north_acceleration), "n_a");
-//    debugger_register_variable(dbg_float32, (void *) (&neu.east_acceleration), "e_a");
 
     timer2_config();
 
@@ -103,7 +91,7 @@ int main(void) {
         distance_east = kalman_update(&kalman_distance_earth, neu.east_distance,
                                       v_east_final, 0.101f, 0);
 
-        printf("%f  %f\r\n", neu.east_distance, distance_east);
+//        printf("%f  %f\r\n", neu.east_distance, distance_east);
 //        printf("%f  %f\r\n", neu.east_v, v_east_final);
 //        gui_printf(5, 12, C_BLACK, C_WHITE, "true_north:%.4f", true_north);
 //        gui_flush();            // 错开GUI的DMA刷新，但是UART6的DMA可能会受到这个的影响。

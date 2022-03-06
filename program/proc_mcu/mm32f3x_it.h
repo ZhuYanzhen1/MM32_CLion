@@ -2,8 +2,8 @@
     \file     mm32f3x_it.h
     \brief    MM32F3x interrupt handler function header file
     \author   Lao·Zhu
-    \version  V1.0.1
-    \date     14. November 2021
+    \version  V1.3.2
+    \date     06. March 2022
  ******************************************************************************/
 
 #ifndef MM32F3277_SYSTEM_MM32F3X_IT_H_
