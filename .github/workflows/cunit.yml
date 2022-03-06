@@ -31,3 +31,33 @@ jobs:
           cmake --build ./ --target testbench
           export LD_LIBRARY_PATH=/home/runner/work/MM32_CLion/MM32_CLion/cunit/lib
           ls && ./testbench && ls
+      - name: Upload File
+        uses: actions/upload-artifact@v2
+        with:
+          name: UnitTest-Report
+          path: |
+            Report-Listing.xml
+            Report-Results.xml
+            
+  deploy:
+    needs: build
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
+        with:
+          name: UnitTest-Report
+          path: ./
+      - name: Initialize Git
+        env:
+          REPO_PUSH_PRIVATE_KEY_ENV: ${{ secrets.REPO_PUSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh && echo "$REPO_PUSH_PRIVATE_KEY_ENV" > ~/.ssh/id_rsa && sudo chmod 600 ~/.ssh/id_rsa
+          export GIT_SSH_COMMAND="ssh -v -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no"
+          ls && cd docs && ls
+      - name: Upload Report
+        run: |
+          cd docs && ls && cd unit_test && ls
+          git config --global user.email "2208213223@qq.com" && git config --global user.name "LaoZhu"
+#          git add . && git commit -m "Upload new firmware from Github Actions" && git push origin master
+#          cd .. && ls && sudo rm -rf firmware && mv minifoc_firmware firmware
