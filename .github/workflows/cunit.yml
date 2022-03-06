@@ -57,7 +57,6 @@ jobs:
           ls && cd docs && ls
       - name: Upload Report
         run: |
-          cd docs && ls && cd unit_test && ls
+          ls && mv ./Report-Listing.xml ./docs/unit_test/Report-Listing.xml && mv ./Report-Results.xml ./docs/unit_test/Report-Results.xml && ls
           git config --global user.email "2208213223@qq.com" && git config --global user.name "LaoZhu"
-#          git add . && git commit -m "Upload new firmware from Github Actions" && git push origin master
-#          cd .. && ls && sudo rm -rf firmware && mv minifoc_firmware firmware
+          git add . && git commit -m "Update the latest unit test reports to Github Pages." && git push origin master
