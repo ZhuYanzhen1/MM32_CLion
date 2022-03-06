@@ -30,6 +30,7 @@
 #include "qfplib.h"
 #include "verification.h"
 #include "kalman.h"
+#include "data_conversion.h"
 
 ///////////// Device /////////////
 #include "adis16470.h"

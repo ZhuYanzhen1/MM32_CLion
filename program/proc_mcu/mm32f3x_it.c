@@ -2,16 +2,14 @@
     \file     mm32f3x_it.c
     \brief    MM32F3x interrupt handler function source file
     \author   Lao·Zhu
-    \version  V1.0.1
-    \date     14. November 2021
+    \version  V1.3.2
+    \date     06. March 2022
  ******************************************************************************/
 
 #include "mm32f3x_it.h"
 #include "main.h"
 
-//
 //TODO 每一次在中断内写函数时，留意一下是否会发生重入，然后到Trello里面评论记录
-//
 
 /*!
     \brief  this function handles SysTick exception

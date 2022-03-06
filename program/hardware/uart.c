@@ -2,8 +2,8 @@
     \file     uart.c
     \brief    UART function Source File
     \author   Lao·Zhu
-    \version  V1.2.2
-    \date     14. November 2021
+    \version  V1.3.2
+    \date     06. March 2021
  ******************************************************************************/
 
 #include "uart.h"
@@ -130,7 +130,7 @@ void _putchar(char character) {
     UART_SendData(UART1, character);
     while (!UART_GetFlagStatus(UART1, UART_FLAG_TXEPT));
 }
-#endif
+#endif  // DEBUG_USE_PROTOCOL
 
 void uart1_sendbyte(unsigned char data) {
     UART_SendData(UART1, data);

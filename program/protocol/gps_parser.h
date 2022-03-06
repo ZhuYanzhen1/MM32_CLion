@@ -2,12 +2,12 @@
     \file       gps_parser.h
     \brief      DMA function Header File
     \author     ZGL
-    \version    V1.2.2
-    \date       19. January 2022
+    \version    V1.3.2
+    \date       06. March 2022
 ******************************************************************************/
 
-#ifndef MAIN_C_PROTOCOL_GPS_PARSER_H_
-#define MAIN_C_PROTOCOL_GPS_PARSER_H_
+#ifndef MM32F3277_PROTOCOL_GPS_PARSER_H_
+#define MM32F3277_PROTOCOL_GPS_PARSER_H_
 
 typedef enum {
     autonomous_mode = 'A',
@@ -57,7 +57,6 @@ void nmea_gnrmc_analysis(char *buffer);
 void deal_dma_gnrmc(const unsigned int *p);
 int nmea_pow(char m, char n);
 int num_times_nth_power_of_10(int num, int n);
-unsigned char change_latitude_longitude_format(unsigned int *degree, char decimal_places);
 float unit_to_degree(unsigned int degree, char decimal_places);
 
 #endif // MAIN_C_PROTOCOL_GPS_PARSER_H_

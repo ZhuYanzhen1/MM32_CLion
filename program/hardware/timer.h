@@ -6,8 +6,8 @@
     \date     19. January 2022
 ******************************************************************************/
 
-#ifndef MAIN_C_HARDWARE_TIMER_H_
-#define MAIN_C_HARDWARE_TIMER_H_
+#ifndef MM32F3277_HARDWARE_TIMER_H_
+#define MM32F3277_HARDWARE_TIMER_H_
 
 void timer2_config();
 

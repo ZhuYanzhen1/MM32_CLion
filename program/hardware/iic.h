@@ -1,9 +1,13 @@
-//
-// Created by Lao·Zhu on 2022/2/4.
-//
+/**************************************************************************/ /**
+    \file       iic.h
+    \brief      iic function Header File
+    \author     ZGL & LaoZhu
+    \version    V1.3.2
+    \date       06. March 2022
+******************************************************************************/
 
-#ifndef MAIN_C_HARDWARE_IIC_H_
-#define MAIN_C_HARDWARE_IIC_H_
+#ifndef MM32F3277_HARDWARE_IIC_H_
+#define MM32F3277_HARDWARE_IIC_H_
 
 #define IIC_SDA_HIGH()  GPIO_SetBits(IIC_SDA_PORT,IIC_SDA_PIN);
 #define IIC_SDA_LOW()   GPIO_ResetBits(IIC_SDA_PORT,IIC_SDA_PIN);
