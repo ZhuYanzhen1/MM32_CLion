@@ -1,8 +1,6 @@
 /**************************************************************************/ /**
     \file       kalman.h
-    \brief      Kalman Fusion
-                Coordinate system transformation
-                Data Transformation
+    \brief      Kalman Fusion Header File
     \author     ZGL
     \version    V1.3.2
     \date       06. March 2022
@@ -27,8 +25,5 @@ void kalman_config_angle(kalman_filter_float *kalman, float pos_0);
 void kalman_config_v(kalman_filter_float *kalman);
 void kalman_config_distance(kalman_filter_float *kalman, float pos_0);
 float kalman_update(kalman_filter_float *kalman, float new_pos, float newVel, float dt, unsigned char angle_flag);
-void coordinate_system_transformation_neu(float delta);
-float get_distance_m_lat(float lat);
-float get_distance_m_lon(float lon);
 
 #endif //MAIN_C_MATH_KALMAN_H_

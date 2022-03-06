@@ -1,6 +1,11 @@
-//
-// Created by 16625 on 2022-03-06.
-//
+/**************************************************************************/ /**
+    \file       data_conversion.c
+    \brief      Coordinate system transformation
+                Data Transformation
+    \author     ZGL
+    \version    V1.3.2
+    \date       06. March 2022
+******************************************************************************/
 
 #include "data_conversion.h"
 #include "qfplib.h"

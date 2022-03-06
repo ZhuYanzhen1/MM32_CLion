@@ -1,7 +1,11 @@
-//
-// Created by 16625 on 2022-03-06.
-//
-
+/**************************************************************************/ /**
+    \file       data_conversion.h
+    \brief      Coordinate system transformation
+                Data Transformation
+    \author     ZGL
+    \version    V1.3.2
+    \date       06. March 2022
+******************************************************************************/
 #ifndef MM32F3277_MATH_DATA_CONVERSION_H_
 #define MM32F3277_MATH_DATA_CONVERSION_H_
 
@@ -25,5 +29,9 @@ typedef volatile struct {
 } neu_infomation;
 
 extern neu_infomation neu;
+
+void coordinate_system_transformation_neu(float delta);
+float get_distance_m_lat(float lat);
+float get_distance_m_lon(float lon);
 
 #endif //MAIN_C_MATH_DATA_CONVERSION_H_

@@ -1,8 +1,6 @@
 /**************************************************************************/ /**
     \file       kalman.c
-    \brief      Kalman Fusion
-                Coordinate system transformation
-                Data Transformation
+    \brief      Kalman Fusion Source File
     \author     ZGL
     \version    V1.3.2
     \date       06. March 2022
