@@ -36,8 +36,8 @@ jobs:
         with:
           name: UnitTest-Report
           path: |
-            Report-Listing.xml
-            Report-Results.xml
+            ./testbench/build/Report-Listing.xml
+            ./testbench/build/Report-Results.xml
             
   deploy:
     needs: build
