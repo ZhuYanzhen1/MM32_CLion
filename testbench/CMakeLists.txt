@@ -5,6 +5,9 @@ set(CMAKE_C_STANDARD 11)
 add_compile_options(-Wno-pointer-to-int-cast -Wno-int-to-pointer-cast -O0)
 add_link_options(-Wno-pointer-to-int-cast -Wno-int-to-pointer-cast)
 add_definitions(-DRUNNING_UNIT_TEST)
+if ("${CMAKE_BUILD_PLATFORM}" STREQUAL "github")
+    add_definitions(-DCMAKE_GITHUB_BUILD)
+endif ()
 
 set(COMMON_INCLUDE "script" "../program/protocol" "../program/math")
 
