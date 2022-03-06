@@ -74,8 +74,8 @@ void calc_initial_para(calpara_t *calibrate_param) {
     avr_radius = 0;
     for (i = 0; i < samples_collected; i++) {
         avr_radius += sqrt(sample_buffer[0][i] * sample_buffer[0][i] +
-            sample_buffer[1][i] * sample_buffer[1][i] +
-            sample_buffer[2][i] * sample_buffer[2][i]);
+                           sample_buffer[1][i] * sample_buffer[1][i] +
+                           sample_buffer[2][i] * sample_buffer[2][i]);
     }
     avr_radius /= samples_collected;
     calibrate_param->radius = avr_radius;
@@ -372,10 +372,10 @@ void ellipsoid_fit_least_squares(double x[],
                                  double *finalfitness) {
     double max_iterations = 100;
     double offset_x = calibrate_param->offset[0], offset_y = calibrate_param->offset[1],
-        offset_z = calibrate_param->offset[2];
+            offset_z = calibrate_param->offset[2];
     double diag_x = calibrate_param->diag[0], diag_y = calibrate_param->diag[1], diag_z = calibrate_param->diag[2];
     double offdiag_x = calibrate_param->offdiag[0], offdiag_y = calibrate_param->offdiag[1],
-        offdiag_z = calibrate_param->offdiag[2];
+            offdiag_z = calibrate_param->offdiag[2];
     double sphere_radius = calibrate_param->radius;
     char stopflag;
 
@@ -425,7 +425,7 @@ void ellipsoid_fit_least_squares(double x[],
 }
 
 char check_calibration_result(calpara_t calibrate_param, double fitness) {
-    double tolerance = 5.0;
+    double tolerance = 15.0;
     //The maximum measurement range is ~1.9 Ga, the earth field is ~0.6 Ga, so an offset larger than ~1.3 Ga means the mag will saturate in some directions.
     double offset_max = 1300;    //mG
     if ((fitness <= tolerance) &&
