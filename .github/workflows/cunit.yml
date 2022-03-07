@@ -26,6 +26,7 @@ jobs:
           make && make install && cd /home/runner/work/MM32_CLion/MM32_CLion/cunit && sudo ldconfig
       - name: Run Test Program
         run: |
+          sudo timedatectl set-timezone Asia/Shanghai
           ls && cd testbench && mkdir build && ls && cd build
           cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_BUILD_PLATFORM=github ../
           cmake --build ./ --target testbench
