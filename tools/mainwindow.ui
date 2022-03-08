@@ -61,7 +61,7 @@
      <string/>
     </property>
     <property name="placeholderText">
-     <string/>
+     <string>BaudRate</string>
     </property>
    </widget>
    <widget class="QPushButton" name="refresh_serial_btn">
@@ -78,6 +78,9 @@
     </property>
    </widget>
    <widget class="QTextBrowser" name="debug_info_txt">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -92,8 +95,14 @@
       <pointsize>9</pointsize>
      </font>
     </property>
+    <property name="cursor" stdset="0">
+     <cursorShape>IBeamCursor</cursorShape>
+    </property>
     <property name="readOnly">
-     <bool>false</bool>
+     <bool>true</bool>
+    </property>
+    <property name="placeholderText">
+     <string>Printf Information</string>
     </property>
    </widget>
    <widget class="QTableView" name="variable_list">
