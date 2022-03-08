@@ -11,7 +11,7 @@
 extern calpara_t params;
 
 void test_mag_calibration(void) {
-    double sample[3];
+    float sample[3];
     FILE *infile;
     char calflg = 0;
     int return_char;
@@ -31,7 +31,7 @@ void test_mag_calibration(void) {
                 StrLine[line_counter] = (char) return_char;
                 line_counter++;
             } else {
-                sscanf(StrLine, "%lf %lf %lf", &sample[0], &sample[1], &sample[2]);
+                sscanf(StrLine, "%f %f %f", &sample[0], &sample[1], &sample[2]);
                 calflg = CompassCal(sample);
                 memset(StrLine, 0x00, sizeof(StrLine));
                 line_counter = 0;

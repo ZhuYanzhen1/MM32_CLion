@@ -3,6 +3,7 @@
 //
 
 #include "main.h"
+#include "fast_math.h"
 
 int main() {
     CU_pSuite operate_suite = NULL;

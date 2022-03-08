@@ -1,5 +1,5 @@
 #include "mag_calibrate.h"
-#include "math.h"
+#include "fast_math.h"
 
 #ifdef RUNNING_UNIT_TEST
 
@@ -12,14 +12,14 @@
 //校正参数，包含hard iron 和soft iron
 calpara_t params;
 
-double sample_buffer[3][COMPASS_CAL_NUM_SAMPLES];
+float sample_buffer[3][COMPASS_CAL_NUM_SAMPLES];
 volatile unsigned int samples_collected;
 
 void Initial_CompassCal(calpara_t *calibrate_param) {
     for (int i = 0; i < 3; i++) {
-        calibrate_param->offset[i] = 0.0;
-        calibrate_param->diag[i] = 1.0;
-        calibrate_param->offdiag[i] = 0.0;
+        calibrate_param->offset[i] = 0;
+        calibrate_param->diag[i] = 1.0f;
+        calibrate_param->offdiag[i] = 0;
     }
     /************需要根据磁强计实际输出核对************/
     calibrate_param->radius = 200;
@@ -28,23 +28,23 @@ void Initial_CompassCal(calpara_t *calibrate_param) {
 
 //static volatile unava_data_counter = 0;
 
-char accept_sample(double sample[3], double mag_sphere_radius) {
-    double min_sample_dist, dist;
-    double maxsize = COMPASS_CAL_NUM_SAMPLES;
-    double dx, dy, dz;
+char accept_sample(float sample[3], float mag_sphere_radius) {
+    float min_sample_dist, dist;
+    float maxsize = COMPASS_CAL_NUM_SAMPLES;
+    float dx, dy, dz;
     int i;
 
     if (samples_collected == 0) {
         return 1;
     }
 
-    min_sample_dist = fabs(4.0 * mag_sphere_radius / sqrt(maxsize)) / 3.0;
+    min_sample_dist = fast_absf(4.0f * mag_sphere_radius / fast_sqrt(maxsize)) / 3.0f;
     for (i = 0; i < samples_collected; i++) {
         dx = sample[0] - sample_buffer[0][i];
         dy = sample[1] - sample_buffer[1][i];
         dz = sample[2] - sample_buffer[2][i];
 
-        dist = sqrt(dx * dx + dy * dy + dz * dz);
+        dist = fast_sqrt(dx * dx + dy * dy + dz * dz);
 
         if (dist < min_sample_dist) {
 //            unava_data_counter++;
@@ -57,7 +57,7 @@ char accept_sample(double sample[3], double mag_sphere_radius) {
 }
 
 void calc_initial_para(calpara_t *calibrate_param) {
-    double avr_value, avr_radius;
+    float avr_value, avr_radius;
     int i, j;
 
     //旋转一圈各轴采样数据和应为0
@@ -66,28 +66,28 @@ void calc_initial_para(calpara_t *calibrate_param) {
         for (j = 0; j < samples_collected; j++) {
             avr_value -= sample_buffer[i][j];
         }
-        avr_value /= samples_collected;
+        avr_value /= (float) samples_collected;
         calibrate_param->offset[i] = avr_value;
     }
 
     //若环境干扰误差较大，此处可根据理想磁场大小设置固定值
     avr_radius = 0;
     for (i = 0; i < samples_collected; i++) {
-        avr_radius += sqrt(sample_buffer[0][i] * sample_buffer[0][i] +
-                           sample_buffer[1][i] * sample_buffer[1][i] +
-                           sample_buffer[2][i] * sample_buffer[2][i]);
+        avr_radius += fast_sqrt(sample_buffer[0][i] * sample_buffer[0][i] +
+                                sample_buffer[1][i] * sample_buffer[1][i] +
+                                sample_buffer[2][i] * sample_buffer[2][i]);
     }
-    avr_radius /= samples_collected;
+    avr_radius /= (float) samples_collected;
     calibrate_param->radius = avr_radius;
 }
 
-double calc_mean_residual(const double x[], const double y[], const double z[], unsigned int size,
-                          double offset_x, double offset_y, double offset_z,
-                          double sphere_radius, double diag_x, double diag_y, double diag_z,
-                          double offdiag_x, double offdiag_y, double offdiag_z) {
+float calc_mean_residual(const float x[], const float y[], const float z[], unsigned int size,
+                         float offset_x, float offset_y, float offset_z,
+                         float sphere_radius, float diag_x, float diag_y, float diag_z,
+                         float offdiag_x, float offdiag_y, float offdiag_z) {
     int k;
-    double A, B, C;
-    double fitvalue, length, residual;
+    float A, B, C;
+    float fitvalue, length, residual;
 
     fitvalue = 0;
     for (k = 0; k < size; k++) {
@@ -95,37 +95,37 @@ double calc_mean_residual(const double x[], const double y[], const double z[], 
         A = (diag_x * (x[k] + offset_x)) + (offdiag_x * (y[k] + offset_y)) + (offdiag_y * (z[k] + offset_z));
         B = (offdiag_x * (x[k] + offset_x)) + (diag_y * (y[k] + offset_y)) + (offdiag_z * (z[k] + offset_z));
         C = (offdiag_y * (x[k] + offset_x)) + (offdiag_z * (y[k] + offset_y)) + (diag_z * (z[k] + offset_z));
-        length = sqrt(A * A + B * B + C * C);
+        length = fast_sqrt(A * A + B * B + C * C);
         residual = sphere_radius - length;//sphere_radius 为初值
 
         fitvalue += residual * residual;
     }
-    fitvalue = sqrt(fitvalue / size);
+    fitvalue = fast_sqrt(fitvalue / (float) size);
 
     return fitvalue;
 }
 
-char InverseMatrix(int dimension, double matrix[]) {
+char InverseMatrix(int dimension, float matrix[]) {
     int column_swap[20];
     int l, k, m;
-    double pivot;
-    double determinate;
-    double swap;
+    float pivot;
+    float determinate;
+    float swap;
 
-    determinate = 1.0;
+    determinate = 1.0f;
 
     for (l = 0; l < dimension; l++) {
         column_swap[l] = l;
     }
 
     for (l = 0; l < dimension; l++) {
-        pivot = 0.0;
+        pivot = 0;
         m = l;
 
         /* Find the element in this row with the largest absolute value -
            the pivot. Pivoting helps avoid division by small quantities. */
         for (k = l; k < dimension; k++) {
-            if (fabs(pivot) < fabs(matrix[dimension * l + k])) {
+            if (fast_absf(pivot) < fast_absf(matrix[dimension * l + k])) {
                 m = k;
                 pivot = matrix[dimension * l + k];
             }
@@ -146,9 +146,9 @@ char InverseMatrix(int dimension, double matrix[]) {
 
         /* Divide the row by the pivot, making the leading element
            1.0 and multiplying the determinant by the pivot. */
-        matrix[dimension * l + l] = 1.0;
+        matrix[dimension * l + l] = 1.0f;
         determinate = determinate * pivot;   /* Determinant of the matrix. */
-        if (fabs(determinate) < 1.0E-13) {
+        if (fast_absf(determinate) < 1.0E-6) {
             return 0;      /* Pivot = 0 therefore singular matrix. */
         }
         for (m = 0; m < dimension; m++) {
@@ -165,7 +165,7 @@ char InverseMatrix(int dimension, double matrix[]) {
             }
             pivot = matrix[dimension * m + l];
 
-            matrix[dimension * m + l] = 0.0;
+            matrix[dimension * m + l] = 0;
             for (k = 0; k < dimension; k++) {
                 matrix[dimension * m + k] = matrix[dimension * m + k] - (pivot * matrix[dimension * l + k]);
             }
@@ -196,15 +196,15 @@ char InverseMatrix(int dimension, double matrix[]) {
     return 1;
 }
 
-char run_gn_sphere_fit(const double x[], const double y[], const double z[], unsigned int size,
-                       double *offset_x, double *offset_y, double *offset_z,
-                       double *sphere_radius, double *diag_x, double *diag_y, double *diag_z,
-                       double *offdiag_x, double *offdiag_y, double *offdiag_z) {
-    double sphere_jacob[4];
-    double JTJ[16], JTFI[4];
-    double residual, fitness;
-    double A, B, C, length;
-    double deltax[4], deltavalue;
+char run_gn_sphere_fit(const float x[], const float y[], const float z[], unsigned int size,
+                       float *offset_x, float *offset_y, float *offset_z,
+                       float *sphere_radius, float *diag_x, float *diag_y, float *diag_z,
+                       float *offdiag_x, float *offdiag_y, float *offdiag_z) {
+    float sphere_jacob[4];
+    float JTJ[16], JTFI[4];
+    float residual;
+    float A, B, C, length;
+    float deltax[4], deltavalue;
     int i, j, k, row, col;
 
     //Initial zeros
@@ -220,14 +220,14 @@ char run_gn_sphere_fit(const double x[], const double y[], const double z[], uns
         A = (*diag_x * (x[k] + *offset_x)) + (*offdiag_x * (y[k] + *offset_y)) + (*offdiag_y * (z[k] + *offset_z));
         B = (*offdiag_x * (x[k] + *offset_x)) + (*diag_y * (y[k] + *offset_y)) + (*offdiag_z * (z[k] + *offset_z));
         C = (*offdiag_y * (x[k] + *offset_x)) + (*offdiag_z * (y[k] + *offset_y)) + (*diag_z * (z[k] + *offset_z));
-        length = sqrt(A * A + B * B + C * C);
+        length = fast_sqrt(A * A + B * B + C * C);
 
         // 0: 对半径导数
-        sphere_jacob[0] = 1.0;
+        sphere_jacob[0] = 1.0f;
         // 1-3: 对bias x、y、z求导
-        sphere_jacob[1] = -1.0 * (((*diag_x * A) + (*offdiag_x * B) + (*offdiag_y * C)) / length);
-        sphere_jacob[2] = -1.0 * (((*offdiag_x * A) + (*diag_y * B) + (*offdiag_z * C)) / length);
-        sphere_jacob[3] = -1.0 * (((*offdiag_y * A) + (*offdiag_z * B) + (*diag_z * C)) / length);
+        sphere_jacob[1] = -1.0f * (((*diag_x * A) + (*offdiag_x * B) + (*offdiag_y * C)) / length);
+        sphere_jacob[2] = -1.0f * (((*offdiag_x * A) + (*diag_y * B) + (*offdiag_z * C)) / length);
+        sphere_jacob[3] = -1.0f * (((*offdiag_y * A) + (*offdiag_z * B) + (*diag_z * C)) / length);
         residual = *sphere_radius - length;//sphere_radius 为初值
 
         for (i = 0; i < 4; i++) {
@@ -238,7 +238,7 @@ char run_gn_sphere_fit(const double x[], const double y[], const double z[], uns
         }
     }
 
-    double fit_params[4] = {*sphere_radius, *offset_x, *offset_y, *offset_z};
+    float fit_params[4] = {*sphere_radius, *offset_x, *offset_y, *offset_z};
 
     if (!InverseMatrix(4, JTJ)) {
 //        printf("Mat can not inverse!!");
@@ -256,13 +256,13 @@ char run_gn_sphere_fit(const double x[], const double y[], const double z[], uns
         fit_params[row] += deltax[row];
     }
 
-    deltavalue = sqrt(deltavalue);
+    deltavalue = fast_sqrt(deltavalue);
 
     calc_mean_residual(x, y, z, size, *offset_x, *offset_y, *offset_z, *sphere_radius,
                        *diag_x, *diag_y, *diag_z, *offdiag_x, *offdiag_y, *offdiag_z);
 
 #if OUTPUT_DEBUG_INFO == 1
-    printf("The objective value = %lf, increment = %lf\r\n", fitness, deltavalue);
+    printf("Residual = %lf, Increment = %lf\r\n", residual, deltavalue);
 #endif
 
     *sphere_radius = fit_params[0];
@@ -270,21 +270,20 @@ char run_gn_sphere_fit(const double x[], const double y[], const double z[], uns
     *offset_y = fit_params[2];
     *offset_z = fit_params[3];
 
-    if (deltavalue < 1e-5)
+    if (deltavalue < 1e-4)
         return 1;
     else
         return 0;
 }
 
-char run_gn_ellipsoid_fit(const double x[], const double y[], const double z[], unsigned int size,
-                          double *offset_x, double *offset_y, double *offset_z,
-                          double *sphere_radius, double *diag_x, double *diag_y, double *diag_z,
-                          double *offdiag_x, double *offdiag_y, double *offdiag_z) {
-    double JTJ[81], JTFI[9];
-    double ellipsoid_jacob[9];
-    double fitness;
-    double A, B, C, length, residual;
-    double deltax[9], deltavalue;
+char run_gn_ellipsoid_fit(const float x[], const float y[], const float z[], unsigned int size,
+                          float *offset_x, float *offset_y, float *offset_z,
+                          float *sphere_radius, float *diag_x, float *diag_y, float *diag_z,
+                          float *offdiag_x, float *offdiag_y, float *offdiag_z) {
+    float JTJ[81], JTFI[9];
+    float ellipsoid_jacob[9];
+    float A, B, C, length, residual;
+    float deltax[9], deltavalue;
     int i, j, k, row, col;
 
     //Initial zeros
@@ -301,21 +300,21 @@ char run_gn_ellipsoid_fit(const double x[], const double y[], const double z[], 
         A = (*diag_x * (x[k] + *offset_x)) + (*offdiag_x * (y[k] + *offset_y)) + (*offdiag_y * (z[k] + *offset_z));
         B = (*offdiag_x * (x[k] + *offset_x)) + (*diag_y * (y[k] + *offset_y)) + (*offdiag_z * (z[k] + *offset_z));
         C = (*offdiag_y * (x[k] + *offset_x)) + (*offdiag_z * (y[k] + *offset_y)) + (*diag_z * (z[k] + *offset_z));
-        length = sqrt(A * A + B * B + C * C);
+        length = fast_sqrt(A * A + B * B + C * C);
         residual = *sphere_radius - length;
 
         // 0-2: 对bias x、y、z求导
-        ellipsoid_jacob[0] = -1.0 * (((*diag_x * A) + (*offdiag_x * B) + (*offdiag_y * C)) / length);
-        ellipsoid_jacob[1] = -1.0 * (((*offdiag_x * A) + (*diag_y * B) + (*offdiag_z * C)) / length);
-        ellipsoid_jacob[2] = -1.0 * (((*offdiag_y * A) + (*offdiag_z * B) + (*diag_z * C)) / length);
+        ellipsoid_jacob[0] = -1.0f * (((*diag_x * A) + (*offdiag_x * B) + (*offdiag_y * C)) / length);
+        ellipsoid_jacob[1] = -1.0f * (((*offdiag_x * A) + (*diag_y * B) + (*offdiag_z * C)) / length);
+        ellipsoid_jacob[2] = -1.0f * (((*offdiag_y * A) + (*offdiag_z * B) + (*diag_z * C)) / length);
         // 3-5: 对diag x、y、z求导
-        ellipsoid_jacob[3] = -1.0 * ((x[k] + *offset_x) * A) / length;
-        ellipsoid_jacob[4] = -1.0 * ((y[k] + *offset_y) * B) / length;
-        ellipsoid_jacob[5] = -1.0 * ((z[k] + *offset_z) * C) / length;
+        ellipsoid_jacob[3] = -1.0f * ((x[k] + *offset_x) * A) / length;
+        ellipsoid_jacob[4] = -1.0f * ((y[k] + *offset_y) * B) / length;
+        ellipsoid_jacob[5] = -1.0f * ((z[k] + *offset_z) * C) / length;
         // 6-8: 对offdiag x、y、z求导
-        ellipsoid_jacob[6] = -1.0 * (((y[k] + *offset_y) * A) + ((x[k] + *offset_x) * B)) / length;
-        ellipsoid_jacob[7] = -1.0 * (((z[k] + *offset_z) * A) + ((x[k] + *offset_x) * C)) / length;
-        ellipsoid_jacob[8] = -1.0 * (((z[k] + *offset_z) * B) + ((y[k] + *offset_y) * C)) / length;
+        ellipsoid_jacob[6] = -1.0f * (((y[k] + *offset_y) * A) + ((x[k] + *offset_x) * B)) / length;
+        ellipsoid_jacob[7] = -1.0f * (((z[k] + *offset_z) * A) + ((x[k] + *offset_x) * C)) / length;
+        ellipsoid_jacob[8] = -1.0f * (((z[k] + *offset_z) * B) + ((y[k] + *offset_y) * C)) / length;
 
         for (i = 0; i < 9; i++) {
             // compute JTJ
@@ -325,9 +324,9 @@ char run_gn_ellipsoid_fit(const double x[], const double y[], const double z[], 
         }
     }
 
-    double fit_params[9] = {*offset_x, *offset_y, *offset_z,
-                            *diag_x, *diag_y, *diag_z,
-                            *offdiag_x, *offdiag_y, *offdiag_z};
+    float fit_params[9] = {*offset_x, *offset_y, *offset_z,
+                           *diag_x, *diag_y, *diag_z,
+                           *offdiag_x, *offdiag_y, *offdiag_z};
 
     if (!InverseMatrix(9, JTJ))
         return 0;
@@ -340,12 +339,12 @@ char run_gn_ellipsoid_fit(const double x[], const double y[], const double z[], 
         deltavalue += deltax[row] * deltax[row];
         fit_params[row] += deltax[row];
     }
-    deltavalue = sqrt(deltavalue);
+    deltavalue = fast_sqrt(deltavalue);
 
     calc_mean_residual(x, y, z, size, *offset_x, *offset_y, *offset_z, *sphere_radius,
                        *diag_x, *diag_y, *diag_z, *offdiag_x, *offdiag_y, *offdiag_z);
 #if OUTPUT_DEBUG_INFO == 1
-    printf("The objective value = %lf, increment = %lf\r\n", fitness, deltavalue);
+    printf("Residual = %lf, Increment = %lf\r\n", residual, deltavalue);
 #endif
 
     *offset_x = fit_params[0];
@@ -364,19 +363,19 @@ char run_gn_ellipsoid_fit(const double x[], const double y[], const double z[], 
         return 0;
 }
 
-void ellipsoid_fit_least_squares(double x[],
-                                 double y[],
-                                 double z[],
+void ellipsoid_fit_least_squares(float x[],
+                                 float y[],
+                                 float z[],
                                  unsigned int size,
                                  calpara_t *calibrate_param,
-                                 double *finalfitness) {
-    double max_iterations = 100;
-    double offset_x = calibrate_param->offset[0], offset_y = calibrate_param->offset[1],
-            offset_z = calibrate_param->offset[2];
-    double diag_x = calibrate_param->diag[0], diag_y = calibrate_param->diag[1], diag_z = calibrate_param->diag[2];
-    double offdiag_x = calibrate_param->offdiag[0], offdiag_y = calibrate_param->offdiag[1],
-            offdiag_z = calibrate_param->offdiag[2];
-    double sphere_radius = calibrate_param->radius;
+                                 float *finalfitness) {
+    int max_iterations = 100;
+    float offset_x = calibrate_param->offset[0], offset_y = calibrate_param->offset[1],
+        offset_z = calibrate_param->offset[2];
+    float diag_x = calibrate_param->diag[0], diag_y = calibrate_param->diag[1], diag_z = calibrate_param->diag[2];
+    float offdiag_x = calibrate_param->offdiag[0], offdiag_y = calibrate_param->offdiag[1],
+        offdiag_z = calibrate_param->offdiag[2];
+    float sphere_radius = calibrate_param->radius;
     char stopflag;
 
     //首先对半径、bias进行优化
@@ -424,22 +423,22 @@ void ellipsoid_fit_least_squares(double x[],
     calibrate_param->radius = sphere_radius;
 }
 
-char check_calibration_result(calpara_t calibrate_param, double fitness) {
-    double tolerance = 15.0;
+char check_calibration_result(calpara_t calibrate_param, float fitness) {
+    float tolerance = 15.0f;
     //The maximum measurement range is ~1.9 Ga, the earth field is ~0.6 Ga, so an offset larger than ~1.3 Ga means the mag will saturate in some directions.
-    double offset_max = 1300;    //mG
+    float offset_max = 1300;    //mG
     if ((fitness <= tolerance) &&
         (calibrate_param.radius > 150) && (calibrate_param.radius < 950) &&
         //Earth's magnetic field strength range: 250-850mG
-        (fabs(calibrate_param.offset[0]) < offset_max) &&
-        (fabs(calibrate_param.offset[1]) < offset_max) &&
-        (fabs(calibrate_param.offset[2]) < offset_max) &&
+        (fast_absf(calibrate_param.offset[0]) < offset_max) &&
+        (fast_absf(calibrate_param.offset[1]) < offset_max) &&
+        (fast_absf(calibrate_param.offset[2]) < offset_max) &&
         (calibrate_param.diag[0] > 0.2) && (calibrate_param.diag[0] < 5.0) &&
         (calibrate_param.diag[1] > 0.2) && (calibrate_param.diag[1] < 5.0) &&
         (calibrate_param.diag[2] > 0.2) && (calibrate_param.diag[2] < 5.0) &&
-        (fabs(calibrate_param.offdiag[0]) < 1.0) &&      //absolute of sine/cosine output cannot be greater than 1
-        (fabs(calibrate_param.offdiag[1]) < 1.0) &&
-        (fabs(calibrate_param.offdiag[2]) < 1.0))
+        (fast_absf(calibrate_param.offdiag[0]) < 1.0) &&      //absolute of sine/cosine output cannot be greater than 1
+        (fast_absf(calibrate_param.offdiag[1]) < 1.0) &&
+        (fast_absf(calibrate_param.offdiag[2]) < 1.0))
         return 1;
     else
         return 2;
@@ -448,18 +447,18 @@ char check_calibration_result(calpara_t calibrate_param, double fitness) {
 //磁强计校正主函数
 //输入：sample   水平旋转过程中的某个采样数据
 //结束标志：0-校正中；1-校正结束,成功；2-校正结束,失败
-char CompassCal(double sample[3]) {
+char CompassCal(float sample[3]) {
     static char cal_state = 0;
-    static double mag_sphere_radius = 0.0;
+    static float mag_sphere_radius = 0;
 
     char new_sample, calresult = 0;
-    double fitness;
+    float fitness;
     int i;
 
     //初始化
     if (cal_state == 0) {
         Initial_CompassCal(&params);
-        mag_sphere_radius = sqrt(sample[0] * sample[0] + sample[1] * sample[1] + sample[2] * sample[2]);
+        mag_sphere_radius = fast_sqrt(sample[0] * sample[0] + sample[1] * sample[1] + sample[2] * sample[2]);
         cal_state++;
     }
 
@@ -471,7 +470,7 @@ char CompassCal(double sample[3]) {
                 sample_buffer[i][samples_collected] = sample[i];
             samples_collected++;
 #if OUTPUT_DEBUG_INFO == 1
-            printf("samples_collected = %d\r\n", samples_collected);
+            //            printf("samples_collected = %d\r\n", samples_collected);
 #endif
             if (samples_collected == COMPASS_CAL_NUM_SAMPLES)
                 cal_state++;

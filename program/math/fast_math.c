@@ -55,3 +55,13 @@ float atan_fast(float x) {
         }
     }
 }
+
+float fast_sqrt(float value) {
+    float xhalf = 0.5f * value;
+    int i = *(int *) &value; // get bits for floating value
+    i = 0x5f3759df - (i >> 1); // gives initial guess
+    value = *(float *) &i; // convert bits back to float
+    value = value * (1.5f - xhalf * value * value); // Newton step
+    value = 1.0f / value;
+    return value;
+}
