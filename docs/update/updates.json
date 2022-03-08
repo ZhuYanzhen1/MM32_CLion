@@ -3,7 +3,7 @@
     "windows": {
       "open-url": "",
       "latest-version": "1.1",
-      "download-url": "https://gitee.com/zhuyanzhen1/filebed/raw/master/monitor.exe",
+      "download-url": "http://www.acmetech.top/wp-content/monitor_update/monitor.exe",
       "changelog": "Testing updater",
       "mandatory": true
     }
