@@ -25,5 +25,6 @@ void kalman_config_angle(kalman_filter_float *kalman, float pos_0);
 void kalman_config_v(kalman_filter_float *kalman);
 void kalman_config_distance(kalman_filter_float *kalman, float pos_0);
 float kalman_update(kalman_filter_float *kalman, float new_pos, float newVel, float dt, unsigned char angle_flag);
+void kalman_config();
 
 #endif //MAIN_C_MATH_KALMAN_H_
