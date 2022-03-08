@@ -99,7 +99,7 @@ int main(void) {
         delayms(100);
 
         time[1] = global_time_stamp;
-        time[2] = time[1] - time[0]; // dt = ((float) time[2] * 0.001f)
+        time[2] = time[1] - time[0];
     }
 }
 

@@ -45,11 +45,15 @@ void MainWindow::mdtp_callback_handler(unsigned char pid, const unsigned char *d
             break;
         case 3:
             if(variable_counter_serial > data[0]) {
+                unsigned int timestamp = 0;
+                timestamp |= data[1] << 16;
+                timestamp |= data[2] << 8;
+                timestamp |= data[3];
                 debugger_variable[data[0]]->var_value = data[4] << 24;
                 debugger_variable[data[0]]->var_value |= data[5] << 16;
                 debugger_variable[data[0]]->var_value |= data[6] << 8;
                 debugger_variable[data[0]]->var_value |= data[7];
-                table_setvalue_variable(data[0], debugger_variable[data[0]]->var_value);
+                table_setvalue_variable(data[0], debugger_variable[data[0]]->var_value, timestamp);
             }
             break;
         case 4: {

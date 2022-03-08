@@ -26,44 +26,69 @@ void MainWindow::clear_table_variable(void) {
     ui->variable_list->setModel(variable_list_table);
     ui->variable_list->setColumnWidth(0, 110);
     ui->variable_list->setColumnWidth(1, 110);
-    ui->variable_list->setColumnWidth(2, 50);
-    ui->variable_list->setColumnWidth(3, 60);
+    ui->variable_list->setColumnWidth(2, 60);
+    ui->variable_list->setColumnWidth(3, 110);
     variable_counter = 0;
 }
 
-void MainWindow::table_setvalue_variable(unsigned char index, unsigned int value) {
+void MainWindow::table_setvalue_variable(unsigned char index, unsigned int value, unsigned int timestamp) {
     unsigned char *ptr_u8 = (unsigned char *)&value;
     if(index < variable_counter) {
+        double data_value = 0;
         switch (debugger_variable[index]->var_status) {
             case signed_int8:
+                data_value = (double)(*(char *)&ptr_u8[0]);
                 debugger_variable[index]->value_item->setText(QString::number(*(char *)&ptr_u8[0]));
                 break;
             case signed_int16:
+                data_value = (double)(*(short *)&ptr_u8[0]);
                 debugger_variable[index]->value_item->setText(QString::number(*(short *)&ptr_u8[0]));
                 break;
             case signed_int32:
+                data_value = (double)(*(int *)&value);
                 debugger_variable[index]->value_item->setText(QString::number(*(int *)&value));
                 break;
             case unsigned_int8:
+                data_value = (double)(*(unsigned char *)&ptr_u8[0]);
                 debugger_variable[index]->value_item->setText(QString::number(*(unsigned char *)&ptr_u8[0]));
                 break;
             case unsigned_int16:
+                data_value = (double)(*(unsigned short *)&ptr_u8[0]);
                 debugger_variable[index]->value_item->setText(QString::number(*(unsigned short *)&ptr_u8[0]));
                 break;
             case unsigned_int32:
+                data_value = (double)(*(unsigned int *)&value);
                 debugger_variable[index]->value_item->setText(QString::number(*(unsigned int *)&value));
                 break;
             case float_32bit:
+                data_value = (double)(*(float *)&value);
                 debugger_variable[index]->value_item->setText(QString::number((*(float *)&value), 'f', 3));
                 break;
         }
+        debugger_variable[index]->curve_point_counter = debugger_variable[index]->curve_point_counter + 1;
+        debugger_variable[index]->x->resize(debugger_variable[index]->curve_point_counter);
+        debugger_variable[index]->y->resize(debugger_variable[index]->curve_point_counter);
+        debugger_variable[index]->x->append(((double)timestamp / 1000.0));
+        debugger_variable[index]->y->append(data_value);
+
+        int plot_curve_index = -1;
+        for(int counter = 0; counter < 12; counter++)
+            if(plot_curve_list[counter] == (index + 1))
+                plot_curve_index = counter;
+
+        if(plot_curve_index != -1) {
+            ui->custom_plot->graph(plot_curve_index)->setData(*(debugger_variable[index]->x), *(debugger_variable[index]->y));
+            ui->custom_plot->graph(plot_curve_index)->rescaleAxes();
+        }
+        ui->custom_plot->replot();
     }
-    ui->custom_plot->replot();
 }
 
 void MainWindow::table_append_variable(unsigned char type, unsigned int value, const char *name, unsigned int address) {
     unsigned char *ptr_u8 = (unsigned char *)&value;
 
+    debugger_variable[variable_counter]->x->clear();
+    debugger_variable[variable_counter]->y->clear();
     debugger_variable[variable_counter]->var_status = type;
     debugger_variable[variable_counter]->var_address = address;
     debugger_variable[variable_counter]->var_value = value;
@@ -119,7 +144,7 @@ void MainWindow::table_append_variable(unsigned char type, unsigned int value, c
             variable_list_table->setItem(variable_counter, 2, new QStandardItem("float"));
         break;
     }
-    table_setvalue_variable(variable_counter, value);
+    table_setvalue_variable(variable_counter, value, 0);
     variable_list_table->setItem(variable_counter, 1, debugger_variable[variable_counter]->value_item);
     variable_list_table->setItem(variable_counter, 3, new QStandardItem("0x" + QString::number(address, 16)));
     variable_list_item[variable_counter]->setBackground(back_color_table[variable_counter]);
@@ -135,8 +160,9 @@ void MainWindow::setup_variable_table(void) {
         variable_list_item[i] = new QStandardItem();
         debugger_variable[i]->var_name[15] = 0xff;
         debugger_variable[i]->var_name[14] = 0x00;
-        debugger_variable[i]->x = new QVector<double>(90000);
-        debugger_variable[i]->y = new QVector<double>(90000);
+        debugger_variable[i]->x = new QVector<double>(1);
+        debugger_variable[i]->y = new QVector<double>(1);
+        debugger_variable[i]->curve_point_counter = 1;
     }
 
     variable_list_table->setColumnCount(4);
@@ -153,8 +179,8 @@ void MainWindow::setup_variable_table(void) {
     ui->variable_list->setModel(variable_list_table);
     ui->variable_list->setColumnWidth(0, 110);
     ui->variable_list->setColumnWidth(1, 110);
-    ui->variable_list->setColumnWidth(2, 50);
-    ui->variable_list->setColumnWidth(3, 60);
+    ui->variable_list->setColumnWidth(2, 60);
+    ui->variable_list->setColumnWidth(3, 110);
 }
 
 void MainWindow::setup_custom_plot(void) {
@@ -163,8 +189,8 @@ void MainWindow::setup_custom_plot(void) {
     ui->custom_plot->xAxis->setLabel("t(s)");
     ui->custom_plot->yAxis->setLabel("y(value)");
 
-    ui->custom_plot->xAxis->setRange(0, 10);
-    ui->custom_plot->yAxis->setRange(-10, 10);
+    ui->custom_plot->xAxis->setRange(-1, 1);
+    ui->custom_plot->yAxis->setRange(-1, 1);
 
     connect(ui->custom_plot->xAxis, SIGNAL(rangeChanged(QCPRange)), ui->custom_plot->xAxis2, SLOT(setRange(QCPRange)));
     connect(ui->custom_plot->yAxis, SIGNAL(rangeChanged(QCPRange)), ui->custom_plot->yAxis2, SLOT(setRange(QCPRange)));
