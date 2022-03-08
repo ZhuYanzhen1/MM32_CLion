@@ -3,7 +3,7 @@
     "windows": {
       "open-url": "",
       "latest-version": "1.1",
-      "download-url": "https://zhuyanzhen1.github.io/MM32_CLion/update/monitor.exe",
+      "download-url": "https://gitee.com/zhuyanzhen1/filebed/raw/master/monitor.exe",
       "changelog": "Testing updater",
       "mandatory": true
     }
