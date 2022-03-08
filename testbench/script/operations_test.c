@@ -3,53 +3,27 @@
 //
 
 #include "operations_test.h"
+#include "fast_math.h"
 #include "CUnit/Basic.h"
 
-unsigned char operation_add_uint8(unsigned char a, unsigned char b) {
-    unsigned char c = (a + b) % 0xff;
-    return c;
+void test_operation_arctan(void) {
+    float atan1 = atan_fast(1.0f);
+    float atan10 = atan_fast(10.0f);
+    float atanm1 = atan_fast(-1.0f);
+    float atanm10 = atan_fast(-10.0f);
+    CU_ASSERT((atan1 > 0.7853f && atan1 < 0.7854f))
+    CU_ASSERT((atanm1 < -0.7853f && atanm1 > -0.7854f))
+    CU_ASSERT((atan10 > 1.4711f && atan10 < 1.4712f))
+    CU_ASSERT((atanm10 < -1.4711f && atanm10 > -1.4712f))
 }
 
-unsigned char operation_minus_uint8(unsigned char a, unsigned char b) {
-    int c = (int) ((int) a - (int) b);
-    c = c < 0 ? 0 : c;
-    return (unsigned char) c;
-}
-
-unsigned char operation_multiply_uint8(unsigned char a, unsigned char b) {
-    unsigned char c = ((int) ((int) a * (int) b)) % 0xff;
-    return c;
-}
-
-unsigned char operation_divide_uint8(unsigned char a, unsigned char b) {
-    unsigned char c = (b != 0 ? (a / b) : 0xff);
-    return c;
-}
-
-void test_operation_add(void) {
-    CU_ASSERT_EQUAL(operation_add_uint8(20, 5), 25)
-    CU_ASSERT_EQUAL(operation_add_uint8(200, 1), 201)
-    CU_ASSERT_EQUAL(operation_add_uint8(10, 200), 210)
-    CU_ASSERT_EQUAL(operation_add_uint8(5, 5), 10)
-}
-
-void test_operation_minus(void) {
-    CU_ASSERT_EQUAL(operation_minus_uint8(20, 5), 15)
-    CU_ASSERT_EQUAL(operation_minus_uint8(1, 1), 0)
-    CU_ASSERT_EQUAL(operation_minus_uint8(10, 200), 0)
-    CU_ASSERT_EQUAL(operation_minus_uint8(5, 15), 0)
-}
-
-void test_operation_multiply(void) {
-    CU_ASSERT_EQUAL(operation_multiply_uint8(20, 5), 100)
-    CU_ASSERT_EQUAL(operation_multiply_uint8(200, 1), 200)
-    CU_ASSERT_EQUAL(operation_multiply_uint8(10, 200), 215)
-    CU_ASSERT_EQUAL(operation_multiply_uint8(5, 5), 25)
-}
-
-void test_operation_divide(void) {
-    CU_ASSERT_EQUAL(operation_divide_uint8(20, 5), 4)
-    CU_ASSERT_EQUAL(operation_divide_uint8(200, 1), 200)
-    CU_ASSERT_EQUAL(operation_divide_uint8(10, 0), 255)
-    CU_ASSERT_EQUAL(operation_divide_uint8(5, 3), 1)
+void test_operation_sqrt(void) {
+    float sqrt2 = fast_sqrt(2);
+    float sqrt7 = fast_sqrt(7);
+    float sqrt10 = fast_sqrt(10);
+    float sqrt131 = fast_sqrt(131);
+    CU_ASSERT((sqrt2 > 1.4142f && sqrt2 < 1.4143f))
+    CU_ASSERT((sqrt7 > 2.6457f && sqrt7 < 2.6458f))
+    CU_ASSERT((sqrt10 > 3.1622f && sqrt10 < 3.1623f))
+    CU_ASSERT((sqrt131 > 11.4455f && sqrt131 < 11.4456f))
 }
