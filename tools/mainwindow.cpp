@@ -61,6 +61,6 @@ void MainWindow::on_variable_list_clicked(const QModelIndex &index) {
 
 void MainWindow::on_clear_btn_clicked() {
     ui->debug_info_txt->clear();
-    clear_debugger_variable();
-    clear_table_variable();     // 这一步可能会导致程序崩溃，还没测试
+    clear_debugger_variable();     // 这一步也可能会导致程序崩溃
+    clear_table_variable();     // 这一步可能会导致程序崩溃
 }

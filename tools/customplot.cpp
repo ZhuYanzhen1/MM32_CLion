@@ -15,8 +15,8 @@ void MainWindow::clear_table_variable(void) {
     variable_list_table->setColumnCount(4);
     variable_list_table->setRowCount(0);
     variable_list_table->setHeaderData(0,Qt::Horizontal,"name");
-    variable_list_table->setHeaderData(1,Qt::Horizontal,"type");
-    variable_list_table->setHeaderData(2,Qt::Horizontal,"value");
+    variable_list_table->setHeaderData(1,Qt::Horizontal,"value");
+    variable_list_table->setHeaderData(2,Qt::Horizontal,"type");
     variable_list_table->setHeaderData(3,Qt::Horizontal,"address");
     for(int i = 0; i < 32; i++) {
         variable_list_item[i]->setCheckable(true);
@@ -24,10 +24,10 @@ void MainWindow::clear_table_variable(void) {
     }
     ui->variable_list->horizontalHeader()->setDefaultAlignment(Qt::AlignCenter);
     ui->variable_list->setModel(variable_list_table);
-    ui->variable_list->setColumnWidth(0, 90);
-    ui->variable_list->setColumnWidth(1, 55);
-    ui->variable_list->setColumnWidth(2, 90);
-    ui->variable_list->setColumnWidth(3, 100);
+    ui->variable_list->setColumnWidth(0, 110);
+    ui->variable_list->setColumnWidth(1, 110);
+    ui->variable_list->setColumnWidth(2, 50);
+    ui->variable_list->setColumnWidth(3, 60);
     variable_counter = 0;
 }
 
@@ -98,29 +98,29 @@ void MainWindow::table_append_variable(unsigned char type, unsigned int value, c
     variable_list_table->setItem(variable_counter, 0, variable_list_item[variable_counter]);
     switch(type) {
         case signed_int8:
-            variable_list_table->setItem(variable_counter, 1, new QStandardItem("int8"));
+            variable_list_table->setItem(variable_counter, 2, new QStandardItem("int8"));
         break;
         case signed_int16:
-            variable_list_table->setItem(variable_counter, 1, new QStandardItem("int16"));
+            variable_list_table->setItem(variable_counter, 2, new QStandardItem("int16"));
         break;
         case signed_int32:
-            variable_list_table->setItem(variable_counter, 1, new QStandardItem("int32"));
+            variable_list_table->setItem(variable_counter, 2, new QStandardItem("int32"));
         break;
         case unsigned_int8:
-            variable_list_table->setItem(variable_counter, 1, new QStandardItem("uint8"));
+            variable_list_table->setItem(variable_counter, 2, new QStandardItem("uint8"));
         break;
         case unsigned_int16:
-            variable_list_table->setItem(variable_counter, 1, new QStandardItem("uint16"));
+            variable_list_table->setItem(variable_counter, 2, new QStandardItem("uint16"));
         break;
         case unsigned_int32:
-            variable_list_table->setItem(variable_counter, 1, new QStandardItem("uint32"));
+            variable_list_table->setItem(variable_counter, 2, new QStandardItem("uint32"));
         break;
         case float_32bit:
-            variable_list_table->setItem(variable_counter, 1, new QStandardItem("float"));
+            variable_list_table->setItem(variable_counter, 2, new QStandardItem("float"));
         break;
     }
     table_setvalue_variable(variable_counter, value);
-    variable_list_table->setItem(variable_counter, 2, debugger_variable[variable_counter]->value_item);
+    variable_list_table->setItem(variable_counter, 1, debugger_variable[variable_counter]->value_item);
     variable_list_table->setItem(variable_counter, 3, new QStandardItem("0x" + QString::number(address, 16)));
     variable_list_item[variable_counter]->setBackground(back_color_table[variable_counter]);
     variable_list_item[variable_counter]->setForeground(font_color_table[variable_counter]);
@@ -142,8 +142,8 @@ void MainWindow::setup_variable_table(void) {
     variable_list_table->setColumnCount(4);
     variable_list_table->setRowCount(0);
     variable_list_table->setHeaderData(0,Qt::Horizontal,"name");
-    variable_list_table->setHeaderData(1,Qt::Horizontal,"type");
-    variable_list_table->setHeaderData(2,Qt::Horizontal,"value");
+    variable_list_table->setHeaderData(1,Qt::Horizontal,"value");
+    variable_list_table->setHeaderData(2,Qt::Horizontal,"type");
     variable_list_table->setHeaderData(3,Qt::Horizontal,"address");
     for(int i = 0; i < 32; i++) {
         variable_list_item[i]->setCheckable(true);
@@ -151,10 +151,10 @@ void MainWindow::setup_variable_table(void) {
     }
     ui->variable_list->horizontalHeader()->setDefaultAlignment(Qt::AlignCenter);
     ui->variable_list->setModel(variable_list_table);
-    ui->variable_list->setColumnWidth(0, 90);
-    ui->variable_list->setColumnWidth(1, 55);
-    ui->variable_list->setColumnWidth(2, 90);
-    ui->variable_list->setColumnWidth(3, 100);
+    ui->variable_list->setColumnWidth(0, 110);
+    ui->variable_list->setColumnWidth(1, 110);
+    ui->variable_list->setColumnWidth(2, 50);
+    ui->variable_list->setColumnWidth(3, 60);
 }
 
 void MainWindow::setup_custom_plot(void) {
