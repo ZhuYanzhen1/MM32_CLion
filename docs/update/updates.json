@@ -3,8 +3,8 @@
     "windows": {
       "open-url": "",
       "latest-version": "1.1",
-      "download-url": "https://",
-      "changelog": "测试升级工具是否可用",
+      "download-url": "https://zhuyanzhen1.github.io/MM32_CLion/update/monitor.exe",
+      "changelog": "Testing updater",
       "mandatory": true
     }
   }
