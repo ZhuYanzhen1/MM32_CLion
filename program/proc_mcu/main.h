@@ -31,6 +31,7 @@
 #include "verification.h"
 #include "kalman.h"
 #include "data_conversion.h"
+#include "mag_calibrate.h"
 
 ///////////// Device /////////////
 #include "adis16470.h"
