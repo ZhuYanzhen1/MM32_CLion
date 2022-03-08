@@ -13,6 +13,8 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+class QSimpleUpdater;
+
 typedef struct DEBUGGER_VARIABLE_T {
     unsigned int var_status;
     unsigned int var_address;
@@ -37,6 +39,7 @@ private slots:
     void on_refresh_serial_btn_clicked();
     void on_variable_list_clicked(const QModelIndex &index);
     void on_clear_btn_clicked();
+    void downloadFinished(const QString &url, const QString &filepath);
 
 public slots:
     void serial_received();
@@ -44,6 +47,8 @@ public slots:
 private:
     Ui::MainWindow *ui;
     QSerialPort *serial;
+    QSimpleUpdater *updater;
+    const QString update_url = "https://zhuyanzhen1.github.io/MM32_CLion/update/updates.json";
 
     QStandardItemModel *variable_list_table;
     QStandardItem *variable_list_item[32];
@@ -58,6 +63,8 @@ private:
     const QColor font_color_table[12] = {QColor(0x00, 0x00, 0x00), QColor(0x00, 0x00, 0x00), QColor(0xf0, 0xf0, 0xf0), QColor(0xf0, 0xf0, 0xf0),
                                            QColor(0x00, 0x00, 0x00), QColor(0x00, 0x00, 0x00), QColor(0x00, 0x00, 0x00), QColor(0xf0, 0xf0, 0xf0),
                                            QColor(0x00, 0x00, 0x00), QColor(0xf0, 0xf0, 0xf0), QColor(0x00, 0x00, 0x00), QColor(0x00, 0x00, 0x00)};
+
+    void monitor_check_update(void);
 
     /* serial configure functions */
     void refresh_serial_port();

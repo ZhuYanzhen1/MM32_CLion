@@ -1,7 +1,35 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
+#include <QSimpleUpdater.h>
 
-#include "math.h"
+void MainWindow::downloadFinished(const QString &url, const QString &filepath) {
+    (void) filepath;
+    if (url == update_url) {
+        QDir dir;
+        if(!dir.exists(QCoreApplication::applicationDirPath() + "/extract")){
+            dir.mkdir(QCoreApplication::applicationDirPath() + "/extract");
+        }
+        QFile::copy(QCoreApplication::applicationDirPath() + "/download/monitor.exe",
+                    QCoreApplication::applicationDirPath() + "/extract/monitor.exe");
+        QMessageBox::information(NULL, "Info", "Download finished! Restart the program to take effect.");
+        QString updater_path = QCoreApplication::applicationDirPath() + "/updater.exe";
+        QDesktopServices::openUrl(QUrl::fromLocalFile(updater_path));
+        QCoreApplication::quit();
+    }
+}
+
+void MainWindow::monitor_check_update(void) {
+    updater = QSimpleUpdater::getInstance();
+    connect(updater, SIGNAL(downloadFinished(QString, QString)), this, SLOT(downloadFinished(QString, QString)));
+    updater->setModuleName(update_url, "monitor");
+    updater->setModuleVersion(update_url, "1.0");
+    updater->setNotifyOnFinish(update_url, false);
+    updater->setNotifyOnUpdate(update_url, true);
+    updater->setUseCustomAppcast(update_url, false);
+    updater->setDownloaderEnabled(update_url, true);
+    updater->setMandatoryUpdate(update_url, false);
+    updater->checkForUpdates(update_url);
+}
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -9,27 +37,18 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     setWindowFlags(windowFlags() & ~Qt::WindowMaximizeButtonHint);
     setFixedSize(this->width(), this->height());
+
+    QDir dir;
+    dir.setPath(QCoreApplication::applicationDirPath() + "/download");
+    dir.removeRecursively();
+    dir.setPath(QCoreApplication::applicationDirPath() + "/extract");
+    dir.removeRecursively();
+
     refresh_serial_port();
     setup_serial_wire("115200");
     setup_variable_table();
     setup_custom_plot();
-
-//    table_append_variable(0, 10, "test1", 0x20000000);
-//    table_append_variable(1, 100, "test2", 0x20000004);
-//    table_append_variable(5, 1000, "test3", 0x20000008);
-//    double timestamp = -5;
-//    for(int counter = 0; counter < 1500; counter++) {
-//        (*debugger_variable[0]).x->append(timestamp);
-//        (*debugger_variable[0]).y->append(sin(timestamp));
-//        if(counter > 700 && counter < 1300) {
-//            (*debugger_variable[1]).x->append(timestamp);
-//            (*debugger_variable[1]).y->append(sin(timestamp + 2.094395));
-//            (*debugger_variable[2]).x->append(timestamp);
-//            (*debugger_variable[2]).y->append(sin(timestamp + 4.188790));
-//        }
-//        timestamp = timestamp + 0.01;
-//    }
-//    ui->debug_info_txt->append("hello\r\nthis is a test text");
+    monitor_check_update();
 }
 
 MainWindow::~MainWindow() {
