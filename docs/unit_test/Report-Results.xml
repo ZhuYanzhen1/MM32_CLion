@@ -6,25 +6,15 @@
   <CUNIT_RESULT_LISTING> 
     <CUNIT_RUN_SUITE> 
       <CUNIT_RUN_SUITE_SUCCESS> 
-        <SUITE_NAME> operate_suit </SUITE_NAME> 
+        <SUITE_NAME> fast_math_suit </SUITE_NAME> 
         <CUNIT_RUN_TEST_RECORD> 
           <CUNIT_RUN_TEST_SUCCESS> 
-            <TEST_NAME> operation-add </TEST_NAME> 
+            <TEST_NAME> fast_math-atan </TEST_NAME> 
           </CUNIT_RUN_TEST_SUCCESS> 
         </CUNIT_RUN_TEST_RECORD> 
         <CUNIT_RUN_TEST_RECORD> 
           <CUNIT_RUN_TEST_SUCCESS> 
-            <TEST_NAME> operation-minus </TEST_NAME> 
-          </CUNIT_RUN_TEST_SUCCESS> 
-        </CUNIT_RUN_TEST_RECORD> 
-        <CUNIT_RUN_TEST_RECORD> 
-          <CUNIT_RUN_TEST_SUCCESS> 
-            <TEST_NAME> operation-multiply </TEST_NAME> 
-          </CUNIT_RUN_TEST_SUCCESS> 
-        </CUNIT_RUN_TEST_RECORD> 
-        <CUNIT_RUN_TEST_RECORD> 
-          <CUNIT_RUN_TEST_SUCCESS> 
-            <TEST_NAME> operation-divide </TEST_NAME> 
+            <TEST_NAME> fast_math-sqrt </TEST_NAME> 
           </CUNIT_RUN_TEST_SUCCESS> 
         </CUNIT_RUN_TEST_RECORD> 
       </CUNIT_RUN_SUITE_SUCCESS> 
@@ -40,21 +30,6 @@
         <CUNIT_RUN_TEST_RECORD> 
           <CUNIT_RUN_TEST_SUCCESS> 
             <TEST_NAME> mdtp-decrypt </TEST_NAME> 
-          </CUNIT_RUN_TEST_SUCCESS> 
-        </CUNIT_RUN_TEST_RECORD> 
-      </CUNIT_RUN_SUITE_SUCCESS> 
-    </CUNIT_RUN_SUITE> 
-    <CUNIT_RUN_SUITE> 
-      <CUNIT_RUN_SUITE_SUCCESS> 
-        <SUITE_NAME> gps_suit </SUITE_NAME> 
-        <CUNIT_RUN_TEST_RECORD> 
-          <CUNIT_RUN_TEST_SUCCESS> 
-            <TEST_NAME> gps_nmea_gnrmc_analysis </TEST_NAME> 
-          </CUNIT_RUN_TEST_SUCCESS> 
-        </CUNIT_RUN_TEST_RECORD> 
-        <CUNIT_RUN_TEST_RECORD> 
-          <CUNIT_RUN_TEST_SUCCESS> 
-            <TEST_NAME> lat_and_lon_rotation_shift </TEST_NAME> 
           </CUNIT_RUN_TEST_SUCCESS> 
         </CUNIT_RUN_TEST_RECORD> 
       </CUNIT_RUN_SUITE_SUCCESS> 
@@ -81,10 +56,25 @@
     </CUNIT_RUN_SUITE> 
     <CUNIT_RUN_SUITE> 
       <CUNIT_RUN_SUITE_SUCCESS> 
-        <SUITE_NAME> calibrate_suite </SUITE_NAME> 
+        <SUITE_NAME> verification_suit </SUITE_NAME> 
         <CUNIT_RUN_TEST_RECORD> 
           <CUNIT_RUN_TEST_SUCCESS> 
-            <TEST_NAME> mag_calibrate </TEST_NAME> 
+            <TEST_NAME> verification_checksum </TEST_NAME> 
+          </CUNIT_RUN_TEST_SUCCESS> 
+        </CUNIT_RUN_TEST_RECORD> 
+        <CUNIT_RUN_TEST_RECORD> 
+          <CUNIT_RUN_TEST_SUCCESS> 
+            <TEST_NAME> verification_checkxor </TEST_NAME> 
+          </CUNIT_RUN_TEST_SUCCESS> 
+        </CUNIT_RUN_TEST_RECORD> 
+        <CUNIT_RUN_TEST_RECORD> 
+          <CUNIT_RUN_TEST_SUCCESS> 
+            <TEST_NAME> verification_crc8 </TEST_NAME> 
+          </CUNIT_RUN_TEST_SUCCESS> 
+        </CUNIT_RUN_TEST_RECORD> 
+        <CUNIT_RUN_TEST_RECORD> 
+          <CUNIT_RUN_TEST_SUCCESS> 
+            <TEST_NAME> verification_crc16 </TEST_NAME> 
           </CUNIT_RUN_TEST_SUCCESS> 
         </CUNIT_RUN_TEST_RECORD> 
       </CUNIT_RUN_SUITE_SUCCESS> 
@@ -97,35 +87,60 @@
             <TEST_NAME> riccati_solver </TEST_NAME> 
           </CUNIT_RUN_TEST_SUCCESS> 
         </CUNIT_RUN_TEST_RECORD> 
+        <CUNIT_RUN_TEST_RECORD> 
+          <CUNIT_RUN_TEST_SUCCESS> 
+            <TEST_NAME> calibrate_solver </TEST_NAME> 
+          </CUNIT_RUN_TEST_SUCCESS> 
+        </CUNIT_RUN_TEST_RECORD> 
+      </CUNIT_RUN_SUITE_SUCCESS> 
+    </CUNIT_RUN_SUITE> 
+    <CUNIT_RUN_SUITE> 
+      <CUNIT_RUN_SUITE_SUCCESS> 
+        <SUITE_NAME> sensor_decode_suite </SUITE_NAME> 
+        <CUNIT_RUN_TEST_RECORD> 
+          <CUNIT_RUN_TEST_SUCCESS> 
+            <TEST_NAME> gps_nmea_gnrmc_analysis </TEST_NAME> 
+          </CUNIT_RUN_TEST_SUCCESS> 
+        </CUNIT_RUN_TEST_RECORD> 
+        <CUNIT_RUN_TEST_RECORD> 
+          <CUNIT_RUN_TEST_SUCCESS> 
+            <TEST_NAME> lat_and_lon_rotation_shift </TEST_NAME> 
+          </CUNIT_RUN_TEST_SUCCESS> 
+        </CUNIT_RUN_TEST_RECORD> 
+        <CUNIT_RUN_TEST_RECORD> 
+          <CUNIT_RUN_TEST_SUCCESS> 
+            <TEST_NAME> test_precossing_send_data </TEST_NAME> 
+          </CUNIT_RUN_TEST_SUCCESS> 
+        </CUNIT_RUN_TEST_RECORD> 
       </CUNIT_RUN_SUITE_SUCCESS> 
     </CUNIT_RUN_SUITE> 
   </CUNIT_RESULT_LISTING>
   <CUNIT_RUN_SUMMARY> 
     <CUNIT_RUN_SUMMARY_RECORD> 
       <TYPE> Suites </TYPE> 
-      <TOTAL> 6 </TOTAL> 
-      <RUN> 6 </RUN> 
+      <TOTAL> 7 </TOTAL> 
+      <RUN> 7 </RUN> 
       <SUCCEEDED> - NA - </SUCCEEDED> 
       <FAILED> 0 </FAILED> 
       <INACTIVE> 0 </INACTIVE> 
     </CUNIT_RUN_SUMMARY_RECORD> 
     <CUNIT_RUN_SUMMARY_RECORD> 
       <TYPE> Test Cases </TYPE> 
-      <TOTAL> 13 </TOTAL> 
-      <RUN> 13 </RUN> 
-      <SUCCEEDED> 13 </SUCCEEDED> 
+      <TOTAL> 16 </TOTAL> 
+      <RUN> 16 </RUN> 
+      <SUCCEEDED> 16 </SUCCEEDED> 
       <FAILED> 0 </FAILED> 
       <INACTIVE> 0 </INACTIVE> 
     </CUNIT_RUN_SUMMARY_RECORD> 
     <CUNIT_RUN_SUMMARY_RECORD> 
       <TYPE> Assertions </TYPE> 
-      <TOTAL> 67 </TOTAL> 
-      <RUN> 67 </RUN> 
-      <SUCCEEDED> 67 </SUCCEEDED> 
+      <TOTAL> 87 </TOTAL> 
+      <RUN> 87 </RUN> 
+      <SUCCEEDED> 87 </SUCCEEDED> 
       <FAILED> 0 </FAILED> 
       <INACTIVE> n/a </INACTIVE> 
     </CUNIT_RUN_SUMMARY_RECORD> 
   </CUNIT_RUN_SUMMARY> 
-  <CUNIT_FOOTER> File Generated By CUnit v2.1-3 - Tue Mar  8 23:46:14 2022
+  <CUNIT_FOOTER> File Generated By CUnit v2.1-3 - Wed Mar  9 23:45:00 2022
  </CUNIT_FOOTER> 
 </CUNIT_TEST_RUN_REPORT>
