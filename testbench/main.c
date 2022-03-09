@@ -40,8 +40,9 @@ int main() {
     CU_pSuite sensor_decode_suite = NULL;
     initialize_cunit_suite(&sensor_decode_suite, "sensor_decode_suite");
     add_test_scripts_to_suite(&sensor_decode_suite, "gps_nmea_gnrmc_analysis", test_nmea_gnrmc_analysis);
-    add_test_scripts_to_suite(&sensor_decode_suite, "lat_and_lon_rotation_shift", test_lat_and_lon_rotation_shift);
     add_test_scripts_to_suite(&sensor_decode_suite, "test_precossing_send_data", test_precossing_send_data);
+    add_test_scripts_to_suite(&sensor_decode_suite, "test_precossing_variable_length_data",
+                              test_precossing_variable_length_data);
 
     return generate_statements_report();
 }
