@@ -29,17 +29,21 @@ int main(void) {
     gps_config();
     xpt2046_gpio_config();
 //    xpt2046_calibrate();
+    kalman_config();
 
     cm_backtrace_config("mm32f3277", "1.0.1", "1.0.1");
     debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
 
     timer2_config();
 
+    iic_read_hmc5883l();
+    delayms(1000);
+
     while (calflg == 0) {
         iic_read_hmc5883l();
-        temp[0] = magnetometer.x;
-        temp[1] = magnetometer.y;
-        temp[2] = magnetometer.z;
+        temp[0] = (float) magnetometer.x * FACTOR_MAGNETOMETER_MGS;
+        temp[1] = (float) magnetometer.y * FACTOR_MAGNETOMETER_MGS;
+        temp[2] = (float) magnetometer.z * FACTOR_MAGNETOMETER_MGS;
         calflg = CompassCal(temp);
         delayms(100);
     }
@@ -48,12 +52,22 @@ int main(void) {
 //        gui_show_gnrmc_information();       // 46.8ms
 
         time[0] = global_time_stamp;
-
+        LED1_TOGGLE();
 //        printf("%f  %f\r\n", neu.east_distance, distance_east);
 //        printf("%f  %f\r\n", neu.east_v, v_east_final);
 //        gui_printf(5, 12, C_BLACK, C_WHITE, "true_north:%.4f", true_north);
-//        gui_flush();            // 错开GUI的DMA刷新，但是UART6的DMA可能会受到这个的影响。
 
+
+        gui_printf(5, 12 * 0, C_BLACK, C_WHITE, "offset_x:%.4f", params.offset[0]);
+        gui_printf(5, 12 * 1, C_BLACK, C_WHITE, "offset_y:%.4f", params.offset[1]);
+        gui_printf(5, 12 * 2, C_BLACK, C_WHITE, "offset_z:%.4f", params.offset[2]);
+        gui_printf(5, 12 * 3, C_BLACK, C_WHITE, "diag_x:%.4f", params.diag[0]);
+        gui_printf(5, 12 * 4, C_BLACK, C_WHITE, "diag_y:%.4f", params.diag[1]);
+        gui_printf(5, 12 * 5, C_BLACK, C_WHITE, "diag_z:%.4f", params.diag[2]);
+        gui_printf(5, 12 * 6, C_BLACK, C_WHITE, "offdiag_x:%.4f", params.offdiag[0]);
+        gui_printf(5, 12 * 7, C_BLACK, C_WHITE, "offdiag_y:%.4f", params.offdiag[1]);
+        gui_printf(5, 12 * 8, C_BLACK, C_WHITE, "offdiag_z:%.4f", params.offdiag[2]);
+        gui_flush();            // 错开GUI的DMA刷新，但是UART6的DMA可能会受到这个的影响。
         delayms(100);
 
         time[1] = global_time_stamp;

@@ -5,6 +5,9 @@
 
 #include "stdio.h"
 
+#else
+#include "printf.h"
+#include "delay.h"
 #endif
 
 #define OUTPUT_DEBUG_INFO   0
@@ -12,7 +15,7 @@
 //校正参数，包含hard iron 和soft iron
 calpara_t params;
 
-float sample_buffer[3][COMPASS_CAL_NUM_SAMPLES];
+static float sample_buffer[3][COMPASS_CAL_NUM_SAMPLES];
 volatile unsigned int samples_collected;
 
 void Initial_CompassCal(calpara_t *calibrate_param) {
@@ -74,8 +77,8 @@ void calc_initial_para(calpara_t *calibrate_param) {
     avr_radius = 0;
     for (i = 0; i < samples_collected; i++) {
         avr_radius += fast_sqrt(sample_buffer[0][i] * sample_buffer[0][i] +
-                                sample_buffer[1][i] * sample_buffer[1][i] +
-                                sample_buffer[2][i] * sample_buffer[2][i]);
+            sample_buffer[1][i] * sample_buffer[1][i] +
+            sample_buffer[2][i] * sample_buffer[2][i]);
     }
     avr_radius /= (float) samples_collected;
     calibrate_param->radius = avr_radius;
@@ -380,34 +383,52 @@ void ellipsoid_fit_least_squares(float x[],
 
     //首先对半径、bias进行优化
 #if OUTPUT_DEBUG_INFO == 1
-    printf("/*********************run_gn_sphere_fit****************************/\r\n");
+    printf("/************run_gn_sphere_fit***********/\r\n");
+#ifndef RUNNING_UNIT_TEST
+    delayms(100);
+#endif
 #endif
     for (int i = 0; i < max_iterations; i++) {
         stopflag = run_gn_sphere_fit(x, y, z, size, &offset_x, &offset_y, &offset_z,
                                      &sphere_radius, &diag_x, &diag_y, &diag_z, &offdiag_x, &offdiag_y, &offdiag_z);
+#ifndef RUNNING_UNIT_TEST
+        delayms(100);
+#endif
         if (stopflag == 1)
             break;
     }
 
 #if OUTPUT_DEBUG_INFO == 1
     //然后对除半径外的所有9个参数进行优化
-    printf("/*********************run_gn_ellipsoid_fit****************************/\r\n");
+    printf("/***************run_gn_ellipsoid_fit************/\r\n");
+#ifndef RUNNING_UNIT_TEST
+    delayms(100);
+#endif
 #endif
     for (int i = 0; i < max_iterations; i++) {
         stopflag = run_gn_ellipsoid_fit(x, y, z, size, &offset_x, &offset_y, &offset_z,
                                         &sphere_radius, &diag_x, &diag_y, &diag_z,
                                         &offdiag_x, &offdiag_y, &offdiag_z);
+#ifndef RUNNING_UNIT_TEST
+        delayms(100);
+#endif
         if (stopflag == 1)
             break;
     }
 
 #if OUTPUT_DEBUG_INFO == 1
-    printf("/*********************fit end****************************/\r\n");
+    printf("/******************fit end******************/\r\n");
+#ifndef RUNNING_UNIT_TEST
+    delayms(100);
+#endif
 #endif
     *finalfitness = calc_mean_residual(x, y, z, size, offset_x, offset_y, offset_z, sphere_radius,
                                        diag_x, diag_y, diag_z, offdiag_x, offdiag_y, offdiag_z);
 #if OUTPUT_DEBUG_INFO == 1
-    printf("Final fitness = %lf\r\n", *finalfitness);
+#ifndef RUNNING_UNIT_TEST
+    delayms(100);
+#endif
+    printf("Final fitness = %f\r\n", *finalfitness);
 #endif
 
     //置换回去
@@ -470,7 +491,7 @@ char CompassCal(float sample[3]) {
                 sample_buffer[i][samples_collected] = sample[i];
             samples_collected++;
 #if OUTPUT_DEBUG_INFO == 1
-            //            printf("samples_collected = %d\r\n", samples_collected);
+            printf("samples_collected = %d\r\n", samples_collected);
 #endif
             if (samples_collected == COMPASS_CAL_NUM_SAMPLES)
                 cal_state++;
