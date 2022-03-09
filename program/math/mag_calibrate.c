@@ -10,7 +10,7 @@
 #include "delay.h"
 #endif
 
-#define OUTPUT_DEBUG_INFO   1
+#define OUTPUT_DEBUG_INFO   0
 
 //校正参数，包含hard iron 和soft iron
 calpara_t params;

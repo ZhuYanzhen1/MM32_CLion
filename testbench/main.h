@@ -20,6 +20,7 @@
 #include "sort_test.h"
 #include "solver_test.h"
 #include "calibrate_test.h"
+#include "sensor_decode_test.h"
 
 int initialize_cunit_suite(CU_pSuite *psuite_ptr, const char *strName);
 

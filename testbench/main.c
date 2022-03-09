@@ -34,5 +34,9 @@ int main() {
     initialize_cunit_suite(&solver_suite, "solver_suite");
     add_test_scripts_to_suite(&solver_suite, "riccati_solver", test_riccati_solver);
 
+    CU_pSuite sensor_decode_suite = NULL;
+    initialize_cunit_suite(&sensor_decode_suite, "sensor_decode_suite");
+    add_test_scripts_to_suite(&sensor_decode_suite, "test_precossing_send_data", test_precossing_send_data);
+
     return generate_statements_report();
 }
