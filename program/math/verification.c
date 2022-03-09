@@ -11,11 +11,10 @@
 
 unsigned char verification_checksum_u8(unsigned char *ptr, unsigned short len) {
     unsigned short i;
-    unsigned char sum = 0, checksum;
+    unsigned char sum = 0;
     for (i = 0; i < len; i++)
         sum += *ptr++;
-    checksum = sum & 0xff;
-    return checksum;
+    return sum;
 }
 
 unsigned char verification_checkxor_u8(const unsigned char *ptr, unsigned short len) {
@@ -26,6 +25,7 @@ unsigned char verification_checkxor_u8(const unsigned char *ptr, unsigned short 
     return x;
 }
 
+// CRC-16/MODBUS
 unsigned short verification_crc16(unsigned char *ptr, unsigned short len) {
     unsigned char uchCRCHi = 0xFF;
     unsigned char uchCRCLo = 0xFF;
@@ -35,9 +35,10 @@ unsigned short verification_crc16(unsigned char *ptr, unsigned short len) {
         uchCRCHi = uchCRCLo ^ verification_crc16_tabelh[uIndex];
         uchCRCLo = verification_crc16_tabell[uIndex];
     }
-    return (uchCRCHi << 8 | uchCRCLo);
+    return (uchCRCLo << 8 | uchCRCHi);
 }
 
+// CRC-8/MAXIM
 unsigned char verification_crc8(unsigned char *ptr, unsigned short len) {
     unsigned char crc = 0, i;
     while (len--) {
