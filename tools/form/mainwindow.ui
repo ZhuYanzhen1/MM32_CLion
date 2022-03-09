@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1167</width>
-    <height>770</height>
+    <width>1186</width>
+    <height>816</height>
    </rect>
   </property>
   <property name="font">
@@ -77,60 +77,6 @@
      <string>Refresh</string>
     </property>
    </widget>
-   <widget class="QTextBrowser" name="debug_info_txt">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>460</y>
-      <width>801</width>
-      <height>301</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Microsoft YaHei UI</family>
-      <pointsize>9</pointsize>
-     </font>
-    </property>
-    <property name="cursor" stdset="0">
-     <cursorShape>IBeamCursor</cursorShape>
-    </property>
-    <property name="readOnly">
-     <bool>true</bool>
-    </property>
-    <property name="placeholderText">
-     <string>Printf Information</string>
-    </property>
-   </widget>
-   <widget class="QTableView" name="variable_list">
-    <property name="geometry">
-     <rect>
-      <x>820</x>
-      <y>460</y>
-      <width>331</width>
-      <height>301</height>
-     </rect>
-    </property>
-    <attribute name="horizontalHeaderDefaultSectionSize">
-     <number>80</number>
-    </attribute>
-    <attribute name="verticalHeaderVisible">
-     <bool>false</bool>
-    </attribute>
-   </widget>
-   <widget class="QCustomPlot" name="custom_plot" native="true">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>50</y>
-      <width>1141</width>
-      <height>401</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QPushButton" name="clear_btn">
     <property name="geometry">
      <rect>
@@ -144,6 +90,93 @@
      <string>Clear</string>
     </property>
    </widget>
+   <widget class="QTabWidget" name="tabWidget">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>50</y>
+      <width>1171</width>
+      <height>761</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>1</number>
+    </property>
+    <widget class="QWidget" name="variable_tab">
+     <attribute name="title">
+      <string>Variable Tab</string>
+     </attribute>
+     <widget class="QCustomPlot" name="custom_plot" native="true">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>1141</width>
+        <height>401</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QTextBrowser" name="debug_info_txt">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>420</y>
+        <width>801</width>
+        <height>301</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Microsoft YaHei UI</family>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
+      <property name="cursor" stdset="0">
+       <cursorShape>IBeamCursor</cursorShape>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+      <property name="placeholderText">
+       <string>Printf Information</string>
+      </property>
+     </widget>
+     <widget class="QTableView" name="variable_list">
+      <property name="geometry">
+       <rect>
+        <x>820</x>
+        <y>420</y>
+        <width>331</width>
+        <height>301</height>
+       </rect>
+      </property>
+      <attribute name="horizontalHeaderDefaultSectionSize">
+       <number>80</number>
+      </attribute>
+      <attribute name="verticalHeaderVisible">
+       <bool>false</bool>
+      </attribute>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="status_tab">
+     <attribute name="title">
+      <string>Status Tab</string>
+     </attribute>
+     <widget class="Compass" name="compass_widget" native="true">
+      <property name="geometry">
+       <rect>
+        <x>820</x>
+        <y>40</y>
+        <width>301</width>
+        <height>281</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+   </widget>
   </widget>
  </widget>
  <customwidgets>
@@ -151,6 +184,12 @@
    <class>QCustomPlot</class>
    <extends>QWidget</extends>
    <header>qcustomplot.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Compass</class>
+   <extends>QWidget</extends>
+   <header>compass.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

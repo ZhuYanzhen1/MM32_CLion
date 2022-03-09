@@ -49,6 +49,8 @@ MainWindow::MainWindow(QWidget *parent)
     setup_variable_table();
     setup_custom_plot();
     monitor_check_update();
+
+    ui->compass_widget->set_direction(105.7f);
 }
 
 MainWindow::~MainWindow() {

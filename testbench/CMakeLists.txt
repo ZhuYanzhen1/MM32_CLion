@@ -27,7 +27,8 @@ endif ()
 
 file(GLOB_RECURSE SOURCES "main.c" "unit_test.c" "script/*.c" "../program/protocol/mdtp_pack.c"
         "../program/protocol/gps_parser.c" "../program/protocol/mdtp_unpack.c" "../program/math/sort.c"
-        "../program/math/riccati_solver.c" "../program/math/mag_calibrate.c" "../program/math/fast_math.c")
+        "../program/math/riccati_solver.c" "../program/math/mag_calibrate.c" "../program/math/fast_math.c"
+        "../program/math/verification.c")
 
 add_executable(testbench ${SOURCES})
 target_link_libraries(testbench cunit m)

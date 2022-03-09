@@ -25,13 +25,17 @@ int main() {
     add_test_scripts_to_suite(&sort_suite, "sort_mergesort", test_merge_sort);
     add_test_scripts_to_suite(&sort_suite, "sort_quicksort", test_quick_sort);
 
-    CU_pSuite calibrate_suite = NULL;
-    initialize_cunit_suite(&calibrate_suite, "calibrate_suite");
-    add_test_scripts_to_suite(&calibrate_suite, "mag_calibrate", test_mag_calibration);
+    CU_pSuite verification_suite = NULL;
+    initialize_cunit_suite(&verification_suite, "verification_suit");
+    add_test_scripts_to_suite(&verification_suite, "verification_checksum", test_verification_checksum);
+    add_test_scripts_to_suite(&verification_suite, "verification_checkxor", test_verification_checkxor);
+    add_test_scripts_to_suite(&verification_suite, "verification_crc8", test_verification_crc8);
+    add_test_scripts_to_suite(&verification_suite, "verification_crc16", test_verification_crc16);
 
     CU_pSuite solver_suite = NULL;
     initialize_cunit_suite(&solver_suite, "solver_suite");
     add_test_scripts_to_suite(&solver_suite, "riccati_solver", test_riccati_solver);
+    add_test_scripts_to_suite(&solver_suite, "calibrate_solver", test_calibration_solver);
 
     CU_pSuite sensor_decode_suite = NULL;
     initialize_cunit_suite(&sensor_decode_suite, "sensor_decode_suite");
