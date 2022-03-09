@@ -9,7 +9,7 @@ if ("${CMAKE_BUILD_PLATFORM}" STREQUAL "github")
     add_definitions(-DCMAKE_GITHUB_BUILD)
 endif ()
 
-set(COMMON_INCLUDE "script" "../program/protocol" "../program/math")
+set(COMMON_INCLUDE "script" "../program/protocol" "../program/math" "../program/device")
 
 if ("${CMAKE_BUILD_PLATFORM}" STREQUAL "laozhu")
     link_directories(D:/msys64/opt/cunit/lib)
@@ -28,7 +28,7 @@ endif ()
 file(GLOB_RECURSE SOURCES "main.c" "unit_test.c" "script/*.c" "../program/protocol/mdtp_pack.c"
         "../program/protocol/gps_parser.c" "../program/protocol/mdtp_unpack.c" "../program/math/sort.c"
         "../program/math/riccati_solver.c" "../program/math/mag_calibrate.c" "../program/math/fast_math.c"
-        "../program/math/verification.c")
+        "../program/math/verification.c" "../program/device/sensor_decode.c")
 
 add_executable(testbench ${SOURCES})
 target_link_libraries(testbench cunit m)

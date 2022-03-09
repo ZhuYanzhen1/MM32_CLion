@@ -16,7 +16,6 @@
 /////////////// Script ///////////////
 #include "operations_test.h"
 #include "mdtp_test.h"
-#include "gps_test.h"
 #include "sort_test.h"
 #include "solver_test.h"
 #include "verification_test.h"
