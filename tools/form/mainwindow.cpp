@@ -22,7 +22,7 @@ void MainWindow::monitor_check_update(void) {
     updater = QSimpleUpdater::getInstance();
     connect(updater, SIGNAL(downloadFinished(QString, QString)), this, SLOT(downloadFinished(QString, QString)));
     updater->setModuleName(update_url, "monitor");
-    updater->setModuleVersion(update_url, "1.0");
+    updater->setModuleVersion(update_url, "1.1");
     updater->setNotifyOnFinish(update_url, false);
     updater->setNotifyOnUpdate(update_url, true);
     updater->setUseCustomAppcast(update_url, false);
@@ -49,8 +49,6 @@ MainWindow::MainWindow(QWidget *parent)
     setup_variable_table();
     setup_custom_plot();
     monitor_check_update();
-
-    ui->compass_widget->set_direction(105.7f);
 }
 
 MainWindow::~MainWindow() {

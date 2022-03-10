@@ -81,6 +81,9 @@ void MainWindow::table_setvalue_variable(unsigned char index, unsigned int value
             ui->custom_plot->graph(plot_curve_index)->rescaleAxes();
         }
         ui->custom_plot->replot();
+
+        if(QString(debugger_variable[index]->var_name) == "compass")
+            ui->compass_widget->set_direction(data_value);
     }
 }
 
