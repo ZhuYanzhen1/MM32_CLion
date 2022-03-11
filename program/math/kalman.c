@@ -33,7 +33,7 @@ kalman_filter_float kalman_distance_north = {0};
 kalman_filter_float kalman_distance_earth = {0};
 
 void kalman_config() {
-    float temp_angle_north = ture_north_begin();
+    float temp_angle_north = initial_angle_begin();
     kalman_config_angle(&kalman_angle_north, temp_angle_north);
     kalman_config_v(&kalman_v_north);
     kalman_config_v(&kalman_v_east);
