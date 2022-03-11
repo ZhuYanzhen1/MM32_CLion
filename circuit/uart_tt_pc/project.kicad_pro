@@ -112,7 +112,7 @@
         "min_silk_clearance": 0.0,
         "min_through_hole_diameter": 0.3,
         "min_track_width": 0.19999999999999998,
-        "min_via_annular_width": 0.15,
+        "min_via_annular_width": 0.049999999999999996,
         "min_via_diameter": 0.6,
         "solder_mask_clearance": 0.0,
         "solder_mask_min_width": 0.0,
@@ -120,9 +120,10 @@
       },
       "track_widths": [
         0.0,
-        0.254,
+        0.2,
         0.3,
-        0.5
+        0.5,
+        1.0
       ],
       "via_dimensions": [
         {
@@ -353,7 +354,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "ESP8266.kicad_pro",
+    "filename": "project.kicad_pro",
     "version": 1
   },
   "net_settings": {
@@ -432,7 +433,7 @@
   },
   "sheets": [
     [
-      "0b185c93-b318-48f7-bf58-1936caccc44d",
+      "f00a7eea-3da9-4496-ab6b-790e1f22aad2",
       ""
     ]
   ],
