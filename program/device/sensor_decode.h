@@ -52,7 +52,7 @@ typedef struct {
     int offbias_z;
     int residual;
     int step_length;
-    int num;
+    int num;    // 收到第几个数据
     int checksum;
 } decode_debug;
 

@@ -145,17 +145,16 @@ void hmc5883l_correction() {
     \retval True North Angle
     \note   The commented out content is the pre-optimized floating point operation
 */
-float ture_north_begin() {
-    float initial_ture_north;
+float initial_angle_begin() {
+    float initial_angle;
     for (unsigned char i = 0; i < AVERAGE_NUM_TURE_NORTH; i++) {
         iic_read_hmc5883l();
         hmc5883l_correction();
-        initial_ture_north = qfp_fadd(initial_ture_north,
-                                      qfp_fadd(qfp_fmul(qfp_fatan2(magnetometer_correction.y,
-                                                                   magnetometer_correction.x),
-                                                        qfp_fdiv(180, PI)), 180));
-//         initial_ture_north += (atan2(magnetometer_correction.y,agnetometer_correction.x)*(180 / pi)+180);
+        initial_angle = qfp_fadd(initial_angle, qfp_fadd(
+            qfp_fmul(qfp_fatan2(magnetometer_correction.y, magnetometer_correction.x),
+                     qfp_fdiv(180, PI)), 180));
+//         initial_angle += (atan2(magnetometer_correction.y,agnetometer_correction.x)*(180 / pi)+180);
     }
-    initial_ture_north = qfp_fdiv(initial_ture_north, AVERAGE_NUM_TURE_NORTH);
-    return initial_ture_north;
+    initial_angle = qfp_fdiv(initial_angle, AVERAGE_NUM_TURE_NORTH);
+    return initial_angle;
 }
