@@ -48,7 +48,7 @@ private:
     Ui::MainWindow *ui;
     QSerialPort *serial;
     QSimpleUpdater *updater;
-    const QString update_url = "https://zhuyanzhen1.github.io/MM32_CLion/update/updates.json";
+    const QString update_url = "http://www.acmetech.top/wp-content/monitor_update/updates.json";
 
     QStandardItemModel *variable_list_table;
     QStandardItem *variable_list_item[32];

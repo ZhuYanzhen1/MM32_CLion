@@ -100,7 +100,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="variable_tab">
      <attribute name="title">
@@ -168,10 +168,20 @@
      <widget class="Compass" name="compass_widget" native="true">
       <property name="geometry">
        <rect>
-        <x>820</x>
-        <y>40</y>
+        <x>850</x>
+        <y>10</y>
         <width>301</width>
         <height>281</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QCustomPlot" name="map_plot" native="true">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>831</width>
+        <height>711</height>
        </rect>
       </property>
      </widget>
@@ -183,7 +193,7 @@
   <customwidget>
    <class>QCustomPlot</class>
    <extends>QWidget</extends>
-   <header>qcustomplot.h</header>
+   <header location="global">qcustomplot.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

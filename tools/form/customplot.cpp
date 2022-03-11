@@ -188,15 +188,29 @@ void MainWindow::setup_variable_table(void) {
 
 void MainWindow::setup_custom_plot(void) {
     ui->custom_plot->legend->setVisible(true);
-
     ui->custom_plot->xAxis->setLabel("t(s)");
     ui->custom_plot->yAxis->setLabel("y(value)");
-
     ui->custom_plot->xAxis->setRange(-1, 1);
     ui->custom_plot->yAxis->setRange(-1, 1);
-
     connect(ui->custom_plot->xAxis, SIGNAL(rangeChanged(QCPRange)), ui->custom_plot->xAxis2, SLOT(setRange(QCPRange)));
     connect(ui->custom_plot->yAxis, SIGNAL(rangeChanged(QCPRange)), ui->custom_plot->yAxis2, SLOT(setRange(QCPRange)));
-
     ui->custom_plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
+
+    ui->map_plot->legend->setVisible(true);
+    ui->map_plot->xAxis->setLabel("x(m)");
+    ui->map_plot->yAxis->setLabel("y(m)");
+    ui->map_plot->xAxis->setRange(-100, 100);
+    ui->map_plot->yAxis->setRange(-100, 100);
+    connect(ui->map_plot->xAxis, SIGNAL(rangeChanged(QCPRange)), ui->custom_plot->xAxis2, SLOT(setRange(QCPRange)));
+    connect(ui->map_plot->yAxis, SIGNAL(rangeChanged(QCPRange)), ui->custom_plot->yAxis2, SLOT(setRange(QCPRange)));
+    ui->map_plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
+    QPen pen;
+    pen.setColor(Qt::red);
+    pen.setWidthF(3);
+    ui->map_plot->addGraph();
+    ui->map_plot->graph(0)->setPen(pen);
+    ui->map_plot->graph(0)->setName("Track");
+    ui->map_plot->graph(0)->setLineStyle(QCPGraph::lsNone);
+    ui->map_plot->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 2));
+    ui->map_plot->replot();
 }
