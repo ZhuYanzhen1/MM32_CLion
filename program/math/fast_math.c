@@ -57,12 +57,12 @@ float atan_fast(float x) {
 }
 
 float fast_sqrt(float value) {
+    float y;
     float xhalf = 0.5f * value;
     int i = *(int *) &value;
-    i = 0x5f3759df - (i >> 1);
-    value = *(float *) &i;
-    value = value * (1.5f - xhalf * value * value);
-    value = value * (1.5f - xhalf * value * value);
-    value = 1.0f / value;
-    return value;
+    i = 0x5f375a86 - (i >> 1);
+    y = *(float *) &i;
+    y = y * (1.5f - (xhalf * y * y));
+    y = y * (1.5f - (xhalf * y * y));
+    return value * y;
 }
