@@ -15,23 +15,21 @@
 neu_infomation neu = {0};
 
 /*!
-    \brief      Convert latitude to displacement in ENU coordinate system
-    \param[in]  latitude(°)
-    \retval     Converted data
+    \brief      Get the distance based on the latitude and longitude of the starting point
+                and the latitude and longitude of the current state
+    \param[in]  lat_1(°):Starting latitude
+    \param[in]  lon_1(°):Starting longitude
+    \param[in]  lat_2(°):Latitude of Present State
+    \param[in]  lon_2(°):longitude of Present State
+    \retval     Distance between two points on the earth
+    \note       When we keep the longitude the same, we can calculate the distance to the north
+                When we keep the latitude the same, we can calculate the distance to the east
 */
-float get_distance_m_lat(float lat) {
-    float distance = GEO_ANGLE(lat);
-    return EARTH_RADIUS * distance;
-}
-
-/*!
-    \brief      Convert longitude to displacement in ENU coordinate system
-    \param[in]  longitude(°)
-    \retval     Converted data
-*/
-float get_distance_m_lon(float lon) {
-    float distance = GEO_ANGLE(lon);
-    return EARTH_RADIUS * distance;
+float get_distance(float lat_1, float lon_1, float lat_2, float lon_2) {
+    float c = qfp_fsin(GEO_ANGLE(lat_1)) * qfp_fsin(GEO_ANGLE(lat_2)) +
+        qfp_fcos(GEO_ANGLE(lat_1)) * qfp_fcos(GEO_ANGLE(lat_2)) * qfp_fcos(GEO_ANGLE(lon_1 - lon_2));
+    float distance = EARTH_RADIUS * GEO_ANGLE(qfp_fcos(c));
+    return distance;
 }
 
 /*!
@@ -44,9 +42,9 @@ void coordinate_system_transformation_neu(float delta) {
     float temp_delta = GEO_ANGLE(delta);
 
     float temp_latitude = unit_to_degree(gps_rmc.latitude, 4);
-    neu.north_distance = get_distance_m_lat(temp_latitude - QRIGIN_LAT);
     float temp_lonitude = unit_to_degree(gps_rmc.longitude, 4);
-    neu.east_distance = get_distance_m_lon(temp_lonitude - QRIGIN_LON);
+    neu.north_distance = get_distance(QRIGIN_LAT, temp_lonitude, temp_latitude, temp_lonitude);
+    neu.east_distance = get_distance(temp_latitude, QRIGIN_LON, temp_latitude, temp_lonitude);
 
     neu.north_acceleration = MG_TO_M_S_2
     ((float) imu.x_acll * FACTOR_ALLC * qfp_fcos(temp_delta)

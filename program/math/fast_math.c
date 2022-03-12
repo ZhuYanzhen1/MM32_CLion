@@ -30,7 +30,7 @@ float LUT[102] = {
     0.78539819f, 0.79037325f};
 
 float atan_fast(float x) {
-    /*
+    /*![](../../../../AppData/Local/Temp/LogiUI/Pak/img/device.png)
     Linear interpolation is used for higher accuracy
     */
     if (x >= 0) {
