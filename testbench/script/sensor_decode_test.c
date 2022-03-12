@@ -58,12 +58,6 @@ void test_precossing_send_data() {
 
 void test_precossing_variable_length_data() {
 
-    // 100 0001 0 130 2^3
-    // 001 1101 0011 1011 0110 0100  1.1915748
-    float a = 9.827f;
-    unsigned int a_i = *((unsigned int *) (&a));
-    printf("\r\nfloat:%f, data:0x%08x\r\n", a, a_i);
-
     int mx = 0x7D4685, my = 0x852114, mz = 0x3305c4;
     int offset_x = (int) (63.2467f * 10000), offset_y = (int) (-3.3462f), offset_z = (int) (202.16880f * 100000);
     int bias_x = 0, bias_y = 0, bias_z = 0;

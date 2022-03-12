@@ -15,10 +15,6 @@ int main() {
     add_test_scripts_to_suite(&mdtp_suite, "mdtp-encrypt", test_mdtp_encrypt);
     add_test_scripts_to_suite(&mdtp_suite, "mdtp-decrypt", test_mdtp_decrypt);
 
-    CU_pSuite gps_suite = NULL;
-    initialize_cunit_suite(&gps_suite, "gps_suit");
-
-
     CU_pSuite sort_suite = NULL;
     initialize_cunit_suite(&sort_suite, "sort_suit");
     add_test_scripts_to_suite(&sort_suite, "sort_heapsort", test_heap_sort);
