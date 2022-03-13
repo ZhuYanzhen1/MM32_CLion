@@ -4,7 +4,7 @@
       "open-url": "",
       "latest-version": "1.1",
       "download-url": "http://www.acmetech.top/wp-content/monitor_update/monitor.exe",
-      "changelog": "Added a compass UI",
+      "changelog": "Added a new tab page.<br>Added a compass control and map display control.<br>But the map display control is not yet available.",
       "mandatory": false
     }
   }
