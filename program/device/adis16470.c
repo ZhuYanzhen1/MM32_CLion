@@ -17,7 +17,7 @@
 #define BURST_READ(x)               (x) = (short) spi3_software_mode3(0x0000);
 #define CALIBRATION_ACLL_NUMBER     20
 
-short offset_ax = 0, offset_ay = 0;
+int offset_ax = 0, offset_ay = 0;
 adis16470_t imu = {0};
 
 /*!
@@ -92,12 +92,12 @@ void adis_burst_read() {
             Subtract the zero bias within the function of the coordinate system transformation
 */
 void calibration_acll() {
-    short ax = 0, ay = 0;
+    int ax = 0, ay = 0;
     for (unsigned char i = 0; i < CALIBRATION_ACLL_NUMBER; i++) {
         adis_burst_read();
-        ax = (short) (ax + imu.x_acll);
-        ay = (short) (ay + imu.y_acll);
+        ax = ax + imu.x_acll;
+        ay = ay + imu.y_acll;
     }
-    offset_ax = (short) (ax / CALIBRATION_ACLL_NUMBER);
-    offset_ay = (short) (ay / CALIBRATION_ACLL_NUMBER);
+    offset_ax = ax / CALIBRATION_ACLL_NUMBER;
+    offset_ay = ay / CALIBRATION_ACLL_NUMBER;
 }
