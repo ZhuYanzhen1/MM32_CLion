@@ -5,7 +5,7 @@
 #ifndef TESTBENCH_SENSOR_DECODE_TEST_H
 #define TESTBENCH_SENSOR_DECODE_TEST_H
 
-void test_precossing_send_data();
+void test_processing_send_data();
 
 void test_nmea_gnrmc_analysis();
 

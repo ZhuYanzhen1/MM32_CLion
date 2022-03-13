@@ -30,5 +30,6 @@ short adis_read_uid();
 short adis_read_register(unsigned int register_address);
 void adis_burst_read();
 void adis_point_wz(void);
+void calibration_acll();
 
 #endif  // MM32F3277_DEVICE_ADIS16470_H_
