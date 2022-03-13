@@ -15,7 +15,9 @@
 #define SPI3_NSS_SET()              GPIO_SetBits(GPIOD, GPIO_Pin_7);
 #define SPI3_NSS_RESET()            GPIO_ResetBits(GPIOD, GPIO_Pin_7);
 #define BURST_READ(x)               (x) = (short) spi3_software_mode3(0x0000);
+#define CALIBRATION_ACLL_NUMBER     20
 
+int offset_ax = 0, offset_ay = 0;
 adis16470_t imu = {0};
 
 /*!
@@ -82,4 +84,20 @@ void adis_burst_read() {
     BURST_READ(imu.temp_out)
     BURST_READ(imu.data_cntr)
     SPI3_NSS_SET()
+}
+
+/*!
+    \brief  Calculate the zero offset value
+    \note   Calibrate only the x and y axes, not the z axis
+            Subtract the zero bias within the function of the coordinate system transformation
+*/
+void calibration_acll() {
+    int ax = 0, ay = 0;
+    for (unsigned char i = 0; i < CALIBRATION_ACLL_NUMBER; i++) {
+        adis_burst_read();
+        ax = ax + imu.x_acll;
+        ay = ay + imu.y_acll;
+    }
+    offset_ax = ax / CALIBRATION_ACLL_NUMBER;
+    offset_ay = ay / CALIBRATION_ACLL_NUMBER;
 }

@@ -30,7 +30,7 @@ void test_nmea_gnrmc_analysis() {
 extern decode_fixed small_packets;
 extern decode_debug debug_data;
 
-void test_precossing_send_data() {
+void test_processing_send_data() {
     short buffer[5] = {20, 352, -9, -132, 1543};
     unsigned char packets[12] = {0};
     precossing_fixed_length_data(packets, buffer);
@@ -57,7 +57,6 @@ void test_precossing_send_data() {
 }
 
 void test_precossing_variable_length_data() {
-
     int mx = 0x7D4685, my = 0x852114, mz = 0x3305c4;
     int offset_x = (int) (63.2467f * 10000), offset_y = (int) (-3.3462f), offset_z = (int) (202.16880f * 100000);
     int bias_x = 0, bias_y = 0, bias_z = 0;

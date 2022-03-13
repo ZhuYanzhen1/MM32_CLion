@@ -14,6 +14,8 @@
 
 neu_infomation neu = {0};
 
+extern int offset_ax, offset_ay;
+
 /*!
     \brief      Get the distance based on the latitude and longitude of the starting point
                 and the latitude and longitude of the current state
@@ -39,6 +41,7 @@ float get_distance(float lat_1, float lon_1, float lat_2, float lon_2) {
     \param[in]  True North Angle
 */
 void coordinate_system_transformation_neu(float delta) {
+    int temp_acll_ax, temp_acll_ay;
     float temp_delta = GEO_ANGLE(delta);
 
     float temp_latitude = unit_to_degree(gps_rmc.latitude, 4);
@@ -46,12 +49,15 @@ void coordinate_system_transformation_neu(float delta) {
     neu.north_distance = get_distance(QRIGIN_LAT, temp_lonitude, temp_latitude, temp_lonitude);
     neu.east_distance = get_distance(temp_latitude, QRIGIN_LON, temp_latitude, temp_lonitude);
 
+    temp_acll_ax = imu.x_acll - offset_ax;
+    temp_acll_ay = imu.y_acll - offset_ay;
+
     neu.north_acceleration = MG_TO_M_S_2
-    ((float) imu.x_acll * FACTOR_ALLC * qfp_fcos(temp_delta)
-         + (float) imu.y_acll * FACTOR_ALLC * qfp_fcos(temp_delta + PI / 2));
+    ((float) temp_acll_ax * FACTOR_ALLC * qfp_fcos(temp_delta)
+         + (float) temp_acll_ay * FACTOR_ALLC * qfp_fcos(temp_delta + PI / 2));
     neu.east_acceleration = MG_TO_M_S_2
-    ((float) imu.x_acll * FACTOR_ALLC * qfp_fsin(temp_delta)
-         + (float) imu.y_acll * FACTOR_ALLC * qfp_fsin(temp_delta + PI / 2));
+    ((float) temp_acll_ax * FACTOR_ALLC * qfp_fsin(temp_delta)
+         + (float) temp_acll_ay * FACTOR_ALLC * qfp_fsin(temp_delta + PI / 2));
 
     /* Use GPS to get the velocity, convert the units,
      * and then convert the coordinate system to the NEU */

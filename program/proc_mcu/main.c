@@ -31,7 +31,7 @@ int main(void) {
     xpt2046_gpio_config();
 //    xpt2046_calibrate();
     kalman_config();
-
+    calibration_acll();
     cm_backtrace_config("mm32f3277", "1.0.1", "1.0.1");
     debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
     debugger_register_variable(dbg_float32, &north, "compass");
