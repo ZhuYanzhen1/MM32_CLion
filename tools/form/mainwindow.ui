@@ -100,7 +100,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="variable_tab">
      <attribute name="title">
@@ -182,6 +182,16 @@
         <y>10</y>
         <width>831</width>
         <height>711</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QTextBrowser" name="joystick_txt">
+      <property name="geometry">
+       <rect>
+        <x>850</x>
+        <y>300</y>
+        <width>301</width>
+        <height>261</height>
        </rect>
       </property>
      </widget>

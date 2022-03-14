@@ -8,6 +8,7 @@
 #include <QTextEdit>
 #include <QSlider>
 #include <QStandardItemModel>
+#include "joy_thread.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -43,11 +44,13 @@ private slots:
 
 public slots:
     void serial_received();
+    void display_slot_row(joyinfoex_tag state_row);
 
 private:
     Ui::MainWindow *ui;
     QSerialPort *serial;
     QSimpleUpdater *updater;
+    Joy_Thread *joy_thread;
     const QString update_url = "http://www.acmetech.top/wp-content/monitor_update/updates.json";
 
     QStandardItemModel *variable_list_table;

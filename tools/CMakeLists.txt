@@ -27,7 +27,7 @@ set_property(SOURCE app_win32.rc APPEND PROPERTY OBJECT_DEPENDS ${PROJECT_SOURCE
 include_directories(updater form protocol)
 
 file(GLOB_RECURSE PROJECT_SOURCES "form/*.cpp" "updater/*.cpp" "form/*.ui" "updater/*.ui" "updater/*.h" "form/*.h"
-    "protocol/*.cpp")
+    "protocol/*.cpp" "protocol/*.h")
 
 add_executable(monitor WIN32 ${app_WINRC} ${PROJECT_SOURCES} ${QRC_FILES})
 

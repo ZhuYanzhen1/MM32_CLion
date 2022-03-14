@@ -2,6 +2,19 @@
 #include "./ui_mainwindow.h"
 #include <QSimpleUpdater.h>
 
+void MainWindow::display_slot_row(joyinfoex_tag state_row) {
+    QString string_tmp;
+    string_tmp.append("dwXpos=").append(QString::number(state_row.dwXpos)).append("\n");
+    string_tmp.append("dwYpos=").append(QString::number(state_row.dwYpos)).append("\n");
+    string_tmp.append("dwZpos=").append(QString::number(state_row.dwZpos)).append("\n");
+    string_tmp.append("dwRpos=").append(QString::number(state_row.dwRpos)).append("\n");
+    string_tmp.append("dwUpos=").append(QString::number(state_row.dwUpos)).append("\n");
+    string_tmp.append("dwButtons=").append(QString::number(state_row.dwButtons)).append("\n");
+    string_tmp.append("dwButtonNumber=").append(QString::number(state_row.dwButtonNumber)).append("\n");
+    string_tmp.append("dwPOV=").append(QString::number(state_row.dwPOV));
+    ui->joystick_txt->setText(string_tmp);
+}
+
 void MainWindow::downloadFinished(const QString &url, const QString &filepath) {
     (void) filepath;
     if (url == update_url) {
@@ -49,6 +62,11 @@ MainWindow::MainWindow(QWidget *parent)
     setup_variable_table();
     setup_custom_plot();
     monitor_check_update();
+
+    joy_thread = new Joy_Thread();
+    qRegisterMetaType<joyinfoex_tag>("joyinfoex_tag");
+    connect(joy_thread, SIGNAL(JoySignal_row(joyinfoex_tag)), this, SLOT(display_slot_row(joyinfoex_tag)));
+    joy_thread->start();
 }
 
 MainWindow::~MainWindow() {
