@@ -35,7 +35,7 @@ void MainWindow::monitor_check_update(void) {
     updater = QSimpleUpdater::getInstance();
     connect(updater, SIGNAL(downloadFinished(QString, QString)), this, SLOT(downloadFinished(QString, QString)));
     updater->setModuleName(update_url, "monitor");
-    updater->setModuleVersion(update_url, "1.1");
+    updater->setModuleVersion(update_url, "1.2");
     updater->setNotifyOnFinish(update_url, false);
     updater->setNotifyOnUpdate(update_url, true);
     updater->setUseCustomAppcast(update_url, false);

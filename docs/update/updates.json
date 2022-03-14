@@ -2,9 +2,9 @@
   "updates": {
     "windows": {
       "open-url": "",
-      "latest-version": "1.1",
+      "latest-version": "1.2",
       "download-url": "http://www.acmetech.top/wp-content/monitor_update/monitor.exe",
-      "changelog": "Added a new tab page.<br>Added a compass control and map display control.<br>But the map display control is not yet available.",
+      "changelog": "Added Xbox oneS joystick read and display",
       "mandatory": false
     }
   }
