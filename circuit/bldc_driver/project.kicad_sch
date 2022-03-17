@@ -1,0 +1,72 @@
+(kicad_sch (version 20211123) (generator eeschema)
+
+  (uuid 9af0dc38-de90-47bc-bea6-60c9d29c185d)
+
+  (paper "A4")
+
+  (title_block
+    (title "BLDC Driver")
+    (date "2022-03-18")
+    (rev "1.0.1")
+  )
+
+  (lib_symbols
+  )
+
+
+  (sheet (at 121.285 79.375) (size 41.91 51.435) (fields_autoplaced)
+    (stroke (width 0.1524) (type solid) (color 0 0 0 0))
+    (fill (color 0 0 0 0.0000))
+    (uuid 31693e58-80b4-4de8-ac40-6f11248c4bda)
+    (property "Sheet name" "Controller" (id 0) (at 121.285 78.6634 0)
+      (effects (font (size 1.27 1.27)) (justify left bottom))
+    )
+    (property "Sheet file" "controller.kicad_sch" (id 1) (at 121.285 131.3946 0)
+      (effects (font (size 1.27 1.27)) (justify left top))
+    )
+  )
+
+  (sheet_instances
+    (path "/" (page "1"))
+    (path "/31693e58-80b4-4de8-ac40-6f11248c4bda" (page "2"))
+  )
+
+  (symbol_instances
+    (path "/31693e58-80b4-4de8-ac40-6f11248c4bda/4195a90c-e738-4194-ade9-40579a416217"
+      (reference "#PWR?") (unit 1) (value "+3.3VA") (footprint "")
+    )
+    (path "/31693e58-80b4-4de8-ac40-6f11248c4bda/52f4e526-dd2c-4441-b2ed-f944d61560ec"
+      (reference "#PWR?") (unit 1) (value "GND") (footprint "")
+    )
+    (path "/31693e58-80b4-4de8-ac40-6f11248c4bda/653edd25-6312-4000-a5ef-a74a1f3cd1ce"
+      (reference "#PWR?") (unit 1) (value "GND") (footprint "")
+    )
+    (path "/31693e58-80b4-4de8-ac40-6f11248c4bda/65d1d547-5f30-4bb6-9050-8efdf0ae4682"
+      (reference "#PWR?") (unit 1) (value "GND") (footprint "")
+    )
+    (path "/31693e58-80b4-4de8-ac40-6f11248c4bda/bde0384d-e8f9-4a0e-a93a-e078942ff031"
+      (reference "#PWR?") (unit 1) (value "GND") (footprint "")
+    )
+    (path "/31693e58-80b4-4de8-ac40-6f11248c4bda/d24a3188-be2b-4d35-abd8-f76e7599042b"
+      (reference "#PWR?") (unit 1) (value "GND") (footprint "")
+    )
+    (path "/31693e58-80b4-4de8-ac40-6f11248c4bda/548c321f-26fd-4014-a2a7-c435ba46f969"
+      (reference "C?") (unit 1) (value "18pF") (footprint "ControlBoard:C_0603_1608Metric")
+    )
+    (path "/31693e58-80b4-4de8-ac40-6f11248c4bda/9729aeda-2e2a-4807-89e7-2dd82b1c1da2"
+      (reference "C?") (unit 1) (value "18pF") (footprint "ControlBoard:C_0603_1608Metric")
+    )
+    (path "/31693e58-80b4-4de8-ac40-6f11248c4bda/ac2afb25-2db7-436a-adae-a7d00c8bd7c1"
+      (reference "C?") (unit 1) (value "100nF") (footprint "ControlBoard:C_0603_1608Metric")
+    )
+    (path "/31693e58-80b4-4de8-ac40-6f11248c4bda/08eca28e-3c7e-4845-86e4-c7e2f74ad17b"
+      (reference "R?") (unit 1) (value "10kR") (footprint "ControlBoard:R_0603_1608Metric")
+    )
+    (path "/31693e58-80b4-4de8-ac40-6f11248c4bda/7277bb8b-d8d6-4ede-9597-6647c6e2feaa"
+      (reference "U?") (unit 1) (value "MM32SPIN360C") (footprint "Package_QFP:TQFP-48-1EP_7x7mm_P0.5mm_EP5x5mm")
+    )
+    (path "/31693e58-80b4-4de8-ac40-6f11248c4bda/a62041f4-db0a-4696-9633-adf7a9a90586"
+      (reference "Y?") (unit 1) (value "8MHz") (footprint "ControlBoard:Crystal_SMD_3225-4Pin_3.2x2.5mm")
+    )
+  )
+)
