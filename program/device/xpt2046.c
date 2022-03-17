@@ -26,9 +26,9 @@ unsigned short xpt2046_read(unsigned short cmd) {
     for (i = 0; i < TOUCH_READ_TIMES; i++) {
         GPIO_WriteBit(TOUCH_CS_PORT, TOUCH_CS_PIN, Bit_RESET);
         delayus(2);
-        spi1_readwrite_byte(cmd);
-        value[i] = spi1_readwrite_byte(TOUCH_Continue_Read) << 8;
-        value[i] |= spi1_readwrite_byte(TOUCH_Continue_Read);
+        spi2_readwrite_byte(cmd);
+        value[i] = spi2_readwrite_byte(TOUCH_Continue_Read) << 8;
+        value[i] |= spi2_readwrite_byte(TOUCH_Continue_Read);
         value[i] >>= 3;
         delayus(2);
         GPIO_WriteBit(TOUCH_CS_PORT, TOUCH_CS_PIN, Bit_SET);

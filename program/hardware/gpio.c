@@ -12,10 +12,10 @@
 #include "mm32_device.h"
 #include "pin.h"
 
+#ifdef IS_PROCESS_MCU
 void lcd_gpio_config(void) {
     GPIO_InitTypeDef GPIO_InitStruct;
     RCC_AHBPeriphClockCmd(RCC_AHBENR_GPIOE, ENABLE);
-    RCC_AHBPeriphClockCmd(RCC_AHBENR_GPIOF, ENABLE);
 
     GPIO_StructInit(&GPIO_InitStruct);
     GPIO_InitStruct.GPIO_Pin = LCD_A0_PIN;
@@ -78,4 +78,4 @@ void imu_dr_gpio_config() {
     GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IPU;
     GPIO_Init(IMU_DR_PORT, &GPIO_InitStruct);
 }
-
+#endif

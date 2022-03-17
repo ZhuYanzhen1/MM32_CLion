@@ -16,12 +16,12 @@
 
 void lcd_write_command(unsigned int com) {
     GPIO_WriteBit(LCD_A0_PORT, LCD_A0_PIN, Bit_RESET);
-    spi2_write_byte(com);
+    spi3_readwrite_byte(com);
 }
 
 void lcd_write_data(unsigned int dat) {
     GPIO_WriteBit(LCD_A0_PORT, LCD_A0_PIN, Bit_SET);
-    spi2_write_byte(dat);
+    spi3_readwrite_byte(dat);
 }
 
 void lcd_set_address(unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2) {

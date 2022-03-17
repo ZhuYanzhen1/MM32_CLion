@@ -8,21 +8,17 @@
 
 #include "main.h"
 
-unsigned int time[3];
-float temp[3];
 extern calpara_t params;
-char calflg = 0;
-float north;
 
 int main(void) {
     delay_config();
     led_config();
     delayms(2000);
-    iic1_software_config();
-    hmc5883l_config();
-    spi1_config();
+//    iic1_software_config();
+//    hmc5883l_config();
     spi2_config();
-    spi3_software_init();
+    spi3_config();
+//    spi3_software_init();
     gui_config();
     uart1_config();
     uart3_config();
@@ -30,33 +26,29 @@ int main(void) {
     gps_config();
     xpt2046_gpio_config();
 //    xpt2046_calibrate();
-    kalman_config();
-    calibration_acll();
+//    kalman_config();
+//    calibration_acll();
     cm_backtrace_config("mm32f3277", "1.0.1", "1.0.1");
     debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
-    debugger_register_variable(dbg_float32, &north, "compass");
+//    debugger_register_variable(dbg_float32, &north, "compass");
 
     timer2_config();
 
     while (1) {
 //        gui_show_gnrmc_information();       // 46.8ms
-
-        time[0] = global_time_stamp;
+        LED1_TOGGLE();
 //        printf("%f  %f\r\n", neu.east_distance, distance_east);
 //        printf("%f  %f\r\n", neu.east_v, v_east_final);
-//        gui_printf(5, 12, C_BLACK, C_WHITE, "true_north:%.4f", true_north);
+        gui_printf(5, 12, C_BLACK, C_WHITE, "time: %d", global_time_stamp);
 
-        iic_read_hmc5883l();
-        hmc5883l_correction();
-        north = qfp_fadd(qfp_fmul(qfp_fatan2(magnetometer_correction.y,
-                                             magnetometer_correction.x),
-                                  qfp_fdiv(180, PI)), 180);
+//        iic_read_hmc5883l();
+//        hmc5883l_correction();
+//        north = qfp_fadd(qfp_fmul(qfp_fatan2(magnetometer_correction.y,
+//                                             magnetometer_correction.x),
+//                                  qfp_fdiv(180, PI)), 180);
 
-//        gui_flush();            // 错开GUI的DMA刷新，但是UART6的DMA可能会受到这个的影响。
+        gui_flush();            // 错开GUI的DMA刷新，但是UART6的DMA可能会受到这个的影响。
         delayms(100);
-
-        time[1] = global_time_stamp;
-        time[2] = time[1] - time[0];
     }
 }
 

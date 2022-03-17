@@ -11,7 +11,7 @@
 
 ///////////// System /////////////
 #include "config.h"
-#include "pin.h"
+#include "./pin.h"
 #include "delay.h"
 #include "hal_conf.h"
 #include "mm32_device.h"

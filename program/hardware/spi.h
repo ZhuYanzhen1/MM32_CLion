@@ -15,19 +15,12 @@
 #define SPI3_SCK_LOW    GPIO_ResetBits(SPI3_SCK_PORT, SPI3_SCK_PIN)
 #define SPI3_MISO       GPIO_ReadInputDataBit(SPI3_MISO_PORT, SPI3_MISO_PIN)
 
-/* Not yet determined */
-#define SPI_CS_GPIO_Port GPIO_PortSourceGPIOA
-
-/* Not yet determined */
-#define SPI_CS_Pin GPIO_Pin_0
-
 void spi2_config(void);
-void spi2_write_byte(unsigned int tx_data);
-void spi2_dma_sendbuffer(void);
-void spi1_config(void);
-unsigned int spi1_readwrite_byte(unsigned int tx_data);
+unsigned int spi2_readwrite_byte(unsigned int tx_data);
+
 void spi3_config(void);
-unsigned int spi3_readwrite_byte(unsigned int tx_data);
+void spi3_readwrite_byte(unsigned int tx_data);
+
 void spi3_software_init(void);
 short spi3_software_mode3(unsigned int write_data);
 

@@ -12,10 +12,10 @@
 #define LED1_PORT       GPIOA
 #define LED1_PIN        GPIO_Pin_3
 
-#define LCD_RES_PORT    GPIOF
+#define LCD_RES_PORT    GPIOE
 #define LCD_RES_PIN     GPIO_Pin_0
 #define LCD_A0_PORT     GPIOE
-#define LCD_A0_PIN      GPIO_Pin_4
+#define LCD_A0_PIN      GPIO_Pin_1
 
 #define TOUCH_CS_PORT   GPIOE
 #define TOUCH_CS_PIN    GPIO_Pin_0

@@ -26,14 +26,8 @@
 #include "gpio.h"
 
 ///////////// Math /////////////
-#include "fft.h"
 #include "qfplib.h"
 #include "verification.h"
-
-///////////// Device /////////////
-#include "adis16470.h"
-#include "xpt2046.h"
-#include "gps.h"
 
 ///////////// Debug /////////////
 #include "debugger.h"
@@ -44,10 +38,5 @@
 #include "mdtp_pack.h"
 #include "sdtp_unpack.h"
 #include "sdtp_pack.h"
-#include "gps_parser.h"
-
-//////////// GUI ////////////
-#include "tft_lcd.h"
-#include "gui_base.h"
 
 #endif  // MM32F3277_USER_MAIN_H_
