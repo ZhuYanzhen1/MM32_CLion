@@ -17,6 +17,8 @@
 #define LCD_A0_PORT     GPIOE
 #define LCD_A0_PIN      GPIO_Pin_1
 
+#define TOUCH_CS_PORT   GPIOE
+#define TOUCH_CS_PIN    GPIO_Pin_3
 #define TOUCH_PEN_PORT  GPIOE
 #define TOUCH_PEN_PIN   GPIO_Pin_4
 

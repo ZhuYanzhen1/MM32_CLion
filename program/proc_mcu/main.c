@@ -35,17 +35,14 @@ int main(void) {
 
     while (1) {
 //        gui_show_gnrmc_information();       // 46.8ms
-        LED1_TOGGLE();
         printf("time:%d\r\n", global_time_stamp);
         fflush(stdout);
-        gui_printf(5, 12, C_BLACK, C_WHITE, "time: %d", global_time_stamp);
-
 //        iic_read_hmc5883l();
 //        hmc5883l_correction();
 //        north = qfp_fadd(qfp_fmul(qfp_fatan2(magnetometer_correction.y,
 //                                             magnetometer_correction.x),
 //                                  qfp_fdiv(180, PI)), 180);
-        delayms(100);
+        delayms(500);
     }
 }
 

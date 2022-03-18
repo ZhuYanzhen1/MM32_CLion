@@ -11,6 +11,9 @@
 #include "delay.h"
 #include "gui_base.h"
 #include "qfplib.h"
+#include "hal_conf.h"
+#include "mm32_device.h"
+#include "pin.h"
 
 static short xoffset = 0, yoffset = 0;
 static float xfactor = 0, yfactor = 0;
@@ -21,11 +24,12 @@ unsigned short xpt2046_read(unsigned short cmd) {
     unsigned long total_value = 0;
 
     for (i = 0; i < TOUCH_READ_TIMES; i++) {
+        GPIO_ResetBits(TOUCH_CS_PORT, TOUCH_CS_PIN);
         spi2_readwrite_byte(cmd);
         value[i] = spi2_readwrite_byte(TOUCH_Continue_Read) << 8;
         value[i] |= spi2_readwrite_byte(TOUCH_Continue_Read);
         value[i] >>= 3;
-        delayus(1);
+        GPIO_SetBits(TOUCH_CS_PORT, TOUCH_CS_PIN);
     }
 
     for (i = 0; i < TOUCH_READ_TIMES; i++) {
@@ -67,12 +71,12 @@ unsigned char xpt2046_readxy(unsigned short *x, unsigned short *y) {
 }
 
 void gui_draw_sign_for_calibrate(unsigned char x, unsigned char y) {
-    gui_draw_hline(x - 5, y - 1, 10, C_RED);
-    gui_draw_hline(x - 5, y, 10, C_RED);
-    gui_draw_hline(x - 5, y + 1, 10, C_RED);
-    gui_draw_vline(x - 1, y - 5, 10, C_RED);
-    gui_draw_vline(x, y - 5, 10, C_RED);
-    gui_draw_vline(x + 1, y - 5, 10, C_RED);
+    gui_draw_hline(x - 5, y - 1, 11, C_RED);
+    gui_draw_hline(x - 5, y, 11, C_RED);
+    gui_draw_hline(x - 5, y + 1, 11, C_RED);
+    gui_draw_vline(x - 1, y - 5, 11, C_RED);
+    gui_draw_vline(x, y - 5, 11, C_RED);
+    gui_draw_vline(x + 1, y - 5, 11, C_RED);
 }
 
 void xpt2046_calibrate_single_point(unsigned short x,
@@ -83,7 +87,7 @@ void xpt2046_calibrate_single_point(unsigned short x,
     delayms(1);
     gui_clear_screan(C_BLACK);
     gui_draw_sign_for_calibrate(x, y);
-    delayms(1);
+    delayms(500);
     while (1) {
         if (xpt2046_readxy(valueX, valueY) != 0xFF) {
             i++;
@@ -115,7 +119,7 @@ void xpt2046_calibrate(void) {
     xoffset = (short) ((float) LCD_CALx_MAX - ((float) px[1] * xfactor));
     yoffset = (short) ((float) LCD_CALy_MAX - ((float) py[1] * yfactor));
 
-    delayms(500);
+    delayms(200);
     gui_clear_screan(C_WHITE);
     gui_printf(5, 10, C_BLACK, C_WHITE, "xoffset %d", xoffset);
     gui_printf(5, 20, C_BLACK, C_WHITE, "yoffset %d", yoffset);
