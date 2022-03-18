@@ -34,6 +34,20 @@ void UART1_IRQHandler(void) {
     }
 }
 
+void UART6_IRQHandler(void) {
+    if (UART_GetITStatus(UART6, UART_ISR_RX) != RESET) {
+        unsigned char recvbyte = UART_ReceiveData(UART6);
+        UART_ClearITPendingBit(UART6, UART_ISR_RX);
+    }
+}
+
+void UART8_IRQHandler(void) {
+    if (UART_GetITStatus(UART8, UART_ISR_RX) != RESET) {
+        unsigned char recvbyte = UART_ReceiveData(UART8);
+        UART_ClearITPendingBit(UART8, UART_ISR_RX);
+    }
+}
+
 void EXTI4_IRQHandler(void) {
     if (EXTI_GetITStatus(EXTI_Line4)) {
         EXTI_ClearFlag(EXTI_Line4);

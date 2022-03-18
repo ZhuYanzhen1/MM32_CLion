@@ -7,15 +7,6 @@
 ******************************************************************************/
 
 #include "kalman.h"
-#include "hmc5883l.h"
-
-/* Geomagnetometer after correction Calculation of the true north angle */
-float true_north;
-
-/* Kalman fusion true north angle
- * (true north angle from geomagnetometer + z-axis angular velocity from gyroscope) */
-float true_north_final;
-kalman_filter_float kalman_angle_north = {0};
 
 /* Kalman fusion to obtain northward and eastward velocities
  * (GPS velocity + imu acceleration) */
@@ -33,27 +24,10 @@ kalman_filter_float kalman_distance_north = {0};
 kalman_filter_float kalman_distance_earth = {0};
 
 void kalman_config() {
-    float temp_angle_north = initial_angle_begin();
-    kalman_config_angle(&kalman_angle_north, temp_angle_north);
     kalman_config_v(&kalman_v_north);
     kalman_config_v(&kalman_v_east);
     kalman_config_distance(&kalman_distance_north, 384400);//得改     //337785    工一楼顶 //384400 西八楼顶
     kalman_config_distance(&kalman_distance_earth, 1487900);//得改    //377330            //1487900
-}
-
-void kalman_config_angle(kalman_filter_float *kalman, float pos_0) {
-    kalman->q_pos = 0.0065f;
-    kalman->q_vel = 0.01f;
-    kalman->r_pos = 0.56f;
-
-    kalman->pos = pos_0;
-    kalman->vel = 0.0f;
-    kalman->bias = 0.0f;
-
-    kalman->P[0][0] = 0.0049525f;
-    kalman->P[0][1] = 0.0032382f;
-    kalman->P[1][0] = 0.0032382f;
-    kalman->P[1][1] = 0.0048883f;
 }
 
 void kalman_config_v(kalman_filter_float *kalman) {
