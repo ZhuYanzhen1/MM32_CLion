@@ -9,7 +9,7 @@
 #ifndef MM32F3277_DEVICE_XPT2046_H_
 #define MM32F3277_DEVICE_XPT2046_H_
 
-#define TOUCH_READ_TIMES    40
+#define TOUCH_READ_TIMES    10
 #define TOUCH_ERR_RANGE     20
 #define TOUCH_X_CMD         0xD0
 #define TOUCH_Y_CMD         0x90

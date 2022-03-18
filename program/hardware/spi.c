@@ -29,15 +29,10 @@ void spi2_config(void) {
     RCC_APB1PeriphClockCmd(RCC_APB1ENR_SPI2, ENABLE);
 
     GPIO_PinAFConfig(GPIOE, GPIO_PinSource2, GPIO_AF_5);
-    GPIO_PinAFConfig(GPIOE, GPIO_PinSource3, GPIO_AF_5);
     GPIO_PinAFConfig(GPIOE, GPIO_PinSource5, GPIO_AF_5);
     GPIO_PinAFConfig(GPIOE, GPIO_PinSource6, GPIO_AF_5);
 
     GPIO_InitStruct.GPIO_Pin = GPIO_Pin_2;
-    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;
-    GPIO_Init(GPIOE, &GPIO_InitStruct);
-    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_3;
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;
     GPIO_Init(GPIOE, &GPIO_InitStruct);
@@ -56,9 +51,9 @@ void spi2_config(void) {
     SPI_InitStruct.SPI_DataWidth = SPI_DataWidth_8b;
     SPI_InitStruct.SPI_CPOL = SPI_CPOL_High;
     SPI_InitStruct.SPI_CPHA = SPI_CPHA_2Edge;
-    SPI_InitStruct.SPI_NSS = SPI_NSS_Hard;
+    SPI_InitStruct.SPI_NSS = SPI_NSS_Soft;
 
-    /* 120MHz / 16 = 7.5MHz */
+    /* 120MHz / 128 = 0.94MHz */
     SPI_InitStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_128;
     SPI_InitStruct.SPI_FirstBit = SPI_FirstBit_MSB;
     SPI_Init(SPI2, &SPI_InitStruct);

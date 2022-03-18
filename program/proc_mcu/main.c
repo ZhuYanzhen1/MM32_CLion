@@ -34,12 +34,13 @@ int main(void) {
     timer2_config();
 
     while (1) {
+        unsigned char x_pos, y_pos;
 //        gui_show_gnrmc_information();       // 46.8ms
-        LED1_TOGGLE();
         printf("time:%d\r\n", global_time_stamp);
         fflush(stdout);
-        gui_printf(5, 12, C_BLACK, C_WHITE, "time: %d", global_time_stamp);
-
+        xpt2046_scan(&x_pos, &y_pos);
+        gui_printf(10, 10, C_BLACK, C_WHITE, "XPos:%03d", x_pos);
+        gui_printf(10, 20, C_BLACK, C_WHITE, "YPos:%03d", y_pos);
 //        iic_read_hmc5883l();
 //        hmc5883l_correction();
 //        north = qfp_fadd(qfp_fmul(qfp_fatan2(magnetometer_correction.y,
