@@ -63,14 +63,14 @@ void unpacking_fixed_length_data(unsigned char packets[10]) {
 
     small_packets.pitch = (short) (packets[0] | (((short) packets[5] & 0xf0) << 4));
     small_packets.yaw = (short) (packets[1] | (((short) packets[5] & 0x0f) << 8));
-    small_packets.mx = (short) (packets[2] | (((short) packets[6] & 0xf0) << 4));
-    small_packets.my = (short) (packets[3] | ((short) (packets[6] & 0x0f) << 8));
-    small_packets.mz = (short) (packets[4] | ((short) (packets[7] & 0xf0) << 4));
+    small_packets.ax = (short) (packets[2] | (((short) packets[6] & 0xf0) << 4));
+    small_packets.ay = (short) (packets[3] | ((short) (packets[6] & 0x0f) << 8));
+    small_packets.az = (short) (packets[4] | ((short) (packets[7] & 0xf0) << 4));
 
     //先解出来并拿到东西，再去把传感器3轴信息-2048
-    small_packets.mx -= 2048;
-    small_packets.my -= 2048;
-    small_packets.mz -= 2048;
+    small_packets.ax -= 2048;
+    small_packets.ay -= 2048;
+    small_packets.az -= 2048;
 
 }
 
