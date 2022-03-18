@@ -31,9 +31,9 @@
 typedef struct {
     short pitch;
     short yaw;
-    short mx;
-    short my;
-    short mz;
+    short ax;
+    short ay;
+    short az;
     short checksum;
 } decode_fixed;
 

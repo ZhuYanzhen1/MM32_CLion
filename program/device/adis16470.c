@@ -71,7 +71,6 @@ void adis_burst_read() {
 // 突发读取功能提供了一种读取一批输出数据寄存器的方法，使用连续的比特流，速率高达1MHz（SCLK）。
 // 这种方法不需要每个16位段之间的停顿时间（见图3）。
 // 如图27所示，通过设置DIN=0x6800来启动这种模式，然后从DOUT中读出序列中的每个寄存器，同时在整个176位的序列中保持CS为低电平。
-    unsigned int checksum = 0;
     SPI3_NSS_RESET()
     spi3_software_mode3(0x6800);
     BURST_READ(imu.diag_star)
