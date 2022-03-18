@@ -84,7 +84,6 @@ void xpt2046_calibrate_single_point(unsigned short x,
                                     unsigned short *valueX,
                                     unsigned short *valueY) {
     unsigned char i = 0;
-    delayms(1);
     gui_clear_screan(C_BLACK);
     gui_draw_sign_for_calibrate(x, y);
     delayms(500);
@@ -125,6 +124,9 @@ void xpt2046_calibrate(void) {
     gui_printf(5, 20, C_BLACK, C_WHITE, "yoffset %d", yoffset);
     gui_printf(5, 30, C_BLACK, C_WHITE, "xFactor %.5f", xfactor);
     gui_printf(5, 40, C_BLACK, C_WHITE, "yFactor %.5f", yfactor);
+
+    delayms(2000);
+    gui_clear_screan(C_WHITE);
 }
 
 unsigned char xpt2046_scan(unsigned char *x_pos, unsigned char *y_pos) {
