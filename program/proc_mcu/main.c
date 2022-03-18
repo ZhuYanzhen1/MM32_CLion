@@ -25,20 +25,19 @@ int main(void) {
     uart6_config();
     gps_config();
     xpt2046_gpio_config();
-//    xpt2046_calibrate();
+    xpt2046_calibrate();
 //    kalman_config();
 //    calibration_acll();
-    cm_backtrace_config("mm32f3277", "1.0.1", "1.0.1");
+    cm_backtrace_config("mm32f3277", "1.3.3", "1.3.3");
     debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
-//    debugger_register_variable(dbg_float32, &north, "compass");
 
     timer2_config();
 
     while (1) {
 //        gui_show_gnrmc_information();       // 46.8ms
         LED1_TOGGLE();
-//        printf("%f  %f\r\n", neu.east_distance, distance_east);
-//        printf("%f  %f\r\n", neu.east_v, v_east_final);
+        printf("time:%d\r\n", global_time_stamp);
+        fflush(stdout);
         gui_printf(5, 12, C_BLACK, C_WHITE, "time: %d", global_time_stamp);
 
 //        iic_read_hmc5883l();
@@ -46,8 +45,6 @@ int main(void) {
 //        north = qfp_fadd(qfp_fmul(qfp_fatan2(magnetometer_correction.y,
 //                                             magnetometer_correction.x),
 //                                  qfp_fdiv(180, PI)), 180);
-
-        gui_flush();            // 错开GUI的DMA刷新，但是UART6的DMA可能会受到这个的影响。
         delayms(100);
     }
 }

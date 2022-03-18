@@ -22,11 +22,7 @@ void gui_config(void) {
         ((unsigned short *) lcd_buffer)[i] = C_WHITE;
     lcd_set_address(0, 0, 127, 159);
     spi3_dma_sent_config((unsigned int *) lcd_buffer, 128 * 160 * 2);
-    spi3_dma_set_transmit_buffer((unsigned int *) lcd_buffer, 128 * 160 * 2);
-}
-
-void gui_flush(void) {
-    lcd_set_address(0, 0, 127, 159);
+    spi3_dma_nvic_config();
     spi3_dma_set_transmit_buffer((unsigned int *) lcd_buffer, 128 * 160 * 2);
 }
 
@@ -71,8 +67,6 @@ void gui_printf(unsigned char row,
 void gui_clear_screan(unsigned short color) {
     for (unsigned short i = 0; i < 128 * 160; i++)
         ((unsigned short *) lcd_buffer)[i] = color;
-    lcd_set_address(0, 0, 127, 159);
-    spi3_dma_set_transmit_buffer((unsigned int *) lcd_buffer, 128 * 160 * 2);
 }
 
 void gui_draw_hline(unsigned char x1, unsigned char y1, unsigned char width, unsigned short color) {

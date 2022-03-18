@@ -7,9 +7,6 @@
 ******************************************************************************/
 
 #include "xpt2046.h"
-#include "hal_conf.h"
-#include "mm32_device.h"
-#include "pin.h"
 #include "spi.h"
 #include "delay.h"
 #include "gui_base.h"
@@ -24,14 +21,11 @@ unsigned short xpt2046_read(unsigned short cmd) {
     unsigned long total_value = 0;
 
     for (i = 0; i < TOUCH_READ_TIMES; i++) {
-        GPIO_WriteBit(TOUCH_CS_PORT, TOUCH_CS_PIN, Bit_RESET);
-        delayus(2);
         spi2_readwrite_byte(cmd);
         value[i] = spi2_readwrite_byte(TOUCH_Continue_Read) << 8;
         value[i] |= spi2_readwrite_byte(TOUCH_Continue_Read);
         value[i] >>= 3;
-        delayus(2);
-        GPIO_WriteBit(TOUCH_CS_PORT, TOUCH_CS_PIN, Bit_SET);
+        delayus(1);
     }
 
     for (i = 0; i < TOUCH_READ_TIMES; i++) {

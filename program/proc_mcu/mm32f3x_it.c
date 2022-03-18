@@ -34,16 +34,9 @@ void UART1_IRQHandler(void) {
     }
 }
 
-void EXTI1_IRQHandler(void) {
-    if (EXTI_GetITStatus(EXTI_Line1)) {
-        EXTI_ClearFlag(EXTI_Line1);
-    }
-}
-
-void UART3_IRQHandler(void) {
-    if (UART_GetITStatus(UART3, UART_ISR_RX) != RESET) {
-        unsigned char recvbyte = UART_ReceiveData(UART3);
-        UART_ClearITPendingBit(UART3, UART_ISR_RX);
+void EXTI4_IRQHandler(void) {
+    if (EXTI_GetITStatus(EXTI_Line4)) {
+        EXTI_ClearFlag(EXTI_Line4);
     }
 }
 
@@ -87,5 +80,14 @@ void DMA1_Channel4_IRQHandler(void) {
             printf_dma_counter = 0;
             printf_sending_flag = 1;
         }
+    }
+}
+
+extern volatile unsigned char lcd_buffer[128 * 160 * 2];
+void DMA2_Channel2_IRQHandler(void) {
+    if (DMA_GetITStatus(DMA2_IT_TC2)) {
+        DMA_ClearITPendingBit(DMA2_IT_TC2);
+        lcd_set_address(0, 0, 127, 159);
+        spi3_dma_set_transmit_buffer((unsigned int *) lcd_buffer, 128 * 160 * 2);
     }
 }

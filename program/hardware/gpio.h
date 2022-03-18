@@ -11,6 +11,5 @@
 
 void lcd_gpio_config(void);
 void xpt2046_gpio_config(void);
-void imu_dr_gpio_config();
 
 #endif //MAIN_C_HARDWARE_GPIO_H_

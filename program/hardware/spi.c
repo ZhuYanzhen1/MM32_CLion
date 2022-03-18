@@ -30,6 +30,7 @@ void spi2_config(void) {
 
     GPIO_PinAFConfig(GPIOE, GPIO_PinSource2, GPIO_AF_5);
     GPIO_PinAFConfig(GPIOE, GPIO_PinSource3, GPIO_AF_5);
+    GPIO_PinAFConfig(GPIOE, GPIO_PinSource5, GPIO_AF_5);
     GPIO_PinAFConfig(GPIOE, GPIO_PinSource6, GPIO_AF_5);
 
     GPIO_InitStruct.GPIO_Pin = GPIO_Pin_2;
@@ -43,6 +44,10 @@ void spi2_config(void) {
     GPIO_InitStruct.GPIO_Pin = GPIO_Pin_6;
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_Init(GPIOE, &GPIO_InitStruct);
+    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_5;
+    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IPU;
     GPIO_Init(GPIOE, &GPIO_InitStruct);
 
     SPI_StructInit(&SPI_InitStruct);

@@ -119,6 +119,16 @@ void spi3_dma_sent_config(const unsigned int *data_address, unsigned short data_
     DMA_InitStruct.DMA_Auto_reload = DMA_Auto_Reload_Disable;
     DMA_Init(DMA2_Channel2, &DMA_InitStruct);
 
+    DMA_ITConfig(DMA2_Channel2, DMA_IT_TC, ENABLE);
     SPI_DMACmd(SPI3, ENABLE);
     DMA_Cmd(DMA2_Channel2, DISABLE);
+}
+
+void spi3_dma_nvic_config() {
+    exNVIC_Init_TypeDef NVIC_InitStruct;
+    NVIC_InitStruct.NVIC_IRQChannel = DMA2_Channel2_IRQn;
+    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = SPI3_DMA_PRIORITY;
+    NVIC_InitStruct.NVIC_IRQChannelSubPriority = 0;
+    NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
+    exNVIC_Init(&NVIC_InitStruct);
 }

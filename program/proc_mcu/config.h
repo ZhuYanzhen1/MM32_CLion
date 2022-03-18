@@ -32,12 +32,10 @@
 //////////////////////////////////////// Interrupt Priority ////////////////////////////////////////
 #define TIM2_PRIORITY           10
 #define UART1_PRIORITY          2
-#define UART3_PRIORITY          3
 #define UART3_DMA_PRIORITY      2
 #define UART1_DMA_PRIORITY      3
-#define EXTI1_PRIORITY          14
-#define IIC1_DMA_PRIORITY       4
-#define SPI2_DMA_PRIORITY       13
+#define EXTI4_PRIORITY          14
+#define SPI3_DMA_PRIORITY       13
 
 //////////////////////////////////////// Peripherals Speed ////////////////////////////////////////
 #define UART1_BAUDRATE          115200
