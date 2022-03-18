@@ -324,6 +324,14 @@
     [
       "31693e58-80b4-4de8-ac40-6f11248c4bda",
       "Controller"
+    ],
+    [
+      "9642be73-4501-4f12-95d0-d89fae836c45",
+      "Power"
+    ],
+    [
+      "61b0a279-443a-4805-a4a6-91986c78d51f",
+      "Driver"
     ]
   ],
   "text_variables": {}
