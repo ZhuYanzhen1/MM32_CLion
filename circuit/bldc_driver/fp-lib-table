@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name "BLDC_Driver")(type "KiCad")(uri "${KIPRJMOD}/BLDC_Driver.pretty")(options "")(descr ""))
+)
