@@ -50,20 +50,20 @@ void test_processing_send_data() {
 
     CU_ASSERT_EQUAL(small_packets.pitch, 20);
     CU_ASSERT_EQUAL(small_packets.yaw, 352);
-    CU_ASSERT_EQUAL(small_packets.mx, -9);
-    CU_ASSERT_EQUAL(small_packets.my, -132);
-    CU_ASSERT_EQUAL(small_packets.mz, 1543);
+    CU_ASSERT_EQUAL(small_packets.ax, -9);
+    CU_ASSERT_EQUAL(small_packets.ay, -132);
+    CU_ASSERT_EQUAL(small_packets.az, 1543);
 
 }
 
 void test_precossing_variable_length_data() {
-    int mx = 0x7D4685, my = 0x852114, mz = 0x3305c4;
+    int ax = 0x7D4685, ay = 0x852114, az = 0x3305c4;
     int offset_x = (int) (63.2467f * 10000), offset_y = (int) (-3.3462f), offset_z = (int) (202.16880f * 100000);
     int bias_x = 0, bias_y = 0, bias_z = 0;
     int offbias_x = 0, offbias_y = 0, offbias_z = 0;
     int residual = 0, step_length = 0;
     int num = 0;
-    int buffer[] = {mx, my, mz, offset_x, offset_y, offset_z, bias_x, bias_y, bias_z,
+    int buffer[] = {ax, ay, az, offset_x, offset_y, offset_z, bias_x, bias_y, bias_z,
                     offbias_x, offbias_y, offbias_z, residual, step_length, num
     };
     unsigned char packets[59] = {0};
@@ -92,9 +92,9 @@ void test_precossing_variable_length_data() {
 
     unpacking_variable_length_data(packets + 3);
 
-    CU_ASSERT_EQUAL(debug_data.mag_x, 0x7D4685);
-    CU_ASSERT_EQUAL(debug_data.mag_y, 0x852114);
-    CU_ASSERT_EQUAL(debug_data.mag_z, 0x3305c4);
+    CU_ASSERT_EQUAL(debug_data.ax, 0x7D4685);
+    CU_ASSERT_EQUAL(debug_data.ay, 0x852114);
+    CU_ASSERT_EQUAL(debug_data.az, 0x3305c4);
     CU_ASSERT_EQUAL(debug_data.offset_x, 632467);
     CU_ASSERT_EQUAL(debug_data.offset_y, -3);
     CU_ASSERT_EQUAL(debug_data.offset_z, 20216880);

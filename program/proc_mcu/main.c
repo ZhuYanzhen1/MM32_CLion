@@ -9,6 +9,11 @@
 #include "main.h"
 
 extern calpara_t params;
+extern unsigned char uart8_counter;
+extern unsigned char packages_to_be_unpacked_fix[12];
+extern unsigned char packages_to_be_unpacked_variable[DEBUG_BYTE];
+extern decode_fixed small_packets;
+extern decode_debug debug_data;
 
 int main(void) {
     delay_config();
@@ -46,9 +51,18 @@ int main(void) {
 //        north = qfp_fadd(qfp_fmul(qfp_fatan2(magnetometer_correction.y,
 //                                             magnetometer_correction.x),
 //                                  qfp_fdiv(180, PI)), 180);
+
+//        if (packages_to_be_unpacked_fix[0] == 0xff && packages_to_be_unpacked_fix[11] == 0xff)
+//            unpacking_fixed_length_data(&packages_to_be_unpacked_fix[1]);
+//        else uart8_counter = 0;
+        if (packages_to_be_unpacked_variable[0] == 0xa5 && packages_to_be_unpacked_variable[1] == 0x5a)
+            unpacking_variable_length_data(&packages_to_be_unpacked_variable[3]);
+        else
+            uart8_counter = 0;
         delayms(100);
     }
 }
+
 // 磁力计融合陀螺仪得到角度
 // yaw = acrtan(y / x) & z_gyro
 // roll = acrtan(z / y) & x_gyro
