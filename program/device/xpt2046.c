@@ -15,8 +15,8 @@
 #include "mm32_device.h"
 #include "pin.h"
 
-static short xoffset = 0, yoffset = 0;
-static float xfactor = 0, yfactor = 0;
+short xoffset = 0, yoffset = 0;
+float xfactor = 0, yfactor = 0;
 
 unsigned short xpt2046_read(unsigned short cmd) {
     unsigned char i, j;
@@ -117,16 +117,15 @@ void xpt2046_calibrate(void) {
     yfactor = (float) LCD_CAL_Y / (float) (py[1] - py[0]);
     xoffset = (short) ((float) LCD_CALx_MAX - ((float) px[1] * xfactor));
     yoffset = (short) ((float) LCD_CALy_MAX - ((float) py[1] * yfactor));
-
     delayms(200);
     gui_clear_screan(C_WHITE);
     gui_printf(5, 10, C_BLACK, C_WHITE, "xoffset %d", xoffset);
     gui_printf(5, 20, C_BLACK, C_WHITE, "yoffset %d", yoffset);
     gui_printf(5, 30, C_BLACK, C_WHITE, "xFactor %.5f", xfactor);
     gui_printf(5, 40, C_BLACK, C_WHITE, "yFactor %.5f", yfactor);
-
     delayms(2000);
     gui_clear_screan(C_WHITE);
+
 }
 
 unsigned char xpt2046_scan(unsigned char *x_pos, unsigned char *y_pos) {

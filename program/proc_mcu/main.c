@@ -81,11 +81,9 @@ void hardware_init(void) {
 int main(void) {
     gps_config();
     gui_config();
-    if (at24c02_test_memory() == 0)
-        LED1_ON();
-    else
-        LED1_OFF();
-    xpt2046_calibrate();
+//    xpt2046_calibrate();
+//    at24c02_saveparams();
+    at24c02_readparams();
 //    kalman_config();
 //    calibration_acll();
 
