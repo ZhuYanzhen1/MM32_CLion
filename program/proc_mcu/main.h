@@ -16,6 +16,7 @@
 #include "hal_conf.h"
 #include "mm32_device.h"
 #include "printf.h"
+#include "rtthread.h"
 
 ///////////// Hardware /////////////
 #include "led.h"

@@ -9,7 +9,6 @@
 #ifndef MM32F3277_SYSTEM_MM32F3X_IT_H_
 #define MM32F3277_SYSTEM_MM32F3X_IT_H_
 
-void SysTick_Handler(void);
 void TIM2_IRQHandler(void);
 void UART1_IRQHandler(void);
 void UART6_IRQHandler(void);
