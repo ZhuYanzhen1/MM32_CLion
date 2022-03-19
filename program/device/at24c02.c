@@ -8,21 +8,41 @@
 #include "hal_device.h"
 #include "hal_conf.h"
 
-#define EEPROM_ADDR 0xA0
-#define PAGESIZE    8
+#define EEPROM_ADDR     0xA0
+#define PAGESIZE        8
 
-void EEPROM_ReadBuff(unsigned char counter, unsigned char *buf) {
+typedef struct {
+    unsigned char busy;
+    unsigned char ack;
+    unsigned char fault;
+    unsigned char opt;
+    unsigned char sub;
+    unsigned char cnt;
+    unsigned char *ptr;
+    unsigned char sadd;
+} gEepromTypeDef;
+
+enum { WR };
+
+gEepromTypeDef gEeprom;
+
+void EEPROM_WaitEEready(void) {
+    unsigned int i = 10000;
+    while (i--);
+}
+
+void EEPROM_ReadBuff(void) {
     unsigned char i, flag = 0, _cnt = 0;
-    for (i = 0; i < counter; i++) {
+    for (i = 0; i < gEeprom.cnt; i++) {
         while (1) {
             if ((I2C_GetFlagStatus(I2C1, I2C_STATUS_FLAG_TFNF)) && (flag == 0)) {
                 I2C_ReadCmd(I2C1);
                 _cnt++;
-                if (_cnt == counter)
+                if (_cnt == gEeprom.cnt)
                     flag = 1;
             }
             if (I2C_GetFlagStatus(I2C1, I2C_STATUS_FLAG_RFNE)) {
-                buf[i] = I2C_ReceiveData(I2C1);
+                gEeprom.ptr[i] = I2C_ReceiveData(I2C1);
                 break;
             }
         }
@@ -36,54 +56,88 @@ unsigned char EEPROM_WriteBuff(unsigned char sub, unsigned char *ptr, unsigned s
         ptr++;
     }
     iic1_wait_for_stop();
-    delayus(100);
+    gEeprom.ack = 1;
+    gEeprom.busy = 0;
+    EEPROM_WaitEEready();
     return 1;
 }
 
-unsigned char EEPROM_SendPacket(unsigned char address, unsigned char *ptr, unsigned short counter) {
-    if ((address % PAGESIZE) > 0) {
+unsigned char EEPROM_SendPacket(unsigned char sub, unsigned char *ptr, unsigned short cnt) {
+    unsigned char i;
+    gEeprom.opt = WR;
+    gEeprom.cnt = cnt;
+    gEeprom.sub = sub;
+    gEeprom.busy = 1;
+    gEeprom.ack = 0;
+
+    if ((sub % PAGESIZE) > 0) {
         unsigned char
-            temp = ((PAGESIZE - address % PAGESIZE) < (counter) ? (PAGESIZE - address % PAGESIZE) : (counter));
-        EEPROM_WriteBuff(address, ptr, temp);
+            temp = ((PAGESIZE - sub % PAGESIZE) < (gEeprom.cnt) ? (PAGESIZE - sub % PAGESIZE) : (gEeprom.cnt));
+        EEPROM_WriteBuff(sub, ptr, temp);
         ptr += temp;
-        counter -= temp;
-        address += temp;
-        if (counter == 0)
-            return 1;
+        gEeprom.cnt -= temp;
+        sub += temp;
+        if (gEeprom.cnt == 0) return 1;
     }
-    for (unsigned char i = 0; i < (counter / PAGESIZE); i++) {
-        EEPROM_WriteBuff(address, ptr, PAGESIZE);
+    for (i = 0; i < (gEeprom.cnt / PAGESIZE); i++) {
+        EEPROM_WriteBuff(sub, ptr, PAGESIZE);
         ptr += PAGESIZE;
-        address += PAGESIZE;
-        counter -= PAGESIZE;
-        if (counter == 0)
-            return 1;
+        sub += PAGESIZE;
+        gEeprom.cnt -= PAGESIZE;
+        if (gEeprom.cnt == 0) return 1;
     }
-    if (counter > 0)
-        EEPROM_WriteBuff(address, ptr, counter);
+    if (gEeprom.cnt > 0) {
+        EEPROM_WriteBuff(sub, ptr, gEeprom.cnt);
+        return 1;
+    }
+    gEeprom.busy = 0;
+    gEeprom.ack = 1;
     return 0;
 }
 
-void EEPROM_ReadPacket(unsigned char address, unsigned char *ptr, unsigned short counter) {
-    iic1_writebyte(address);
-    EEPROM_ReadBuff(counter, ptr);
+void EEPROM_ReadPacket(unsigned char sub, unsigned char *ptr, unsigned short cnt) {
+    gEeprom.busy = 1;
+    gEeprom.ack = 0;
+    gEeprom.sub = sub;
+    gEeprom.ptr = ptr;
+    gEeprom.cnt = cnt;
+
+    iic1_writebyte(gEeprom.sub);
+    EEPROM_ReadBuff();
     iic1_wait_for_stop();
-    delayus(100);
+
+    gEeprom.busy = 0;
+    gEeprom.ack = 1;
+    EEPROM_WaitEEready();
+}
+
+void EEPROM_Write(unsigned char sub, unsigned char *ptr, unsigned short len) {
+    iic1_set_slave_addr(EEPROM_ADDR);
+    delayms(2);
+    do {
+        EEPROM_SendPacket(sub, ptr, len);
+        while (gEeprom.busy);
+    } while (!gEeprom.ack);
+}
+
+void EEPROM_Read(unsigned char sub, unsigned char *ptr, unsigned short len) {
+    iic1_set_slave_addr(EEPROM_ADDR);
+    delayms(2);
+    do {
+        EEPROM_ReadPacket(sub, ptr, len);
+        while (gEeprom.busy);
+    } while (!gEeprom.ack);
 }
 
 unsigned char at24c02_test_memory(void) {
-    unsigned char send_buf[128] = {0};
-    unsigned char read_buf[128] = {0};
-    for (unsigned char counter = 0; counter < 128; ++counter)
-        send_buf[counter] = counter;
-    iic1_set_slave_addr(EEPROM_ADDR);
-    delayms(1);
-    EEPROM_SendPacket(0x00, send_buf, 16);
-    delayms(1);
-    EEPROM_ReadPacket(0x00, read_buf, 16);
-    delayms(1);
-    for (unsigned char counter = 0; counter < 128; ++counter)
-        if (read_buf[counter] != counter)
+    unsigned char writebuffer[15] = {0};
+    unsigned char readbuffer[15] = {0};
+    for (int counter = 0; counter < sizeof(writebuffer); ++counter)
+        writebuffer[counter] = counter * 2;
+    EEPROM_Write(0x00, writebuffer, sizeof(writebuffer));
+    EEPROM_Read(0x00, readbuffer, sizeof(readbuffer));
+    for (int counter = 0; counter < sizeof(writebuffer); ++counter)
+        if (writebuffer[counter] != readbuffer[counter])
             return 1;
     return 0;
 }

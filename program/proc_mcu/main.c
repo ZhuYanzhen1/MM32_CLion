@@ -14,8 +14,7 @@ int main(void) {
     delay_config();
     led_config();
     delayms(2000);
-//    iic1_software_config();
-//    hmc5883l_config();
+    iic1_config();
     spi2_config();
     spi3_config();
     gui_config();
@@ -25,6 +24,10 @@ int main(void) {
     uart8_config();
     gps_config();
     xpt2046_gpio_config();
+    if (at24c02_test_memory() == 0)
+        LED1_ON();
+    else
+        LED1_OFF();
 //    xpt2046_calibrate();
 //    kalman_config();
 //    calibration_acll();
