@@ -54,14 +54,6 @@ void UART8_IRQHandler(void) {
     rt_interrupt_leave();
 }
 
-void EXTI4_IRQHandler(void) {
-    rt_interrupt_enter();
-    if (EXTI_GetITStatus(EXTI_Line4)) {
-        EXTI_ClearFlag(EXTI_Line4);
-    }
-    rt_interrupt_leave();
-}
-
 typedef enum { buffer_no_1 = 1, buffer_no_2 = 2 } buffer_no;
 buffer_no uart6_free_buffer_no = buffer_no_1;
 unsigned int usart3_dma_buffer_1[74];
