@@ -10,9 +10,6 @@
 #include "config.h"
 #include "mm32_device.h"
 #include "hal_conf.h"
-#if USE_RTTHREAD == 1
-#include "rtthread.h"
-#endif
 
 extern unsigned int SystemCoreClock;
 static volatile unsigned int delayms_counter = 0;
@@ -56,13 +53,16 @@ void delayus(unsigned int xus) {
 }
 
 void delayms(unsigned int xms) {
-#if USE_RTTHREAD == 1
-    if (xms >= delay_ms_factor) {
-        rt_thread_mdelay((int) (xms / delay_ms_factor));
-    } else {
-        xms %= delay_ms_factor;
+#if USE_FREERTOS == 1
+    if (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING) {
+        if (xms >= delay_ms_factor) {
+            vTaskDelay(xms / delay_ms_factor);
+        } else {
+            xms %= delay_ms_factor;
+            delayus(xms * 1000);
+        }
+    } else
         delayus(xms * 1000);
-    }
 #else
     delayms_counter = xms;
     while (delayms_counter != 0);
