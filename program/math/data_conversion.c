@@ -50,7 +50,8 @@ void coordinate_system_transformation_neu(float delta) {
 
 //    temp_acll_ax = imu.x_acll - offset_ax;
 //    temp_acll_ay = imu.y_acll - offset_ay;
-
+//    temp_acll_ax = imu.x_acll;
+//    temp_acll_ay = imu.y_acll;
     neu.north_acceleration = MG_TO_M_S_2
     ((float) temp_acll_ax * FACTOR_ALLC * qfp_fcos(temp_delta)
          + (float) temp_acll_ay * FACTOR_ALLC * qfp_fcos(temp_delta + PI / 2));

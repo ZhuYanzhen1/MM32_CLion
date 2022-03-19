@@ -2,9 +2,10 @@
 // Created by 16625 on 2022-03-09.
 //
 
-#ifndef MAIN_C_DEVICE_SENSOR_DECODE_H_
-#define MAIN_C_DEVICE_SENSOR_DECODE_H_
+#ifndef MM32F3277_DEVICE_SENSOR_DECODE_H_
+#define MM32F3277_DEVICE_SENSOR_DECODE_H_
 
+#define DEBUG_BYTE              60
 #define SHORT_SPLIT_CHAR(x, y)  packets[x] = (char) ((buffer[y] & 0x0000ff00) >> 8);\
                                 packets[(x)+1] = (char) (buffer[y] & 0x000000ff);
 #define INT_SPLIT_CHAR(x, y)    packets[x] = (char) ((buffer[y] & 0x00ff0000) >> 16);\
@@ -38,9 +39,9 @@ typedef struct {
 } decode_fixed;
 
 typedef struct {
-    int mag_x;
-    int mag_y;
-    int mag_z;
+    int ax;
+    int ay;
+    int az;
     int offset_x;
     int offset_y;
     int offset_z;
@@ -56,9 +57,9 @@ typedef struct {
     int checksum;
 } decode_debug;
 
-void precossing_fixed_length_data(unsigned char packets[12], short *buffer);
+void precossing_fixed_length_data(unsigned int packets[12], short *buffer);
+void precossing_variable_length_data(unsigned int *packets, unsigned char length, const int *buffer);
 void unpacking_fixed_length_data(unsigned char packets[10]);
-void precossing_variable_length_data(unsigned char *packets, unsigned char length, const int *buffer);
 void unpacking_variable_length_data(unsigned char *packets);
 
-#endif //MAIN_C_DEVICE_SENSOR_DECODE_H_
+#endif // MM32F3277_DEVICE_SENSOR_DECODE_H_

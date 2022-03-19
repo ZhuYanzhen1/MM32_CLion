@@ -38,10 +38,17 @@ void UART6_IRQHandler(void) {
     rt_interrupt_leave();
 }
 
+unsigned char uart8_counter;
+unsigned char packages_to_be_unpacked_fix[12];
+unsigned char packages_to_be_unpacked_variable[DEBUG_BYTE];
 void UART8_IRQHandler(void) {
     rt_interrupt_enter();
     if (UART_GetITStatus(UART8, UART_ISR_RX) != RESET) {
         unsigned char recvbyte = UART_ReceiveData(UART8);
+//        packages_to_be_unpacked_fix[counter++] = recvbyte;
+//        counter %= 12;
+        packages_to_be_unpacked_variable[uart8_counter++] = recvbyte;
+        uart8_counter %= DEBUG_BYTE;
         UART_ClearITPendingBit(UART8, UART_ISR_RX);
     }
     rt_interrupt_leave();
