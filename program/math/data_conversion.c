@@ -9,7 +9,6 @@
 
 #include "data_conversion.h"
 #include "qfplib.h"
-#include "adis16470.h"
 #include "gps_parser.h"
 
 neu_infomation neu = {0};
@@ -49,8 +48,8 @@ void coordinate_system_transformation_neu(float delta) {
     neu.north_distance = get_distance(QRIGIN_LAT, temp_lonitude, temp_latitude, temp_lonitude);
     neu.east_distance = get_distance(temp_latitude, QRIGIN_LON, temp_latitude, temp_lonitude);
 
-    temp_acll_ax = imu.x_acll - offset_ax;
-    temp_acll_ay = imu.y_acll - offset_ay;
+//    temp_acll_ax = imu.x_acll - offset_ax;
+//    temp_acll_ay = imu.y_acll - offset_ay;
 
     neu.north_acceleration = MG_TO_M_S_2
     ((float) temp_acll_ax * FACTOR_ALLC * qfp_fcos(temp_delta)
