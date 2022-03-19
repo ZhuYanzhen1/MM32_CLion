@@ -49,14 +49,7 @@ int main(void) {
         delayms(100);
     }
 }
-
-// 接下来的计划：卡尔曼融合GPS得到的速度以及imu的加速度
-
 // 磁力计融合陀螺仪得到角度
 // yaw = acrtan(y / x) & z_gyro
 // roll = acrtan(z / y) & x_gyro
 // pitch = arctan(z / x) & y_gyro
-
-//TODO burst_read 模式之后，就不能再单独读取寄存器了（两个不能共用）
-
-// 最开始的时候，读不到GPS信息，卡尔曼的参数就是0，那么下面就会乱迭代

@@ -2,8 +2,8 @@
 // Created by 16625 on 2022-03-09.
 //
 
-#ifndef MAIN_C_DEVICE_SENSOR_DECODE_H_
-#define MAIN_C_DEVICE_SENSOR_DECODE_H_
+#ifndef MM32F3277_DEVICE_SENSOR_DECODE_H_
+#define MM32F3277_DEVICE_SENSOR_DECODE_H_
 
 #define SHORT_SPLIT_CHAR(x, y)  packets[x] = (char) ((buffer[y] & 0x0000ff00) >> 8);\
                                 packets[(x)+1] = (char) (buffer[y] & 0x000000ff);
