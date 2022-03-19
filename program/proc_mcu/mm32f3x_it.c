@@ -45,10 +45,14 @@ void UART8_IRQHandler(void) {
     rt_interrupt_enter();
     if (UART_GetITStatus(UART8, UART_ISR_RX) != RESET) {
         unsigned char recvbyte = UART_ReceiveData(UART8);
-//        packages_to_be_unpacked_fix[counter++] = recvbyte;
-//        counter %= 12;
+#ifdef SHOW_FIX
+        packages_to_be_unpacked_fix[uart8_counter++] = recvbyte;
+        uart8_counter %= 12;
+#endif
+#ifdef SHOW_DEBUG
         packages_to_be_unpacked_variable[uart8_counter++] = recvbyte;
         uart8_counter %= DEBUG_BYTE;
+#endif
         UART_ClearITPendingBit(UART8, UART_ISR_RX);
     }
     rt_interrupt_leave();
