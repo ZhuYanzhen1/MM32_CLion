@@ -5,7 +5,7 @@
 #ifndef MM32F3277_DEVICE_SENSOR_DECODE_H_
 #define MM32F3277_DEVICE_SENSOR_DECODE_H_
 
-#define DEBUG_BYTE              60
+#define DEBUG_BYTE              63
 #define SHORT_SPLIT_CHAR(x, y)  packets[x] = (char) ((buffer[y] & 0x0000ff00) >> 8);\
                                 packets[(x)+1] = (char) (buffer[y] & 0x000000ff);
 #define INT_SPLIT_CHAR(x, y)    packets[x] = (char) ((buffer[y] & 0x00ff0000) >> 16);\
@@ -17,9 +17,10 @@
                                 packets[(x)+3] = (char) (buffer[y] & 0x000000ff);
 #define DECODE_TO_SHORT(x, y)   (x) = (int)(((int) packets[y] <<8) | \
                                 (packets[y+1])) ;
-#define DECODE_TO_INT(x, y)     (x) = (int) (((int) packets[y] <<16) | \
-                                ((int)packets[y+1] <<8) |\
-                                ((int)packets[y+2]));
+#define DECODE_TO_INT(x, y)     (x) = (int) (((int) packets[y] <<24) | \
+                                ((int)packets[y+1] <<16) |\
+                                ((int)packets[y+2])<<8 |\
+                                ((int)packets[y+3]));
 #define DECODE_TO_float(x, y)   (x) = (int) ( ((int)packets[y] <<24) |\
                                 ((int) packets[y+1] <<16) |\
                                 ((int) packets[y+2] <<8) |\
@@ -39,9 +40,9 @@ typedef struct {
 } decode_fixed;
 
 typedef struct {
-    int ax;
-    int ay;
-    int az;
+    int mag_x;
+    int mag_y;
+    int mag_z;
     int offset_x;
     int offset_y;
     int offset_z;

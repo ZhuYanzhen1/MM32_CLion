@@ -9,6 +9,9 @@
 #include "mm32f3x_it.h"
 #include "main.h"
 
+#define SHOW_FIX
+//#define SHOW_DEBUG
+
 //TODO 每一次在中断内写函数时，留意一下是否会发生重入，然后到Trello里面评论记录
 
 // 3us
@@ -49,6 +52,7 @@ void UART8_IRQHandler(void) {
         packages_to_be_unpacked_fix[uart8_counter++] = recvbyte;
         uart8_counter %= 12;
 #endif
+
 #ifdef SHOW_DEBUG
         packages_to_be_unpacked_variable[uart8_counter++] = recvbyte;
         uart8_counter %= DEBUG_BYTE;

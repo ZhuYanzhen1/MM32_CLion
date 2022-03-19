@@ -132,27 +132,23 @@ void unpacking_variable_length_data(unsigned char *packets) {
 //    debug_data.ax = (int) ((int) (packets[0] & 0x00ff0000) | (int) (packets[1] & 0x0000ff00) |
 //        (packets[2] & 0x000000ff));
 
-    unsigned short checksum = verification_crc16(packets, 55);
-    DECODE_TO_SHORT(debug_data.checksum, 55)
+    unsigned short checksum = verification_crc16(packets, 58);
+    DECODE_TO_SHORT(debug_data.checksum, 58)
     if (checksum != debug_data.checksum) return;
 
-    DECODE_TO_INT(debug_data.ax, 0)
-    DECODE_TO_INT(debug_data.ay, 3)
-    DECODE_TO_INT(debug_data.az, 6)
-    DECODE_TO_float(debug_data.offset_x, 9)
-    DECODE_TO_float(debug_data.offset_y, 13)
-    DECODE_TO_float(debug_data.offset_z, 17)
-    DECODE_TO_float(debug_data.bias_x, 21)
-    DECODE_TO_float(debug_data.bias_y, 25)
-    DECODE_TO_float(debug_data.bias_z, 29)
-    DECODE_TO_float(debug_data.offbias_x, 33)
-    DECODE_TO_float(debug_data.offbias_y, 37)
-    DECODE_TO_float(debug_data.offbias_z, 41)
-    DECODE_TO_float(debug_data.residual, 45)
-    DECODE_TO_float(debug_data.step_length, 49)
-    DECODE_TO_SHORT(debug_data.num, 53)
-
-    debug_data.ax -= 2048;
-    debug_data.ay -= 2048;
-    debug_data.az -= 2048;
+    DECODE_TO_INT(debug_data.mag_x, 0)
+    DECODE_TO_INT(debug_data.mag_y, 4)
+    DECODE_TO_INT(debug_data.mag_z, 8)
+    DECODE_TO_float(debug_data.offset_x, 12)
+    DECODE_TO_float(debug_data.offset_y, 16)
+    DECODE_TO_float(debug_data.offset_z, 20)
+    DECODE_TO_float(debug_data.bias_x, 24)
+    DECODE_TO_float(debug_data.bias_y, 28)
+    DECODE_TO_float(debug_data.bias_z, 32)
+    DECODE_TO_float(debug_data.offbias_x, 36)
+    DECODE_TO_float(debug_data.offbias_y, 40)
+    DECODE_TO_float(debug_data.offbias_z, 44)
+    DECODE_TO_float(debug_data.residual, 48)
+    DECODE_TO_float(debug_data.step_length, 52)
+    DECODE_TO_SHORT(debug_data.num, 56)
 }
