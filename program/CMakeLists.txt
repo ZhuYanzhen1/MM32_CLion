@@ -25,8 +25,8 @@ add_compile_options(-mcpu=cortex-m3 -mthumb -mthumb-interwork)
 add_compile_options(-ffunction-sections -fdata-sections -fno-common -fmessage-length=0)
 
 message(STATUS "Optimization for speed")
-add_compile_options(-O0)
-#add_compile_options(-O2)
+#add_compile_options(-O0)
+add_compile_options(-O2)
 
 #add_definitions(-DUSE_HAL_DRIVER)
 
