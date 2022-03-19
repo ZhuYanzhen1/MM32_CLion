@@ -53,26 +53,22 @@
  * INIT_APP_EXPORT(fn);
  * etc.
  */
-static int rti_start(void)
-{
+static int rti_start(void) {
     return 0;
 }
 INIT_EXPORT(rti_start, "0");
 
-static int rti_board_start(void)
-{
+static int rti_board_start(void) {
     return 0;
 }
 INIT_EXPORT(rti_board_start, "0.end");
 
-static int rti_board_end(void)
-{
+static int rti_board_end(void) {
     return 0;
 }
 INIT_EXPORT(rti_board_end, "1.end");
 
-static int rti_end(void)
-{
+static int rti_end(void) {
     return 0;
 }
 INIT_EXPORT(rti_end, "6.end");
@@ -80,8 +76,7 @@ INIT_EXPORT(rti_end, "6.end");
 /**
  * RT-Thread Components Initialization for board
  */
-void rt_components_board_init(void)
-{
+void rt_components_board_init(void) {
 #if RT_DEBUG_INIT
     int result;
     const struct rt_init_desc *desc;
@@ -94,8 +89,7 @@ void rt_components_board_init(void)
 #else
     volatile const init_fn_t *fn_ptr;
 
-    for (fn_ptr = &__rt_init_rti_board_start; fn_ptr < &__rt_init_rti_board_end; fn_ptr++)
-    {
+    for (fn_ptr = &__rt_init_rti_board_start; fn_ptr < &__rt_init_rti_board_end; fn_ptr++) {
         (*fn_ptr)();
     }
 #endif
@@ -104,8 +98,7 @@ void rt_components_board_init(void)
 /**
  * RT-Thread Components Initialization
  */
-void rt_components_init(void)
-{
+void rt_components_init(void) {
 #if RT_DEBUG_INIT
     int result;
     const struct rt_init_desc *desc;
@@ -120,8 +113,7 @@ void rt_components_init(void)
 #else
     volatile const init_fn_t *fn_ptr;
 
-    for (fn_ptr = &__rt_init_rti_board_end; fn_ptr < &__rt_init_rti_end; fn_ptr ++)
-    {
+    for (fn_ptr = &__rt_init_rti_board_end; fn_ptr < &__rt_init_rti_end; fn_ptr++) {
         (*fn_ptr)();
     }
 #endif
@@ -155,11 +147,11 @@ int __low_level_init(void)
 }
 #elif defined(__GNUC__)
 /* Add -eentry to arm-none-eabi-gcc argument */
-int entry(void)
-{
-    rtthread_startup();
-    return 0;
-}
+//int entry(void)
+//{
+//    rtthread_startup();
+//    return 0;
+//}
 #endif
 
 #ifndef RT_USING_HEAP
@@ -170,8 +162,7 @@ struct rt_thread main_thread;
 #endif
 
 /* the system main thread */
-void main_thread_entry(void *parameter)
-{
+void main_thread_entry(void *parameter) {
     extern int main(void);
     extern int $Super$$main(void);
 
@@ -187,8 +178,7 @@ void main_thread_entry(void *parameter)
 #endif
 }
 
-void rt_application_init(void)
-{
+void rt_application_init(void) {
     rt_thread_t tid;
 
 #ifdef RT_USING_HEAP
@@ -204,14 +194,13 @@ void rt_application_init(void)
     RT_ASSERT(result == RT_EOK);
 
     /* if not define RT_USING_HEAP, using to eliminate the warning */
-    (void)result;
+    (void) result;
 #endif
 
     rt_thread_startup(tid);
 }
 
-int rtthread_startup(void)
-{
+int rtthread_startup(void) {
     rt_hw_interrupt_disable();
 
     /* board level initialization

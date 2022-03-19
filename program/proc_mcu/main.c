@@ -8,9 +8,6 @@
 
 #include "main.h"
 
-#define SHOW_FIX
-//#define SHOW_DEBUG
-
 extern calpara_t params;
 extern unsigned char packages_to_be_unpacked_fix[12];
 extern unsigned char packages_to_be_unpacked_variable[DEBUG_BYTE];
@@ -64,6 +61,19 @@ void gui_show_debug() {
 //               "num:%d", debug_data.num);
 }
 
+/////////////////////////////////////// TaskHandler ///////////////////////////////////////
+static struct rt_thread led_taskhandler;
+static unsigned char ledtask_stack[128];
+static struct rt_thread gui_taskhandler;
+static unsigned char guitask_stack[4096];
+static struct rt_thread touch_taskhandler;
+static unsigned char touchtask_stack[1024];
+
+void ledblink_task(void *parameter);
+void guiupdate_task(void *parameter);
+void touchscan_task(void *parameter);
+
+/////////////////////////////////////// Initialize Task ///////////////////////////////////////
 void hardware_init(void) {
     delay_config();
     led_config();
@@ -90,33 +100,43 @@ int main(void) {
     debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
     timer2_config();
 
-    while (1) {
-        unsigned char x_pos, y_pos;
-//        printf("time:%d\r\n", global_time_stamp);
-        fflush(stdout);
-        LED1_TOGGLE();
-        xpt2046_scan(&x_pos, &y_pos);
-        gui_printf(10, 11 * 12, C_BLACK, C_WHITE, "XPos:%03d", x_pos);
-        gui_printf(10, 12 * 12, C_BLACK, C_WHITE, "YPos:%03d", y_pos);
-#ifdef SHOW_FIX
-        if (packages_to_be_unpacked_fix[0] == 0xff && packages_to_be_unpacked_fix[11] == 0xff)
-            unpacking_fixed_length_data(&packages_to_be_unpacked_fix[1]);
-        else uart8_counter = 0;
-        gui_show_fix();
-#endif
+    rt_thread_init(&led_taskhandler, "led", ledblink_task, RT_NULL,
+                   &ledtask_stack[0], sizeof(ledtask_stack), 7, 1);
+    rt_thread_startup(&led_taskhandler);
 
-#ifdef SHOW_DEBUG
-        if (packages_to_be_unpacked_variable[0] == 0xa5 && packages_to_be_unpacked_variable[1] == 0x5a)
-            unpacking_variable_length_data(&packages_to_be_unpacked_variable[3]);
-        else
-            uart8_counter = 0;
-        gui_show_debug();
-#endif
-//        printf("%d %d %d\r\n", debug_data.mag_x, debug_data.mag_y, debug_data.mag_z);
-        printf("%d\r\n", small_packets.pitch);
-//        gui_show_gnrmc_information();       // 46.8ms
+    rt_thread_init(&gui_taskhandler, "gui", guiupdate_task, RT_NULL,
+                   &guitask_stack[0], sizeof(guitask_stack), 7, 1);
+    rt_thread_startup(&gui_taskhandler);
+
+    rt_thread_init(&touch_taskhandler, "touch", touchscan_task, RT_NULL,
+                   &touchtask_stack[0], sizeof(touchtask_stack), 7, 1);
+    rt_thread_startup(&touch_taskhandler);
+    return 0;
+}
+
+/////////////////////////////////////// Task Function ///////////////////////////////////////
+void touchscan_task(void *parameter) {
+    while (1) {
+        if (!GPIO_ReadInputDataBit(TOUCH_PEN_PORT, TOUCH_PEN_PIN)) {
+            unsigned char x_pos, y_pos;
+            xpt2046_scan(&x_pos, &y_pos);
+            while (!GPIO_ReadInputDataBit(TOUCH_PEN_PORT, TOUCH_PEN_PIN))
+                delayms(50);
+        }
+        delayms(50);
+    }
+}
+
+void guiupdate_task(void *parameter) {
+    while (1) {
+        gui_show_gnrmc_information();
         delayms(200);
     }
 }
 
-// 最开始的时候，读不到GPS信息，卡尔曼的参数就是0，那么下面就会乱迭代
+void ledblink_task(void *parameter) {
+    while (1) {
+        LED1_TOGGLE();
+        delayms(500);
+    }
+}
