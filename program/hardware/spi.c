@@ -29,15 +29,10 @@ void spi2_config(void) {
     RCC_APB1PeriphClockCmd(RCC_APB1ENR_SPI2, ENABLE);
 
     GPIO_PinAFConfig(GPIOE, GPIO_PinSource2, GPIO_AF_5);
-    GPIO_PinAFConfig(GPIOE, GPIO_PinSource3, GPIO_AF_5);
     GPIO_PinAFConfig(GPIOE, GPIO_PinSource5, GPIO_AF_5);
     GPIO_PinAFConfig(GPIOE, GPIO_PinSource6, GPIO_AF_5);
 
     GPIO_InitStruct.GPIO_Pin = GPIO_Pin_2;
-    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;
-    GPIO_Init(GPIOE, &GPIO_InitStruct);
-    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_3;
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;
     GPIO_Init(GPIOE, &GPIO_InitStruct);
@@ -56,9 +51,9 @@ void spi2_config(void) {
     SPI_InitStruct.SPI_DataWidth = SPI_DataWidth_8b;
     SPI_InitStruct.SPI_CPOL = SPI_CPOL_High;
     SPI_InitStruct.SPI_CPHA = SPI_CPHA_2Edge;
-    SPI_InitStruct.SPI_NSS = SPI_NSS_Hard;
+    SPI_InitStruct.SPI_NSS = SPI_NSS_Soft;
 
-    /* 120MHz / 16 = 7.5MHz */
+    /* 120MHz / 128 = 0.94MHz */
     SPI_InitStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_128;
     SPI_InitStruct.SPI_FirstBit = SPI_FirstBit_MSB;
     SPI_Init(SPI2, &SPI_InitStruct);
@@ -110,70 +105,4 @@ void spi3_config(void) {
 
     SPI_BiDirectionalLineConfig(SPI3, SPI_Direction_Tx);
     SPI_Cmd(SPI3, ENABLE);
-}
-
-void spi3_software_init(void) {
-    GPIO_InitTypeDef GPIO_InitStruct;
-    GPIO_StructInit(&GPIO_InitStruct);
-
-    RCC_AHBPeriphClockCmd(RCC_AHBENR_GPIOD, ENABLE);
-    RCC_AHBPeriphClockCmd(RCC_AHBENR_GPIOG, ENABLE);
-
-    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_4;
-    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
-    GPIO_Init(GPIOD, &GPIO_InitStruct);
-    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_5;
-    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-
-    /* MISO, to be configured as a pull-up input */
-    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IPU;
-    GPIO_Init(GPIOD, &GPIO_InitStruct);
-    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_6;
-    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
-    GPIO_Init(GPIOD, &GPIO_InitStruct);
-
-    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_7;
-    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-
-    /* If your CS pin is controlled by software,
-     * remember to initialize it to a generic push-pull output */
-    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
-    GPIO_Init(GPIOD, &GPIO_InitStruct);
-
-    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_9;
-    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
-    GPIO_Init(GPIOG, &GPIO_InitStruct);
-
-    GPIO_SetBits(GPIOD, GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7);
-
-    GPIO_SetBits(GPIOG, GPIO_Pin_9);
-    delayms(100);
-    GPIO_ResetBits(GPIOG, GPIO_Pin_9);
-    delayms(100);
-    GPIO_SetBits(GPIOG, GPIO_Pin_9);
-    delayms(100);
-}
-
-/* CPOL = 1, CPHA = 1, MSB first */
-/* Stores 16 bits of data in one register */
-short spi3_software_mode3(unsigned int write_data) {
-    short read_data = 0;
-    for (unsigned char i = 0; i < 16; i++) {
-        SPI3_SCK_LOW;
-        if (write_data & 0x8000)
-            SPI3_MOSI_HIGH;
-        else
-            SPI3_MOSI_LOW;
-        write_data <<= 1;
-        delayus(1);
-        SPI3_SCK_HIGH;
-        read_data <<= 1;
-        if (SPI3_MISO)
-            read_data++;
-        delayus(1);
-    }
-    return read_data;
 }

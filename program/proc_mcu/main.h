@@ -16,6 +16,7 @@
 #include "hal_conf.h"
 #include "mm32_device.h"
 #include "printf.h"
+#include "rtthread.h"
 
 ///////////// Hardware /////////////
 #include "led.h"
@@ -34,11 +35,10 @@
 #include "mag_calibrate.h"
 
 ///////////// Device /////////////
-#include "adis16470.h"
 #include "xpt2046.h"
 #include "gps.h"
 #include "at24c02.h"
-#include "hmc5883l.h"
+#include "sensor_decode.h"
 
 ///////////// Debug /////////////
 #include "debugger.h"

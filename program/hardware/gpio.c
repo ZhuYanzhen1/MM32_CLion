@@ -38,6 +38,12 @@ void xpt2046_gpio_config(void) {
     RCC_AHBPeriphClockCmd(RCC_AHBENR_GPIOE, ENABLE);
 
     GPIO_StructInit(&GPIO_InitStruct);
+    GPIO_InitStruct.GPIO_Pin = TOUCH_CS_PIN;
+    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_Init(TOUCH_CS_PORT, &GPIO_InitStruct);
+
+    GPIO_StructInit(&GPIO_InitStruct);
     GPIO_InitStruct.GPIO_Pin = TOUCH_PEN_PIN;
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IPU;
@@ -57,5 +63,6 @@ void xpt2046_gpio_config(void) {
     NVIC_Init(&NVIC_InitStruct);
 
     GPIO_SetBits(TOUCH_PEN_PORT, TOUCH_PEN_PIN);
+    GPIO_SetBits(TOUCH_CS_PORT, TOUCH_CS_PIN);
 }
 #endif
