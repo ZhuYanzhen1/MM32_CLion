@@ -22,6 +22,17 @@ void TIM2_IRQHandler(void) {
     rt_interrupt_leave();
 }
 
+extern struct rt_semaphore touch_semaphore;
+void EXTI4_IRQHandler(void) {
+    rt_interrupt_enter();
+    if (EXTI_GetITStatus(EXTI_Line4)) {
+        EXTI_ClearFlag(EXTI_Line4);
+        if (!GPIO_ReadInputDataBit(TOUCH_PEN_PORT, TOUCH_PEN_PIN))
+            rt_sem_release(&touch_semaphore);
+    }
+    rt_interrupt_leave();
+}
+
 void UART1_IRQHandler(void) {
     rt_interrupt_enter();
     if (UART_GetITStatus(UART1, UART_ISR_RX) != RESET) {
