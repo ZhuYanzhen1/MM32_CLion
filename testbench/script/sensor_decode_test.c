@@ -48,8 +48,8 @@ void test_processing_send_data() {
 
     unpacking_fixed_length_data(packets + 1);
 
-    CU_ASSERT_EQUAL(small_packets.pitch, 20);
-    CU_ASSERT_EQUAL(small_packets.yaw, 352);
+    CU_ASSERT_EQUAL(small_packets.north, 20);
+    CU_ASSERT_EQUAL(small_packets.kalman_north, 352);
     CU_ASSERT_EQUAL(small_packets.ax, -9);
     CU_ASSERT_EQUAL(small_packets.ay, -132);
     CU_ASSERT_EQUAL(small_packets.az, 1543);
@@ -92,9 +92,9 @@ void test_precossing_variable_length_data() {
 
     unpacking_variable_length_data(packets + 3);
 
-    CU_ASSERT_EQUAL(debug_data.ax, 0x7D4685);
-    CU_ASSERT_EQUAL(debug_data.ay, 0x852114);
-    CU_ASSERT_EQUAL(debug_data.az, 0x3305c4);
+    CU_ASSERT_EQUAL(debug_data.mag_x, 0x7D4685);
+    CU_ASSERT_EQUAL(debug_data.mag_y, 0x852114);
+    CU_ASSERT_EQUAL(debug_data.mag_z, 0x3305c4);
     CU_ASSERT_EQUAL(debug_data.offset_x, 632467);
     CU_ASSERT_EQUAL(debug_data.offset_y, -3);
     CU_ASSERT_EQUAL(debug_data.offset_z, 20216880);
