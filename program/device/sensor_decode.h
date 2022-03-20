@@ -5,7 +5,7 @@
 #ifndef MM32F3277_DEVICE_SENSOR_DECODE_H_
 #define MM32F3277_DEVICE_SENSOR_DECODE_H_
 
-#define DEBUG_BYTE              63
+#define READ_MCU_AMOUNT         252
 #define SHORT_SPLIT_CHAR(x, y)  packets[x] = (char) ((buffer[y] & 0x0000ff00) >> 8);\
                                 packets[(x)+1] = (char) (buffer[y] & 0x000000ff);
 #define INT_SPLIT_CHAR(x, y)    packets[x] = (char) ((buffer[y] & 0x00ff0000) >> 16);\
@@ -31,8 +31,8 @@
  * xy：x占高四位；y占低四位
  * */
 typedef struct {
-    short pitch;
-    short yaw;
+    short north;
+    float kalman_north;
     short ax;
     short ay;
     short az;
@@ -57,6 +57,9 @@ typedef struct {
     int num;    // 收到第几个数据
     int checksum;
 } decode_debug;
+
+extern decode_fixed small_packets;
+extern decode_debug debug_data;
 
 void precossing_fixed_length_data(unsigned int packets[12], short *buffer);
 void precossing_variable_length_data(unsigned int *packets, unsigned char length, const int *buffer);
