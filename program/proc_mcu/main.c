@@ -68,13 +68,14 @@ int main(void) {
     spi2_config();
     spi3_config();
     uart1_config();
-    uart3_config();
     uart6_config();
     uart8_config();
     xpt2046_gpio_config();
     cm_backtrace_config("mm32f3277", "1.3.3", "1.3.3");
-    gps_config();
     gui_config();
+    delayms(2000);
+    uart3_config();
+    gps_config();
 //    xpt2046_calibrate();
 //    at24c02_saveparams();
     at24c02_readparams();
@@ -91,7 +92,8 @@ int main(void) {
             while (!GPIO_ReadInputDataBit(TOUCH_PEN_PORT, TOUCH_PEN_PIN));
         }
         gui_show_gnrmc_information();
+//        show_gnrmc_debug();
         LED1_TOGGLE();
-        delayms(500);
+        delayms(200);
     }
 }

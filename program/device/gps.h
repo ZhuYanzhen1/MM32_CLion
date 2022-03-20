@@ -12,5 +12,6 @@
 
 void gps_config();
 void gui_show_gnrmc_information();
+void show_gnrmc_debug();
 
 #endif  // MAIN_C_DEVICE_GPS_H_

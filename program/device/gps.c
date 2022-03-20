@@ -82,12 +82,22 @@ void gui_show_gnrmc_information() {
     gui_printf(0, 5 * 12, C_BLACK, C_WHITE,
                "longitude_direction:%c", gps_rmc.longitude_direction);
     gui_printf(0, 6 * 12, C_BLACK, C_WHITE,
-               "status:%c", gps_rmc.status);
-    gui_printf(0, 7 * 12, C_BLACK, C_WHITE,
                "speed:%d", gps_rmc.speed_to_ground_section);
-    gui_printf(0, 8 * 12, C_BLACK, C_WHITE,
+    gui_printf(0, 7 * 12, C_BLACK, C_WHITE,
                "direction:%d", gps_rmc.direction_of_ground_truth);
-    gui_printf(0, 9 * 12, C_BLACK, C_WHITE,
+    gui_printf(0, 8 * 12, C_BLACK, C_WHITE,
                "positioning_mode:%c", gps_rmc.mode);
+}
+
+void show_gnrmc_debug() {
+    for (int j = 0; j < 3; ++j)
+        for (int i = 0; i < 21; ++i)
+            gui_putchar(i * 6, j * 12,
+                        (usart3_dma_buffer_1[i + 21 * j] == '\r' || usart3_dma_buffer_1[i + 21 * j] == '\n') ?
+                        ' ' : usart3_dma_buffer_1[i + 21 * j], C_BLACK, C_WHITE);
+    for (int i = 0; i < 11; ++i)
+        gui_putchar(i * 6, 36, (usart3_dma_buffer_1[i + 63] == '\r' || usart3_dma_buffer_1[i + 63] == '\n') ?
+                               ' ' : usart3_dma_buffer_1[i + 63], C_BLACK, C_WHITE);
+
 }
 
