@@ -64,12 +64,9 @@ void initialize_task(void *parameters) {
 //    xpt2046_calibrate();
 //    at24c02_saveparams();
     at24c02_readparams();
-//    kalman_config();
-//    calibration_acll();
 
     debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
     debugger_register_variable(dbg_float32, &small_packets.kalman_north, "kalman");
-    debugger_register_variable(dbg_int16, &small_packets.north, "north");
     timer2_config();
 
     xTaskCreate(fusion_task, "sensor_fusion", 4096, NULL, 2, &fusion_taskhandler);
@@ -85,6 +82,17 @@ void fusion_task(void *parameters) {
     kalman_config_distance(&kalman_distance_north, 384400);
     kalman_config_distance(&kalman_distance_earth, 1487900);
     while (1) {
+        for (unsigned short packets_counter = 0; packets_counter < READ_MCU_AMOUNT; packets_counter++) {
+            if (packages_to_be_unpacked[packets_counter] == 0xff
+                && packages_to_be_unpacked[packets_counter + 11] == 0xff) {
+                unpacking_fixed_length_data(&packages_to_be_unpacked[packets_counter + 1]);
+                packets_counter = (packets_counter + 11);  // 移动到包尾位置
+            } else if (packages_to_be_unpacked[packets_counter] == 0xa5
+                && packages_to_be_unpacked[packets_counter + 1] == 0x5a) {
+                unpacking_variable_length_data(&packages_to_be_unpacked[packets_counter + 3]);
+                packets_counter = (packets_counter + packages_to_be_unpacked[2] - 1); // 移动到下一个包的前一个位置
+            }
+        }
         while (gps_rmc.status != 'A')
             delayms(1);
         coordinate_system_transformation_neu(small_packets.kalman_north);
@@ -130,17 +138,6 @@ void guiupdate_task(void *parameters) {
     test_btn.Text = "Test";
     gui_button_init(&test_btn);
     while (1) {
-        for (unsigned short packets_counter = 0; packets_counter < READ_MCU_AMOUNT; packets_counter++) {
-            if (packages_to_be_unpacked[packets_counter] == 0xff
-                && packages_to_be_unpacked[packets_counter + 11] == 0xff) {
-                unpacking_fixed_length_data(&packages_to_be_unpacked[packets_counter + 1]);
-                packets_counter = (packets_counter + 11);  // 移动到包尾位置
-            } else if (packages_to_be_unpacked[packets_counter] == 0xa5
-                && packages_to_be_unpacked[packets_counter + 1] == 0x5a) {
-                unpacking_variable_length_data(&packages_to_be_unpacked[packets_counter + 3]);
-                packets_counter = (packets_counter + packages_to_be_unpacked[2] - 1); // 移动到下一个包的前一个位置
-            }
-        }
         gui_show_fusion();
 //        gui_show_fix();
 //        gui_show_debug();
