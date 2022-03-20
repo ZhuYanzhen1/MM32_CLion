@@ -15,9 +15,9 @@
 #define PI              3.1415926f
 #define EARTH_RADIUS    6371000
 #define FACTOR_ALLC     1.25f
-#define GEO_ANGLE(x)    ((x) * PI / 180.0)
-#define KNOT_TO_M_S(x)  ((x)* 0.514444)
-#define MG_TO_M_S_2(x)  ((x)/102.1627f)
+#define GEO_ANGLE(x)    ((x) * 0.0174533f)  // PI / 180 = 0.0174533f
+#define KNOT_TO_M_S(x)  ((x) * 0.514444f)
+#define MG_TO_M_S_2(x)  ((x) / 102.1627f)
 
 typedef volatile struct {
     float north_acceleration;
@@ -33,4 +33,4 @@ extern neu_infomation neu;
 void coordinate_system_transformation_neu(float delta);
 float get_distance(float lat_1, float lon_1, float lat_2, float lon_2);
 
-#endif //MAIN_C_MATH_DATA_CONVERSION_H_
+#endif // MM32F3277_MATH_DATA_CONVERSION_H_

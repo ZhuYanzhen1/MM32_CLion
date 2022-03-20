@@ -10,6 +10,28 @@
 extern unsigned int usart3_dma_buffer_1[74];
 extern unsigned int usart3_dma_buffer_2[74];
 
+extern float v_north_final;
+extern float v_east_final;
+extern float distance_north;
+extern float distance_east;
+
+void gui_show_fusion() {
+    gui_printf(0, 0 * 12, C_BLACK, C_WHITE,
+               "kalman:%f   ", small_packets.kalman_north);
+    gui_printf(0, 1 * 12, C_BLACK, C_WHITE,
+               "north:%d   ", small_packets.north);
+    gui_printf(0, 2 * 12, C_BLACK, C_WHITE,
+               "vn:%f   ", v_north_final);
+    gui_printf(0, 3 * 12, C_BLACK, C_WHITE,
+               "ve:%f   ", v_east_final);
+    gui_printf(0, 4 * 12, C_BLACK, C_WHITE,
+               "dn:%f   ", distance_north);
+    gui_printf(0, 5 * 12, C_BLACK, C_WHITE,
+               "de:%f   ", distance_east);
+    gui_printf(0, 6 * 12, C_BLACK, C_WHITE,
+               "status:%c", gps_rmc.status);
+}
+
 void gui_show_fix() {
     gui_printf(0, 0 * 12, C_BLACK, C_WHITE,
                "ax:%d   ", small_packets.ax);

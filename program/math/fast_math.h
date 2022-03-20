@@ -9,5 +9,5 @@
 
 float atan_fast(float x);
 float fast_sqrt(float value);
-
+float my_acos(float x);
 #endif //MAIN_C_MATH_FAST_MATH_H_

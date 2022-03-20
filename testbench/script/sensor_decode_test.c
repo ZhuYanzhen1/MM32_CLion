@@ -6,9 +6,13 @@
 #include "CUnit/Basic.h"
 #include "gps_parser.h"
 #include "sensor_decode.h"
-#include "stdio.h"
+#include "fast_math.h"
 
 void test_nmea_gnrmc_analysis() {
+    float i = 0.732f;
+    float j = my_acos(i);
+    (void) j;
+
     char data[] = "GNRMC,235316.000,A,2959.9925,S,12000.0090,E,0.009,75.020,020711,,,A,*77";
 //    char data1[] = "$GNRMC,,V,,,,,,,,,,M,V*34";
 //    nmea_rmc gps_rmc = {0};
@@ -25,15 +29,13 @@ void test_nmea_gnrmc_analysis() {
     CU_ASSERT_EQUAL(gps_rmc.mode, 'A')
     CU_ASSERT_EQUAL(gps_rmc.checksum, 0X77)
 //    nmea_gnrmc_analysis(&gps_rmc, data1);
-}
 
-extern decode_fixed small_packets;
-extern decode_debug debug_data;
+}
 
 void test_processing_send_data() {
     short buffer[5] = {20, 352, -9, -132, 1543};
     unsigned char packets[12] = {0};
-    precossing_fixed_length_data(packets, buffer);
+    precossing_fixed_length_data((unsigned int *) packets, buffer);
     CU_ASSERT_EQUAL(packets[0], 0xff);
     CU_ASSERT_EQUAL(packets[1], 0x14);
     CU_ASSERT_EQUAL(packets[2], 0x60);
@@ -48,12 +50,11 @@ void test_processing_send_data() {
 
     unpacking_fixed_length_data(packets + 1);
 
-    CU_ASSERT_EQUAL(small_packets.pitch, 20);
-    CU_ASSERT_EQUAL(small_packets.yaw, 352);
+    CU_ASSERT_EQUAL(small_packets.north, 20);
+    CU_ASSERT_EQUAL(small_packets.kalman_north, 352);
     CU_ASSERT_EQUAL(small_packets.ax, -9);
     CU_ASSERT_EQUAL(small_packets.ay, -132);
     CU_ASSERT_EQUAL(small_packets.az, 1543);
-
 }
 
 void test_precossing_variable_length_data() {
@@ -67,7 +68,7 @@ void test_precossing_variable_length_data() {
                     offbias_x, offbias_y, offbias_z, residual, step_length, num
     };
     unsigned char packets[59] = {0};
-    precossing_variable_length_data(packets, 59, buffer);
+    precossing_variable_length_data((unsigned int *) packets, 59, buffer);
 
     CU_ASSERT_EQUAL(packets[0], 0xa5);
     CU_ASSERT_EQUAL(packets[1], 0xa5);
@@ -92,9 +93,9 @@ void test_precossing_variable_length_data() {
 
     unpacking_variable_length_data(packets + 3);
 
-    CU_ASSERT_EQUAL(debug_data.ax, 0x7D4685);
-    CU_ASSERT_EQUAL(debug_data.ay, 0x852114);
-    CU_ASSERT_EQUAL(debug_data.az, 0x3305c4);
+    CU_ASSERT_EQUAL(debug_data.mag_x, 0x7D4685);
+    CU_ASSERT_EQUAL(debug_data.mag_y, 0x852114);
+    CU_ASSERT_EQUAL(debug_data.mag_z, 0x3305c4);
     CU_ASSERT_EQUAL(debug_data.offset_x, 632467);
     CU_ASSERT_EQUAL(debug_data.offset_y, -3);
     CU_ASSERT_EQUAL(debug_data.offset_z, 20216880);

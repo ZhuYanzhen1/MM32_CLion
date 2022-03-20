@@ -11,10 +11,9 @@
 #include "qfplib.h"
 #include "gps_parser.h"
 #include "sensor_decode.h"
+#include "fast_math.h"
 
 neu_infomation neu = {0};
-
-extern int offset_ax, offset_ay;
 
 /*!
     \brief      Get the distance based on the latitude and longitude of the starting point
@@ -30,8 +29,28 @@ extern int offset_ax, offset_ay;
 float get_distance(float lat_1, float lon_1, float lat_2, float lon_2) {
     float c = qfp_fsin(GEO_ANGLE(lat_1)) * qfp_fsin(GEO_ANGLE(lat_2)) +
         qfp_fcos(GEO_ANGLE(lat_1)) * qfp_fcos(GEO_ANGLE(lat_2)) * qfp_fcos(GEO_ANGLE(lon_1 - lon_2));
-    float distance = EARTH_RADIUS * GEO_ANGLE(qfp_fcos(c));
+    float distance = EARTH_RADIUS * GEO_ANGLE(my_acos(c));
     return distance;
+}
+
+/*!
+    \brief      Convert latitude to displacement in ENU coordinate system
+    \param[in]  latitude(°)
+    \retval     Converted data
+*/
+float get_distance_m_lat(float lat) {
+    float distance = GEO_ANGLE(lat);
+    return EARTH_RADIUS * distance;
+}
+
+/*!
+    \brief      Convert longitude to displacement in ENU coordinate system
+    \param[in]  longitude(°)
+    \retval     Converted data
+*/
+float get_distance_m_lon(float lon) {
+    float distance = GEO_ANGLE(lon);
+    return EARTH_RADIUS * distance;
 }
 
 /*!
@@ -48,6 +67,10 @@ void coordinate_system_transformation_neu(float delta) {
     float temp_lonitude = unit_to_degree(gps_rmc.longitude, 4);
     neu.north_distance = get_distance(QRIGIN_LAT, temp_lonitude, temp_latitude, temp_lonitude);
     neu.east_distance = get_distance(temp_latitude, QRIGIN_LON, temp_latitude, temp_lonitude);
+//    float temp_latitude = unit_to_degree(gps_rmc.latitude, 4);
+//    neu.north_distance = get_distance_m_lat(temp_latitude - QRIGIN_LAT);
+//    float temp_lonitude = unit_to_degree(gps_rmc.longitude, 4);
+//    neu.east_distance = get_distance_m_lon(temp_lonitude - QRIGIN_LON);
 
     temp_acll_ax = small_packets.ax;
     temp_acll_ay = small_packets.ay;

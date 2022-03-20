@@ -9,5 +9,6 @@ void gui_show_fix();
 void gui_show_debug();
 void gui_show_gnrmc_information();
 void gui_show_gnrmc_debug();
+void gui_show_fusion();
 
 #endif //MAIN_C_GUI_GUI_DEBUG_H_
