@@ -14,10 +14,6 @@
 
 //TODO 每一次在中断内写函数时，留意一下是否会发生重入，然后到Trello里面评论记录
 
-void SysTick_Handler(void) {
-    delay_decrease();
-}
-
 // 3us
 void TIM2_IRQHandler(void) {
     TIM_ClearITPendingBit(TIM2, TIM_IT_Update);

@@ -11,6 +11,9 @@
 #include "mm32_device.h"
 #include "hal_conf.h"
 
+#include "FreeRTOS.h"
+#include "task.h"
+
 extern unsigned int SystemCoreClock;
 static volatile unsigned int delayms_counter = 0;
 static unsigned int delay_us_factor = 0;

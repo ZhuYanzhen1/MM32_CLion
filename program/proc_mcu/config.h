@@ -11,7 +11,7 @@
 
 //////////////////////////////////////// System & Debugger Macro ////////////////////////////////////////
 /* Using RT-Thread */
-#define USE_FREERTOS            0
+#define USE_FREERTOS            1
 /* systick interrupt frequency set to 1000Hz */
 #define configTICK_RATE_HZ      1000
 /* debugger variable maximum size set to 12 */
