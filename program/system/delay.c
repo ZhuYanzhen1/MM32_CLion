@@ -57,15 +57,12 @@ void delayus(unsigned int xus) {
 
 void delayms(unsigned int xms) {
 #if USE_FREERTOS == 1
-    if (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING) {
-        if (xms >= delay_ms_factor) {
-            vTaskDelay(xms / delay_ms_factor);
-        } else {
-            xms %= delay_ms_factor;
-            delayus(xms * 1000);
-        }
-    } else
+    if (xms >= delay_ms_factor) {
+        vTaskDelay(xms / delay_ms_factor);
+    } else {
+        xms %= delay_ms_factor;
         delayus(xms * 1000);
+    }
 #else
     delayms_counter = xms;
     while (delayms_counter != 0);

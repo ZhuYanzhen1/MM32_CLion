@@ -35,6 +35,7 @@
 #include "kalman.h"
 #include "data_conversion.h"
 #include "mag_calibrate.h"
+#include "fast_math.h"
 
 ///////////// Device /////////////
 #include "xpt2046.h"
