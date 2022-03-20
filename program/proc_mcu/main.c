@@ -78,7 +78,7 @@ void touchscan_task(void *parameters) {
 }
 
 void guiupdate_task(void *parameters) {
-    Button_Struct_t test_btn;
+    button_struct_t test_btn;
     test_btn.x_pos = 10;
     test_btn.y_pos = 120;
     test_btn.width = 60;
