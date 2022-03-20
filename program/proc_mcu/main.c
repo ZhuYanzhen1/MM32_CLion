@@ -10,52 +10,6 @@
 
 extern unsigned char packages_to_be_unpacked[READ_MCU_AMOUNT];
 
-void gui_show_fix() {
-    gui_printf(0, 0 * 12, C_BLACK, C_WHITE,
-               "ax:%d   ", small_packets.ax);
-    gui_printf(0, 1 * 12, C_BLACK, C_WHITE,
-               "ay:%d   ", small_packets.ay);
-    gui_printf(0, 2 * 12, C_BLACK, C_WHITE,
-               "az:%d   ", small_packets.az);
-    gui_printf(0, 3 * 12, C_BLACK, C_WHITE,
-               "north:%d   ", small_packets.pitch);
-    gui_printf(0, 4 * 12, C_BLACK, C_WHITE,
-               "yaw:%d   ", small_packets.yaw);
-}
-
-void gui_show_debug() {
-    gui_printf(0, 0 * 12, C_BLACK, C_WHITE,
-               "mag_x:%d   ", debug_data.mag_x);
-    gui_printf(0, 1 * 12, C_BLACK, C_WHITE,
-               "mag_y:%d   ", debug_data.mag_y);
-    gui_printf(0, 2 * 12, C_BLACK, C_WHITE,
-               "mag_z:%d   ", debug_data.mag_z);
-//    gui_printf(0, 3 * 12, C_BLACK, C_WHITE,
-//               "offset_x:%d", debug_data.offset_x);
-//    gui_printf(0, 4 * 12, C_BLACK, C_WHITE,
-//               "offset_y:%d", debug_data.offset_y);
-//    gui_printf(0, 5 * 12, C_BLACK, C_WHITE,
-//               "offset_z:%d", debug_data.offset_z);
-//    gui_printf(0, 6 * 12, C_BLACK, C_WHITE,
-//               "bias_x:%d", debug_data.bias_x);
-//    gui_printf(0, 7 * 12, C_BLACK, C_WHITE,
-//               "bias_y:%d", debug_data.bias_y);
-//    gui_printf(0, 8 * 12, C_BLACK, C_WHITE,
-//               "bias_z:%d", debug_data.bias_z);
-//    gui_printf(0, 9 * 12, C_BLACK, C_WHITE,
-//               "offbias_x:%d", debug_data.offbias_x);
-//    gui_printf(0, 10 * 12, C_BLACK, C_WHITE,
-//               "offbias_y:%d", debug_data.offbias_y);
-//    gui_printf(0, 11 * 12, C_BLACK, C_WHITE,
-//               "offbias_z:%d", debug_data.offbias_z);
-//    gui_printf(0, 12 * 12, C_BLACK, C_WHITE,
-//               "residual:%d", debug_data.residual);
-//    gui_printf(0, 13 * 12, C_BLACK, C_WHITE,
-//               "step_length:%d", debug_data.step_length);
-//    gui_printf(0, 14 * 12, C_BLACK, C_WHITE,
-//               "num:%d", debug_data.num);
-}
-
 /////////////////////////////////////// TaskHandler ///////////////////////////////////////
 static struct rt_thread led_taskhandler;
 static unsigned char ledtask_stack[128];
