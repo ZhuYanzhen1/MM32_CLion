@@ -36,10 +36,13 @@ void gui_putchar(unsigned char x,
     temp += (value - 32) * 12;
     for (j = 0; j < 12; j++) {
         for (i = 0; i < 6; i++) {
-            if ((*temp & (1 << (7 - i))) != 0)
-                ((unsigned short *) lcd_buffer)[(line + j) * 128 + x + i] = dcolor;
-            else
-                ((unsigned short *) lcd_buffer)[(line + j) * 128 + x + i] = bgcolor;
+            if ((*temp & (1 << (7 - i))) != 0) {
+                lcd_buffer[((line + j) * 128 + x + i) * 2] = dcolor >> 8;
+                lcd_buffer[((line + j) * 128 + x + i) * 2 + 1] = dcolor & 0x00ff;
+            } else {
+                lcd_buffer[((line + j) * 128 + x + i) * 2] = bgcolor >> 8;
+                lcd_buffer[((line + j) * 128 + x + i) * 2 + 1] = bgcolor & 0x00ff;
+            }
         }
         temp++;
     }
@@ -65,32 +68,38 @@ void gui_printf(unsigned char row,
 }
 
 void gui_clear_screan(unsigned short color) {
-    for (unsigned short i = 0; i < 128 * 160; i++)
-        ((unsigned short *) lcd_buffer)[i] = color;
+    for (unsigned short i = 0; i < 128 * 160; i++) {
+        lcd_buffer[i * 2] = color >> 8;
+        lcd_buffer[i * 2 + 1] = color & 0x00ff;
+    }
 }
 
 void gui_draw_hline(unsigned char x1, unsigned char y1, unsigned char width, unsigned short color) {
-    for (unsigned char temp = 0; temp < width; temp++)
-        ((unsigned short *) lcd_buffer)[y1 * 128 + x1 + temp] = color;
+    for (unsigned char temp = 0; temp < width; temp++) {
+        lcd_buffer[(y1 * 128 + x1 + temp) * 2] = color >> 8;
+        lcd_buffer[(y1 * 128 + x1 + temp) * 2 + 1] = color & 0x00ff;
+    }
 }
 
 void gui_draw_vline(unsigned char x1, unsigned char y1, unsigned char height, unsigned short color) {
-    for (unsigned char temp = 0; temp < height; temp++)
-        ((unsigned short *) lcd_buffer)[(y1 + temp) * 128 + x1] = color;
+    for (unsigned char temp = 0; temp < height; temp++) {
+        lcd_buffer[((y1 + temp) * 128 + x1) * 2] = color >> 8;
+        lcd_buffer[((y1 + temp) * 128 + x1) * 2 + 1] = color & 0x00ff;
+    }
 }
 
-void gui_draw_rectangle(unsigned short sx,
-                        unsigned short sy,
-                        unsigned short width,
-                        unsigned short height,
+void gui_draw_rectangle(unsigned char sx,
+                        unsigned char sy,
+                        unsigned char width,
+                        unsigned char height,
                         unsigned short color,
                         Filled_Status_e filled) {
     if (filled == Filled) {
-//        unsigned short temp, temp1;
-//        lcd_set_address(sx, sy, sx + width - 1, sy + height - 1);
-//        for (temp = 0; temp < width; temp++)
-//            for (temp1 = 0; temp1 < height; temp1++)
-//                lcd_write_data(color);
+        for (unsigned char temph = 0; temph < height; temph++)
+            for (unsigned char tempw = 0; tempw < width; tempw++) {
+                lcd_buffer[((sy + temph) * 128 + sx + tempw) * 2] = color >> 8;
+                lcd_buffer[((sy + temph) * 128 + sx + tempw) * 2 + 1] = color & 0x00ff;
+            }
     } else {
         gui_draw_hline(sx, sy, width, color);
         gui_draw_vline(sx, sy, height, color);

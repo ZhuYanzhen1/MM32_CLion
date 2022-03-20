@@ -55,5 +55,6 @@
 #include "tft_lcd.h"
 #include "gui_base.h"
 #include "gui_debug.h"
+#include "gui_button.h"
 
 #endif  // MM32F3277_USER_MAIN_H_
