@@ -11,7 +11,14 @@
 extern calpara_t params;
 extern unsigned char packages_to_be_unpacked[READ_MCU_AMOUNT];
 
-//static unsigned short packets_counter = 0;
+TaskHandle_t led_taskhandler;
+TaskHandle_t gui_taskhandler;
+TaskHandle_t touch_taskhandler;
+TaskHandle_t initialize_taskhandler;
+void touchscan_task(void *parameters);
+void guiupdate_task(void *parameters);
+void ledblink_task(void *parameters);
+void initialize_task(void *parameters);
 
 void gui_show_fix() {
     gui_printf(0, 0 * 12, C_BLACK, C_WHITE,
@@ -59,7 +66,7 @@ void gui_show_debug() {
 //               "num:%d", debug_data.num);
 }
 
-int main(void) {
+void initialize_task(void *parameters) {
     delay_config();
     led_config();
     iic1_config();
@@ -85,13 +92,32 @@ int main(void) {
     debugger_register_variable(dbg_float32, &small_packets.kalman_north, "compass");
     timer2_config();
 
+    xTaskCreate(ledblink_task, "led_blink", 64, NULL, 1, &led_taskhandler);
+    xTaskCreate(guiupdate_task, "gui_update", 2048, NULL, 1, &gui_taskhandler);
+    xTaskCreate(touchscan_task, "touch_scan", 1024, NULL, 1, &touch_taskhandler);
+    vTaskDelete(NULL);
+}
+
+int main(void) {
+    xTaskCreate(initialize_task, "initialize", 1024, NULL, 1, &initialize_taskhandler);
+    vTaskStartScheduler();
+    return 0;
+}
+
+void touchscan_task(void *parameters) {
     while (1) {
         if (!GPIO_ReadInputDataBit(TOUCH_PEN_PORT, TOUCH_PEN_PIN)) {
             unsigned char x_pos, y_pos;
             xpt2046_scan(&x_pos, &y_pos);
-            while (!GPIO_ReadInputDataBit(TOUCH_PEN_PORT, TOUCH_PEN_PIN));
+            while (!GPIO_ReadInputDataBit(TOUCH_PEN_PORT, TOUCH_PEN_PIN))
+                delayms(50);
         }
+        delayms(50);
+    }
+}
 
+void guiupdate_task(void *parameters) {
+    while (1) {
         for (unsigned short packets_counter = 0; packets_counter < READ_MCU_AMOUNT; packets_counter++) {
             if (packages_to_be_unpacked[packets_counter] == 0xff
                 && packages_to_be_unpacked[packets_counter + 11] == 0xff) {
@@ -103,11 +129,17 @@ int main(void) {
                 packets_counter = (packets_counter + packages_to_be_unpacked[2] - 1); // 移动到下一个包的前一个位置
             }
         }
-        gui_show_fix(); // 显示出接收到的数据
-//        gui_show_debug();   // 显示出接收到的数据
+        gui_show_fix();
+//        gui_show_debug();
 //        gui_show_gnrmc_information();
 //        show_gnrmc_debug();
+        delayms(100);
+    }
+}
+
+void ledblink_task(void *parameters) {
+    while (1) {
         LED1_TOGGLE();
-        delayms(50);
+        delayms(500);
     }
 }

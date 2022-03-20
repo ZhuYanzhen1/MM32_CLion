@@ -26,7 +26,7 @@ void delay_config(void) {
     delay_ms_factor = 1000 / configTICK_RATE_HZ;
     if (SysTick_Config(SystemCoreClock / configTICK_RATE_HZ))
         while (1);
-    NVIC_SetPriority(SysTick_IRQn, 0x0f);
+    NVIC_SetPriority(SysTick_IRQn, 0x00);
 }
 
 void delay_decrease(void) {
