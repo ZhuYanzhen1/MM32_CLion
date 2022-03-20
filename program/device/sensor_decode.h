@@ -58,6 +58,9 @@ typedef struct {
     int checksum;
 } decode_debug;
 
+extern decode_fixed small_packets;
+extern decode_debug debug_data;
+
 void precossing_fixed_length_data(unsigned int packets[12], short *buffer);
 void precossing_variable_length_data(unsigned int *packets, unsigned char length, const int *buffer);
 void unpacking_fixed_length_data(unsigned char packets[10]);

@@ -9,8 +9,6 @@
 #include "main.h"
 
 extern unsigned char packages_to_be_unpacked[READ_MCU_AMOUNT];
-extern decode_fixed small_packets;
-extern decode_debug debug_data;
 
 void gui_show_fix() {
     gui_printf(0, 0 * 12, C_BLACK, C_WHITE,
@@ -139,8 +137,8 @@ void guiupdate_task(void *parameter) {
             }
         }
 //        gui_show_debug();
-//        gui_show_fix();
-        gui_show_gnrmc_information();
+        gui_show_fix();
+//        gui_show_gnrmc_information();
         delayms(50);
     }
 }
