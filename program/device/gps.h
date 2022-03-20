@@ -11,7 +11,5 @@
 #define MM32F3277__DEVICE_GPS_H_
 
 void gps_config();
-void gui_show_gnrmc_information();
-void show_gnrmc_debug();
 
 #endif  // MM32F3277__DEVICE_GPS_H_

@@ -7,11 +7,10 @@
     \date       06. March 2021
 ******************************************************************************/
 
-#include "gps_parser.h"
+
 #include "gps.h"
 #include "uart.h"
 #include "delay.h"
-#include "gui_base.h"
 #include "dma.h"
 #include "hal_conf.h"
 
@@ -62,42 +61,3 @@ void gps_config() {
     CLOSE_PACKAGE_OUTPUT(0x20, 0x00, 0x1A, 0x4F)
     DMA_Cmd(DMA1_Channel3, ENABLE);
 }
-
-/*!
-    \brief      Test code with a display showing the processed gnrmc package
-    \param[in]  gps_rmc: Recommended minimum positioning information
-                time, status, latitude, longitude, speed, direction, positioning mode
-*/
-void gui_show_gnrmc_information() {
-    gui_printf(0, 0 * 12, C_BLACK, C_WHITE,
-               "time:%d", gps_rmc.positioning_time.uct_time);
-    gui_printf(0, 1 * 12, C_BLACK, C_WHITE,
-               "status:%c", gps_rmc.status);
-    gui_printf(0, 2 * 12, C_BLACK, C_WHITE,
-               "latitude:%d", gps_rmc.latitude);
-    gui_printf(0, 3 * 12, C_BLACK, C_WHITE,
-               "latitude_direction:%c", gps_rmc.latitude_direction);
-    gui_printf(0, 4 * 12, C_BLACK, C_WHITE,
-               "longitude:%d", gps_rmc.longitude);
-    gui_printf(0, 5 * 12, C_BLACK, C_WHITE,
-               "longitude_direction:%c", gps_rmc.longitude_direction);
-    gui_printf(0, 6 * 12, C_BLACK, C_WHITE,
-               "speed:%d", gps_rmc.speed_to_ground_section);
-    gui_printf(0, 7 * 12, C_BLACK, C_WHITE,
-               "direction:%d", gps_rmc.direction_of_ground_truth);
-    gui_printf(0, 8 * 12, C_BLACK, C_WHITE,
-               "positioning_mode:%c", gps_rmc.mode);
-}
-
-void show_gnrmc_debug() {
-    for (int j = 0; j < 3; ++j)
-        for (int i = 0; i < 21; ++i)
-            gui_putchar(i * 6, j * 12,
-                        (usart3_dma_buffer_1[i + 21 * j] == '\r' || usart3_dma_buffer_1[i + 21 * j] == '\n') ?
-                        ' ' : usart3_dma_buffer_1[i + 21 * j], C_BLACK, C_WHITE);
-    for (int i = 0; i < 11; ++i)
-        gui_putchar(i * 6, 36, (usart3_dma_buffer_1[i + 63] == '\r' || usart3_dma_buffer_1[i + 63] == '\n') ?
-                               ' ' : usart3_dma_buffer_1[i + 63], C_BLACK, C_WHITE);
-
-}
-
