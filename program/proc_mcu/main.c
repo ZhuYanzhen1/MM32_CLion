@@ -81,7 +81,6 @@ void hardware_init(void) {
     spi2_config();
     spi3_config();
     uart1_config();
-    uart3_config();
     uart6_config();
     uart8_config();
     xpt2046_gpio_config();
@@ -89,8 +88,10 @@ void hardware_init(void) {
 }
 
 int main(void) {
-    gps_config();
     gui_config();
+    delayms(2000);
+    uart3_config();
+    gps_config();
 //    xpt2046_calibrate();
 //    at24c02_saveparams();
     at24c02_readparams();
