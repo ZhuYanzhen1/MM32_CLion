@@ -32,7 +32,10 @@ void lcd_gpio_config(void) {
 
 void xpt2046_gpio_config(void) {
     GPIO_InitTypeDef GPIO_InitStruct;
+    NVIC_InitTypeDef NVIC_InitStruct;
+    EXTI_InitTypeDef EXTI_InitStruct;
 
+    RCC_APB2PeriphClockCmd(RCC_APB2ENR_SYSCFG, ENABLE);
     RCC_AHBPeriphClockCmd(RCC_AHBENR_GPIOE, ENABLE);
 
     GPIO_StructInit(&GPIO_InitStruct);
@@ -46,6 +49,19 @@ void xpt2046_gpio_config(void) {
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IPU;
     GPIO_Init(TOUCH_PEN_PORT, &GPIO_InitStruct);
+
+    SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOE, EXTI_PinSource4);
+    EXTI_InitStruct.EXTI_Line = EXTI_Line4;
+    EXTI_InitStruct.EXTI_Mode = EXTI_Mode_Interrupt;
+    EXTI_InitStruct.EXTI_Trigger = EXTI_Trigger_Falling;
+    EXTI_InitStruct.EXTI_LineCmd = ENABLE;
+    EXTI_Init(&EXTI_InitStruct);
+
+    NVIC_InitStruct.NVIC_IRQChannel = EXTI4_IRQn;
+    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = EXTI4_PRIORITY;
+    NVIC_InitStruct.NVIC_IRQChannelSubPriority = 0;
+    NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStruct);
 
     GPIO_SetBits(TOUCH_PEN_PORT, TOUCH_PEN_PIN);
     GPIO_SetBits(TOUCH_CS_PORT, TOUCH_CS_PIN);

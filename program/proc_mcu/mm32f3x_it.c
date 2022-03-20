@@ -17,6 +17,16 @@ void TIM2_IRQHandler(void) {
     debugger_scan_variable(global_time_stamp);
 }
 
+extern EventGroupHandle_t touch_event;
+void EXTI4_IRQHandler(void) {
+    if (EXTI_GetITStatus(EXTI_Line4)) {
+        BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+        EXTI_ClearFlag(EXTI_Line4);
+        if (!GPIO_ReadInputDataBit(TOUCH_PEN_PORT, TOUCH_PEN_PIN) && touch_event != NULL)
+            xEventGroupSetBitsFromISR(touch_event, 0x00000001, &xHigherPriorityTaskWoken);
+    }
+}
+
 void UART1_IRQHandler(void) {
     if (UART_GetITStatus(UART1, UART_ISR_RX) != RESET) {
         unsigned char recvbyte = UART_ReceiveData(UART1);

@@ -18,6 +18,7 @@
 #include "printf.h"
 #include "FreeRTOS.h"
 #include "task.h"
+#include "event_groups.h"
 
 ///////////// Hardware /////////////
 #include "led.h"

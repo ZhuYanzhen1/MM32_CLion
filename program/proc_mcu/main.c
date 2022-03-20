@@ -11,6 +11,7 @@
 extern calpara_t params;
 extern unsigned char packages_to_be_unpacked[READ_MCU_AMOUNT];
 
+//////////////////////////////////// Task Handler ////////////////////////////////////
 TaskHandle_t led_taskhandler;
 TaskHandle_t gui_taskhandler;
 TaskHandle_t touch_taskhandler;
@@ -20,6 +21,15 @@ void guiupdate_task(void *parameters);
 void ledblink_task(void *parameters);
 void initialize_task(void *parameters);
 
+EventGroupHandle_t touch_event = NULL;
+
+int main(void) {
+    xTaskCreate(initialize_task, "initialize", 1024, NULL, 1, &initialize_taskhandler);
+    vTaskStartScheduler();
+    return 0;
+}
+
+//////////////////////////////////////// Tasks ////////////////////////////////////////
 void initialize_task(void *parameters) {
     delay_config();
     led_config();
@@ -52,21 +62,19 @@ void initialize_task(void *parameters) {
     vTaskDelete(NULL);
 }
 
-int main(void) {
-    xTaskCreate(initialize_task, "initialize", 1024, NULL, 1, &initialize_taskhandler);
-    vTaskStartScheduler();
-    return 0;
-}
-
 void touchscan_task(void *parameters) {
+    touch_event = xEventGroupCreate();
     while (1) {
-        if (!GPIO_ReadInputDataBit(TOUCH_PEN_PORT, TOUCH_PEN_PIN)) {
-            unsigned char x_pos, y_pos;
-            xpt2046_scan(&x_pos, &y_pos);
-            while (!GPIO_ReadInputDataBit(TOUCH_PEN_PORT, TOUCH_PEN_PIN))
-                delayms(50);
-        }
-        delayms(50);
+        xEventGroupWaitBits(touch_event, 0x00000001, pdTRUE, pdFALSE, portMAX_DELAY);
+        EXTI->IMR &= ~EXTI_Line4;
+        unsigned char x_pos, y_pos;
+        xpt2046_scan(&x_pos, &y_pos);
+        printf("XPos:%d YPos:%d\r\n", x_pos, y_pos);
+        fflush(stdout);
+        while (!GPIO_ReadInputDataBit(TOUCH_PEN_PORT, TOUCH_PEN_PIN))
+            delayms(20);
+        EXTI_ClearFlag(EXTI_Line4);
+        EXTI->IMR |= EXTI_Line4;
     }
 }
 

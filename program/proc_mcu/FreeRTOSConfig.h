@@ -19,6 +19,12 @@
 #define configUSE_MUTEXES               1
 #define INCLUDE_xTaskGetSchedulerState  1
 
+#define configUSE_TIMERS                1
+#define configTIMER_TASK_PRIORITY       3
+#define configTIMER_QUEUE_LENGTH        10
+#define configTIMER_TASK_STACK_DEPTH    128
+#define INCLUDE_xTimerPendFunctionCall  1
+
 /* Co-routine definitions. */
 #define configUSE_CO_ROUTINES        0
 #define configMAX_CO_ROUTINE_PRIORITIES ( 2 )
