@@ -17,6 +17,7 @@ static struct rt_thread gui_taskhandler;
 static unsigned char guitask_stack[4096];
 static struct rt_thread touch_taskhandler;
 static unsigned char touchtask_stack[1024];
+struct rt_semaphore touch_semaphore;
 
 void ledblink_task(void *parameter);
 void guiupdate_task(void *parameter);
@@ -66,14 +67,18 @@ int main(void) {
 
 /////////////////////////////////////// Task Function ///////////////////////////////////////
 void touchscan_task(void *parameter) {
+    rt_sem_init(&touch_semaphore, "touch_s", 0, RT_IPC_FLAG_FIFO);
     while (1) {
-        if (!GPIO_ReadInputDataBit(TOUCH_PEN_PORT, TOUCH_PEN_PIN)) {
-            unsigned char x_pos, y_pos;
-            xpt2046_scan(&x_pos, &y_pos);
-            while (!GPIO_ReadInputDataBit(TOUCH_PEN_PORT, TOUCH_PEN_PIN))
-                delayms(50);
-        }
-        delayms(50);
+        rt_sem_take(&touch_semaphore, RT_WAITING_FOREVER);
+        EXTI->IMR &= ~EXTI_Line4;
+        unsigned char x_pos, y_pos;
+        xpt2046_scan(&x_pos, &y_pos);
+        printf("XPos:%d YPos:%d\r\n", x_pos, y_pos);
+        fflush(stdout);
+        while (!GPIO_ReadInputDataBit(TOUCH_PEN_PORT, TOUCH_PEN_PIN))
+            delayms(20);
+        EXTI_ClearFlag(EXTI_Line4);
+        EXTI->IMR |= EXTI_Line4;
     }
 }
 
