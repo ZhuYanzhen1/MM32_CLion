@@ -9,9 +9,6 @@
 #include "mm32f3x_it.h"
 #include "main.h"
 
-#define SHOW_FIX
-//#define SHOW_DEBUG
-
 //TODO 每一次在中断内写函数时，留意一下是否会发生重入，然后到Trello里面评论记录
 
 // 3us
@@ -35,27 +32,19 @@ void UART6_IRQHandler(void) {
     }
 }
 
-unsigned char uart8_counter;
-unsigned char packages_to_be_unpacked_fix[12];
-unsigned char packages_to_be_unpacked_variable[DEBUG_BYTE];
+static unsigned char uart8_counter = 0;
+unsigned char packages_to_be_unpacked[READ_MCU_AMOUNT];
 void UART8_IRQHandler(void) {
     if (UART_GetITStatus(UART8, UART_ISR_RX) != RESET) {
         unsigned char recvbyte = UART_ReceiveData(UART8);
-#ifdef SHOW_FIX
-        packages_to_be_unpacked_fix[uart8_counter++] = recvbyte;
-        uart8_counter %= 12;
-#endif
-
-#ifdef SHOW_DEBUG
-        packages_to_be_unpacked_variable[uart8_counter++] = recvbyte;
-        uart8_counter %= DEBUG_BYTE;
-#endif
+        packages_to_be_unpacked[uart8_counter] = recvbyte;
+        uart8_counter = (uart8_counter + 1) % READ_MCU_AMOUNT;
         UART_ClearITPendingBit(UART8, UART_ISR_RX);
     }
 }
 
 typedef enum { buffer_no_1 = 1, buffer_no_2 = 2 } buffer_no;
-buffer_no uart6_free_buffer_no = buffer_no_1;
+static buffer_no uart6_free_buffer_no = buffer_no_1;
 unsigned int usart3_dma_buffer_1[74];
 unsigned int usart3_dma_buffer_2[74];
 
