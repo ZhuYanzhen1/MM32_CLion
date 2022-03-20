@@ -41,25 +41,15 @@ void UART6_IRQHandler(void) {
     rt_interrupt_leave();
 }
 
-unsigned char uart8_counter;
-unsigned char packages_to_be_unpacked_fix[12];
-unsigned char packages_to_be_unpacked_variable[DEBUG_BYTE];
+static unsigned char uart8_counter = 0;
+unsigned char packages_to_be_unpacked[READ_MCU_AMOUNT];
 void UART8_IRQHandler(void) {
-    rt_interrupt_enter();
     if (UART_GetITStatus(UART8, UART_ISR_RX) != RESET) {
         unsigned char recvbyte = UART_ReceiveData(UART8);
-#ifdef SHOW_FIX
-        packages_to_be_unpacked_fix[uart8_counter++] = recvbyte;
-        uart8_counter %= 12;
-#endif
-
-#ifdef SHOW_DEBUG
-        packages_to_be_unpacked_variable[uart8_counter++] = recvbyte;
-        uart8_counter %= DEBUG_BYTE;
-#endif
+        packages_to_be_unpacked[uart8_counter] = recvbyte;
+        uart8_counter = (uart8_counter + 1) % READ_MCU_AMOUNT;
         UART_ClearITPendingBit(UART8, UART_ISR_RX);
     }
-    rt_interrupt_leave();
 }
 
 typedef enum { buffer_no_1 = 1, buffer_no_2 = 2 } buffer_no;

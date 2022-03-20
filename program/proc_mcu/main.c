@@ -8,10 +8,7 @@
 
 #include "main.h"
 
-extern calpara_t params;
-extern unsigned char packages_to_be_unpacked_fix[12];
-extern unsigned char packages_to_be_unpacked_variable[DEBUG_BYTE];
-extern unsigned char uart8_counter;
+extern unsigned char packages_to_be_unpacked[READ_MCU_AMOUNT];
 extern decode_fixed small_packets;
 extern decode_debug debug_data;
 
@@ -130,8 +127,21 @@ void touchscan_task(void *parameter) {
 
 void guiupdate_task(void *parameter) {
     while (1) {
+        for (unsigned short packets_counter = 0; packets_counter < READ_MCU_AMOUNT; packets_counter++) {
+            if (packages_to_be_unpacked[packets_counter] == 0xff
+                && packages_to_be_unpacked[packets_counter + 11] == 0xff) {
+                unpacking_fixed_length_data(&packages_to_be_unpacked[packets_counter + 1]);
+                packets_counter = (packets_counter + 11);  // 移动到包尾位置
+            } else if (packages_to_be_unpacked[packets_counter] == 0xa5
+                && packages_to_be_unpacked[packets_counter + 1] == 0x5a) {
+                unpacking_variable_length_data(&packages_to_be_unpacked[packets_counter + 3]);
+                packets_counter = (packets_counter + packages_to_be_unpacked[2] - 1); // 移动到下一个包的前一个位置
+            }
+        }
+//        gui_show_debug();
+//        gui_show_fix();
         gui_show_gnrmc_information();
-        delayms(200);
+        delayms(50);
     }
 }
 
