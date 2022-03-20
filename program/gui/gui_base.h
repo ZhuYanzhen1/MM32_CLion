@@ -18,10 +18,10 @@ typedef enum {
 
 void gui_config(void);
 void gui_clear_screan(unsigned short color);
-void gui_draw_rectangle(unsigned short sx,
-                        unsigned short sy,
-                        unsigned short width,
-                        unsigned short height,
+void gui_draw_rectangle(unsigned char sx,
+                        unsigned char sy,
+                        unsigned char width,
+                        unsigned char height,
                         unsigned short color,
                         Filled_Status_e filled);
 void gui_draw_vline(unsigned char x1, unsigned char y1, unsigned char height, unsigned short color);

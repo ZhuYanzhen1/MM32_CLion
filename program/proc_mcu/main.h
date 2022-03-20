@@ -45,7 +45,6 @@
 ///////////// Debug /////////////
 #include "debugger.h"
 #include "cm_backtrace.h"
-#include "gui_debug.h"
 
 ///////////// Protocol /////////////
 #include "mdtp_unpack.h"
@@ -57,5 +56,7 @@
 //////////// GUI ////////////
 #include "tft_lcd.h"
 #include "gui_base.h"
+#include "gui_button.h"
+#include "gui_debug.h"
 
 #endif  // MM32F3277_USER_MAIN_H_

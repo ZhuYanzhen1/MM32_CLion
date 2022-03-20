@@ -8,7 +8,6 @@
 
 #include "main.h"
 
-extern calpara_t params;
 extern unsigned char packages_to_be_unpacked[READ_MCU_AMOUNT];
 
 //////////////////////////////////// Task Handler ////////////////////////////////////
@@ -79,6 +78,13 @@ void touchscan_task(void *parameters) {
 }
 
 void guiupdate_task(void *parameters) {
+    Button_Struct_t test_btn;
+    test_btn.x_pos = 10;
+    test_btn.y_pos = 120;
+    test_btn.width = 60;
+    test_btn.height = 30;
+    test_btn.Text = "Test";
+    gui_button_init(&test_btn);
     while (1) {
         for (unsigned short packets_counter = 0; packets_counter < READ_MCU_AMOUNT; packets_counter++) {
             if (packages_to_be_unpacked[packets_counter] == 0xff
