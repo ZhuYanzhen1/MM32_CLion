@@ -130,6 +130,7 @@ void touchscan_task(void *parameters) {
 }
 
 void guiupdate_task(void *parameters) {
+    form_struct_t testform;
     button_struct_t test_btn;
     test_btn.x_pos = 10;
     test_btn.y_pos = 120;
@@ -137,8 +138,11 @@ void guiupdate_task(void *parameters) {
     test_btn.height = 30;
     test_btn.text = "Test";
     gui_button_init(&test_btn);
+
+    testform.text = "MainWindow";
+    gui_form_init(&testform);
     while (1) {
-        gui_show_fusion();
+//        gui_show_fusion();
 //        gui_show_fix();
 //        gui_show_debug();
 //        gui_show_gnrmc_information();

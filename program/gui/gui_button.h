@@ -23,7 +23,7 @@ typedef struct BUTTON_TYPE_T {
     unsigned char height;
     const char *text;
     void (*callback)(void *Object, unsigned char Key);
-    button_state_e status;
+    struct BUTTON_TYPE_T *next_button;
 } button_struct_t;
 
 void gui_button_init(button_struct_t *button);

@@ -9,7 +9,7 @@
 void gui_button_init(button_struct_t *button) {
     unsigned char text_x = button->x_pos + (button->width - strlen(button->text) * 6) / 2;
     unsigned char text_y = button->y_pos + (button->height - 12) / 2;
-    button->status = button_normal_status;
+    button->next_button = NULL;
     gui_draw_rectangle(button->x_pos,
                        button->y_pos,
                        button->width,
@@ -37,7 +37,6 @@ void gui_button_settext(button_struct_t *button, const char *text) {
 void gui_button_update(button_struct_t *button, button_state_e status) {
     unsigned char text_x = button->x_pos + (button->width - strlen(button->text) * 6) / 2;
     unsigned char text_y = button->y_pos + (button->height - 12) / 2;
-    button->status = status;
     switch (status) {
         case button_click_status:
             gui_draw_rectangle(button->x_pos,

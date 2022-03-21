@@ -5,14 +5,15 @@
 #ifndef PROGRAM_GUI_GUI_LABLE_H_
 #define PROGRAM_GUI_GUI_LABLE_H_
 
-typedef struct {
+typedef struct LABEL_TYPE_T {
     unsigned char x_pos;
     unsigned char y_pos;
     unsigned short color;
     const char *text;
-} lable_struct_t;
+    struct LABEL_TYPE_T *next_label;
+} label_struct_t;
 
-void gui_lable_init(lable_struct_t *lable);
-void gui_lable_settext(lable_struct_t *lable, const char *fmt, ...);
+void gui_label_init(label_struct_t *label);
+void gui_label_settext(label_struct_t *label, const char *fmt, ...);
 
 #endif //PROGRAM_GUI_GUI_LABLE_H_
