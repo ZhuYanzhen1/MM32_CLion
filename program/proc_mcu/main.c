@@ -155,19 +155,25 @@ void print_task_status(void) {
     vTaskList((char *) &pcWriteBuffer);
     char tmp_c = pcWriteBuffer[120];
     pcWriteBuffer[120] = 0x00;
-    printf("%s", pcWriteBuffer);
+    if (tmp_c != 0x00)
+        printf("%s", pcWriteBuffer);
+    else
+        printf("%s\r\n\r\n", pcWriteBuffer);
     _fflush(stdout);
     if (tmp_c != 0x00) {
         delayms(30);
         pcWriteBuffer[120] = tmp_c;
         tmp_c = pcWriteBuffer[240];
         pcWriteBuffer[240] = 0x00;
-        printf("%s", &pcWriteBuffer[120]);
+        if (tmp_c != 0x00)
+            printf("%s", &pcWriteBuffer[120]);
+        else
+            printf("%s\r\n\r\n", &pcWriteBuffer[120]);
         _fflush(stdout);
         if (tmp_c != 0x00) {
             delayms(30);
             pcWriteBuffer[240] = tmp_c;
-            printf("%s", &pcWriteBuffer[240]);
+            printf("%s\r\n\r\n", &pcWriteBuffer[240]);
             _fflush(stdout);
         }
     }
@@ -179,7 +185,7 @@ void ledblink_task(void *parameters) {
         led_counter++;
         LED1_TOGGLE();
         delayms(500);
-        if (led_counter == 10) {
+        if (led_counter == 20) {
             print_task_status();
             led_counter = 0;
         }
