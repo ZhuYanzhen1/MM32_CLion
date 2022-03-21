@@ -84,13 +84,13 @@ void touchscan_task(void *parameter) {
 
 void guiupdate_task(void *parameter) {
     while (1) {
-        Button_Struct_t test_btn;
-        test_btn.x_pos = 10;
-        test_btn.y_pos = 120;
-        test_btn.width = 60;
-        test_btn.height = 30;
-        test_btn.Text = "Test";
-        gui_button_init(&test_btn);
+//        Button_Struct_t test_btn;
+//        test_btn.x_pos = 10;
+//        test_btn.y_pos = 120;
+//        test_btn.width = 60;
+//        test_btn.height = 30;
+//        test_btn.Text = "Test";
+//        gui_button_init(&test_btn);
         for (unsigned short packets_counter = 0; packets_counter < READ_MCU_AMOUNT; packets_counter++) {
             if (packages_to_be_unpacked[packets_counter] == 0xff
                 && packages_to_be_unpacked[packets_counter + 11] == 0xff) {
