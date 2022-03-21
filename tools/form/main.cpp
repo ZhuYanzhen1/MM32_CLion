@@ -39,8 +39,8 @@ void outputMessage(QtMsgType type, const QMessageLogContext &context, const QStr
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    a.setApplicationVersion("1.0");
-//    qInstallMessageHandler(outputMessage);
+    a.setApplicationVersion("1.2");
+    qInstallMessageHandler(outputMessage);
     MainWindow w;
     w.show();
     return a.exec();

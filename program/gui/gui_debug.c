@@ -50,7 +50,6 @@ void gui_show_fusion() {
     gui_label_settext(&neu_v_lable, " v:%f  ", neu.v);
     gui_label_settext(&kalman_north_distance_lable, " k_nd:%f  ", kalman_data.distance_north);
     gui_label_settext(&kalman_east_distance_lable, " k_ed:%f  ", kalman_data.distance_east);
-    gui_form_update(&fusion_form);
 }
 
 void gui_show_fix() {
@@ -134,4 +133,5 @@ void gui_show_gnrmc_debug() {
     for (int i = 0; i < 11; ++i)
         gui_putchar(i * 6, 36, (usart3_dma_buffer_1[i + 63] == '\r' || usart3_dma_buffer_1[i + 63] == '\n') ?
                                ' ' : usart3_dma_buffer_1[i + 63], C_BLACK, C_WHITE);
+
 }
