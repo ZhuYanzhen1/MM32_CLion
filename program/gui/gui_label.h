@@ -15,6 +15,7 @@ typedef struct LABEL_TYPE_T {
     unsigned char colum;
     unsigned char align;
     unsigned short color;
+    unsigned int update_flag;
     char text[24];
     struct LABEL_TYPE_T *next_label;
 } label_struct_t;

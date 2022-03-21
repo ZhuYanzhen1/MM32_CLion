@@ -21,8 +21,9 @@ typedef struct BUTTON_TYPE_T {
     unsigned char y_pos;
     unsigned char width;
     unsigned char height;
+    unsigned int update_flag;
     const char *text;
-    void (*callback)(void *Object, unsigned char Key);
+    void (*callback)(void *object);
     struct BUTTON_TYPE_T *next_button;
 } button_struct_t;
 

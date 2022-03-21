@@ -21,6 +21,7 @@ void gui_label_settext(label_struct_t *label, const char *fmt, ...) {
     va_start(ap, fmt);
     vsnprintf(label->text, sizeof(label->text), fmt, ap);
     va_end(ap);
+    label->update_flag = 1;
 }
 
 void gui_label_update(label_struct_t *label) {

@@ -65,3 +65,28 @@ void gui_form_display(form_struct_t *form) {
         }
     }
 }
+
+void gui_update(form_struct_t *form) {
+    unsigned char button_counter = form->button_num;
+    unsigned char label_counter = form->label_num;
+    if (button_counter != 0) {
+        button_struct_t *tmp_button = form->first_button;
+        while (button_counter--) {
+            if (tmp_button->update_flag == 1) {
+                gui_button_update(tmp_button, button_normal_status);
+                tmp_button->update_flag = 0;
+            }
+            tmp_button = tmp_button->next_button;
+        }
+    }
+    if (label_counter != 0) {
+        label_struct_t *tmp_label = form->first_label;
+        while (label_counter--) {
+            if (tmp_label->update_flag == 1) {
+                gui_label_update(tmp_label);
+                tmp_label->update_flag = 0;
+            }
+            tmp_label = tmp_label->next_label;
+        }
+    }
+}
