@@ -17,11 +17,14 @@ static struct rt_thread gui_taskhandler;
 static unsigned char guitask_stack[4096];
 static struct rt_thread touch_taskhandler;
 static unsigned char touchtask_stack[1024];
+static struct rt_thread fusion_taskhandler;
+static unsigned char fusion_stack[4096];
 struct rt_semaphore touch_semaphore;
 
 void ledblink_task(void *parameter);
 void guiupdate_task(void *parameter);
 void touchscan_task(void *parameter);
+void fusion_task(void *parameter);
 
 /////////////////////////////////////// Initialize Task ///////////////////////////////////////
 void hardware_init(void) {
@@ -62,6 +65,10 @@ int main(void) {
     rt_thread_init(&touch_taskhandler, "touch", touchscan_task, RT_NULL,
                    &touchtask_stack[0], sizeof(touchtask_stack), 7, 1);
     rt_thread_startup(&touch_taskhandler);
+
+    rt_thread_init(&fusion_taskhandler, "fusion", fusion_task, RT_NULL,
+                   &fusion_stack[0], sizeof(fusion_stack), 7, 1);
+    rt_thread_startup(&fusion_taskhandler);
     return 0;
 }
 
@@ -83,29 +90,24 @@ void touchscan_task(void *parameter) {
 }
 
 void guiupdate_task(void *parameter) {
+    form_struct_t testform;
+    button_struct_t test_btn;
+    test_btn.x_pos = 10;
+    test_btn.y_pos = 120;
+    test_btn.width = 60;
+    test_btn.height = 30;
+    test_btn.text = "Test";
+    gui_button_init(&test_btn);
+
+    testform.text = "MainWindow";
+    gui_form_init(&testform);
     while (1) {
-//        Button_Struct_t test_btn;
-//        test_btn.x_pos = 10;
-//        test_btn.y_pos = 120;
-//        test_btn.width = 60;
-//        test_btn.height = 30;
-//        test_btn.Text = "Test";
-//        gui_button_init(&test_btn);
-        for (unsigned short packets_counter = 0; packets_counter < READ_MCU_AMOUNT; packets_counter++) {
-            if (packages_to_be_unpacked[packets_counter] == 0xff
-                && packages_to_be_unpacked[packets_counter + 11] == 0xff) {
-                unpacking_fixed_length_data(&packages_to_be_unpacked[packets_counter + 1]);
-                packets_counter = (packets_counter + 11);  // 移动到包尾位置
-            } else if (packages_to_be_unpacked[packets_counter] == 0xa5
-                && packages_to_be_unpacked[packets_counter + 1] == 0x5a) {
-                unpacking_variable_length_data(&packages_to_be_unpacked[packets_counter + 3]);
-                packets_counter = (packets_counter + packages_to_be_unpacked[2] - 1); // 移动到下一个包的前一个位置
-            }
-        }
+//        gui_show_fusion();
+//        gui_show_fix();
 //        gui_show_debug();
-        gui_show_fix();
 //        gui_show_gnrmc_information();
-        delayms(50);
+//        gui_show_gnrmc_debug();
+        delayms(100);
     }
 }
 
@@ -114,4 +116,8 @@ void ledblink_task(void *parameter) {
         LED1_TOGGLE();
         delayms(500);
     }
+}
+
+void fusion_task(void *parameter) {
+
 }
