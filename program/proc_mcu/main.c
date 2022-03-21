@@ -73,10 +73,10 @@ int main(void) {
 }
 
 /////////////////////////////////////// Task Function ///////////////////////////////////////
-void touchscan_task(void *parameter) {
-    rt_sem_init(&touch_semaphore, "touch_s", 0, RT_IPC_FLAG_FIFO);
+void touchscan_task(void *parameters) {
+    touch_event = xEventGroupCreate();
     while (1) {
-        rt_sem_take(&touch_semaphore, RT_WAITING_FOREVER);
+        xEventGroupWaitBits(touch_event, 0x00000001, pdTRUE, pdFALSE, portMAX_DELAY);
         EXTI->IMR &= ~EXTI_Line4;
         unsigned char x_pos, y_pos;
         xpt2046_scan(&x_pos, &y_pos);
@@ -118,6 +118,100 @@ void ledblink_task(void *parameter) {
     }
 }
 
-void fusion_task(void *parameter) {
+
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+kalman_config_v(&kalman_v_east);
+kalman_config_distance(&kalman_distance_north,
+384400);
+kalman_config_distance(&kalman_distance_earth,
+1487900);
+while (1) {
+for (
+unsigned short packets_counter = 0;
+packets_counter < READ_MCU_AMOUNT;
+packets_counter++) {
+if (packages_to_be_unpacked[packets_counter]
+== 0xff
+&&
+packages_to_be_unpacked[packets_counter
++ 11] == 0xff) {
 
+unpacking_fixed_length_data(&
+packages_to
+    _be_unpacked[packets_counter + 1]
+);
+packets_counter = (packets_counter +
+    11);  // 移动到包尾位置
+} else if
+(packages_to_be_unpacked[packets_counter] ==
+0xa5
+&&
+packages_to_be_unpacked[packets_counter
++ 1] == 0x5a) {
+
+unpacking_variable_length_data(&
+packages
+    _to_be_unpacked[packets_counter + 3]
+);
+packets_counter = (packets_counter +
+    packages_to_be_unpacked[2] - 1); //
+移动到下一个包的前一个位置
+}
+}
+while (gps_rmc.status != 'A')
+delayms(1);
+coordinate_system_transformation_neu(small_packe
+ts.kalman_north);
+void fusion_task(void *parameters) {
+    kalman_config_v(&kalman_v_north);
+    kalman_config_v(&kalman_v_east);
+    kalman_config_distance(&kalman_distance_north, 384400);
+    kalman_config_distance(&kalman_distance_earth, 1487900);
+    while (1) {
+        for (unsigned short packets_counter = 0; packets_counter < READ_MCU_AMOUNT; packets_counter++) {
+            if (packages_to_be_unpacked[packets_counter] == 0xff
+                && packages_to_be_unpacked[packets_counter + 11] == 0xff) {
+                unpacking_fixed_length_data(&packages_to_be_unpacked[packets_counter + 1]);
+                packets_counter = (packets_counter + 11);  // 移动到包尾位置
+            } else if (packages_to_be_unpacked[packets_counter] == 0xa5
+                && packages_to_be_unpacked[packets_counter + 1] == 0x5a) {
+                unpacking_variable_length_data(&packages_to_be_unpacked[packets_counter + 3]);
+                packets_counter = (packets_counter + packages_to_be_unpacked[2] - 1); // 移动到下一个包的前一个位置
+            }
+        }
+        while (gps_rmc.status != 'A')
+            delayms(1);
+        coordinate_system_transformation_neu(small_packets.kalman_north);
+
+        v_north = kalman_update(&kalman_v_north, neu.north_v, neu.north_acceleration,
+                                0.031f, 0);
+        v_east = kalman_update(&kalman_v_east, neu.east_v, neu.east_acceleration,
+                               0.031f, 0);
+        if (v_north < 1 && v_north > -1) v_north_final = neu.north_v;
+        else v_north_final = v_north;
+        if (v_east < 1 && v_east > -1) v_east_final = neu.east_v;
+        else v_east_final = v_east;
+        distance_north = kalman_update(&kalman_distance_north, neu.north_distance,
+                                       v_north_final, 0.031f, 0);   // dt不清楚，估计得改
+        distance_east = kalman_update(&kalman_distance_earth, neu.east_distance,
+                                      v_east_final, 0.031f, 0);     // dt不清楚，估计得改
+        delayms(30);
+    }
 }
