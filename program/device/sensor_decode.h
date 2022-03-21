@@ -31,8 +31,8 @@
  * xy：x占高四位；y占低四位
  * */
 typedef struct {
-    short pitch;
-    short yaw;
+    short north;
+    short kalman_north;
     short ax;
     short ay;
     short az;

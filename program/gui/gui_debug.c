@@ -6,6 +6,40 @@
 #include "gui_base.h"
 #include "sensor_decode.h"
 #include "gps_parser.h"
+#include "data_conversion.h"
+
+extern unsigned int usart3_dma_buffer_1[74];
+extern unsigned int usart3_dma_buffer_2[74];
+
+extern float v_north_final;
+extern float v_east_final;
+extern float distance_north;
+extern float distance_east;
+
+void gui_show_fusion() {
+    gui_printf(0, 0 * 12, C_BLACK, C_WHITE,
+               "k_north:%f   ", small_packets.kalman_north);
+    gui_printf(0, 1 * 12, C_BLACK, C_WHITE,
+               "north:%d   ", small_packets.north);
+    gui_printf(0, 2 * 12, C_BLACK, C_WHITE,
+               "k_vn:%f   ", v_north_final);
+    gui_printf(0, 3 * 12, C_BLACK, C_WHITE,
+               "k_ve:%f   ", v_east_final);
+    gui_printf(0, 4 * 12, C_BLACK, C_WHITE,
+               "k_dn:%f   ", distance_north);
+    gui_printf(0, 5 * 12, C_BLACK, C_WHITE,
+               "k_de:%f   ", distance_east);
+    gui_printf(0, 6 * 12, C_BLACK, C_WHITE,
+               "status:%c", gps_rmc.status);
+    gui_printf(0, 7 * 12, C_BLACK, C_WHITE,
+               "nd:%f", neu.north_distance);
+    gui_printf(0, 8 * 12, C_BLACK, C_WHITE,
+               "ed:%f", neu.east_distance);
+    gui_printf(0, 9 * 12, C_BLACK, C_WHITE,
+               "nv:%f", neu.north_v);
+    gui_printf(0, 10 * 12, C_BLACK, C_WHITE,
+               "ev:%f", neu.east_v);
+}
 
 void gui_show_fix() {
     gui_printf(0, 0 * 12, C_BLACK, C_WHITE,
@@ -15,9 +49,9 @@ void gui_show_fix() {
     gui_printf(0, 2 * 12, C_BLACK, C_WHITE,
                "az:%d   ", small_packets.az);
     gui_printf(0, 3 * 12, C_BLACK, C_WHITE,
-               "north:%d   ", small_packets.pitch);
+               "north:%d   ", small_packets.north);
     gui_printf(0, 4 * 12, C_BLACK, C_WHITE,
-               "yaw:%d   ", small_packets.yaw);
+               "kalman_north:%d   ", small_packets.kalman_north);
 }
 
 void gui_show_debug() {
@@ -72,12 +106,21 @@ void gui_show_gnrmc_information() {
     gui_printf(0, 5 * 12, C_BLACK, C_WHITE,
                "longitude_direction:%c", gps_rmc.longitude_direction);
     gui_printf(0, 6 * 12, C_BLACK, C_WHITE,
-               "status:%c", gps_rmc.status);
-    gui_printf(0, 7 * 12, C_BLACK, C_WHITE,
                "speed:%d", gps_rmc.speed_to_ground_section);
-    gui_printf(0, 8 * 12, C_BLACK, C_WHITE,
+    gui_printf(0, 7 * 12, C_BLACK, C_WHITE,
                "direction:%d", gps_rmc.direction_of_ground_truth);
-    gui_printf(0, 9 * 12, C_BLACK, C_WHITE,
+    gui_printf(0, 8 * 12, C_BLACK, C_WHITE,
                "positioning_mode:%c", gps_rmc.mode);
 }
 
+void gui_show_gnrmc_debug() {
+    for (int j = 0; j < 3; ++j)
+        for (int i = 0; i < 21; ++i)
+            gui_putchar(i * 6, j * 12,
+                        (usart3_dma_buffer_1[i + 21 * j] == '\r' || usart3_dma_buffer_1[i + 21 * j] == '\n') ?
+                        ' ' : usart3_dma_buffer_1[i + 21 * j], C_BLACK, C_WHITE);
+    for (int i = 0; i < 11; ++i)
+        gui_putchar(i * 6, 36, (usart3_dma_buffer_1[i + 63] == '\r' || usart3_dma_buffer_1[i + 63] == '\n') ?
+                               ' ' : usart3_dma_buffer_1[i + 63], C_BLACK, C_WHITE);
+
+}

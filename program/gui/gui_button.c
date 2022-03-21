@@ -6,10 +6,10 @@
 #include "gui_base.h"
 #include "string.h"
 
-void gui_button_init(Button_Struct_t *button) {
-    unsigned char text_x = button->x_pos + (button->width - strlen(button->Text) * 6) / 2;
+void gui_button_init(button_struct_t *button) {
+    unsigned char text_x = button->x_pos + (button->width - strlen(button->text) * 6) / 2;
     unsigned char text_y = button->y_pos + (button->height - 12) / 2;
-    button->Status = Button_Normal;
+    button->next_button = NULL;
     gui_draw_rectangle(button->x_pos,
                        button->y_pos,
                        button->width,
@@ -22,15 +22,23 @@ void gui_button_init(Button_Struct_t *button) {
                        button->height,
                        BUTTON_COLOR_NORMAL_EDGE,
                        UnFilled);
-    gui_printf(text_x, text_y, C_BLACK, BUTTON_COLOR_NORMAL, "%s", button->Text);
+    gui_printf(text_x, text_y, C_BLACK, BUTTON_COLOR_NORMAL, "%s", button->text);
 }
 
-void gui_button_update(Button_Struct_t *button, Button_State_e status) {
-    unsigned char text_x = button->x_pos + (button->width - strlen(button->Text) * 6) / 2;
+void gui_button_settext(button_struct_t *button, const char *text) {
+    button->text = text;
+    unsigned char text_x = button->x_pos + (button->width - strlen(button->text) * 6) / 2;
     unsigned char text_y = button->y_pos + (button->height - 12) / 2;
-    button->Status = status;
+    gui_draw_rectangle(button->x_pos + 1, text_y, button->width - 2, 12,
+                       BUTTON_COLOR_NORMAL, Filled);
+    gui_printf(text_x, text_y, C_BLACK, BUTTON_COLOR_NORMAL, "%s", button->text);
+}
+
+void gui_button_update(button_struct_t *button, button_state_e status) {
+    unsigned char text_x = button->x_pos + (button->width - strlen(button->text) * 6) / 2;
+    unsigned char text_y = button->y_pos + (button->height - 12) / 2;
     switch (status) {
-        case Button_Click:
+        case button_click_status:
             gui_draw_rectangle(button->x_pos,
                                button->y_pos,
                                button->width,
@@ -43,9 +51,9 @@ void gui_button_update(Button_Struct_t *button, Button_State_e status) {
                                button->height,
                                BUTTON_COLOR_CLICK_EDGE,
                                UnFilled);
-            gui_printf(text_x, text_y, C_BLACK, BUTTON_COLOR_CLICK, "%s", button->Text);
+            gui_printf(text_x, text_y, C_BLACK, BUTTON_COLOR_CLICK, "%s", button->text);
             break;
-        case Button_Normal:
+        case button_normal_status:
             gui_draw_rectangle(button->x_pos,
                                button->y_pos,
                                button->width,
@@ -58,8 +66,12 @@ void gui_button_update(Button_Struct_t *button, Button_State_e status) {
                                button->height,
                                BUTTON_COLOR_NORMAL_EDGE,
                                UnFilled);
-            gui_printf(text_x, text_y, C_BLACK, BUTTON_COLOR_NORMAL, "%s", button->Text);
+            gui_printf(text_x, text_y, C_BLACK, BUTTON_COLOR_NORMAL, "%s", button->text);
             break;
         default:break;
     }
+}
+
+void gui_button_scanbtn(unsigned char xpos, unsigned char ypos) {
+
 }
