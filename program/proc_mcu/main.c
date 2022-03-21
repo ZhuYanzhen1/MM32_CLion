@@ -118,67 +118,6 @@ void ledblink_task(void *parameter) {
     }
 }
 
-
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-kalman_config_v(&kalman_v_east);
-kalman_config_distance(&kalman_distance_north,
-384400);
-kalman_config_distance(&kalman_distance_earth,
-1487900);
-while (1) {
-for (
-unsigned short packets_counter = 0;
-packets_counter < READ_MCU_AMOUNT;
-packets_counter++) {
-if (packages_to_be_unpacked[packets_counter]
-== 0xff
-&&
-packages_to_be_unpacked[packets_counter
-+ 11] == 0xff) {
-
-unpacking_fixed_length_data(&
-packages_to
-    _be_unpacked[packets_counter + 1]
-);
-packets_counter = (packets_counter +
-    11);  // 移动到包尾位置
-} else if
-(packages_to_be_unpacked[packets_counter] ==
-0xa5
-&&
-packages_to_be_unpacked[packets_counter
-+ 1] == 0x5a) {
-
-unpacking_variable_length_data(&
-packages
-    _to_be_unpacked[packets_counter + 3]
-);
-packets_counter = (packets_counter +
-    packages_to_be_unpacked[2] - 1); //
-移动到下一个包的前一个位置
-}
-}
-while (gps_rmc.status != 'A')
-delayms(1);
-coordinate_system_transformation_neu(small_packe
-ts.kalman_north);
 void fusion_task(void *parameters) {
     kalman_config_v(&kalman_v_north);
     kalman_config_v(&kalman_v_east);
