@@ -129,9 +129,8 @@ void touchscan_task(void *parameters) {
 void guiupdate_task(void *parameters) {
     unsigned short combine_pos = 0x0000;
     (void) parameters;
-    gui_init_fusion();
+    gui_main_form_init();
     while (1) {
-        gui_show_fusion();
         delayms(200);
         if (xQueueReceive(touch_point_queue, &combine_pos, 0) == pdPASS)
             gui_form_update(combine_pos >> 8, combine_pos & 0x00FF);

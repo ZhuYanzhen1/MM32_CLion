@@ -19,7 +19,7 @@ void gui_callback_task(void *parameters) {
     vTaskDelete(NULL);
 }
 
-void gui_form_init(form_struct_t *form, const char *name) {
+void gui_form_init(form_struct_t *form, const char *name, void (*callback)(void *object)) {
     gui_form_counter++;
     form->number = gui_form_counter;
     form->button_num = 0;
@@ -27,6 +27,7 @@ void gui_form_init(form_struct_t *form, const char *name) {
     form->first_button = NULL;
     form->first_label = NULL;
     form->text = name;
+    form->callback = callback;
 }
 
 void gui_form_bind_label(form_struct_t *form, void *label) {
@@ -57,6 +58,7 @@ void gui_form_display(form_struct_t *form) {
     unsigned char button_counter = form->button_num;
     unsigned char label_counter = form->label_num;
     unsigned char text_x = (128 - strlen(form->text) * 6) / 2;
+    gui_clear_screan(C_WHITE);
     gui_draw_rectangle(0, 0, 128, 16, FORM_TITLE_COLOR, Filled);
     gui_printf(text_x, 2, C_BLACK, FORM_TITLE_COLOR, "%s", form->text);
     if (button_counter != 0) {
@@ -80,6 +82,7 @@ void gui_form_update(unsigned char x_pos, unsigned char y_pos) {
     button_struct_t *pressed_button = NULL;
     unsigned char button_counter = current_form->button_num;
     unsigned char label_counter = current_form->label_num;
+    current_form->callback(current_form);
     if (button_counter != 0) {
         /* Update button status */
         button_struct_t *tmp_button = current_form->first_button;
