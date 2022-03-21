@@ -29,7 +29,7 @@ neu_infomation neu = {0};
 float get_distance(float lat_1, float lon_1, float lat_2, float lon_2) {
     float c = qfp_fsin(GEO_ANGLE(lat_1)) * qfp_fsin(GEO_ANGLE(lat_2)) +
         qfp_fcos(GEO_ANGLE(lat_1)) * qfp_fcos(GEO_ANGLE(lat_2)) * qfp_fcos(GEO_ANGLE(lon_1 - lon_2));
-    float distance = EARTH_RADIUS * GEO_ANGLE(my_acos(c));
+    float distance = EARTH_RADIUS * (my_acos(c)); // acos 算出来的是弧度，不是角度，所以不用再角度转弧度了
     return distance;
 }
 
