@@ -64,13 +64,13 @@ void initialize_task(void *parameters) {
     debugger_register_variable(dbg_float32, &small_packets.kalman_north, "kalman");
     timer2_config();
 
-    xTaskCreate(fusion_task, "sensor_fusion", 4096, NULL, 2,
+    xTaskCreate(fusion_task, "sensor_fusion", 512, NULL, 2,
                 &fusion_taskhandler);
-    xTaskCreate(ledblink_task, "led_blink", 64, NULL, 1,
+    xTaskCreate(ledblink_task, "led_blink", 1024, NULL, 1,
                 &led_taskhandler);
-    xTaskCreate(guiupdate_task, "gui_update", 2048, NULL, 1,
+    xTaskCreate(guiupdate_task, "gui_update", 1024, NULL, 1,
                 &gui_taskhandler);
-    xTaskCreate(touchscan_task, "touch_scan", 1024, NULL, 1,
+    xTaskCreate(touchscan_task, "touch_scan", 128, NULL, 1,
                 &touch_taskhandler);
     vTaskDelete(NULL);
 }
@@ -131,8 +131,8 @@ void guiupdate_task(void *parameters) {
         gui_show_fusion();
         delayms(200);
         if (xQueueReceive(touch_point_queue, &combine_pos, 1) == pdPASS) {
-            printf("x:%d y:%d\r\n", combine_pos >> 8, combine_pos & 0x00ff);
-            _fflush(stdout);
+//            printf("x:%d y:%d\r\n", combine_pos >> 8, combine_pos & 0x00ff);
+//            _fflush(stdout);
         }
 //        gui_show_fix();
 //        gui_show_debug();
