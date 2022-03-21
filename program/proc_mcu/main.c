@@ -13,8 +13,7 @@ extern unsigned char packages_to_be_unpacked[READ_MCU_AMOUNT];
 /* Kalman fusion to obtain northward and eastward velocities
  * (GPS velocity + imu acceleration) */
 kalman_data_t kalman_data;
-kalman_filter_t kalman_v_north = {0};
-kalman_filter_t kalman_v_east = {0};
+kalman_filter_t kalman_v = {0};
 kalman_filter_t kalman_distance_north = {0};
 kalman_filter_t kalman_distance_earth = {0};
 
@@ -76,8 +75,7 @@ void initialize_task(void *parameters) {
 }
 
 void fusion_task(void *parameters) {
-    kalman_config_v(&kalman_v_north);
-    kalman_config_v(&kalman_v_east);
+    kalman_config_v(&kalman_v);
     kalman_config_distance(&kalman_distance_north, 384400);
     kalman_config_distance(&kalman_distance_earth, 1487900);
     while (1) {
@@ -95,7 +93,7 @@ void fusion_task(void *parameters) {
         while (gps_rmc.status != 'A')
             delayms(1);
         sensor_unit_conversion();
-        kalman_data.v = kalman_update(&kalman_v_north, neu.v, neu.acceleration,
+        kalman_data.v = kalman_update(&kalman_v, neu.v, neu.acceleration,
                                       0.031f, 0);
         coordinate_system_transformation_kalman_v(small_packets.kalman_north);
         kalman_data.distance_north = kalman_update(&kalman_distance_north, neu.north_distance,

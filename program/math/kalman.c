@@ -125,7 +125,7 @@ float kalman_update(kalman_filter_t *kalman, float new_pos, float new_vel, float
         while (gps_rmc.status != 'A');  //用到GPS的时候开这个，不用的时候不开
         sensor_unit_conversion(true_north_final);
 
-        v_north = kalman_update(&kalman_v_north, neu.north_v, neu.north_acceleration,
+        v_north = kalman_update(&kalman_v, neu.north_v, neu.north_acceleration,
                                 0.101f, 0);
         v_east = kalman_update(&kalman_v_east, neu.east_v, neu.east_acceleration,
                                0.101f, 0);
