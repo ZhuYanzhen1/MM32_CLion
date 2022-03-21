@@ -41,6 +41,7 @@ int main(void) {
 
 //////////////////////////////////////// Tasks ////////////////////////////////////////
 void initialize_task(void *parameters) {
+    (void) parameters;
     delay_config();
     led_config();
     iic1_config();
@@ -75,6 +76,7 @@ void initialize_task(void *parameters) {
 }
 
 void fusion_task(void *parameters) {
+    (void) parameters;
     kalman_config_v(&kalman_v);
     kalman_config_distance(&kalman_distance_north, 384400);
     kalman_config_distance(&kalman_distance_earth, 1487900);
@@ -105,16 +107,17 @@ void fusion_task(void *parameters) {
 }
 
 void touchscan_task(void *parameters) {
+    unsigned char x_pos, y_pos;
+    unsigned short combine_pos;
+    (void) parameters;
     touch_event = xEventGroupCreate();
     touch_point_queue = xQueueCreate(10, 2);
     while (1) {
         xEventGroupWaitBits(touch_event, 0x00000001, pdTRUE, pdFALSE, portMAX_DELAY);
         EXTI->IMR &= ~EXTI_Line4;
-        unsigned char x_pos, y_pos;
-        unsigned short combine_pos;
         xpt2046_scan(&x_pos, &y_pos);
         combine_pos = x_pos << 8 | y_pos;
-        xQueueSend(touch_point_queue, &combine_pos, portMAX_DELAY);
+        xQueueSend(touch_point_queue, &combine_pos, 0);
         while (!GPIO_ReadInputDataBit(TOUCH_PEN_PORT, TOUCH_PEN_PIN))
             delayms(20);
         EXTI_ClearFlag(EXTI_Line4);
@@ -123,24 +126,35 @@ void touchscan_task(void *parameters) {
 }
 
 void guiupdate_task(void *parameters) {
+    unsigned short combine_pos = 0x0000;
+    (void) parameters;
     gui_init_fusion();
     while (1) {
-        unsigned short combine_pos;
         gui_show_fusion();
         delayms(200);
-        if (xQueueReceive(touch_point_queue, &combine_pos, 1) == pdPASS) {
-//            printf("x:%d y:%d\r\n", combine_pos >> 8, combine_pos & 0x00ff);
-//            _fflush(stdout);
+        if (xQueueReceive(touch_point_queue, &combine_pos, 0) == pdPASS)
+            gui_form_update(combine_pos >> 8, combine_pos & 0x00FF);
+        else
+            gui_form_update(0, 0);
+    }
+}
+
+void print_task_status(void);
+void ledblink_task(void *parameters) {
+    unsigned char led_counter = 0;
+    (void) parameters;
+    while (1) {
+        led_counter++;
+        LED1_TOGGLE();
+        delayms(500);
+        if (led_counter == 20) {
+            print_task_status();
+            led_counter = 0;
         }
-//        gui_show_fix();
-//        gui_show_debug();
-//        gui_show_gnrmc_information();
-//        gui_show_gnrmc_debug();
     }
 }
 
 static char pcWriteBuffer[360] = {0};
-
 void print_task_status(void) {
     vTaskList((char *) &pcWriteBuffer);
     char tmp_c = pcWriteBuffer[120];
@@ -165,19 +179,6 @@ void print_task_status(void) {
             pcWriteBuffer[240] = tmp_c;
             printf("%s\r\n\r\n", &pcWriteBuffer[240]);
             _fflush(stdout);
-        }
-    }
-}
-
-void ledblink_task(void *parameters) {
-    unsigned char led_counter = 0;
-    while (1) {
-        led_counter++;
-        LED1_TOGGLE();
-        delayms(500);
-        if (led_counter == 20) {
-            print_task_status();
-            led_counter = 0;
         }
     }
 }

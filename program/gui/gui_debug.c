@@ -17,6 +17,8 @@ static label_struct_t kalman_north_label;
 static label_struct_t gnss_status_label;
 static label_struct_t north_distance_label;
 static label_struct_t east_distance_label;
+static button_struct_t a_button;
+static button_struct_t b_button;
 
 void gui_init_fusion() {
     gui_label_init(&kalman_north_label, 0, C_BLACK, label_align_left, " k_north");
@@ -24,7 +26,13 @@ void gui_init_fusion() {
     gui_label_init(&north_distance_label, 2, C_BLACK, label_align_left, " nd");
     gui_label_init(&east_distance_label, 3, C_BLACK, label_align_left, " ed");
 
+    gui_button_init(&a_button, 10, 120, 54, 30, "A_Btn");
+    gui_button_init(&b_button, 64, 120, 54, 30, "B_Btn");
+
     gui_form_init(&fusion_form, "FusionWindow");
+
+    gui_form_bind_button(&fusion_form, &a_button);
+    gui_form_bind_button(&fusion_form, &b_button);
 
     gui_form_bind_label(&fusion_form, &kalman_north_label);
     gui_form_bind_label(&fusion_form, &gnss_status_label);
@@ -38,7 +46,6 @@ void gui_show_fusion() {
     gui_label_settext(&gnss_status_label, " status:%c", gps_rmc.status);
     gui_label_settext(&north_distance_label, " nd:%f", neu.north_distance);
     gui_label_settext(&east_distance_label, " ed:%f", neu.east_distance);
-    gui_form_update(&fusion_form);
 }
 
 void gui_show_fix() {

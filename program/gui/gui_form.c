@@ -65,23 +65,38 @@ void gui_form_display(form_struct_t *form) {
             tmp_label = tmp_label->next_label;
         }
     }
+    current_form = form;
 }
 
-void gui_form_update(form_struct_t *form) {
-    unsigned char button_counter = form->button_num;
-    unsigned char label_counter = form->label_num;
+void gui_form_update(unsigned char x_pos, unsigned char y_pos) {
+    unsigned char button_counter = current_form->button_num;
+    unsigned char label_counter = current_form->label_num;
     if (button_counter != 0) {
-        button_struct_t *tmp_button = form->first_button;
+        /* Update button status */
+        button_struct_t *tmp_button = current_form->first_button;
+        while (button_counter--) {
+            if (x_pos > tmp_button->x_pos && y_pos > tmp_button->y_pos &&
+                x_pos < (tmp_button->x_pos + tmp_button->width) && y_pos < (tmp_button->y_pos + tmp_button->height)) {
+                tmp_button->status = button_click_status;
+                tmp_button->update_flag = 1;
+            }
+            tmp_button = tmp_button->next_button;
+        }
+        /* Update button gui display */
+        button_counter = current_form->button_num;;
+        tmp_button = current_form->first_button;
         while (button_counter--) {
             if (tmp_button->update_flag == 1) {
-                gui_button_update(tmp_button, button_normal_status);
-                tmp_button->update_flag = 0;
+                gui_button_update(tmp_button, tmp_button->status);
+                if (tmp_button->status == button_normal_status)
+                    tmp_button->update_flag = 0;
+                tmp_button->status = button_normal_status;
             }
             tmp_button = tmp_button->next_button;
         }
     }
     if (label_counter != 0) {
-        label_struct_t *tmp_label = form->first_label;
+        label_struct_t *tmp_label = current_form->first_label;
         while (label_counter--) {
             if (tmp_label->update_flag == 1) {
                 gui_label_update(tmp_label);
