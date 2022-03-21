@@ -7,9 +7,17 @@
 #include "gui_button.h"
 #include "gui_label.h"
 #include "string.h"
+#include "FreeRTOS.h"
+#include "task.h"
 
 static unsigned char gui_form_counter = 0;
 static form_struct_t *current_form = NULL;
+static TaskHandle_t gui_callback_taskhandler;
+
+void gui_callback_task(void *parameters) {
+    ((button_struct_t *) parameters)->callback(parameters);
+    vTaskDelete(NULL);
+}
 
 void gui_form_init(form_struct_t *form, const char *name) {
     gui_form_counter++;
@@ -69,6 +77,7 @@ void gui_form_display(form_struct_t *form) {
 }
 
 void gui_form_update(unsigned char x_pos, unsigned char y_pos) {
+    button_struct_t *pressed_button = NULL;
     unsigned char button_counter = current_form->button_num;
     unsigned char label_counter = current_form->label_num;
     if (button_counter != 0) {
@@ -90,6 +99,8 @@ void gui_form_update(unsigned char x_pos, unsigned char y_pos) {
                 gui_button_update(tmp_button, tmp_button->status);
                 if (tmp_button->status == button_normal_status)
                     tmp_button->update_flag = 0;
+                if (tmp_button->status == button_click_status)
+                    pressed_button = tmp_button;
                 tmp_button->status = button_normal_status;
             }
             tmp_button = tmp_button->next_button;
@@ -104,5 +115,9 @@ void gui_form_update(unsigned char x_pos, unsigned char y_pos) {
             }
             tmp_label = tmp_label->next_label;
         }
+    }
+    if (pressed_button != NULL) {
+        xTaskCreate(gui_callback_task, "gui_callback", 256,
+                    pressed_button, GUI_CALLBACK_PRIO, &gui_callback_taskhandler);
     }
 }

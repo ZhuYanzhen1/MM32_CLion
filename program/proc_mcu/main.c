@@ -64,7 +64,7 @@ void initialize_task(void *parameters) {
     debugger_register_variable(dbg_float32, &small_packets.kalman_north, "kalman");
     timer2_config();
 
-    xTaskCreate(fusion_task, "sensor_fusion", 512, NULL, 2,
+    xTaskCreate(fusion_task, "sensor_fusion", 512, NULL, 3,
                 &fusion_taskhandler);
     xTaskCreate(ledblink_task, "led_blink", 1024, NULL, 1,
                 &led_taskhandler);
@@ -120,6 +120,7 @@ void touchscan_task(void *parameters) {
         xQueueSend(touch_point_queue, &combine_pos, 0);
         while (!GPIO_ReadInputDataBit(TOUCH_PEN_PORT, TOUCH_PEN_PIN))
             delayms(20);
+        delayms(50);
         EXTI_ClearFlag(EXTI_Line4);
         EXTI->IMR |= EXTI_Line4;
     }
@@ -139,6 +140,8 @@ void guiupdate_task(void *parameters) {
     }
 }
 
+#if USE_FREERTOS_REPORT == 1
+static char pcWriteBuffer[360] = {0};
 void print_task_status(void);
 void ledblink_task(void *parameters) {
     unsigned char led_counter = 0;
@@ -153,8 +156,6 @@ void ledblink_task(void *parameters) {
         }
     }
 }
-
-static char pcWriteBuffer[360] = {0};
 void print_task_status(void) {
     vTaskList((char *) &pcWriteBuffer);
     char tmp_c = pcWriteBuffer[120];
@@ -182,3 +183,12 @@ void print_task_status(void) {
         }
     }
 }
+#else
+void ledblink_task(void *parameters) {
+    (void) parameters;
+    while (1) {
+        LED1_TOGGLE();
+        delayms(500);
+    }
+}
+#endif
