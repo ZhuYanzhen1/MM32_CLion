@@ -10,6 +10,21 @@
 
 extern unsigned char packages_to_be_unpacked[READ_MCU_AMOUNT];
 
+/* Kalman fusion to obtain northward and eastward velocities
+ * (GPS velocity + imu acceleration) */
+float v_north;
+float v_east;
+kalman_filter_float kalman_v_north = {0};
+kalman_filter_float kalman_v_east = {0};
+float v_north_final;
+float v_east_final;
+
+/* Kalman fusion to obtain northward displacement and eastward displacement */
+float distance_north;
+float distance_east;
+kalman_filter_float kalman_distance_north = {0};
+kalman_filter_float kalman_distance_earth = {0};
+
 /////////////////////////////////////// TaskHandler ///////////////////////////////////////
 static struct rt_thread led_taskhandler;
 static unsigned char ledtask_stack[128];
@@ -74,35 +89,35 @@ int main(void) {
 
 /////////////////////////////////////// Task Function ///////////////////////////////////////
 void touchscan_task(void *parameters) {
-    touch_event = xEventGroupCreate();
-    while (1) {
-        xEventGroupWaitBits(touch_event, 0x00000001, pdTRUE, pdFALSE, portMAX_DELAY);
-        EXTI->IMR &= ~EXTI_Line4;
-        unsigned char x_pos, y_pos;
-        xpt2046_scan(&x_pos, &y_pos);
-        printf("XPos:%d YPos:%d\r\n", x_pos, y_pos);
-        fflush(stdout);
-        while (!GPIO_ReadInputDataBit(TOUCH_PEN_PORT, TOUCH_PEN_PIN))
-            delayms(20);
-        EXTI_ClearFlag(EXTI_Line4);
-        EXTI->IMR |= EXTI_Line4;
-    }
+//    touch_event = xEventGroupCreate();
+//    while (1) {
+//        xEventGroupWaitBits(touch_event, 0x00000001, pdTRUE, pdFALSE, portMAX_DELAY);
+//        EXTI->IMR &= ~EXTI_Line4;
+//        unsigned char x_pos, y_pos;
+//        xpt2046_scan(&x_pos, &y_pos);
+//        printf("XPos:%d YPos:%d\r\n", x_pos, y_pos);
+//        fflush(stdout);
+//        while (!GPIO_ReadInputDataBit(TOUCH_PEN_PORT, TOUCH_PEN_PIN))
+//            delayms(20);
+//        EXTI_ClearFlag(EXTI_Line4);
+//        EXTI->IMR |= EXTI_Line4;
+//    }
 }
 
 void guiupdate_task(void *parameter) {
-    form_struct_t testform;
-    button_struct_t test_btn;
-    test_btn.x_pos = 10;
-    test_btn.y_pos = 120;
-    test_btn.width = 60;
-    test_btn.height = 30;
-    test_btn.text = "Test";
-    gui_button_init(&test_btn);
-
-    testform.text = "MainWindow";
-    gui_form_init(&testform);
+//    form_struct_t testform;
+//    button_struct_t test_btn;
+//    test_btn.x_pos = 10;
+//    test_btn.y_pos = 120;
+//    test_btn.width = 60;
+//    test_btn.height = 30;
+//    test_btn.text = "Test";
+//    gui_button_init(&test_btn);
+//
+//    testform.text = "MainWindow";
+//    gui_form_init(&testform);
     while (1) {
-//        gui_show_fusion();
+        gui_show_fusion();
 //        gui_show_fix();
 //        gui_show_debug();
 //        gui_show_gnrmc_information();

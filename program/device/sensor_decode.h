@@ -32,7 +32,7 @@
  * */
 typedef struct {
     short north;
-    short kalman_north;
+    float kalman_north;
     short ax;
     short ay;
     short az;

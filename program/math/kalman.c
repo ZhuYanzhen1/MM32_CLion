@@ -8,28 +8,6 @@
 
 #include "kalman.h"
 
-/* Kalman fusion to obtain northward and eastward velocities
- * (GPS velocity + imu acceleration) */
-float v_north;
-float v_east;
-kalman_filter_float kalman_v_north = {0};
-kalman_filter_float kalman_v_east = {0};
-float v_north_final;
-float v_east_final;
-
-/* Kalman fusion to obtain northward displacement and eastward displacement */
-float distance_north;
-float distance_east;
-kalman_filter_float kalman_distance_north = {0};
-kalman_filter_float kalman_distance_earth = {0};
-
-void kalman_config() {
-    kalman_config_v(&kalman_v_north);
-    kalman_config_v(&kalman_v_east);
-    kalman_config_distance(&kalman_distance_north, 384400);//得改     //337785    工一楼顶 //384400 西八楼顶
-    kalman_config_distance(&kalman_distance_earth, 1487900);//得改    //377330            //1487900
-}
-
 void kalman_config_v(kalman_filter_float *kalman) {
     kalman->q_pos = 0.17f;
     kalman->q_vel = 0.0123f;
