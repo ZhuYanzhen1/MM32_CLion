@@ -30,9 +30,6 @@ void gui_init_fusion() {
 
     gui_form_init(&fusion_form, "FusionWindow");
 
-    gui_form_bind_button(&fusion_form, &a_button);
-    gui_form_bind_button(&fusion_form, &b_button);
-
     gui_form_bind_label(&fusion_form, &kalman_north_label);
     gui_form_bind_label(&fusion_form, &gnss_status_label);
     gui_form_bind_label(&fusion_form, &north_distance_label);

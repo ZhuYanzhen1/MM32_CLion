@@ -99,9 +99,9 @@ void fusion_task(void *parameters) {
                                       0.031f, 0);
         coordinate_system_transformation_kalman_v(small_packets.kalman_north);
         kalman_data.distance_north = kalman_update(&kalman_distance_north, neu.north_distance,
-                                                   kalman_data.v_north, 0.031f, 0);
+                                                   neu.north_v, 0.031f, 0);
         kalman_data.distance_east = kalman_update(&kalman_distance_earth, neu.east_distance,
-                                                  kalman_data.v_east, 0.031f, 0);
+                                                  neu.east_v, 0.031f, 0);
         delayms(30);
     }
 }
