@@ -131,18 +131,10 @@ void touchscan_task(void *parameters) {
 
 void guiupdate_task(void *parameters) {
     form_struct_t test_form;
-    button_struct_t test_btn;
     label_struct_t test_label;
 
-    test_btn.x_pos = 10;
-    test_btn.y_pos = 120;
-    test_btn.width = 60;
-    test_btn.height = 30;
-    test_btn.text = "Test";
-    gui_button_init(&test_btn);
-
-    test_label.x_pos = 10;
-    test_label.y_pos = 40;
+    test_label.colum = 0;
+    test_label.align = label_align_right;
     test_label.color = C_RED;
     gui_label_settext(&test_label, "Hello");
     gui_label_init(&test_label);
@@ -150,9 +142,7 @@ void guiupdate_task(void *parameters) {
     test_form.text = "MainWindow";
     gui_form_init(&test_form);
 
-    gui_form_bind_button(&test_form, &test_btn);
     gui_form_bind_label(&test_form, &test_label);
-
     gui_form_display(&test_form);
 
     while (1) {

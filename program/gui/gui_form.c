@@ -60,7 +60,7 @@ void gui_form_display(form_struct_t *form) {
     if (label_counter != 0) {
         label_struct_t *tmp_label = form->first_label;
         while (label_counter--) {
-            gui_printf(tmp_label->x_pos, tmp_label->y_pos, tmp_label->color, C_WHITE, "%s", tmp_label->text);
+            gui_label_update(tmp_label);
             tmp_label = tmp_label->next_label;
         }
     }
