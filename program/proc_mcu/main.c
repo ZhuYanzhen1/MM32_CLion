@@ -135,7 +135,7 @@ void guiupdate_task(void *parameters) {
     test_btn.y_pos = 120;
     test_btn.width = 60;
     test_btn.height = 30;
-    test_btn.Text = "Test";
+    test_btn.text = "Test";
     gui_button_init(&test_btn);
     while (1) {
         gui_show_fusion();
