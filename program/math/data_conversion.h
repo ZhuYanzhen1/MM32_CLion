@@ -19,6 +19,8 @@
 #define MG_TO_M_S_2(x)  ((x) / 102.1627f)
 
 typedef volatile struct {
+    float north_v;
+    float east_v;
     float north_distance;
     float east_distance;
     float v;
