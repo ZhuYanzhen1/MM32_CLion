@@ -35,6 +35,8 @@ static unsigned char touchtask_stack[1024];
 static struct rt_thread fusion_taskhandler;
 static unsigned char fusion_stack[4096];
 struct rt_semaphore touch_semaphore;
+struct rt_mailbox touch_point_mailbox;
+static unsigned int touch_mailbox_buffer[10];
 
 void ledblink_task(void *parameter);
 void guiupdate_task(void *parameter);
@@ -86,53 +88,8 @@ int main(void) {
 }
 
 /////////////////////////////////////// Task Function ///////////////////////////////////////
-void touchscan_task(void *parameters) {
-    unsigned char x_pos, y_pos;
-    rt_sem_init(&touch_semaphore, "touch_s", 0, RT_IPC_FLAG_FIFO);
-    while (1) {
-        rt_sem_take(&touch_semaphore, RT_WAITING_FOREVER);
-        EXTI->IMR &= ~EXTI_Line4;
-        xpt2046_scan(&x_pos, &y_pos);
-        printf("x:%d y:%d\r\n", x_pos, y_pos);
-        fflush(stdout);
-        while (!GPIO_ReadInputDataBit(TOUCH_PEN_PORT, TOUCH_PEN_PIN))
-            delayms(20);
-        delayms(100);
-        EXTI_ClearFlag(EXTI_Line4);
-        EXTI->IMR |= EXTI_Line4;
-    }
-}
-
-void guiupdate_task(void *parameter) {
-//    form_struct_t testform;
-//    button_struct_t test_btn;
-//    test_btn.x_pos = 10;
-//    test_btn.y_pos = 120;
-//    test_btn.width = 60;
-//    test_btn.height = 30;
-//    test_btn.text = "Test";
-//    gui_button_init(&test_btn);
-//
-//    testform.text = "MainWindow";
-//    gui_form_init(&testform);
-    while (1) {
-        gui_show_fusion();
-//        gui_show_fix();
-//        gui_show_debug();
-//        gui_show_gnrmc_information();
-//        gui_show_gnrmc_debug();
-        delayms(100);
-    }
-}
-
-void ledblink_task(void *parameter) {
-    while (1) {
-        LED1_TOGGLE();
-        delayms(500);
-    }
-}
-
 void fusion_task(void *parameters) {
+    (void) parameters;
     kalman_config_v(&kalman_v_north);
     kalman_config_v(&kalman_v_east);
     kalman_config_distance(&kalman_distance_north, 384400);
@@ -166,5 +123,43 @@ void fusion_task(void *parameters) {
         distance_east = kalman_update(&kalman_distance_earth, neu.east_distance,
                                       v_east_final, 0.031f, 0);     // dt不清楚，估计得改
         delayms(30);
+    }
+}
+
+void touchscan_task(void *parameters) {
+    unsigned char x_pos, y_pos;
+    (void) parameters;
+    rt_mb_init(&touch_point_mailbox, "touch_m", &touch_mailbox_buffer, 10, RT_IPC_FLAG_FIFO);
+    rt_sem_init(&touch_semaphore, "touch_s", 0, RT_IPC_FLAG_FIFO);
+    while (1) {
+        rt_sem_take(&touch_semaphore, RT_WAITING_FOREVER);
+        EXTI->IMR &= ~EXTI_Line4;
+        xpt2046_scan(&x_pos, &y_pos);
+        rt_mb_send(&touch_point_mailbox, x_pos << 8 | y_pos);
+        while (!GPIO_ReadInputDataBit(TOUCH_PEN_PORT, TOUCH_PEN_PIN))
+            delayms(20);
+        delayms(100);
+        EXTI_ClearFlag(EXTI_Line4);
+        EXTI->IMR |= EXTI_Line4;
+    }
+}
+
+void guiupdate_task(void *parameters) {
+    unsigned long recv_point = 0;
+    (void) parameters;
+    while (1) {
+        delayms(200);
+        if (rt_mb_recv(&touch_point_mailbox, &recv_point, 1) == RT_EOK) {
+            printf("x:%d y:%d\r\n", recv_point >> 8, recv_point & 0x00ff);
+            fflush(stdout);
+        }
+    }
+}
+
+void ledblink_task(void *parameters) {
+    (void) parameters;
+    while (1) {
+        LED1_TOGGLE();
+        delayms(500);
     }
 }

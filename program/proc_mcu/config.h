@@ -16,7 +16,10 @@
 #define configTICK_RATE_HZ      1000
 /* debugger variable maximum size set to 12 */
 #define VARIABLE_BUFFER_SIZE    12
+/* use mdtp protocol to print buffer */
 #define DEBUG_USE_PROTOCOL      1
+/* GUI CallBack Function Priority set to 2 */
+#define GUI_CALLBACK_PRIO       2
 
 //////////////////////////////////////// CMBackTrace Macro ////////////////////////////////////////
 /* enable bare metal(no OS) platform */

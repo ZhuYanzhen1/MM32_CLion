@@ -54,9 +54,9 @@
 
 //////////// GUI ////////////
 #include "gui_base.h"
-#include "gui_debug.h"
 #include "gui_button.h"
 #include "gui_form.h"
 #include "gui_label.h"
+#include "main_form.h"
 
 #endif  // MM32F3277_USER_MAIN_H_

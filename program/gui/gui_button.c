@@ -6,32 +6,25 @@
 #include "gui_base.h"
 #include "string.h"
 
-void gui_button_init(button_struct_t *button) {
-    unsigned char text_x = button->x_pos + (button->width - strlen(button->text) * 6) / 2;
-    unsigned char text_y = button->y_pos + (button->height - 12) / 2;
+void gui_button_init(button_struct_t *button,
+                     unsigned char x_pos,
+                     unsigned char y_pos,
+                     unsigned char width,
+                     unsigned char height,
+                     const char *name) {
     button->next_button = NULL;
-    gui_draw_rectangle(button->x_pos,
-                       button->y_pos,
-                       button->width,
-                       button->height,
-                       BUTTON_COLOR_NORMAL,
-                       Filled);
-    gui_draw_rectangle(button->x_pos,
-                       button->y_pos,
-                       button->width,
-                       button->height,
-                       BUTTON_COLOR_NORMAL_EDGE,
-                       UnFilled);
-    gui_printf(text_x, text_y, C_BLACK, BUTTON_COLOR_NORMAL, "%s", button->text);
+    button->status = button_normal_status;
+    button->update_flag = 0;
+    button->x_pos = x_pos;
+    button->y_pos = y_pos;
+    button->width = width;
+    button->height = height;
+    button->text = name;
 }
 
 void gui_button_settext(button_struct_t *button, const char *text) {
     button->text = text;
-    unsigned char text_x = button->x_pos + (button->width - strlen(button->text) * 6) / 2;
-    unsigned char text_y = button->y_pos + (button->height - 12) / 2;
-    gui_draw_rectangle(button->x_pos + 1, text_y, button->width - 2, 12,
-                       BUTTON_COLOR_NORMAL, Filled);
-    gui_printf(text_x, text_y, C_BLACK, BUTTON_COLOR_NORMAL, "%s", button->text);
+    button->update_flag = 1;
 }
 
 void gui_button_update(button_struct_t *button, button_state_e status) {
@@ -70,8 +63,4 @@ void gui_button_update(button_struct_t *button, button_state_e status) {
             break;
         default:break;
     }
-}
-
-void gui_button_scanbtn(unsigned char xpos, unsigned char ypos) {
-
 }

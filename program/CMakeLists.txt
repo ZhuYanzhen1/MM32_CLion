@@ -31,13 +31,13 @@ add_compile_options(-O2)
 #add_definitions(-DUSE_HAL_DRIVER)
 
 include_directories(library/regs system system/cmsis library/include proc_mcu hardware system/official
-        math device debug protocol gui ctrl_mcu rt_thread rt_thread/libc)
+        math device debug protocol gui ctrl_mcu rt_thread rt_thread/libc form)
 
 file(GLOB_RECURSE CONTROL_SOURCES "system/official/startup_mm32f327.s" "library/source/*.c" "math/*.c"
         "system/*.c" "system/official/*.c" "math/qfplib.s" "debug/*.c" "protocol/*.c" "debug/cmb_fault.S"
         "hardware/*.c" "ctrl_mcu/*.c")
 
-file(GLOB_RECURSE PROCESS_SOURCES "proc_mcu/startup_mm32f327.s" "library/source/*.c" "math/*.c"
+file(GLOB_RECURSE PROCESS_SOURCES "proc_mcu/startup_mm32f327.s" "library/source/*.c" "math/*.c" "form/*.c"
         "proc_mcu/*.c" "hardware/*.c" "system/*.c" "system/official/*.c" "math/qfplib.s" "device/*.c"
         "debug/*.c" "protocol/*.c" "debug/cmb_fault.S" "gui/*.c" "rt_thread/*.c" "rt_thread/context_gcc.S")
 

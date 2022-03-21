@@ -2,18 +2,30 @@
 // Created by Lao·Zhu on 2021/5/1.
 //
 
-#ifndef PROGRAM_GUI_GUI_LABLE_H_
-#define PROGRAM_GUI_GUI_LABLE_H_
+#ifndef MM32F3277_GUI_LABLE_H_
+#define MM32F3277_GUI_LABLE_H_
+
+typedef enum {
+    label_align_left = 0,
+    label_align_middle = 1,
+    label_align_right = 2
+} label_align_e;
 
 typedef struct LABEL_TYPE_T {
-    unsigned char x_pos;
-    unsigned char y_pos;
+    unsigned char colum;
+    unsigned char align;
     unsigned short color;
-    const char *text;
+    unsigned int update_flag;
+    char text[24];
     struct LABEL_TYPE_T *next_label;
 } label_struct_t;
 
-void gui_label_init(label_struct_t *label);
+void gui_label_init(label_struct_t *label,
+                    unsigned char colum,
+                    unsigned short color,
+                    unsigned int align,
+                    const char *name);
 void gui_label_settext(label_struct_t *label, const char *fmt, ...);
+void gui_label_update(label_struct_t *label);
 
-#endif //PROGRAM_GUI_GUI_LABLE_H_
+#endif // MM32F3277_GUI_LABLE_H_
