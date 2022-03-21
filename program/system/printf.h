@@ -13,7 +13,7 @@
 #include <stddef.h>
 
 #define stdout
-#define fflush _fflush
+//#define fflush _fflush
 void _fflush(void);
 
 /**

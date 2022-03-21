@@ -11,13 +11,14 @@
 static unsigned char gui_form_counter = 0;
 static form_struct_t *current_form = NULL;
 
-void gui_form_init(form_struct_t *form) {
+void gui_form_init(form_struct_t *form, const char *name) {
     gui_form_counter++;
     form->number = gui_form_counter;
     form->button_num = 0;
     form->label_num = 0;
     form->first_button = NULL;
     form->first_label = NULL;
+    form->text = name;
 }
 
 void gui_form_bind_label(form_struct_t *form, void *label) {
@@ -66,7 +67,7 @@ void gui_form_display(form_struct_t *form) {
     }
 }
 
-void gui_update(form_struct_t *form) {
+void gui_form_update(form_struct_t *form) {
     unsigned char button_counter = form->button_num;
     unsigned char label_counter = form->label_num;
     if (button_counter != 0) {

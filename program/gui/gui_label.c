@@ -8,8 +8,16 @@
 #include "printf.h"
 #include "string.h"
 
-void gui_label_init(label_struct_t *label) {
+void gui_label_init(label_struct_t *label,
+                    unsigned char colum,
+                    unsigned short color,
+                    unsigned int align,
+                    const char *name) {
+    label->colum = colum;
+    label->color = color;
+    label->align = align;
     label->next_label = NULL;
+    sprintf(label->text, "%s", name);
     if (label->text[21] != 0x00)
         label->text[21] = 0x00;
     if (label->colum > 12)

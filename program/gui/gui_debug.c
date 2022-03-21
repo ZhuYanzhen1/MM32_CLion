@@ -2,11 +2,7 @@
 // Created by 16625 on 2022-03-20.
 //
 
-#include "gui_debug.h"
-#include "gui_base.h"
-#include "sensor_decode.h"
-#include "gps_parser.h"
-#include "data_conversion.h"
+#include "main.h"
 
 extern unsigned int usart3_dma_buffer_1[74];
 extern unsigned int usart3_dma_buffer_2[74];
@@ -16,29 +12,33 @@ extern float v_east_final;
 extern float distance_north;
 extern float distance_east;
 
+static form_struct_t fusion_form;
+static label_struct_t kalman_north_label;
+static label_struct_t gnss_status_label;
+static label_struct_t north_distance_label;
+static label_struct_t east_distance_label;
+
+void gui_init_fusion() {
+    gui_label_init(&kalman_north_label, 0, C_BLACK, label_align_left, " k_north");
+    gui_label_init(&gnss_status_label, 1, C_BLACK, label_align_left, " status");
+    gui_label_init(&north_distance_label, 2, C_BLACK, label_align_left, " nd");
+    gui_label_init(&east_distance_label, 3, C_BLACK, label_align_left, " ed");
+
+    gui_form_init(&fusion_form, "FusionWindow");
+
+    gui_form_bind_label(&fusion_form, &kalman_north_label);
+    gui_form_bind_label(&fusion_form, &gnss_status_label);
+    gui_form_bind_label(&fusion_form, &north_distance_label);
+    gui_form_bind_label(&fusion_form, &east_distance_label);
+    gui_form_display(&fusion_form);
+}
+
 void gui_show_fusion() {
-    gui_printf(0, 0 * 12, C_BLACK, C_WHITE,
-               "k_north:%f   ", small_packets.kalman_north);
-    gui_printf(0, 1 * 12, C_BLACK, C_WHITE,
-               "north:%d   ", small_packets.north);
-    gui_printf(0, 2 * 12, C_BLACK, C_WHITE,
-               "k_vn:%f   ", v_north_final);
-    gui_printf(0, 3 * 12, C_BLACK, C_WHITE,
-               "k_ve:%f   ", v_east_final);
-    gui_printf(0, 4 * 12, C_BLACK, C_WHITE,
-               "k_dn:%f   ", distance_north);
-    gui_printf(0, 5 * 12, C_BLACK, C_WHITE,
-               "k_de:%f   ", distance_east);
-    gui_printf(0, 6 * 12, C_BLACK, C_WHITE,
-               "status:%c", gps_rmc.status);
-    gui_printf(0, 7 * 12, C_BLACK, C_WHITE,
-               "nd:%f", neu.north_distance);
-    gui_printf(0, 8 * 12, C_BLACK, C_WHITE,
-               "ed:%f", neu.east_distance);
-    gui_printf(0, 9 * 12, C_BLACK, C_WHITE,
-               "nv:%f", neu.north_v);
-    gui_printf(0, 10 * 12, C_BLACK, C_WHITE,
-               "ev:%f", neu.east_v);
+    gui_label_settext(&kalman_north_label, " k_north:%f   ", small_packets.kalman_north);
+    gui_label_settext(&gnss_status_label, " status:%c", gps_rmc.status);
+    gui_label_settext(&north_distance_label, " nd:%f", neu.north_distance);
+    gui_label_settext(&east_distance_label, " ed:%f", neu.east_distance);
+    gui_form_update(&fusion_form);
 }
 
 void gui_show_fix() {

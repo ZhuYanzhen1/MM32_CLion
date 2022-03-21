@@ -19,6 +19,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "event_groups.h"
+#include "queue.h"
 
 ///////////// Hardware /////////////
 #include "led.h"

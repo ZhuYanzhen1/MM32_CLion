@@ -20,7 +20,11 @@ typedef struct LABEL_TYPE_T {
     struct LABEL_TYPE_T *next_label;
 } label_struct_t;
 
-void gui_label_init(label_struct_t *label);
+void gui_label_init(label_struct_t *label,
+                    unsigned char colum,
+                    unsigned short color,
+                    unsigned int align,
+                    const char *name);
 void gui_label_settext(label_struct_t *label, const char *fmt, ...);
 void gui_label_update(label_struct_t *label);
 

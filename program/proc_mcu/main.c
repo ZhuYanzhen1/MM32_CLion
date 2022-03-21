@@ -38,6 +38,7 @@ void fusion_task(void *parameters);
 void initialize_task(void *parameters);
 
 EventGroupHandle_t touch_event = NULL;
+QueueHandle_t touch_point_queue;
 
 int main(void) {
     xTaskCreate(initialize_task, "initialize", 1024, NULL, 1, &initialize_taskhandler);
@@ -69,10 +70,10 @@ void initialize_task(void *parameters) {
     debugger_register_variable(dbg_float32, &small_packets.kalman_north, "kalman");
     timer2_config();
 
-    xTaskCreate(fusion_task, "sensor_fusion", 4096, NULL, 2, &fusion_taskhandler);
-    xTaskCreate(ledblink_task, "led_blink", 64, NULL, 1, &led_taskhandler);
-    xTaskCreate(guiupdate_task, "gui_update", 2048, NULL, 1, &gui_taskhandler);
-    xTaskCreate(touchscan_task, "touch_scan", 1024, NULL, 1, &touch_taskhandler);
+    xTaskCreate(fusion_task, "sensor_fusion", 256, NULL, 2, &fusion_taskhandler);
+    xTaskCreate(ledblink_task, "led_blink", 1024, NULL, 1, &led_taskhandler);
+    xTaskCreate(guiupdate_task, "gui_form_update", 1024, NULL, 1, &gui_taskhandler);
+    xTaskCreate(touchscan_task, "touch_scan", 128, NULL, 1, &touch_taskhandler);
     vTaskDelete(NULL);
 }
 
@@ -115,13 +116,15 @@ void fusion_task(void *parameters) {
 
 void touchscan_task(void *parameters) {
     touch_event = xEventGroupCreate();
+    touch_point_queue = xQueueCreate(10, 2);
     while (1) {
         xEventGroupWaitBits(touch_event, 0x00000001, pdTRUE, pdFALSE, portMAX_DELAY);
         EXTI->IMR &= ~EXTI_Line4;
         unsigned char x_pos, y_pos;
+        unsigned short combine_pos;
         xpt2046_scan(&x_pos, &y_pos);
-        printf("XPos:%d YPos:%d\r\n", x_pos, y_pos);
-        fflush(stdout);
+        combine_pos = x_pos << 8 | y_pos;
+        xQueueSend(touch_point_queue, &combine_pos, portMAX_DELAY);
         while (!GPIO_ReadInputDataBit(TOUCH_PEN_PORT, TOUCH_PEN_PIN))
             delayms(20);
         EXTI_ClearFlag(EXTI_Line4);
@@ -130,34 +133,55 @@ void touchscan_task(void *parameters) {
 }
 
 void guiupdate_task(void *parameters) {
-    form_struct_t test_form;
-    label_struct_t test_label;
-
-    test_label.colum = 0;
-    test_label.align = label_align_right;
-    test_label.color = C_RED;
-    gui_label_settext(&test_label, "Hello");
-    gui_label_init(&test_label);
-
-    test_form.text = "MainWindow";
-    gui_form_init(&test_form);
-
-    gui_form_bind_label(&test_form, &test_label);
-    gui_form_display(&test_form);
-
+    gui_init_fusion();
     while (1) {
-//        gui_show_fusion();
+        unsigned short combine_pos;
+        gui_show_fusion();
+        delayms(200);
+        if (xQueueReceive(touch_point_queue, &combine_pos, 1) == pdPASS) {
+            printf("x:%d y:%d\r\n", combine_pos >> 8, combine_pos & 0x00ff);
+            _fflush(stdout);
+        }
 //        gui_show_fix();
 //        gui_show_debug();
 //        gui_show_gnrmc_information();
 //        gui_show_gnrmc_debug();
-        delayms(100);
+    }
+}
+
+static char pcWriteBuffer[360] = {0};
+
+void print_task_status(void) {
+    vTaskList((char *) &pcWriteBuffer);
+    char tmp_c = pcWriteBuffer[120];
+    pcWriteBuffer[120] = 0x00;
+    printf("%s", pcWriteBuffer);
+    _fflush(stdout);
+    if (tmp_c != 0x00) {
+        delayms(30);
+        pcWriteBuffer[120] = tmp_c;
+        tmp_c = pcWriteBuffer[240];
+        pcWriteBuffer[240] = 0x00;
+        printf("%s", &pcWriteBuffer[120]);
+        _fflush(stdout);
+        if (tmp_c != 0x00) {
+            delayms(30);
+            pcWriteBuffer[240] = tmp_c;
+            printf("%s", &pcWriteBuffer[240]);
+            _fflush(stdout);
+        }
     }
 }
 
 void ledblink_task(void *parameters) {
+    unsigned char led_counter = 0;
     while (1) {
+        led_counter++;
         LED1_TOGGLE();
         delayms(500);
+        if (led_counter == 10) {
+            print_task_status();
+            led_counter = 0;
+        }
     }
 }

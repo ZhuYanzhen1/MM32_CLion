@@ -5,6 +5,7 @@
 #ifndef MAIN_C_GUI_GUI_DEBUG_H_
 #define MAIN_C_GUI_GUI_DEBUG_H_
 
+void gui_init_fusion();
 void gui_show_fix();
 void gui_show_debug();
 void gui_show_gnrmc_information();
