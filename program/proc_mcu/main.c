@@ -182,16 +182,3 @@ void print_task_status(void) {
         }
     }
 }
-
-void ledblink_task(void *parameters) {
-    unsigned char led_counter = 0;
-    while (1) {
-        led_counter++;
-        LED1_TOGGLE();
-        delayms(500);
-        if (led_counter == 20) {
-            print_task_status();
-            led_counter = 0;
-        }
-    }
-}
