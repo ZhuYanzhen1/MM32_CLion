@@ -10,6 +10,15 @@
 #define MM32F3277_MATH_KALMAN_H_
 
 typedef struct {
+    float true_north_angle;
+    float v;
+    float distance_north;
+    float distance_east;
+    float v_north;
+    float v_east;
+} kalman_data_t;
+
+typedef struct {
     float q_pos; // Process noise variance for the position
     float q_vel; // Process noise variance for the velocity
     float r_pos; // Measurement noise variance - this is actually the variance of the measurement noise
@@ -19,12 +28,12 @@ typedef struct {
     float bias;  // The bias of velocity
 
     float P[2][2]; // Error covariance 2x2 matrix
-} kalman_filter_float;
+} kalman_filter_t;
 
-void kalman_config_angle(kalman_filter_float *kalman, float pos_0);
-void kalman_config_v(kalman_filter_float *kalman);
-void kalman_config_distance(kalman_filter_float *kalman, float pos_0);
-float kalman_update(kalman_filter_float *kalman, float new_pos, float newVel, float dt, unsigned char angle_flag);
+void kalman_config_angle(kalman_filter_t *kalman, float pos_0);
+void kalman_config_v(kalman_filter_t *kalman);
+void kalman_config_distance(kalman_filter_t *kalman, float pos_0);
+float kalman_update(kalman_filter_t *kalman, float new_pos, float newVel, float dt, unsigned char angle_flag);
 void kalman_config();
 
 #endif //MM32F3277_MATH_KALMAN_H_

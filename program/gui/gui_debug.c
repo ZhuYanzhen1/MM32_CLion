@@ -35,10 +35,6 @@ void gui_show_fusion() {
                "nd:%f", neu.north_distance);
     gui_printf(0, 8 * 12, C_BLACK, C_WHITE,
                "ed:%f", neu.east_distance);
-    gui_printf(0, 9 * 12, C_BLACK, C_WHITE,
-               "nv:%f", neu.north_v);
-    gui_printf(0, 10 * 12, C_BLACK, C_WHITE,
-               "ev:%f", neu.east_v);
 }
 
 void gui_show_fix() {

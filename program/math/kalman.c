@@ -12,7 +12,7 @@ void kalman_config() {
 
 }
 
-void kalman_config_v(kalman_filter_float *kalman) {
+void kalman_config_v(kalman_filter_t *kalman) {
     kalman->q_pos = 0.17f;
     kalman->q_vel = 0.0123f;
     kalman->r_pos = 0.05f;
@@ -28,7 +28,7 @@ void kalman_config_v(kalman_filter_float *kalman) {
 };
 
 //TODO P的系数要改
-void kalman_config_distance(kalman_filter_float *kalman, float pos_0) {
+void kalman_config_distance(kalman_filter_t *kalman, float pos_0) {
     kalman->q_pos = 0.8f;
     kalman->q_vel = 0.22f;
     kalman->r_pos = 0.2f;
@@ -54,7 +54,7 @@ void kalman_config_distance(kalman_filter_float *kalman, float pos_0) {
     \note       The pos should be in degrees and the rate should be in degrees per second
                 and the delta time in seconds
 */
-float kalman_update(kalman_filter_float *kalman, float new_pos, float new_vel, float dt, unsigned char angle_flag) {
+float kalman_update(kalman_filter_t *kalman, float new_pos, float new_vel, float dt, unsigned char angle_flag) {
 
     /* Discrete Kalman filter time update equations - Time Update ("Predict") */
     /* Update xhat - Project the state ahead */
@@ -123,7 +123,7 @@ float kalman_update(kalman_filter_float *kalman, float new_pos, float new_vel, f
                                          -(float) imu.z_gyro * 0.1f, 0.101f, 1);
 
         while (gps_rmc.status != 'A');  //用到GPS的时候开这个，不用的时候不开
-        coordinate_system_transformation_neu(true_north_final);
+        sensor_unit_conversion(true_north_final);
 
         v_north = kalman_update(&kalman_v_north, neu.north_v, neu.north_acceleration,
                                 0.101f, 0);
