@@ -7,22 +7,7 @@
 #include "string.h"
 
 void gui_button_init(button_struct_t *button) {
-    unsigned char text_x = button->x_pos + (button->width - strlen(button->text) * 6) / 2;
-    unsigned char text_y = button->y_pos + (button->height - 12) / 2;
     button->next_button = NULL;
-    gui_draw_rectangle(button->x_pos,
-                       button->y_pos,
-                       button->width,
-                       button->height,
-                       BUTTON_COLOR_NORMAL,
-                       Filled);
-    gui_draw_rectangle(button->x_pos,
-                       button->y_pos,
-                       button->width,
-                       button->height,
-                       BUTTON_COLOR_NORMAL_EDGE,
-                       UnFilled);
-    gui_printf(text_x, text_y, C_BLACK, BUTTON_COLOR_NORMAL, "%s", button->text);
 }
 
 void gui_button_settext(button_struct_t *button, const char *text) {

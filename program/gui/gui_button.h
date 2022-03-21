@@ -2,8 +2,8 @@
 // Created by Lao·Zhu on 2021/4/29.
 //
 
-#ifndef PROGRAM_GUI_GUI_BUTTON_H_
-#define PROGRAM_GUI_GUI_BUTTON_H_
+#ifndef MM32F3277_GUI_BUTTON_H_
+#define MM32F3277_GUI_BUTTON_H_
 
 #define BUTTON_COLOR_NORMAL 0xE73C
 #define BUTTON_COLOR_NORMAL_EDGE 0xCE59
@@ -30,4 +30,4 @@ void gui_button_init(button_struct_t *button);
 void gui_button_settext(button_struct_t *button, const char *text);
 void gui_button_update(button_struct_t *button, button_state_e status);
 
-#endif //PROGRAM_GUI_GUI_BUTTON_H_
+#endif // MM32F3277_GUI_BUTTON_H_
