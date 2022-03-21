@@ -10,12 +10,9 @@
 #define MM32F3277_MATH_KALMAN_H_
 
 typedef struct {
-    float true_north_angle;
     float v;
     float distance_north;
     float distance_east;
-    float v_north;
-    float v_east;
 } kalman_data_t;
 
 typedef struct {

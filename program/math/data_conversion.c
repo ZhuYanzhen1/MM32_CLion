@@ -79,6 +79,6 @@ void sensor_unit_conversion() {
 
 void coordinate_system_transformation_kalman_v(float delta) {
     float temp_delta = GEO_ANGLE(delta);
-    kalman_data.v_north = kalman_data.v * qfp_fcos(temp_delta);
-    kalman_data.v_east = kalman_data.v * qfp_fsin(temp_delta);
+    neu.north_v = kalman_data.v * qfp_fcos(temp_delta);
+    neu.east_v = kalman_data.v * qfp_fsin(temp_delta);
 }
