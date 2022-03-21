@@ -6,6 +6,7 @@
 #include "gui_base.h"
 #include "sensor_decode.h"
 #include "gps_parser.h"
+#include "data_conversion.h"
 
 extern unsigned int usart3_dma_buffer_1[74];
 extern unsigned int usart3_dma_buffer_2[74];
@@ -17,19 +18,27 @@ extern float distance_east;
 
 void gui_show_fusion() {
     gui_printf(0, 0 * 12, C_BLACK, C_WHITE,
-               "kalman:%f   ", small_packets.kalman_north);
+               "k_north:%f   ", small_packets.kalman_north);
     gui_printf(0, 1 * 12, C_BLACK, C_WHITE,
                "north:%d   ", small_packets.north);
     gui_printf(0, 2 * 12, C_BLACK, C_WHITE,
-               "vn:%f   ", v_north_final);
+               "k_vn:%f   ", v_north_final);
     gui_printf(0, 3 * 12, C_BLACK, C_WHITE,
-               "ve:%f   ", v_east_final);
+               "k_ve:%f   ", v_east_final);
     gui_printf(0, 4 * 12, C_BLACK, C_WHITE,
-               "dn:%f   ", distance_north);
+               "k_dn:%f   ", distance_north);
     gui_printf(0, 5 * 12, C_BLACK, C_WHITE,
-               "de:%f   ", distance_east);
+               "k_de:%f   ", distance_east);
     gui_printf(0, 6 * 12, C_BLACK, C_WHITE,
                "status:%c", gps_rmc.status);
+    gui_printf(0, 7 * 12, C_BLACK, C_WHITE,
+               "nd:%f", neu.north_distance);
+    gui_printf(0, 8 * 12, C_BLACK, C_WHITE,
+               "ed:%f", neu.east_distance);
+    gui_printf(0, 9 * 12, C_BLACK, C_WHITE,
+               "nv:%f", neu.north_v);
+    gui_printf(0, 10 * 12, C_BLACK, C_WHITE,
+               "ev:%f", neu.east_v);
 }
 
 void gui_show_fix() {
