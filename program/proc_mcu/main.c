@@ -12,18 +12,11 @@ extern unsigned char packages_to_be_unpacked[READ_MCU_AMOUNT];
 
 /* Kalman fusion to obtain northward and eastward velocities
  * (GPS velocity + imu acceleration) */
-float v_north;
-float v_east;
-kalman_filter_float kalman_v_north = {0};
-kalman_filter_float kalman_v_east = {0};
-float v_north_final;
-float v_east_final;
-
-/* Kalman fusion to obtain northward displacement and eastward displacement */
-float distance_north;
-float distance_east;
-kalman_filter_float kalman_distance_north = {0};
-kalman_filter_float kalman_distance_earth = {0};
+kalman_data_t kalman_data;
+kalman_filter_t kalman_v_north = {0};
+kalman_filter_t kalman_v_east = {0};
+kalman_filter_t kalman_distance_north = {0};
+kalman_filter_t kalman_distance_earth = {0};
 
 //////////////////////////////////// Task Handler ////////////////////////////////////
 TaskHandle_t led_taskhandler;
@@ -41,7 +34,8 @@ EventGroupHandle_t touch_event = NULL;
 QueueHandle_t touch_point_queue;
 
 int main(void) {
-    xTaskCreate(initialize_task, "initialize", 1024, NULL, 1, &initialize_taskhandler);
+    xTaskCreate(initialize_task, "initialize", 1024, NULL, 1,
+                &initialize_taskhandler);
     vTaskStartScheduler();
     return 0;
 }
@@ -70,10 +64,14 @@ void initialize_task(void *parameters) {
     debugger_register_variable(dbg_float32, &small_packets.kalman_north, "kalman");
     timer2_config();
 
-    xTaskCreate(fusion_task, "sensor_fusion", 256, NULL, 2, &fusion_taskhandler);
-    xTaskCreate(ledblink_task, "led_blink", 1024, NULL, 1, &led_taskhandler);
-    xTaskCreate(guiupdate_task, "gui_form_update", 1024, NULL, 1, &gui_taskhandler);
-    xTaskCreate(touchscan_task, "touch_scan", 128, NULL, 1, &touch_taskhandler);
+    xTaskCreate(fusion_task, "sensor_fusion", 4096, NULL, 2,
+                &fusion_taskhandler);
+    xTaskCreate(ledblink_task, "led_blink", 64, NULL, 1,
+                &led_taskhandler);
+    xTaskCreate(guiupdate_task, "gui_update", 2048, NULL, 1,
+                &gui_taskhandler);
+    xTaskCreate(touchscan_task, "touch_scan", 1024, NULL, 1,
+                &touch_taskhandler);
     vTaskDelete(NULL);
 }
 
@@ -96,20 +94,14 @@ void fusion_task(void *parameters) {
         }
         while (gps_rmc.status != 'A')
             delayms(1);
-        coordinate_system_transformation_neu(small_packets.kalman_north);
-
-        v_north = kalman_update(&kalman_v_north, neu.north_v, neu.north_acceleration,
-                                0.031f, 0);
-        v_east = kalman_update(&kalman_v_east, neu.east_v, neu.east_acceleration,
-                               0.031f, 0);
-        if (v_north < 1 && v_north > -1) v_north_final = neu.north_v;
-        else v_north_final = v_north;
-        if (v_east < 1 && v_east > -1) v_east_final = neu.east_v;
-        else v_east_final = v_east;
-        distance_north = kalman_update(&kalman_distance_north, neu.north_distance,
-                                       v_north_final, 0.031f, 0);   // dt不清楚，估计得改
-        distance_east = kalman_update(&kalman_distance_earth, neu.east_distance,
-                                      v_east_final, 0.031f, 0);     // dt不清楚，估计得改
+        sensor_unit_conversion();
+        kalman_data.v = kalman_update(&kalman_v_north, neu.v, neu.acceleration,
+                                      0.031f, 0);
+        coordinate_system_transformation_kalman_v(small_packets.kalman_north);
+        kalman_data.distance_north = kalman_update(&kalman_distance_north, neu.north_distance,
+                                                   kalman_data.v_north, 0.031f, 0);
+        kalman_data.distance_east = kalman_update(&kalman_distance_earth, neu.east_distance,
+                                                  kalman_data.v_east, 0.031f, 0);
         delayms(30);
     }
 }
