@@ -21,12 +21,13 @@ typedef struct BUTTON_TYPE_T {
     unsigned char y_pos;
     unsigned char width;
     unsigned char height;
-    const char *Text;
-    void (*CallbackFunction)(void *Object, unsigned char Key);
+    const char *text;
+    void (*callback)(void *Object, unsigned char Key);
     button_state_e status;
 } button_struct_t;
 
 void gui_button_init(button_struct_t *button);
+void gui_button_settext(button_struct_t *button, const char *text);
 void gui_button_update(button_struct_t *button, button_state_e status);
 
 #endif //PROGRAM_GUI_GUI_BUTTON_H_
