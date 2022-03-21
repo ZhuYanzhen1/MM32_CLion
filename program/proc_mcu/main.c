@@ -63,8 +63,6 @@ int main(void) {
 //    xpt2046_calibrate();
 //    at24c02_saveparams();
     at24c02_readparams();
-//    kalman_config();
-//    calibration_acll();
 
     debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
     timer2_config();
@@ -89,19 +87,20 @@ int main(void) {
 
 /////////////////////////////////////// Task Function ///////////////////////////////////////
 void touchscan_task(void *parameters) {
-//    touch_event = xEventGroupCreate();
-//    while (1) {
-//        xEventGroupWaitBits(touch_event, 0x00000001, pdTRUE, pdFALSE, portMAX_DELAY);
-//        EXTI->IMR &= ~EXTI_Line4;
-//        unsigned char x_pos, y_pos;
-//        xpt2046_scan(&x_pos, &y_pos);
-//        printf("XPos:%d YPos:%d\r\n", x_pos, y_pos);
-//        fflush(stdout);
-//        while (!GPIO_ReadInputDataBit(TOUCH_PEN_PORT, TOUCH_PEN_PIN))
-//            delayms(20);
-//        EXTI_ClearFlag(EXTI_Line4);
-//        EXTI->IMR |= EXTI_Line4;
-//    }
+    unsigned char x_pos, y_pos;
+    rt_sem_init(&touch_semaphore, "touch_s", 0, RT_IPC_FLAG_FIFO);
+    while (1) {
+        rt_sem_take(&touch_semaphore, RT_WAITING_FOREVER);
+        EXTI->IMR &= ~EXTI_Line4;
+        xpt2046_scan(&x_pos, &y_pos);
+        printf("x:%d y:%d\r\n", x_pos, y_pos);
+        fflush(stdout);
+        while (!GPIO_ReadInputDataBit(TOUCH_PEN_PORT, TOUCH_PEN_PIN))
+            delayms(20);
+        delayms(100);
+        EXTI_ClearFlag(EXTI_Line4);
+        EXTI->IMR |= EXTI_Line4;
+    }
 }
 
 void guiupdate_task(void *parameter) {
