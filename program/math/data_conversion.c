@@ -10,10 +10,10 @@
 #include "data_conversion.h"
 #include "qfplib.h"
 #include "gps_parser.h"
+#include "sensor_decode.h"
+#include "fast_math.h"
 
 neu_infomation neu = {0};
-
-extern int offset_ax, offset_ay;
 
 /*!
     \brief      Get the distance based on the latitude and longitude of the starting point
@@ -26,11 +26,33 @@ extern int offset_ax, offset_ay;
     \note       When we keep the longitude the same, we can calculate the distance to the north
                 When we keep the latitude the same, we can calculate the distance to the east
 */
-float get_distance(float lat_1, float lon_1, float lat_2, float lon_2) {
-    float c = qfp_fsin(GEO_ANGLE(lat_1)) * qfp_fsin(GEO_ANGLE(lat_2)) +
-        qfp_fcos(GEO_ANGLE(lat_1)) * qfp_fcos(GEO_ANGLE(lat_2)) * qfp_fcos(GEO_ANGLE(lon_1 - lon_2));
-    float distance = EARTH_RADIUS * GEO_ANGLE(qfp_fcos(c));
+float get_distance(float lat_2, float lon_2, float lat_1, float lon_1) {
+    float temp =
+        my_pow(qfp_fsin(GEO_ANGLE((lat_1 - lat_2) * 0.5f)), 2) +
+            qfp_fcos(GEO_ANGLE(lat_1)) * qfp_fcos(GEO_ANGLE(lat_2))
+                * my_pow(qfp_fsin(GEO_ANGLE((lon_1 - lon_2) * 0.5f)), 2);
+    float distance = 2 * EARTH_RADIUS * my_asin(qfp_fsqrt(temp));
     return distance;
+}
+
+/*!
+    \brief      Convert latitude to displacement in ENU coordinate system
+    \param[in]  latitude(°)
+    \retval     Converted data
+*/
+float get_distance_m_lat(float lat) {
+    float distance = GEO_ANGLE(lat);
+    return EARTH_RADIUS * distance;
+}
+
+/*!
+    \brief      Convert longitude to displacement in ENU coordinate system
+    \param[in]  longitude(°)
+    \retval     Converted data
+*/
+float get_distance_m_lon(float lon) {
+    float distance = GEO_ANGLE(lon);
+    return EARTH_RADIUS * distance;
 }
 
 /*!
@@ -47,11 +69,13 @@ void coordinate_system_transformation_neu(float delta) {
     float temp_lonitude = unit_to_degree(gps_rmc.longitude, 4);
     neu.north_distance = get_distance(QRIGIN_LAT, temp_lonitude, temp_latitude, temp_lonitude);
     neu.east_distance = get_distance(temp_latitude, QRIGIN_LON, temp_latitude, temp_lonitude);
+//    float temp_latitude = unit_to_degree(gps_rmc.latitude, 4);
+//    neu.north_distance = get_distance_m_lat(temp_latitude - QRIGIN_LAT);
+//    float temp_lonitude = unit_to_degree(gps_rmc.longitude, 4);
+//    neu.east_distance = get_distance_m_lon(temp_lonitude - QRIGIN_LON);
 
-//    temp_acll_ax = imu.x_acll - offset_ax;
-//    temp_acll_ay = imu.y_acll - offset_ay;
-//    temp_acll_ax = imu.x_acll;
-//    temp_acll_ay = imu.y_acll;
+    temp_acll_ax = small_packets.ax;
+    temp_acll_ay = small_packets.ay;
     neu.north_acceleration = MG_TO_M_S_2
     ((float) temp_acll_ax * FACTOR_ALLC * qfp_fcos(temp_delta)
          + (float) temp_acll_ay * FACTOR_ALLC * qfp_fcos(temp_delta + PI / 2));
@@ -67,4 +91,3 @@ void coordinate_system_transformation_neu(float delta) {
     neu.north_v = temp_v * qfp_fcos(temp_delta);
     neu.east_v = temp_v * qfp_fsin(temp_delta);
 }
-

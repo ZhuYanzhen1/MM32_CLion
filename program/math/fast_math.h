@@ -9,5 +9,8 @@
 
 float atan_fast(float x);
 float fast_sqrt(float value);
+float my_acos(float x);
+float my_asin(float x);
+float my_pow(float x, int n);
 
 #endif //MAIN_C_MATH_FAST_MATH_H_

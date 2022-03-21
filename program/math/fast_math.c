@@ -3,8 +3,10 @@
 //
 
 #include "fast_math.h"
+#include "qfplib.h"
 
-#define M_PI_2        1.57079632f
+#define M_PI    3.1415926f
+#define M_PI_2  1.57079632f
 
 float LUT[102] = {
     0, 0.0099996664f, 0.019997334f, 0.029991005f, 0.039978687f,
@@ -65,4 +67,46 @@ float fast_sqrt(float value) {
     y = y * (1.5f - (xhalf * y * y));
     y = y * (1.5f - (xhalf * y * y));
     return value * y;
+}
+
+int my_factorial(int x) {
+    int result = 1;
+    for (int i = 1; i <= x; i++)
+        result *= i;
+    return result;
+}
+
+float my_pow(float x, int n) {
+    float result = 1;
+    if (n == 0)
+        return 1;
+    for (int i = 0; i < n; i++) {
+        result *= x;
+    }
+    return result;
+}
+
+float my_asin(float x) {
+
+    float result = 0;
+    float temp = x;
+
+    int n = 1;
+
+    while ((temp > 1e-15) || (temp < -1e-15)) {
+        result += temp;
+        temp = (float) my_factorial(2 * n) / (my_pow(2, 2 * n) * my_pow((float) my_factorial(n), 2))
+            * my_pow(x, 2 * n + 1) / (float) (2 * n + 1);
+        n++;
+    }
+    return result;
+}
+
+float my_acos(float x) {
+
+    if (x < 0.5 && x > -0.5)
+        return M_PI / 2 - my_asin(x);
+    else
+        return 2 * my_asin(qfp_fsqrt((1 - x) / 2));
+
 }
