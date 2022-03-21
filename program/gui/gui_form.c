@@ -11,9 +11,12 @@
 
 static unsigned char gui_form_counter = 0;
 static form_struct_t *current_form = NULL;
+static struct rt_thread gui_callback_taskhandler;
+static unsigned char gui_callback_task_stack[4096];
 
 void gui_callback_task(void *parameters) {
     ((button_struct_t *) parameters)->callback(parameters);
+    rt_thread_detach(&gui_callback_taskhandler);
 }
 
 void gui_form_init(form_struct_t *form, const char *name, void (*callback)(void *object)) {
@@ -117,7 +120,8 @@ void gui_form_update(unsigned char x_pos, unsigned char y_pos) {
         }
     }
     if (pressed_button != NULL) {
-//        xTaskCreate(gui_callback_task, "gui_callback", 256,
-//                    pressed_button, GUI_CALLBACK_PRIO, &gui_callback_taskhandler);
+        rt_thread_init(&gui_callback_taskhandler, "callback", gui_callback_task, pressed_button,
+                       &gui_callback_task_stack[0], sizeof(gui_callback_task_stack), 6, 1);
+        rt_thread_startup(&gui_callback_taskhandler);
     }
 }

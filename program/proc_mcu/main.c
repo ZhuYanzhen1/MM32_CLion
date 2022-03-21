@@ -82,7 +82,7 @@ int main(void) {
     rt_thread_startup(&touch_taskhandler);
 
     rt_thread_init(&fusion_taskhandler, "fusion", fusion_task, RT_NULL,
-                   &fusion_stack[0], sizeof(fusion_stack), 7, 1);
+                   &fusion_stack[0], sizeof(fusion_stack), 5, 1);
     rt_thread_startup(&fusion_taskhandler);
     return 0;
 }
@@ -147,12 +147,13 @@ void touchscan_task(void *parameters) {
 void guiupdate_task(void *parameters) {
     unsigned long recv_point = 0;
     (void) parameters;
+    gui_main_form_init();
     while (1) {
         delayms(200);
-        if (rt_mb_recv(&touch_point_mailbox, &recv_point, 1) == RT_EOK) {
-            printf("x:%d y:%d\r\n", recv_point >> 8, recv_point & 0x00ff);
-            fflush(stdout);
-        }
+        if (rt_mb_recv(&touch_point_mailbox, &recv_point, 1) == RT_EOK)
+            gui_form_update(recv_point >> 8, recv_point & 0x00FF);
+        else
+            gui_form_update(0, 0);
     }
 }
 
