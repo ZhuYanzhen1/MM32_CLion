@@ -45,7 +45,7 @@ void UART6_IRQHandler(void) {
 }
 
 static unsigned char uart8_counter = 0;
-unsigned char packages_to_be_unpacked[READ_MCU_AMOUNT];
+unsigned int packages_to_be_unpacked[READ_MCU_AMOUNT];
 void UART8_IRQHandler(void) {
     if (UART_GetITStatus(UART8, UART_ISR_RX) != RESET) {
         unsigned char recvbyte = UART_ReceiveData(UART8);
@@ -56,7 +56,7 @@ void UART8_IRQHandler(void) {
 }
 
 typedef enum { buffer_no_1 = 1, buffer_no_2 = 2 } buffer_no;
-static buffer_no uart6_free_buffer_no = buffer_no_1;
+static buffer_no uart3_free_buffer_no = buffer_no_1;
 unsigned int usart3_dma_buffer_1[74];
 unsigned int usart3_dma_buffer_2[74];
 
@@ -68,13 +68,13 @@ void DMA1_Channel3_IRQHandler(void) {
         DMA_ClearITPendingBit(DMA1_IT_GL3);
 
         /* Double ping pong buffer */
-        if (uart6_free_buffer_no == buffer_no_1) {
+        if (uart3_free_buffer_no == buffer_no_1) {
             uart3_dma_set_transmit_buffer(usart3_dma_buffer_2, 74);
-            uart6_free_buffer_no = buffer_no_2;
+            uart3_free_buffer_no = buffer_no_2;
             deal_dma_gnrmc(usart3_dma_buffer_1);
         } else {
             uart3_dma_set_transmit_buffer(usart3_dma_buffer_1, 74);
-            uart6_free_buffer_no = buffer_no_1;
+            uart3_free_buffer_no = buffer_no_1;
             deal_dma_gnrmc(usart3_dma_buffer_2);
         }
     }

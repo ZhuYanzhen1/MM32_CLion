@@ -8,7 +8,11 @@
 
 #include "uart.h"
 #include "hal_conf.h"
-#include "config.h"
+#ifdef IS_CONTROL_MCU
+#include "../ctrl_mcu/config.h"
+#else
+#include "../proc_mcu/config.h"
+#endif
 #include "dma.h"
 
 void uart1_config() {
@@ -53,6 +57,7 @@ void uart1_config() {
     uart1_dma_nvic_config();
 }
 
+#ifdef IS_PROCESS_MCU
 void uart3_config() {
     UART_InitTypeDef UART_InitStruct;
     GPIO_InitTypeDef GPIO_InitStruct;
@@ -83,6 +88,39 @@ void uart3_config() {
     UART_Init(UART3, &UART_InitStruct);
     UART_Cmd(UART3, ENABLE);
 }
+
+void uart4_config() {
+    UART_InitTypeDef UART_InitStruct;
+    GPIO_InitTypeDef GPIO_InitStruct;
+
+    RCC_APB1PeriphClockCmd(RCC_APB1ENR_UART4, ENABLE);
+    RCC_AHBPeriphClockCmd(RCC_AHBENR_GPIOA, ENABLE);
+
+    GPIO_PinAFConfig(GPIOA, GPIO_PinSource0, GPIO_AF_8);
+    GPIO_PinAFConfig(GPIOA, GPIO_PinSource1, GPIO_AF_8);
+
+    GPIO_StructInit(&GPIO_InitStruct);
+    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_0;
+    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;    // 模式？
+    GPIO_Init(GPIOA, &GPIO_InitStruct);
+    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_1;
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IPU;
+    GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+    UART_StructInit(&UART_InitStruct);
+    UART_InitStruct.BaudRate = UART4_BAUDRATE;
+    UART_InitStruct.WordLength = UART_WordLength_8b;
+    UART_InitStruct.StopBits = UART_StopBits_1;
+    UART_InitStruct.Parity = UART_Parity_No;
+    UART_InitStruct.HWFlowControl = UART_HWFlowControl_None;
+    UART_InitStruct.Mode = UART_Mode_Rx | UART_Mode_Tx;
+
+    UART_Init(UART4, &UART_InitStruct);
+    UART_ITConfig(UART4, UART_IT_RXIEN, ENABLE);
+    UART_Cmd(UART4, ENABLE);
+}
+#endif // IS_PROCESS_MCU
 
 void uart6_config() {
     UART_InitTypeDef UART_InitStruct;
@@ -123,6 +161,7 @@ void uart6_config() {
     UART_Cmd(UART6, ENABLE);
 }
 
+#ifdef IS_PROCESS_MCU
 void uart8_config() {
     UART_InitTypeDef UART_InitStruct;
     GPIO_InitTypeDef GPIO_InitStruct;
@@ -166,16 +205,24 @@ void uart8_sendbyte(unsigned char data) {
     UART_SendData(UART8, data);
     while (!UART_GetFlagStatus(UART8, UART_FLAG_TXEPT));
 }
+#endif // IS_PROCESS_MCU
 
 void uart6_sendbyte(unsigned char data) {
     UART_SendData(UART6, data);
     while (!UART_GetFlagStatus(UART6, UART_FLAG_TXEPT));
 }
 
+#ifdef IS_PROCESS_MCU
+void uart4_sendbyte(unsigned char data) {
+    UART_SendData(UART4, data);
+    while (!UART_GetFlagStatus(UART4, UART_FLAG_TXEPT));
+}
+
 void uart3_sendbyte(unsigned char data) {
     UART_SendData(UART3, data);
     while (!UART_GetFlagStatus(UART3, UART_FLAG_TXEPT));
 }
+#endif // IS_PROCESS_MCU
 
 #if DEBUG_USE_PROTOCOL == 0
 void _putchar(char character) {

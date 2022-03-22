@@ -11,8 +11,13 @@
 #include "hal_conf.h"
 #include "pin.h"
 #include "delay.h"
-#include "config.h"
+#ifdef IS_CONTROL_MCU
+#include "../ctrl_mcu/config.h"
+#else
+#include "../proc_mcu/config.h"
+#endif  // IS_CONTROL_MCU
 
+#ifdef IS_PROCESS_MCU
 void iic1_writebyte(unsigned char dat) {
     I2C_SendData(I2C1, dat);
     while (I2C_GetFlagStatus(I2C1, I2C_STATUS_FLAG_TFE) == 0);
@@ -54,3 +59,4 @@ void iic1_config(void) {
     I2C_Init(I2C1, &I2C_InitStruct);
     I2C_Cmd(I2C1, ENABLE);
 }
+#endif  // IS_PROCESS_MCU

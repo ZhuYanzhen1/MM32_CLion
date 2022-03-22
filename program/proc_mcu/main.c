@@ -8,7 +8,8 @@
 
 #include "main.h"
 
-extern unsigned char packages_to_be_unpacked[READ_MCU_AMOUNT];
+extern unsigned int packages_to_be_unpacked[READ_MCU_AMOUNT];
+unsigned int proc_to_ctrl_package[16] = {0};
 
 /* Kalman fusion to obtain northward and eastward velocities
  * (GPS velocity + imu acceleration) */
@@ -22,11 +23,13 @@ TaskHandle_t led_taskhandler;
 TaskHandle_t gui_taskhandler;
 TaskHandle_t touch_taskhandler;
 TaskHandle_t fusion_taskhandler;
+TaskHandle_t send_taskhandler;
 TaskHandle_t initialize_taskhandler;
 void touchscan_task(void *parameters);
 void guiupdate_task(void *parameters);
 void ledblink_task(void *parameters);
 void fusion_task(void *parameters);
+void send_task(void *parameters);
 void initialize_task(void *parameters);
 
 EventGroupHandle_t touch_event = NULL;
@@ -48,6 +51,7 @@ void initialize_task(void *parameters) {
     spi2_config();
     spi3_config();
     uart1_config();
+    uart4_config();
     uart6_config();
     uart8_config();
     xpt2046_gpio_config();
@@ -72,6 +76,8 @@ void initialize_task(void *parameters) {
                 &gui_taskhandler);
     xTaskCreate(touchscan_task, "touch_scan", 128, NULL, 1,
                 &touch_taskhandler);
+    xTaskCreate(send_task, "send_task", 128, NULL, 2,
+                &send_taskhandler);
     vTaskDelete(NULL);
 }
 
@@ -84,11 +90,11 @@ void fusion_task(void *parameters) {
         for (unsigned short packets_counter = 0; packets_counter < READ_MCU_AMOUNT; packets_counter++) {
             if (packages_to_be_unpacked[packets_counter] == 0xff
                 && packages_to_be_unpacked[packets_counter + 11] == 0xff) {
-                unpacking_fixed_length_data(&packages_to_be_unpacked[packets_counter + 1]);
+                unpacking_fixed_length_data((unsigned int *) &packages_to_be_unpacked[packets_counter + 1]);
                 packets_counter = (packets_counter + 11);  // 移动到包尾位置
             } else if (packages_to_be_unpacked[packets_counter] == 0xa5
                 && packages_to_be_unpacked[packets_counter + 1] == 0x5a) {
-                unpacking_variable_length_data(&packages_to_be_unpacked[packets_counter + 3]);
+                unpacking_variable_length_data((unsigned int *) &packages_to_be_unpacked[packets_counter + 3]);
                 packets_counter = (packets_counter + packages_to_be_unpacked[2] - 1); // 移动到下一个包的前一个位置
             }
         }
@@ -103,6 +109,19 @@ void fusion_task(void *parameters) {
         kalman_data.distance_east = kalman_update(&kalman_distance_earth, neu.east_distance,
                                                   neu.east_v, 0.031f, 0);
         delayms(30);
+    }
+}
+
+void send_task(void *parameters) {
+    while (1) {
+        unsigned int proc_to_ctrl_buffer[3] =
+            {*((unsigned int *) (&kalman_data.distance_north)), *((unsigned int *) (&kalman_data.distance_east)),
+             *((unsigned int *) (&small_packets.kalman_north))};
+        precossing_proc_to_control(proc_to_ctrl_package, proc_to_ctrl_buffer);
+        for (unsigned char i = 0; i < 16; i++) {
+            uart4_sendbyte(proc_to_ctrl_package[i]);
+        }
+        delayms(10);
     }
 }
 
@@ -190,4 +209,4 @@ void ledblink_task(void *parameters) {
         delayms(500);
     }
 }
-#endif
+#endif  // USE_FREERTOS_REPORT == 1

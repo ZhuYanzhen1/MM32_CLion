@@ -17,6 +17,9 @@
 #include "mm32_device.h"
 #include "printf.h"
 
+///////////// Device /////////////
+#include "sensor_decode.h"
+
 ///////////// Hardware /////////////
 #include "led.h"
 #include "dma.h"

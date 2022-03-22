@@ -7,7 +7,11 @@
  ******************************************************************************/
 
 #include "delay.h"
-#include "config.h"
+#if IS_CONTROL_MCU
+#include "../ctrl_mcu/config.h"
+#else
+#include "../proc_mcu/config.h"
+#endif
 #include "mm32_device.h"
 #include "hal_conf.h"
 

@@ -6,25 +6,26 @@
 #define MM32F3277_DEVICE_SENSOR_DECODE_H_
 
 #define READ_MCU_AMOUNT         252
-#define SHORT_SPLIT_CHAR(x, y)  packets[x] = (char) ((buffer[y] & 0x0000ff00) >> 8);\
-                                packets[(x)+1] = (char) (buffer[y] & 0x000000ff);
-#define INT_SPLIT_CHAR(x, y)    packets[x] = (char) ((buffer[y] & 0x00ff0000) >> 16);\
-                                packets[(x)+1] = (char) ((buffer[y] & 0x0000ff00) >> 8);\
-                                packets[(x)+2] = (char) (buffer[y] & 0x000000ff);
-#define FLOAT_SPLIT_CHAR(x, y)  packets[x] = (char) ((buffer[y] & 0xff000000) >> 24);\
-                                packets[(x)+1] = (char) ((buffer[y] & 0x00ff0000) >> 16);\
-                                packets[(x)+2] = (char) ((buffer[y] & 0x0000ff00) >> 8);\
-                                packets[(x)+3] = (char) (buffer[y] & 0x000000ff);
+#define SHORT_SPLIT_CHAR(x, y)  packets[x] = ((buffer[y] & 0x0000ff00) >> 8);\
+                                packets[(x)+1] = (buffer[y] & 0x000000ff);
+#define INT_SPLIT_CHAR(x, y)    packets[x] = ((buffer[y] & 0x00ff0000) >> 16);\
+                                packets[(x)+1] = ((buffer[y] & 0x0000ff00) >> 8);\
+                                packets[(x)+2] = (buffer[y] & 0x000000ff);
+#define FLOAT_SPLIT_CHAR(x, y)  packets[x] = ((buffer[y] & 0xff000000) >> 24);\
+                                packets[(x)+1] = ((buffer[y] & 0x00ff0000) >> 16);\
+                                packets[(x)+2] = ((buffer[y] & 0x0000ff00) >> 8);\
+                                packets[(x)+3] = (buffer[y] & 0x000000ff);
 #define DECODE_TO_SHORT(x, y)   (x) = (int)(((int) packets[y] <<8) | \
                                 (packets[y+1])) ;
 #define DECODE_TO_INT(x, y)     (x) = (int) (((int) packets[y] <<24) | \
                                 ((int)packets[y+1] <<16) |\
                                 ((int)packets[y+2])<<8 |\
                                 ((int)packets[y+3]));
-#define DECODE_TO_float(x, y)   (x) = (int) ( ((int)packets[y] <<24) |\
+#define DECODE_TO_FLOAT(x, y)   (temp) = (unsigned int)( ((int)packets[y] <<24) |\
                                 ((int) packets[y+1] <<16) |\
                                 ((int) packets[y+2] <<8) |\
-                                ((int) packets[y+3]));
+                                ((int) packets[y+3]));\
+                                (x) = *((float *) (&temp));
 /* MSB
  * high:4bit
  * low:8bit
@@ -58,12 +59,18 @@ typedef struct {
     int checksum;
 } decode_debug;
 
+typedef struct {
+    float distance_north; // 先发北再发东
+    float distance_east;
+    float north_angle;
+} decode_proc;
+
 extern decode_fixed small_packets;
 extern decode_debug debug_data;
 
-void precossing_fixed_length_data(unsigned int packets[12], short *buffer);
-void precossing_variable_length_data(unsigned int *packets, unsigned char length, const int *buffer);
-void unpacking_fixed_length_data(unsigned char packets[10]);
-void unpacking_variable_length_data(unsigned char *packets);
+void precossing_proc_to_control(unsigned int packets[12], const unsigned int *buffer);
+void unpacking_fixed_length_data(unsigned int packets[10]);
+void unpacking_variable_length_data(unsigned int *packets);
+void unpacking_proc_to_control(unsigned int packets[10]);
 
 #endif // MM32F3277_DEVICE_SENSOR_DECODE_H_

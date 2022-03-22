@@ -30,7 +30,11 @@
 #define MM32F3277_DEBUG_CMB_DEF_H_
 
 #include "cmb_cfg.h"
-#include "config.h"
+#ifdef IS_CONTROL_MCU
+#include "../ctrl_mcu/config.h"
+#else
+#include "../proc_mcu/config.h"
+#endif  // IS_CONTROL_MCU
 
 /* library software version number */
 #define CMB_SW_VERSION                "1.4.0"

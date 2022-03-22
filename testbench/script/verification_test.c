@@ -41,10 +41,10 @@ void test_verification_crc8(void) {
     const char veriy_string2[24] = "this is next test string";
     const char veriy_string3[16] = "this is a string";
     const char veriy_string4[13] = "a test string";
-    unsigned char verify_crc1 = verification_crc8((unsigned char *) veriy_string1, 21);
-    unsigned char verify_crc2 = verification_crc8((unsigned char *) veriy_string2, 24);
-    unsigned char verify_crc3 = verification_crc8((unsigned char *) veriy_string3, 16);
-    unsigned char verify_crc4 = verification_crc8((unsigned char *) veriy_string4, 13);
+    unsigned char verify_crc1 = verification_crc8((unsigned int *) veriy_string1, 21);
+    unsigned char verify_crc2 = verification_crc8((unsigned int *) veriy_string2, 24);
+    unsigned char verify_crc3 = verification_crc8((unsigned int *) veriy_string3, 16);
+    unsigned char verify_crc4 = verification_crc8((unsigned int *) veriy_string4, 13);
     CU_ASSERT_EQUAL(verify_crc1, 0x6F)
     CU_ASSERT_EQUAL(verify_crc2, 0x24)
     CU_ASSERT_EQUAL(verify_crc3, 0xC9)
@@ -56,10 +56,10 @@ void test_verification_crc16(void) {
     const char veriy_string2[24] = "this is next test string";
     const char veriy_string3[16] = "this is a string";
     const char veriy_string4[13] = "a test string";
-    unsigned short verify_crc1 = verification_crc16((unsigned char *) veriy_string1, 21);
-    unsigned short verify_crc2 = verification_crc16((unsigned char *) veriy_string2, 24);
-    unsigned short verify_crc3 = verification_crc16((unsigned char *) veriy_string3, 16);
-    unsigned short verify_crc4 = verification_crc16((unsigned char *) veriy_string4, 13);
+    unsigned short verify_crc1 = verification_crc16((unsigned int *) veriy_string1, 21);
+    unsigned short verify_crc2 = verification_crc16((unsigned int *) veriy_string2, 24);
+    unsigned short verify_crc3 = verification_crc16((unsigned int *) veriy_string3, 16);
+    unsigned short verify_crc4 = verification_crc16((unsigned int *) veriy_string4, 13);
     CU_ASSERT_EQUAL(verify_crc1, 0x32E6)
     CU_ASSERT_EQUAL(verify_crc2, 0xEA43)
     CU_ASSERT_EQUAL(verify_crc3, 0x64E3)
