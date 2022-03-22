@@ -12,4 +12,4 @@
 void lcd_gpio_config(void);
 void xpt2046_gpio_config(void);
 
-#endif //MAIN_C_HARDWARE_GPIO_H_
+#endif // MM32F3277_HARDWARE_GPIO_H_

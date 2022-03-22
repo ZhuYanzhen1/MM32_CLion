@@ -120,7 +120,7 @@ void uart4_config() {
     UART_ITConfig(UART4, UART_IT_RXIEN, ENABLE);
     UART_Cmd(UART4, ENABLE);
 }
-#endif
+#endif // IS_PROCESS_MCU
 
 void uart6_config() {
     UART_InitTypeDef UART_InitStruct;
@@ -205,7 +205,7 @@ void uart8_sendbyte(unsigned char data) {
     UART_SendData(UART8, data);
     while (!UART_GetFlagStatus(UART8, UART_FLAG_TXEPT));
 }
-#endif
+#endif // IS_PROCESS_MCU
 
 void uart6_sendbyte(unsigned char data) {
     UART_SendData(UART6, data);
@@ -222,7 +222,7 @@ void uart3_sendbyte(unsigned char data) {
     UART_SendData(UART3, data);
     while (!UART_GetFlagStatus(UART3, UART_FLAG_TXEPT));
 }
-#endif
+#endif // IS_PROCESS_MCU
 
 #if DEBUG_USE_PROTOCOL == 0
 void _putchar(char character) {

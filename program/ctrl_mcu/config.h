@@ -39,6 +39,8 @@
 #define UART1_DMA_PRIORITY      3
 #define UART6_PRIORITY          1
 
+#define UART6_DMA_PRIORITY      1
+
 #define UART1_BAUDRATE          115200
 #define UART6_BAUDRATE          115200
 

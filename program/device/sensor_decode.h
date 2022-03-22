@@ -62,6 +62,7 @@ typedef struct {
 typedef struct {
     float distance_north; // 先发北再发东
     float distance_east;
+    float north_angle;
 } decode_proc;
 
 extern decode_fixed small_packets;

@@ -15,7 +15,7 @@
 #include "../ctrl_mcu/config.h"
 #else
 #include "../proc_mcu/config.h"
-#endif
+#endif  // IS_CONTROL_MCU
 
 #ifdef IS_PROCESS_MCU
 void iic1_writebyte(unsigned char dat) {
@@ -59,4 +59,4 @@ void iic1_config(void) {
     I2C_Init(I2C1, &I2C_InitStruct);
     I2C_Cmd(I2C1, ENABLE);
 }
-#endif
+#endif  // IS_PROCESS_MCU

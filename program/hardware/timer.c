@@ -13,7 +13,7 @@
 #include "../ctrl_mcu/config.h"
 #else
 #include "../proc_mcu/config.h"
-#endif
+#endif  // IS_CONTROL_MCU
 
 void timer2_config() {
     TIM_TimeBaseInitTypeDef TIM_TimeBaseStruct;

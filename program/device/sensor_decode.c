@@ -7,58 +7,53 @@
 
 decode_fixed small_packets = {0};
 decode_debug debug_data = {0};
+decode_proc proc_data = {0};
 
 /*!
     \brief      Packets with fixed data length
     \param[out] packets: Processes packets as long as they are sent through the serial port
     \param[in]  buffer: Data to be sent,includes 5 short type variables and a check digit
 */
-void precossing_proc_to_control(unsigned int packets[12], const unsigned int *buffer) {
+void precossing_proc_to_control(unsigned int packets[16], const unsigned int *buffer) {
     // 包头
-    float a = (float) buffer[0];
-    (void) a;
     packets[0] = 0xff;
-    packets[9] = 0x00;  // 调整位
+    packets[13] = 0x00;  // 调整位
 
-//    FLOAT_SPLIT_CHAR(1, 0);
-    packets[1] = ((buffer[0] & 0xff000000) >> 24);
-    packets[(1) + 1] = ((buffer[0] & 0x00ff0000) >> 16);
-    packets[(1) + 2] = ((buffer[0] & 0x0000ff00) >> 8);
-    packets[(1) + 3] = (buffer[0] & 0x000000ff);
+    FLOAT_SPLIT_CHAR(1, 0);
     FLOAT_SPLIT_CHAR(5, 1);
+    FLOAT_SPLIT_CHAR(9, 2);
 
     // 调整位，从高到低，每一位与一个字节的数据对应，如果为1，那就代表相应的数据为0xff
-    for (unsigned char i = 1; i < 9; ++i) {
+    for (unsigned char i = 1; i < 13; ++i) {
         if (packets[i] == 0xff) {
             packets[i] = 0x00;
-            packets[9] |= 0x80 >> (i - 1);
+            packets[13] |= 0x80 >> (i - 1);
         }
     }
 
-    packets[10] = verification_crc8(&packets[1], 9);
+    packets[14] = verification_crc8(&packets[1], 13);
     // 包尾
-    packets[11] = 0xff;
+    packets[15] = 0xff;
 }
-
-decode_proc proc_distance = {0};
 
 /*!
     \brief      Solving packets with fixed data length
     \param[in]  packets: Packets to be solved
     \note       The package to be solved does not contain the head and tail parts of the package
 */
-void unpacking_proc_to_control(unsigned int packets[10]) {
+void unpacking_proc_to_control(unsigned int packets[14]) {
     unsigned int temp;
-    short checksum = verification_crc8((unsigned int *) packets, 9);
-    small_packets.checksum = (short) packets[9];
+    short checksum = verification_crc8((unsigned int *) packets, 13);
+    small_packets.checksum = (short) packets[13];
     if (checksum != small_packets.checksum) return;
     // 调整位恢复原始数据，和校验的顺序不能换，因为封包的时候是先算校验，再计算调整位
-    for (unsigned char i = 0; i < 8; ++i)
-        if (packets[8] & (0x80 >> i))
+    for (unsigned char i = 0; i < 12; ++i)
+        if (packets[12] & (0x80 >> i))
             packets[i] = 0xff;
 
-    DECODE_TO_FLOAT(proc_distance.distance_north, 0)    // 如果发送的是float类型，得先转换成unsigned int的地址传进来
-    DECODE_TO_FLOAT(proc_distance.distance_east, 4)
+    DECODE_TO_FLOAT(proc_data.distance_north, 0)    // 如果发送的是float类型，得先转换成unsigned int的地址传进来
+    DECODE_TO_FLOAT(proc_data.distance_east, 4)
+    DECODE_TO_FLOAT(proc_data.north_angle, 8)
 //    unsigned int tmp_float_int = *((unsigned int *) (&a));
 //    float a = *((float *) (&tmp_float_int));
 }

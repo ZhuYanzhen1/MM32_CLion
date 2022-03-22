@@ -11,7 +11,7 @@
 #include "../ctrl_mcu/config.h"
 #else
 #include "../proc_mcu/config.h"
-#endif
+#endif  // IS_CONTROL_MCU
 #include "mdtp_pack.h"
 #include "printf.h"
 #include "string.h"
