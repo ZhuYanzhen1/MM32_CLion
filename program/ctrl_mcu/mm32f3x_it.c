@@ -31,3 +31,14 @@ void UART1_IRQHandler(void) {
         UART_ClearITPendingBit(UART1, UART_ISR_RX);
     }
 }
+
+static unsigned char uart6_counter = 0;
+unsigned int proc_package[READ_MCU_AMOUNT];
+void UART6_IRQHandler(void) {
+    if (UART_GetITStatus(UART6, UART_ISR_RX) != RESET) {
+        unsigned char recvbyte = UART_ReceiveData(UART6);
+        proc_package[uart6_counter] = recvbyte;
+        uart6_counter = (uart6_counter + 1) % READ_MCU_AMOUNT;
+        UART_ClearITPendingBit(UART6, UART_ISR_RX);
+    }
+}

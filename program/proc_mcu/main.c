@@ -10,6 +10,8 @@
 
 extern unsigned int packages_to_be_unpacked[READ_MCU_AMOUNT];
 
+unsigned int proc_to_ctrl_package[12] = {0};
+
 /* Kalman fusion to obtain northward and eastward velocities
  * (GPS velocity + imu acceleration) */
 kalman_data_t kalman_data;
@@ -95,8 +97,6 @@ void fusion_task(void *parameters) {
         }
 //        while (gps_rmc.status != 'A')
 //            delayms(1);
-        uart4_sendbyte(0xa5);
-
         sensor_unit_conversion();
         kalman_data.v = kalman_update(&kalman_v, neu.v, neu.acceleration,
                                       0.031f, 0);
@@ -105,6 +105,14 @@ void fusion_task(void *parameters) {
                                                    neu.north_v, 0.031f, 0);
         kalman_data.distance_east = kalman_update(&kalman_distance_earth, neu.east_distance,
                                                   neu.east_v, 0.031f, 0);
+//        unsigned int proc_to_ctrl_buffer[2] =
+//            {*((unsigned int *) (&kalman_data.distance_north)), *((unsigned int *) (&kalman_data.distance_east))};
+        unsigned int proc_to_ctrl_buffer[2] =
+            {*((unsigned int *) (&small_packets.north)), *((unsigned int *) (&small_packets.kalman_north))};
+        precossing_proc_to_control(proc_to_ctrl_package, proc_to_ctrl_buffer);
+        for (unsigned char i = 0; i < 12; i++) {
+            uart4_sendbyte(proc_to_ctrl_package[i]);
+        }
         delayms(30);
     }
 }

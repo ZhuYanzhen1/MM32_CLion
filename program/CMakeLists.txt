@@ -35,7 +35,7 @@ include_directories(library/regs system system/cmsis library/include proc_mcu ha
 
 file(GLOB_RECURSE CONTROL_SOURCES "system/official/startup_mm32f327.s" "library/source/*.c" "math/*.c"
         "system/*.c" "system/official/*.c" "math/qfplib.s" "debug/*.c" "protocol/*.c" "debug/cmb_fault.S"
-        "hardware/*.c" "ctrl_mcu/*.c")
+        "hardware/*.c" "ctrl_mcu/*.c" "device/sensor_decode.c")
 
 file(GLOB_RECURSE PROCESS_SOURCES "system/official/startup_mm32f327.s" "library/source/*.c" "math/*.c"
         "proc_mcu/*.c" "hardware/*.c" "system/*.c" "system/official/*.c" "math/qfplib.s" "device/*.c"

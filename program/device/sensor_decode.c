@@ -47,7 +47,7 @@ decode_proc proc_distance = {0};
     \param[in]  packets: Packets to be solved
     \note       The package to be solved does not contain the head and tail parts of the package
 */
-void unpacking_proc_to_control(unsigned int packets[9]) {
+void unpacking_proc_to_control(unsigned int packets[10]) {
     unsigned int temp;
     short checksum = verification_crc8((unsigned int *) packets, 9);
     small_packets.checksum = (short) packets[9];

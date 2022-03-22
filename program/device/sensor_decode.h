@@ -70,6 +70,6 @@ extern decode_debug debug_data;
 void precossing_proc_to_control(unsigned int packets[12], const unsigned int *buffer);
 void unpacking_fixed_length_data(unsigned int packets[10]);
 void unpacking_variable_length_data(unsigned int *packets);
-void unpacking_proc_to_control(unsigned int packets[8]);
+void unpacking_proc_to_control(unsigned int packets[10]);
 
 #endif // MM32F3277_DEVICE_SENSOR_DECODE_H_
