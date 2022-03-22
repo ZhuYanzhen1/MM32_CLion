@@ -12,18 +12,10 @@ extern unsigned char packages_to_be_unpacked[READ_MCU_AMOUNT];
 
 /* Kalman fusion to obtain northward and eastward velocities
  * (GPS velocity + imu acceleration) */
-float v_north;
-float v_east;
-kalman_filter_float kalman_v_north = {0};
-kalman_filter_float kalman_v_east = {0};
-float v_north_final;
-float v_east_final;
-
-/* Kalman fusion to obtain northward displacement and eastward displacement */
-float distance_north;
-float distance_east;
-kalman_filter_float kalman_distance_north = {0};
-kalman_filter_float kalman_distance_earth = {0};
+kalman_data_t kalman_data;
+kalman_filter_t kalman_v = {0};
+kalman_filter_t kalman_distance_north = {0};
+kalman_filter_t kalman_distance_earth = {0};
 
 /////////////////////////////////////// TaskHandler ///////////////////////////////////////
 static struct rt_thread led_taskhandler;
@@ -90,8 +82,7 @@ int main(void) {
 /////////////////////////////////////// Task Function ///////////////////////////////////////
 void fusion_task(void *parameters) {
     (void) parameters;
-    kalman_config_v(&kalman_v_north);
-    kalman_config_v(&kalman_v_east);
+    kalman_config_v(&kalman_v);
     kalman_config_distance(&kalman_distance_north, 384400);
     kalman_config_distance(&kalman_distance_earth, 1487900);
     while (1) {
@@ -108,20 +99,14 @@ void fusion_task(void *parameters) {
         }
         while (gps_rmc.status != 'A')
             delayms(1);
-        coordinate_system_transformation_neu(small_packets.kalman_north);
-
-        v_north = kalman_update(&kalman_v_north, neu.north_v, neu.north_acceleration,
-                                0.031f, 0);
-        v_east = kalman_update(&kalman_v_east, neu.east_v, neu.east_acceleration,
-                               0.031f, 0);
-        if (v_north < 1 && v_north > -1) v_north_final = neu.north_v;
-        else v_north_final = v_north;
-        if (v_east < 1 && v_east > -1) v_east_final = neu.east_v;
-        else v_east_final = v_east;
-        distance_north = kalman_update(&kalman_distance_north, neu.north_distance,
-                                       v_north_final, 0.031f, 0);   // dt不清楚，估计得改
-        distance_east = kalman_update(&kalman_distance_earth, neu.east_distance,
-                                      v_east_final, 0.031f, 0);     // dt不清楚，估计得改
+        sensor_unit_conversion();
+        kalman_data.v = kalman_update(&kalman_v, neu.v, neu.acceleration,
+                                      0.031f, 0);
+        coordinate_system_transformation_kalman_v(small_packets.kalman_north);
+        kalman_data.distance_north = kalman_update(&kalman_distance_north, neu.north_distance,
+                                                   neu.north_v, 0.031f, 0);
+        kalman_data.distance_east = kalman_update(&kalman_distance_earth, neu.east_distance,
+                                                  neu.east_v, 0.031f, 0);
         delayms(30);
     }
 }

@@ -34,10 +34,10 @@ void gui_fusion_form_init() {
     gui_label_init(&gnss_status_label, 1, C_BLACK, label_align_left, " status");
     gui_label_init(&north_distance_label, 2, C_BLACK, label_align_left, " nd");
     gui_label_init(&east_distance_label, 3, C_BLACK, label_align_left, " ed");
-//    gui_label_init(&kalman_v_lable, 4, C_BLACK, label_align_left, " k_v");
-//    gui_label_init(&neu_v_lable, 5, C_BLACK, label_align_left, " v");
-//    gui_label_init(&kalman_north_distance_lable, 6, C_BLACK, label_align_left, " k_nd");
-//    gui_label_init(&kalman_east_distance_lable, 7, C_BLACK, label_align_left, " k_ed");
+    gui_label_init(&kalman_v_lable, 4, C_BLACK, label_align_left, " k_v");
+    gui_label_init(&neu_v_lable, 5, C_BLACK, label_align_left, " v");
+    gui_label_init(&kalman_north_distance_lable, 6, C_BLACK, label_align_left, " k_nd");
+    gui_label_init(&kalman_east_distance_lable, 7, C_BLACK, label_align_left, " k_ed");
 
     gui_form_init(&fusion_form, "FusionWindow", gui_show_fusion);
 
@@ -45,9 +45,9 @@ void gui_fusion_form_init() {
     gui_form_bind_label(&fusion_form, &gnss_status_label);
     gui_form_bind_label(&fusion_form, &north_distance_label);
     gui_form_bind_label(&fusion_form, &east_distance_label);
-//    gui_form_bind_label(&fusion_form, &kalman_v_lable);
-//    gui_form_bind_label(&fusion_form, &neu_v_lable);
-//    gui_form_bind_label(&fusion_form, &kalman_north_distance_lable);
-//    gui_form_bind_label(&fusion_form, &kalman_east_distance_lable);
+    gui_form_bind_label(&fusion_form, &kalman_v_lable);
+    gui_form_bind_label(&fusion_form, &neu_v_lable);
+    gui_form_bind_label(&fusion_form, &kalman_north_distance_lable);
+    gui_form_bind_label(&fusion_form, &kalman_east_distance_lable);
     gui_form_display(&fusion_form);
 }

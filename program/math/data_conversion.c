@@ -12,6 +12,9 @@
 #include "gps_parser.h"
 #include "sensor_decode.h"
 #include "fast_math.h"
+#include "kalman.h"
+
+extern kalman_data_t kalman_data;
 
 neu_infomation neu = {0};
 
@@ -61,33 +64,21 @@ float get_distance_m_lon(float lon) {
                 Convert the data units read from the sensor to m/s^2, m/s, m
     \param[in]  True North Angle
 */
-void coordinate_system_transformation_neu(float delta) {
-    int temp_acll_ax, temp_acll_ay;
-    float temp_delta = GEO_ANGLE(delta);
-
+void sensor_unit_conversion() {
     float temp_latitude = unit_to_degree(gps_rmc.latitude, 4);
     float temp_lonitude = unit_to_degree(gps_rmc.longitude, 4);
     neu.north_distance = get_distance(QRIGIN_LAT, temp_lonitude, temp_latitude, temp_lonitude);
     neu.east_distance = get_distance(temp_latitude, QRIGIN_LON, temp_latitude, temp_lonitude);
-//    float temp_latitude = unit_to_degree(gps_rmc.latitude, 4);
-//    neu.north_distance = get_distance_m_lat(temp_latitude - QRIGIN_LAT);
-//    float temp_lonitude = unit_to_degree(gps_rmc.longitude, 4);
-//    neu.east_distance = get_distance_m_lon(temp_lonitude - QRIGIN_LON);
 
-    temp_acll_ax = small_packets.ax;
-    temp_acll_ay = small_packets.ay;
-    neu.north_acceleration = MG_TO_M_S_2
-    ((float) temp_acll_ax * FACTOR_ALLC * qfp_fcos(temp_delta)
-         + (float) temp_acll_ay * FACTOR_ALLC * qfp_fcos(temp_delta + PI / 2));
-    neu.east_acceleration = MG_TO_M_S_2
-    ((float) temp_acll_ax * FACTOR_ALLC * qfp_fsin(temp_delta)
-         + (float) temp_acll_ay * FACTOR_ALLC * qfp_fsin(temp_delta + PI / 2));
+    neu.acceleration = MG_TO_M_S_2(small_packets.ax * FACTOR_ALLC);
 
-    /* Use GPS to get the velocity, convert the units,
-     * and then convert the coordinate system to the NEU */
     float temp_v = (float) gps_rmc.speed_to_ground_section;
     int v_decimal = num_times_nth_power_of_10(1, gps_rmc.decimal_places_speed);
-    temp_v = KNOT_TO_M_S(temp_v / v_decimal);
-    neu.north_v = temp_v * qfp_fcos(temp_delta);
-    neu.east_v = temp_v * qfp_fsin(temp_delta);
+    neu.v = KNOT_TO_M_S(temp_v / v_decimal);
+}
+
+void coordinate_system_transformation_kalman_v(float delta) {
+    float temp_delta = GEO_ANGLE(delta);
+    neu.north_v = kalman_data.v * qfp_fcos(temp_delta);
+    neu.east_v = kalman_data.v * qfp_fsin(temp_delta);
 }
