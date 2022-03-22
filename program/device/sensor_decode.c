@@ -14,7 +14,7 @@ decode_proc proc_data = {0};
     \param[out] packets: Processes packets as long as they are sent through the serial port
     \param[in]  buffer: Data to be sent,includes 5 short type variables and a check digit
 */
-void precossing_proc_to_control(unsigned int packets[16], const unsigned int *buffer) {
+void precossing_proc_to_control(unsigned int packets[PROC_MCU_SEND_AMOUNT], const unsigned int *buffer) {
     // 包头
     packets[0] = 0xff;
     packets[13] = 0x00;  // 调整位

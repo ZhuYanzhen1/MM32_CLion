@@ -32,14 +32,25 @@ void UART1_IRQHandler(void) {
     }
 }
 
-static unsigned char uart6_counter = 0;
-unsigned int proc_package[READ_MCU_AMOUNT];
-void UART6_IRQHandler(void) {
-    if (UART_GetITStatus(UART6, UART_ISR_RX) != RESET) {
-        unsigned char recvbyte = UART_ReceiveData(UART6);
-        proc_package[uart6_counter] = recvbyte;
-        uart6_counter = (uart6_counter + 1) % READ_MCU_AMOUNT;
-        UART_ClearITPendingBit(UART6, UART_ISR_RX);
+typedef enum { buffer_no_1 = 1, buffer_no_2 = 2 } buffer_no;
+static buffer_no uart6_free_buffer_no = buffer_no_1;
+unsigned int uart6_dma_buffer_1[PROC_MCU_SEND_AMOUNT];
+unsigned int uart6_dma_buffer_2[PROC_MCU_SEND_AMOUNT];
+void DMA1_Channel1_IRQHandler(void) {
+    if (DMA_GetITStatus(DMA1_IT_TC1)) {
+        /* Clear all interrupt flags */
+        DMA_ClearITPendingBit(DMA1_IT_TC1);
+
+        /* Double ping pong buffer */
+        if (uart6_free_buffer_no == buffer_no_1) {
+            uart6_dma_set_transmit_buffer(uart6_dma_buffer_2, PROC_MCU_SEND_AMOUNT);
+            uart6_free_buffer_no = buffer_no_2;
+//            deal_dma_gnrmc(usart3_dma_buffer_1);
+        } else {
+            uart6_dma_set_transmit_buffer(uart6_dma_buffer_1, PROC_MCU_SEND_AMOUNT);
+            uart6_free_buffer_no = buffer_no_1;
+//            deal_dma_gnrmc(usart3_dma_buffer_2);
+        }
     }
 }
 

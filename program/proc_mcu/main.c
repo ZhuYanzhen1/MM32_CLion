@@ -10,7 +10,7 @@
 
 extern unsigned int packages_to_be_unpacked[READ_MCU_AMOUNT];
 
-unsigned int proc_to_ctrl_package[16] = {0};
+unsigned int proc_to_ctrl_package[PROC_MCU_SEND_AMOUNT] = {0};
 
 /* Kalman fusion to obtain northward and eastward velocities
  * (GPS velocity + imu acceleration) */
@@ -119,7 +119,7 @@ void send_task(void *parameters) {
             {*((unsigned int *) (&kalman_data.distance_north)), *((unsigned int *) (&kalman_data.distance_east)),
              *((unsigned int *) (&small_packets.kalman_north))};
         precossing_proc_to_control(proc_to_ctrl_package, proc_to_ctrl_buffer);
-        for (unsigned char i = 0; i < 16; i++) {
+        for (unsigned char i = 0; i < PROC_MCU_SEND_AMOUNT; i++) {
             uart4_sendbyte(proc_to_ctrl_package[i]);
         }
         delayms(10);
