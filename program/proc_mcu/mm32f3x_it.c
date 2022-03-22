@@ -35,10 +35,12 @@ void UART1_IRQHandler(void) {
     }
 }
 
+unsigned char battery_voltage = 0x00;
 void UART6_IRQHandler(void) {
     if (UART_GetITStatus(UART6, UART_ISR_RX) != RESET) {
         unsigned char recvbyte = UART_ReceiveData(UART6);
         UART_ClearITPendingBit(UART6, UART_ISR_RX);
+        battery_voltage = (recvbyte >> 3) + 140;
     }
 }
 

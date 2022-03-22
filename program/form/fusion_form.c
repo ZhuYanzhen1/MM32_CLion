@@ -39,7 +39,7 @@ void gui_fusion_form_init() {
     gui_label_init(&kalman_north_distance_lable, 6, C_BLACK, label_align_left, " k_nd");
     gui_label_init(&kalman_east_distance_lable, 7, C_BLACK, label_align_left, " k_ed");
 
-    gui_form_init(&fusion_form, "FusionWindow", gui_show_fusion);
+    gui_form_init(&fusion_form, "FusionForm", gui_show_fusion);
 
     gui_form_bind_label(&fusion_form, &kalman_north_label);
     gui_form_bind_label(&fusion_form, &gnss_status_label);
