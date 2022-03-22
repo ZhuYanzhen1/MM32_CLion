@@ -46,11 +46,13 @@
 #define EXTI4_PRIORITY          6
 #define UART8_PRIORITY          1
 #define UART6_PRIORITY          5
+#define UART4_PRIORITY          1
 
 
 //////////////////////////////////////// Peripherals Speed ////////////////////////////////////////
 #define UART1_BAUDRATE          115200
 #define UART3_BAUDRATE          115200
+#define UART4_BAUDRATE          115200
 #define UART6_BAUDRATE          115200
 #define UART8_BAUDRATE          115200
 

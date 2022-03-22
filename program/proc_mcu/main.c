@@ -48,6 +48,7 @@ void initialize_task(void *parameters) {
     spi2_config();
     spi3_config();
     uart1_config();
+    uart4_config();
     uart6_config();
     uart8_config();
     xpt2046_gpio_config();
@@ -94,6 +95,8 @@ void fusion_task(void *parameters) {
         }
 //        while (gps_rmc.status != 'A')
 //            delayms(1);
+        uart4_sendbyte(0xa5);
+
         sensor_unit_conversion();
         kalman_data.v = kalman_update(&kalman_v, neu.v, neu.acceleration,
                                       0.031f, 0);

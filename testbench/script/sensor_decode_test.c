@@ -32,9 +32,12 @@ void test_nmea_gnrmc_analysis() {
 
 }
 
+extern decode_proc proc_distance;
+
 void test_precossing_proc_to_control() {
     float n_dis = 333.453f;
     float e_dis = 444.342f;
+    float num = 0xFFFF;
     unsigned int buffer[] = {*((unsigned int *) (&n_dis)), *((unsigned int *) (&e_dis))};
     unsigned int packets[12] = {0};
 
