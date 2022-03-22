@@ -13,6 +13,7 @@
 static unsigned char gui_form_counter = 0;
 static form_struct_t *current_form = NULL;
 static TaskHandle_t gui_callback_taskhandler;
+extern unsigned char battery_voltage;
 
 void gui_callback_task(void *parameters) {
     ((button_struct_t *) parameters)->callback(parameters);
@@ -57,7 +58,7 @@ void gui_form_bind_button(form_struct_t *form, void *button) {
 void gui_form_display(form_struct_t *form) {
     unsigned char button_counter = form->button_num;
     unsigned char label_counter = form->label_num;
-    unsigned char text_x = (128 - strlen(form->text) * 6) / 2;
+    unsigned char text_x = 3;
     gui_clear_screan(C_WHITE);
     gui_draw_rectangle(0, 0, 128, 16, FORM_TITLE_COLOR, Filled);
     gui_printf(text_x, 2, C_BLACK, FORM_TITLE_COLOR, "%s", form->text);
@@ -83,6 +84,7 @@ void gui_form_update(unsigned char x_pos, unsigned char y_pos) {
     unsigned char button_counter = current_form->button_num;
     unsigned char label_counter = current_form->label_num;
     current_form->callback(current_form);
+    gui_printf(95, 2, C_BLACK, FORM_TITLE_COLOR, "%02d.%01dV", battery_voltage / 10, battery_voltage % 10);
     if (button_counter != 0) {
         /* Update button status */
         button_struct_t *tmp_button = current_form->first_button;
