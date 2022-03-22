@@ -9,7 +9,11 @@
 #include "timer.h"
 #include "hal_conf.h"
 #include "mm32_device.h"
-#include "config.h"
+#ifdef IS_CONTROL_MCU
+#include "../ctrl_mcu/config.h"
+#else
+#include "../proc_mcu/config.h"
+#endif
 
 void timer2_config() {
     TIM_TimeBaseInitTypeDef TIM_TimeBaseStruct;

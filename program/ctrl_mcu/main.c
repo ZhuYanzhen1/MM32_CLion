@@ -15,10 +15,11 @@ int main(void) {
     delay_config();
     uart6_config();
     led_config();
-//    uart1_config();
-//    cm_backtrace_config("mm32f3277", "1.0.1", "1.0.1");
-//    debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
-//    timer2_config();
+    uart1_config();
+    cm_backtrace_config("mm32f3277", "1.0.1", "1.0.1");
+    debugger_register_variable(dbg_float32, &proc_distance.distance_north, "nd");
+    debugger_register_variable(dbg_float32, &proc_distance.distance_east, "ed");
+    timer2_config();
     while (1) {
         for (unsigned short packets_counter = 0; packets_counter < READ_MCU_AMOUNT; packets_counter++) {
             if (proc_package[packets_counter] == 0xff

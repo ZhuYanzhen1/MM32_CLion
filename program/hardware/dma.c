@@ -8,8 +8,13 @@
 
 #include "dma.h"
 #include "hal_conf.h"
-#include "config.h"
+#ifdef IS_CONTROL_MCU
+#include "../ctrl_mcu/config.h"
+#else
+#include "../proc_mcu/config.h"
+#endif
 
+#ifdef IS_PROCESS_MCU
 void uart3_dma_set_transmit_buffer(const unsigned int *data_address, unsigned short data_length) {
     DMA1_Channel3->CNDTR = (volatile unsigned int) data_length;
     DMA1_Channel3->CMAR = (volatile unsigned int) data_address;
@@ -50,6 +55,7 @@ void uart3_dma_nvic_config() {
     NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
     exNVIC_Init(&NVIC_InitStruct);
 }
+#endif
 
 void uart1_dma_set_transmit_buffer(const unsigned int *data_address, unsigned short data_length) {
     DMA1_Channel4->CNDTR = (volatile unsigned int) data_length;
@@ -92,6 +98,7 @@ void uart1_dma_nvic_config() {
     exNVIC_Init(&NVIC_InitStruct);
 }
 
+#ifdef IS_PROCESS_MCU
 void spi3_dma_set_transmit_buffer(const unsigned int *data_address, unsigned short data_length) {
     DMA2_Channel2->CNDTR = (volatile unsigned int) data_length;
     DMA2_Channel2->CMAR = (volatile unsigned int) data_address;
@@ -132,3 +139,4 @@ void spi3_dma_nvic_config() {
     NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
     exNVIC_Init(&NVIC_InitStruct);
 }
+#endif

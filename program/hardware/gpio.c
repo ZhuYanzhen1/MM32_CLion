@@ -7,7 +7,11 @@
 ******************************************************************************/
 
 #include "gpio.h"
-#include "config.h"
+#ifdef IS_CONTROL_MCU
+#include "../ctrl_mcu/config.h"
+#else
+#include "../proc_mcu/config.h"
+#endif
 #include "hal_conf.h"
 #include "mm32_device.h"
 #include "pin.h"

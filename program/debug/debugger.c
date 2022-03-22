@@ -7,7 +7,11 @@
 ******************************************************************************/
 
 #include "debugger.h"
-#include "config.h"
+#ifdef IS_CONTROL_MCU
+#include "../ctrl_mcu/config.h"
+#else
+#include "../proc_mcu/config.h"
+#endif
 #include "mdtp_pack.h"
 #include "printf.h"
 #include "string.h"
