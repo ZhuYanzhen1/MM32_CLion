@@ -8,7 +8,7 @@
 
 #include "main.h"
 
-extern unsigned char packages_to_be_unpacked[READ_MCU_AMOUNT];
+extern unsigned int packages_to_be_unpacked[READ_MCU_AMOUNT];
 
 /* Kalman fusion to obtain northward and eastward velocities
  * (GPS velocity + imu acceleration) */
@@ -84,16 +84,16 @@ void fusion_task(void *parameters) {
         for (unsigned short packets_counter = 0; packets_counter < READ_MCU_AMOUNT; packets_counter++) {
             if (packages_to_be_unpacked[packets_counter] == 0xff
                 && packages_to_be_unpacked[packets_counter + 11] == 0xff) {
-                unpacking_fixed_length_data(&packages_to_be_unpacked[packets_counter + 1]);
+                unpacking_fixed_length_data((unsigned int *) &packages_to_be_unpacked[packets_counter + 1]);
                 packets_counter = (packets_counter + 11);  // 移动到包尾位置
             } else if (packages_to_be_unpacked[packets_counter] == 0xa5
                 && packages_to_be_unpacked[packets_counter + 1] == 0x5a) {
-                unpacking_variable_length_data(&packages_to_be_unpacked[packets_counter + 3]);
+                unpacking_variable_length_data((unsigned int *) &packages_to_be_unpacked[packets_counter + 3]);
                 packets_counter = (packets_counter + packages_to_be_unpacked[2] - 1); // 移动到下一个包的前一个位置
             }
         }
-        while (gps_rmc.status != 'A')
-            delayms(1);
+//        while (gps_rmc.status != 'A')
+//            delayms(1);
         sensor_unit_conversion();
         kalman_data.v = kalman_update(&kalman_v, neu.v, neu.acceleration,
                                       0.031f, 0);

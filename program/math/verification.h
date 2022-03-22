@@ -11,7 +11,7 @@
 
 unsigned char verification_checksum_u8(unsigned char *ptr, unsigned short len);
 unsigned char verification_checkxor_u8(const unsigned char *ptr, unsigned short len);
-unsigned short verification_crc16(unsigned char *ptr, unsigned short len);
-unsigned char verification_crc8(unsigned char *ptr, unsigned short len);
+unsigned short verification_crc16(unsigned int *ptr, unsigned short len);
+unsigned char verification_crc8(unsigned int *ptr, unsigned short len);
 
 #endif  // MM32F3277_MATH_VERIFICATION_H_

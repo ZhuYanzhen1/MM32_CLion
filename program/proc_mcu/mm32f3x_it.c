@@ -43,7 +43,7 @@ void UART6_IRQHandler(void) {
 }
 
 static unsigned char uart8_counter = 0;
-unsigned char packages_to_be_unpacked[READ_MCU_AMOUNT];
+unsigned int packages_to_be_unpacked[READ_MCU_AMOUNT];
 void UART8_IRQHandler(void) {
     if (UART_GetITStatus(UART8, UART_ISR_RX) != RESET) {
         unsigned char recvbyte = UART_ReceiveData(UART8);

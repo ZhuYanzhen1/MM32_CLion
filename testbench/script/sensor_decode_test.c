@@ -32,71 +32,32 @@ void test_nmea_gnrmc_analysis() {
 
 }
 
-void test_processing_send_data() {
-    short buffer[5] = {20, 352, -9, -132, 1543};
-    unsigned char packets[12] = {0};
-    precossing_fixed_length_data((unsigned int *) packets, buffer);
-    CU_ASSERT_EQUAL(packets[0], 0xff);
-    CU_ASSERT_EQUAL(packets[1], 0x14);
-    CU_ASSERT_EQUAL(packets[2], 0x60);
-    CU_ASSERT_EQUAL(packets[3], 0xf7);
-    CU_ASSERT_EQUAL(packets[4], 0x7c);
-    CU_ASSERT_EQUAL(packets[5], 0x07);
-    CU_ASSERT_EQUAL(packets[6], 0x01);
-    CU_ASSERT_EQUAL(packets[7], 0x77);
-    CU_ASSERT_EQUAL(packets[8], 0xe0);
-    CU_ASSERT_EQUAL(packets[9], 0x00);
-//    CU_ASSERT_EQUAL(packets[10], 0x1c);
+void test_precossing_proc_to_control() {
+    float n_dis = 333.453f;
+    float e_dis = 444.342f;
+    unsigned int buffer[] = {*((unsigned int *) (&n_dis)), *((unsigned int *) (&e_dis))};
+    unsigned int packets[12] = {0};
 
-    unpacking_fixed_length_data(packets + 1);
+    packets[1] = ((buffer[0] & 0xff000000) >> 24);
+    packets[(1) + 1] = ((buffer[0] & 0x00ff0000) >> 16);
+    packets[(1) + 2] = ((buffer[0] & 0x0000ff00) >> 8);
+    packets[(1) + 3] = (buffer[0] & 0x000000ff);
 
-    CU_ASSERT_EQUAL(small_packets.north, 20);
-    CU_ASSERT_EQUAL(small_packets.kalman_north, 352);
-    CU_ASSERT_EQUAL(small_packets.ax, -9);
-    CU_ASSERT_EQUAL(small_packets.ay, -132);
-    CU_ASSERT_EQUAL(small_packets.az, 1543);
+    unsigned int temp;
+    (temp) = (unsigned int) (((int) packets[1] << 24) |
+                             ((int) packets[1 + 1] << 16) |
+                             ((int) packets[1 + 2] << 8) |
+                             ((int) packets[1 + 3]));
+
+    float a = *((float *) (&temp));
+    (void) a;
+//    float a = 234.543f;
+//    unsigned int tmp_float_int = *((unsigned int *) (&a));
+//    a = *((float *) (&tmp_float_int));
+//    (void) a;
+
+    precossing_proc_to_control((unsigned int *) packets, (const unsigned int *) buffer);
+    unpacking_proc_to_control(&packets[1]);
 }
 
-void test_precossing_variable_length_data() {
-    int ax = 0x7D4685, ay = 0x852114, az = 0x3305c4;
-    int offset_x = (int) (63.2467f * 10000), offset_y = (int) (-3.3462f), offset_z = (int) (202.16880f * 100000);
-    int bias_x = 0, bias_y = 0, bias_z = 0;
-    int offbias_x = 0, offbias_y = 0, offbias_z = 0;
-    int residual = 0, step_length = 0;
-    int num = 0;
-    int buffer[] = {ax, ay, az, offset_x, offset_y, offset_z, bias_x, bias_y, bias_z,
-                    offbias_x, offbias_y, offbias_z, residual, step_length, num
-    };
-    unsigned char packets[59] = {0};
-    precossing_variable_length_data((unsigned int *) packets, 59, buffer);
 
-    CU_ASSERT_EQUAL(packets[0], 0xa5);
-    CU_ASSERT_EQUAL(packets[1], 0xa5);
-    CU_ASSERT_EQUAL(packets[2], 0x3B);
-    CU_ASSERT_EQUAL(packets[3], 0x7D);
-    CU_ASSERT_EQUAL(packets[4], 0x46);
-    CU_ASSERT_EQUAL(packets[5], 0x85);
-    CU_ASSERT_EQUAL(packets[6], 0x85);
-    CU_ASSERT_EQUAL(packets[7], 0x21);
-    CU_ASSERT_EQUAL(packets[8], 0x14);
-    CU_ASSERT_EQUAL(packets[9], 0x33);
-    CU_ASSERT_EQUAL(packets[10], 0x05);
-    CU_ASSERT_EQUAL(packets[11], 0xC4);
-    CU_ASSERT_EQUAL(packets[12], 0x00);
-    CU_ASSERT_EQUAL(packets[13], 0x09);
-    CU_ASSERT_EQUAL(packets[14], 0xa6);
-    CU_ASSERT_EQUAL(packets[15], 0x93);
-    CU_ASSERT_EQUAL(packets[20], 0x01);
-    CU_ASSERT_EQUAL(packets[21], 0x34);
-    CU_ASSERT_EQUAL(packets[22], 0x7c);
-    CU_ASSERT_EQUAL(packets[23], 0x30);
-
-    unpacking_variable_length_data(packets + 3);
-
-    CU_ASSERT_EQUAL(debug_data.mag_x, 0x7D4685);
-    CU_ASSERT_EQUAL(debug_data.mag_y, 0x852114);
-    CU_ASSERT_EQUAL(debug_data.mag_z, 0x3305c4);
-    CU_ASSERT_EQUAL(debug_data.offset_x, 632467);
-    CU_ASSERT_EQUAL(debug_data.offset_y, -3);
-    CU_ASSERT_EQUAL(debug_data.offset_z, 20216880);
-}

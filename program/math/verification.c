@@ -26,9 +26,9 @@ unsigned char verification_checkxor_u8(const unsigned char *ptr, unsigned short 
 }
 
 // CRC-16/MODBUS
-unsigned short verification_crc16(unsigned char *ptr, unsigned short len) {
-    unsigned char uchCRCHi = 0xFF;
-    unsigned char uchCRCLo = 0xFF;
+unsigned short verification_crc16(unsigned int *ptr, unsigned short len) {
+    unsigned char uchCRCHi = 0x000000ff;
+    unsigned char uchCRCLo = 0x000000ff;
     unsigned long uIndex;
     while (len--) {
         uIndex = uchCRCHi ^ *ptr++;
@@ -39,10 +39,10 @@ unsigned short verification_crc16(unsigned char *ptr, unsigned short len) {
 }
 
 // CRC-8/MAXIM
-unsigned char verification_crc8(unsigned char *ptr, unsigned short len) {
+unsigned char verification_crc8(unsigned int *ptr, unsigned short len) {
     unsigned char crc = 0, i;
     while (len--) {
-        crc ^= *ptr++;
+        crc ^= (*ptr++ & 0x000000ff);
         for (i = 0; i < 8; i++) {
             if (crc & 0x01)
                 crc = (crc >> 1) ^ 0x8C;
