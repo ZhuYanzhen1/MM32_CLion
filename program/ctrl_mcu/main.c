@@ -12,6 +12,7 @@ extern unsigned int uart6_dma_buffer_1[PROC_MCU_SEND_AMOUNT];
 extern unsigned int uart6_dma_buffer_2[PROC_MCU_SEND_AMOUNT];
 
 int main(void) {
+    unsigned char counter = 150;
     delay_config();
     led_config();
     uart1_config();
@@ -28,8 +29,19 @@ int main(void) {
     debugger_register_variable(dbg_float32, &proc_data.distance_east, "ed");
     debugger_register_variable(dbg_float32, &proc_data.north_angle, "north");
     timer2_config();
+    timer3_config();
     while (1) {
-        LED1_TOGGLE();
-        delayms(500);
+        WRITE_REG(TIM3->CCR1, counter);
+        counter++;
+        if (counter == 200) {
+            while (1) {
+                counter--;
+                WRITE_REG(TIM3->CCR1, counter);
+                if (counter == 100)
+                    break;
+                delayms(20);
+            }
+        }
+        delayms(20);
     }
 }
