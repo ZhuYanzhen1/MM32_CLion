@@ -10,7 +10,6 @@
 
 extern unsigned int uart6_dma_buffer_1[PROC_MCU_SEND_AMOUNT];
 extern unsigned int uart6_dma_buffer_2[PROC_MCU_SEND_AMOUNT];
-extern decode_proc proc_data;
 
 int main(void) {
     delay_config();
@@ -20,6 +19,10 @@ int main(void) {
     uart6_dma_nvic_config();
     uart6_dma_receive_config(uart6_dma_buffer_1, PROC_MCU_SEND_AMOUNT);
     uart6_dma_set_transmit_buffer(uart6_dma_buffer_1, PROC_MCU_SEND_AMOUNT);
+    uart7_config();
+    uart7_dma_nvic_config();
+//    uart7_dma_receive_config(uart7_dma_buffer_1, 0);
+//    uart7_dma_set_transmit_buffer(uart7_dma_buffer_1, 0);
     cm_backtrace_config("mm32f3277", "1.0.1", "1.0.1");
     debugger_register_variable(dbg_float32, &proc_data.distance_north, "nd");
     debugger_register_variable(dbg_float32, &proc_data.distance_east, "ed");

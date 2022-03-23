@@ -39,7 +39,7 @@ void test_precossing_proc_to_control() {
     float e_dis = 444.342f;
     float num = 0xFFFF;
     unsigned int buffer[] = {*((unsigned int *) (&n_dis)), *((unsigned int *) (&e_dis))};
-    unsigned int packets[12] = {0};
+    unsigned int packets[PROC_MCU_SEND_AMOUNT] = {0};
 
     packets[1] = ((buffer[0] & 0xff000000) >> 24);
     packets[(1) + 1] = ((buffer[0] & 0x00ff0000) >> 16);

@@ -153,6 +153,37 @@ void uart6_config() {
     UART_Init(UART6, &UART_InitStruct);
     UART_Cmd(UART6, ENABLE);
 }
+
+void uart7_config() {
+    UART_InitTypeDef UART_InitStruct;
+    GPIO_InitTypeDef GPIO_InitStruct;
+
+    RCC_APB1PeriphClockCmd(RCC_APB1ENR_UART7, ENABLE);
+    RCC_AHBPeriphClockCmd(RCC_AHBENR_GPIOB, ENABLE);
+
+    GPIO_PinAFConfig(GPIOB, GPIO_PinSource6, GPIO_AF_8);
+    GPIO_PinAFConfig(GPIOB, GPIO_PinSource7, GPIO_AF_8);
+
+    GPIO_StructInit(&GPIO_InitStruct);
+    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_6;  // Tx
+    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_Init(GPIOB, &GPIO_InitStruct);
+    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_7;  //  Rx
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IPU;
+    GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+    UART_StructInit(&UART_InitStruct);
+    UART_InitStruct.BaudRate = UART7_BAUDRATE;
+    UART_InitStruct.WordLength = UART_WordLength_8b;
+    UART_InitStruct.StopBits = UART_StopBits_1;
+    UART_InitStruct.Parity = UART_Parity_No;
+    UART_InitStruct.HWFlowControl = UART_HWFlowControl_None;
+    UART_InitStruct.Mode = UART_Mode_Rx | UART_Mode_Tx;
+
+    UART_Init(UART7, &UART_InitStruct);
+    UART_Cmd(UART7, ENABLE);
+}
 #else
 void uart6_config() {
     UART_InitTypeDef UART_InitStruct;
@@ -245,7 +276,13 @@ void uart6_sendbyte(unsigned char data) {
     while (!UART_GetFlagStatus(UART6, UART_FLAG_TXEPT));
 }
 
-#ifdef IS_PROCESS_MCU
+#ifndef IS_PROCESS_MCU
+void uart7_sendbyte(unsigned char data) {
+    UART_SendData(UART7, data);
+    while (!UART_GetFlagStatus(UART7, UART_FLAG_TXEPT));
+}
+
+#else
 void uart4_sendbyte(unsigned char data) {
     UART_SendData(UART4, data);
     while (!UART_GetFlagStatus(UART4, UART_FLAG_TXEPT));
