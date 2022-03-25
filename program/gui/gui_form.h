@@ -1,6 +1,10 @@
-//
-// Created by LaoZhu on 2022/3/21.
-//
+/**************************************************************************/ /**
+    \file     gui_from.h
+    \brief    gui from features function Header File
+    \author   Lao·Zhu
+    \version  V1.0.1
+    \date     21. March 2022
+ ******************************************************************************/
 
 #ifndef MM32F3277_GUI_FORM_H_
 #define MM32F3277_GUI_FORM_H_

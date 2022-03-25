@@ -1,6 +1,10 @@
-//
-// Created by LaoZhu on 2022/3/21.
-//
+/**************************************************************************/ /**
+    \file     gui_from.c
+    \brief    gui from features function Source File
+    \author   Lao·Zhu
+    \version  V1.0.1
+    \date     21. March 2022
+ ******************************************************************************/
 
 #include "gui_form.h"
 #include "gui_base.h"

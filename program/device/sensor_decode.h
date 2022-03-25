@@ -1,6 +1,10 @@
-//
-// Created by 16625 on 2022-03-09.
-//
+/**************************************************************************/ /**
+    \file       sensor_decode.h
+    \brief      sensor_decode function Header File
+    \author     ZGL
+    \version    V1.3.2
+    \date       09. March 2022
+******************************************************************************/
 
 #ifndef MM32F3277_DEVICE_SENSOR_DECODE_H_
 #define MM32F3277_DEVICE_SENSOR_DECODE_H_

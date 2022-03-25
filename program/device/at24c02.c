@@ -1,6 +1,10 @@
-//
-// Created by Lao·Zhu on 2022/2/4.
-//
+/**************************************************************************/ /**
+    \file       at24c02.c
+    \brief      at24c02 function Source File
+    \author     LaoZhu
+    \version    V1.3.2
+    \date       04. February 2022
+******************************************************************************/
 
 #include "at24c02.h"
 #include "iic.h"

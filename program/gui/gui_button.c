@@ -1,6 +1,10 @@
-//
-// Created by Lao·Zhu on 2021/4/29.
-//
+/**************************************************************************/ /**
+    \file     gui_button.c
+    \brief    gui button features function Source File
+    \author   Lao·Zhu
+    \version  V1.0.1
+    \date     19. January 2022
+ ******************************************************************************/
 
 #include "gui_button.h"
 #include "gui_base.h"

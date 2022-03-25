@@ -1,6 +1,10 @@
-//
-// Created by 16625 on 2022-03-09.
-//
+/**************************************************************************/ /**
+    \file       sensor_decode.c
+    \brief      sensor_decode function Source File
+    \author     ZGL
+    \version    V1.3.2
+    \date       09. March 2022
+******************************************************************************/
 
 #include "sensor_decode.h"
 #include "verification.h"
