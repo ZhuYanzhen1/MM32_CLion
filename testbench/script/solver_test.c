@@ -65,6 +65,7 @@ void test_riccati_solver(void) {
                             {0, 0, 1}};
     float Matrix_R[2][2] = {{1, 0},
                             {0, 1}};
-    solveRiccatiIteration(Matrix_A, Matrix_B, Matrix_Q, Matrix_R);
+    float Matrix_P[3][3] = {0};
+    solveRiccatiIteration(Matrix_A, Matrix_B, Matrix_Q, Matrix_R, Matrix_P);
     CU_PASS("Riccati solver solved.");
 }
