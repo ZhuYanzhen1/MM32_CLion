@@ -23,78 +23,61 @@ float uabs(float value) {
 }
 
 void solveRiccatiIteration(float A[3][3], float B[3][2], float Q, float R, float P[3][3]) {
+    float A02 = A[0][2], A12 = A[1][2], B00 = B[0][0], B10 = B[1][0], B20 = B[2][0], B21 = B[2][1];
     float matrix_p_next[3][3] = {0};
     for (int i = 0; i < 3; ++i)
         for (int j = 0; j < 3; ++j)
             P[i][j] = Q;
 
     for (unsigned int counter = 0; counter < 100000; ++counter) {
-        float matrix_at_pn[3][3] = {{A[0][0] * P[0][0],                                         A[0][0] * P[0][1],
-                                                                                                         A[0][0] *
-                                                                                                         P[0][2]},
-                                    {A[1][1] * P[1][0],                                         A[1][1] *
-                                                                                                P[1][1], A[1][1] *
-                                                                                                         P[1][2]},
-                                    {A[0][2] * P[0][0] + A[1][2] * P[1][0] + A[2][2] * P[2][0], A[0][2] * P[0][1] +
-                                                                                                A[1][2] * P[1][1] +
-                                                                                                A[2][2] *
-                                                                                                P[2][1], A[0][2] *
-                                                                                                         P[0][2] +
-                                                                                                         A[1][2] *
-                                                                                                         P[1][2] +
-                                                                                                         A[2][2] *
-                                                                                                         P[2][2]}};
-        float matrix_bt_pn[2][3] = {{B[0][0] * P[0][0] + B[1][0] * P[1][0] + B[2][0] * P[2][0],
-                                                        B[0][0] * P[0][1] + B[1][0] * P[1][1] + B[2][0] * P[2][1],
-                                                                           B[0][0] * P[0][2] + B[1][0] * P[1][2] +
-                                                                           B[2][0] * P[2][2]},
-                                    {B[2][1] * P[2][0], B[2][1] * P[2][1], B[2][1] * P[2][2]}};
-        float matrix_at_pn_a[3][3] = {{A[0][0] * matrix_at_pn[0][0], A[1][1] * matrix_at_pn[0][1],
-                                                                                                   A[0][2] *
-                                                                                                   matrix_at_pn[0][0] +
-                                                                                                   A[1][2] *
-                                                                                                   matrix_at_pn[0][1] +
-                                                                                                   A[2][2] *
-                                                                                                   matrix_at_pn[0][2]},
-                                      {A[0][0] * matrix_at_pn[1][0], A[1][1] * matrix_at_pn[1][1], A[0][2] *
-                                                                                                   matrix_at_pn[1][0] +
-                                                                                                   A[1][2] *
-                                                                                                   matrix_at_pn[1][1] +
-                                                                                                   A[2][2] *
-                                                                                                   matrix_at_pn[1][2]},
-                                      {A[0][0] * matrix_at_pn[2][0], A[1][1] * matrix_at_pn[2][1], A[0][2] *
-                                                                                                   matrix_at_pn[2][0] +
-                                                                                                   A[1][2] *
-                                                                                                   matrix_at_pn[2][1] +
-                                                                                                   A[2][2] *
-                                                                                                   matrix_at_pn[2][2]}};
-        float matrix_at_pn_b[3][2] = {{matrix_at_pn[0][0] * B[0][0] + matrix_at_pn[0][1] * B[1][0] +
-                                       matrix_at_pn[0][2] * B[2][0], matrix_at_pn[0][2] * B[2][1]},
-                                      {matrix_at_pn[1][0] * B[0][0] + matrix_at_pn[1][1] * B[1][0] +
-                                       matrix_at_pn[1][2] * B[2][0], matrix_at_pn[1][2] * B[2][1]},
-                                      {matrix_at_pn[2][0] * B[0][0] + matrix_at_pn[2][1] * B[1][0] +
-                                       matrix_at_pn[2][2] * B[2][0], matrix_at_pn[2][2] * B[2][1]}};
-        float matrix_r_bt_pn_b[2][2] = {{B[0][0] * matrix_bt_pn[0][0] + B[1][0] * matrix_bt_pn[0][1] +
-                                         B[2][0] * matrix_bt_pn[0][2] + R,
-                                                                       B[2][1] *
-                                                                       matrix_bt_pn[0][2]},
-                                        {B[0][0] * matrix_bt_pn[1][0] + B[1][0] * matrix_bt_pn[1][1] +
-                                         B[2][0] * matrix_bt_pn[1][2], B[2][1] *
-                                                                       matrix_bt_pn[1][2] +
-                                                                       R}};
-        float matrix_bt_pn_a[2][3] = {{A[0][0] * matrix_bt_pn[0][0], A[1][1] * matrix_bt_pn[0][1],
-                                                                                                   A[0][2] *
-                                                                                                   matrix_bt_pn[0][0] +
-                                                                                                   A[1][2] *
-                                                                                                   matrix_bt_pn[0][1] +
-                                                                                                   A[2][2] *
-                                                                                                   matrix_bt_pn[0][2]},
-                                      {A[0][0] * matrix_bt_pn[1][0], A[1][1] * matrix_bt_pn[1][1], A[0][2] *
-                                                                                                   matrix_bt_pn[1][0] +
-                                                                                                   A[1][2] *
-                                                                                                   matrix_bt_pn[1][1] +
-                                                                                                   A[2][2] *
-                                                                                                   matrix_bt_pn[1][2]}};
+        float matrix_at_pn_a[3][3] = {{P[0][0],                                 P[0][1],
+                                                                                         A02 * P[0][0] + A12 * P[0][1] +
+                                                                                         P[0][2]},
+                                      {P[1][0],                                 P[1][1], A02 * P[1][0] + A12 * P[1][1] +
+                                                                                         P[1][2]},
+                                      {A02 * P[0][0] + A12 * P[1][0] + P[2][0], A02 * P[0][1] + A12 * P[1][1] + P[2][1],
+                                                                                         A02 * A02 * P[0][0] +
+                                                                                         A12 * A12 * P[1][1] +
+                                                                                         A02 * (P[0][2] +
+                                                                                                A12 *
+                                                                                                (P[0][1] +
+                                                                                                 P[1][0]) +
+                                                                                                P[2][0]) +
+                                                                                         A12 * (P[1][2] + P[2][1]) +
+                                                                                         P[2][2]}};
+        float matrix_at_pn_b[3][2] = {{B00 * P[0][0] + B10 * P[0][1] + B20 * P[0][2], B21 * P[0][2]},
+                                      {B00 * P[1][0] + B10 * P[1][1] + B20 * P[1][2], B21 * P[1][2]},
+                                      {B00 * (A02 * P[0][0] + A12 * P[1][0] + P[2][0]) +
+                                       B10 * (A02 * P[0][1] + A12 * P[1][1] + P[2][1]) +
+                                       B20 * (A02 * P[0][2] + A12 * P[1][2] + P[2][2]),
+                                                                                      B21 *
+                                                                                      (A02 * P[0][2] + A12 * P[1][2] +
+                                                                                       P[2][2])}};
+        float matrix_r_bt_pn_b[2][2] = {{B00 * B00 * P[0][0] + B00 * B10 * (P[0][1] + P[1][0]) + B10 * B10 * P[1][1] +
+                                         B00 * B20 *
+                                         (P[0][2] +
+                                          P[2][0]) +
+                                         B10 * B20 *
+                                         (P[1][2] +
+                                          P[2][1]) + B20 * B20 * P[2][2] + R,
+                                                                                                B21 * (B00 * P[0][2] +
+                                                                                                       B10 * P[1][2] +
+                                                                                                       B20 * P[2][2])},
+                                        {B21 * (B00 * P[2][0] + B10 * P[2][1] + B20 * P[2][2]), B21 * B21 * P[2][2] +
+                                                                                                R}};
+        float matrix_bt_pn_a[2][3] = {{B00 * P[0][0] + B10 * P[1][0] + B20 * P[2][0],
+                                                      B00 * P[0][1] + B10 * P[1][1] + B20 * P[2][1],
+                                                                     B00 * P[0][2] + B10 * P[1][2] + A02 *
+                                                                                                     (B00 *
+                                                                                                      P[0][0] +
+                                                                                                      B10 *
+                                                                                                      P[1][0] +
+                                                                                                      B20 *
+                                                                                                      P[2][0]) +
+                                                                     A12 * (B00 * P[0][1] + B10 * P[1][1] +
+                                                                            B20 * P[2][1]) + B20 * P[2][2]},
+                                      {B21 * P[2][0], B21 * P[2][1], B21 *
+                                                                     (A02 * P[2][0] + A12 * P[2][1] + P[2][2])}};
         float matrix_inv_r_bt_pn_b[2][2] =
             {{matrix_r_bt_pn_b[1][1]
               / (-matrix_r_bt_pn_b[0][1] * matrix_r_bt_pn_b[1][0]

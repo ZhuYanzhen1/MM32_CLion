@@ -457,7 +457,7 @@
       (reference "#PWR052") (unit 1) (value "GND") (footprint "")
     )
     (path "/31693e58-80b4-4de8-ac40-6f11248c4bda/f3d9392e-2ef7-4633-96e5-0e55b120358b"
-      (reference "C1") (unit 1) (value "1uF") (footprint "Capacitor_SMD:C_0201_0603Metric")
+      (reference "C1") (unit 1) (value "1uF") (footprint "Capacitor_SMD:C_0603_1608Metric")
     )
     (path "/31693e58-80b4-4de8-ac40-6f11248c4bda/2980ad59-3e64-49fa-8a4a-36acbd7fcb7c"
       (reference "C2") (unit 1) (value "10uF") (footprint "Capacitor_SMD:C_0603_1608Metric")
