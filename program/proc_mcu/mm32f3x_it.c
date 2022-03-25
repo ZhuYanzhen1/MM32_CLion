@@ -23,7 +23,8 @@ void EXTI4_IRQHandler(void) {
         BaseType_t xHigherPriorityTaskWoken = pdFALSE;
         EXTI_ClearFlag(EXTI_Line4);
         if (!GPIO_ReadInputDataBit(TOUCH_PEN_PORT, TOUCH_PEN_PIN) && touch_event != NULL)
-            xEventGroupSetBitsFromISR(touch_event, 0x00000001, &xHigherPriorityTaskWoken);
+            xEventGroupSetBitsFromISR(touch_event, 0x00000001,
+                                      &xHigherPriorityTaskWoken);
     }
 }
 
