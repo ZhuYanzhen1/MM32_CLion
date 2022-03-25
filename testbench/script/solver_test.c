@@ -52,17 +52,27 @@ void test_calibration_solver(void) {
     }
 }
 
+#define TOLERANCE_PRECISION     0.1f
 void test_riccati_solver(void) {
     float fai_r = 0.23f, delta_r = 0.086f, L = 0.4f, v_r = 5.1f, dt = 0.01f;
-    float Matrix_A[3][3] = {{1, 0, -v_r * dt * sinf(fai_r)},
-                            {0, 1, v_r * dt * cosf(fai_r)},
-                            {0, 0, 1}};
-    float Matrix_B[3][2] = {{cosf(fai_r) * dt,       0},
-                            {sinf(fai_r) * dt,       0},
-                            {tanf(delta_r) * dt / L, v_r * dt / (L * cosf(delta_r) * cosf(delta_r))}};
-    float Q = 1;
-    float R = 1;
-    float Matrix_P[3][3] = {0};
-    solveRiccatiIteration(Matrix_A, Matrix_B, Q, R, Matrix_P);
-    CU_PASS("Riccati solver solved.");
+    float error_x = 1.2f, error_y = 0.4f, error_fai = 0.17f;
+    float a[3][3] = {{1, 0, -v_r * dt * sinf(fai_r)},
+                     {0, 1, v_r * dt * cosf(fai_r)},
+                     {0, 0, 1}};
+    float b[3][2] = {{cosf(fai_r) * dt, 0},
+                     {sinf(fai_r) * dt, 0},
+                     {tanf(delta_r) * dt / L, v_r * dt / (L * cosf(delta_r) * cosf(delta_r))}};
+    float x[3][1] = {{error_x}, {error_y}, {error_fai}};
+    float p[3][3] = {0};
+    float control_val[2][1] = {0};
+    float r = 1;
+    float q = 1;
+
+    solve_riccati_equation(a, b, q, r, p);
+    solve_feedback_value(p, a, b, x, r, control_val);
+
+    CU_ASSERT(fabsf(control_val[0][0]) < fabsf(-1.2583f - TOLERANCE_PRECISION))
+    CU_ASSERT(fabsf(control_val[0][0]) > fabsf(-1.2583f + TOLERANCE_PRECISION))
+    CU_ASSERT(fabsf(control_val[1][0]) < fabsf(-0.3026f - TOLERANCE_PRECISION))
+    CU_ASSERT(fabsf(control_val[1][0]) > fabsf(-0.3026f + TOLERANCE_PRECISION))
 }
