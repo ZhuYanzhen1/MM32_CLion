@@ -20,6 +20,9 @@ void uart4_config();
 void uart6_config();
 void uart6_sendbyte(unsigned char data);
 
+void uart7_config();
+void uart7_sendbyte(unsigned char data);
+
 void uart8_config();
 void uart8_sendbyte(unsigned char data);
 

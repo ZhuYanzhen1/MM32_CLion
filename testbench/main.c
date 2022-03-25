@@ -21,12 +21,12 @@ int main() {
     add_test_scripts_to_suite(&sort_suite, "sort_mergesort", test_merge_sort);
     add_test_scripts_to_suite(&sort_suite, "sort_quicksort", test_quick_sort);
 
-//    CU_pSuite verification_suite = NULL;
-//    initialize_cunit_suite(&verification_suite, "verification_suit");
-//    add_test_scripts_to_suite(&verification_suite, "verification_checksum", test_verification_checksum);
-//    add_test_scripts_to_suite(&verification_suite, "verification_checkxor", test_verification_checkxor);
-//    add_test_scripts_to_suite(&verification_suite, "verification_crc8", test_verification_crc8);
-//    add_test_scripts_to_suite(&verification_suite, "verification_crc16", test_verification_crc16);
+    CU_pSuite verification_suite = NULL;
+    initialize_cunit_suite(&verification_suite, "verification_suit");
+    add_test_scripts_to_suite(&verification_suite, "verification_checksum", test_verification_checksum);
+    add_test_scripts_to_suite(&verification_suite, "verification_checkxor", test_verification_checkxor);
+    add_test_scripts_to_suite(&verification_suite, "verification_crc8", test_verification_crc8);
+    add_test_scripts_to_suite(&verification_suite, "verification_crc16", test_verification_crc16);
 
     CU_pSuite solver_suite = NULL;
     initialize_cunit_suite(&solver_suite, "solver_suite");

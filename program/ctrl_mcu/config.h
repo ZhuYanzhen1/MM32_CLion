@@ -37,11 +37,11 @@
 #define TIM2_PRIORITY           10
 #define UART1_PRIORITY          2
 #define UART1_DMA_PRIORITY      3
-#define UART6_PRIORITY          1
-
 #define UART6_DMA_PRIORITY      1
+#define UART7_DMA_PRIORITY      2
 
 #define UART1_BAUDRATE          115200
 #define UART6_BAUDRATE          115200
+#define UART7_BAUDRATE          115200
 
 #endif  // MM32F3277_USER_CONFIG_H_

@@ -65,6 +65,7 @@ void initialize_task(void *parameters) {
     at24c02_readparams();
 
     debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
+    debugger_register_variable(dbg_float32, &small_packets.north, "north");
     debugger_register_variable(dbg_float32, &small_packets.kalman_north, "kalman");
     timer2_config();
 
@@ -98,16 +99,16 @@ void fusion_task(void *parameters) {
                 packets_counter = (packets_counter + packages_to_be_unpacked[2] - 1); // 移动到下一个包的前一个位置
             }
         }
-        while (gps_rmc.status != 'A')
-            delayms(1);
+//        while (gps_rmc.status != 'A')
+//            delayms(1);
         sensor_unit_conversion();
         kalman_data.v = kalman_update(&kalman_v, neu.v, neu.acceleration,
-                                      0.031f, 0);
+                                      0.031f);
         coordinate_system_transformation_kalman_v(small_packets.kalman_north);
         kalman_data.distance_north = kalman_update(&kalman_distance_north, neu.north_distance,
-                                                   neu.north_v, 0.031f, 0);
+                                                   neu.north_v, 0.031f);
         kalman_data.distance_east = kalman_update(&kalman_distance_earth, neu.east_distance,
-                                                  neu.east_v, 0.031f, 0);
+                                                  neu.east_v, 0.031f);
         delayms(30);
     }
 }

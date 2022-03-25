@@ -41,7 +41,7 @@ void precossing_proc_to_control(unsigned int packets[PROC_MCU_SEND_AMOUNT], cons
     \param[in]  packets: Packets to be solved
     \note       The package to be solved does not contain the head and tail parts of the package
 */
-void unpacking_proc_to_control(unsigned int packets[14]) {
+void unpacking_proc_to_control(unsigned int packets[PROC_MCU_SEND_AMOUNT - 2]) {
     unsigned int temp;
     short checksum = verification_crc8((unsigned int *) packets, 13);
     small_packets.checksum = (short) packets[13];
@@ -72,7 +72,7 @@ void unpacking_fixed_length_data(unsigned int packets[10]) {
         if (packets[8] & (0x80 >> i))
             packets[i] = 0xff;
 
-    small_packets.north = (short) (packets[0] | (((short) packets[5] & 0xf0) << 4));
+    small_packets.north = (float) ((short) (packets[0] | (((short) packets[5] & 0xf0) << 4))) / 10.0f;
     small_packets.kalman_north = (float) ((short) (packets[1] | (((short) packets[5] & 0x0f) << 8))) / 10.0f;
     small_packets.ax = (short) (packets[2] | (((short) packets[6] & 0xf0) << 4));
     small_packets.ay = (short) (packets[3] | ((short) (packets[6] & 0x0f) << 8));
@@ -113,3 +113,36 @@ void unpacking_variable_length_data(unsigned int *packets) {
     DECODE_TO_INT(debug_data.step_length, 52)
     DECODE_TO_SHORT(debug_data.num, 56)
 }
+
+#ifdef IS_CONTROL_MCU
+static unsigned char status = 0;
+static unsigned int package_buffer[80];
+static unsigned char package_counter = 0;
+//static unsigned char package_counter_1 = 0;
+
+void deal_dma_proc(const unsigned int *p) {
+    for (unsigned char counter = 0; counter < PROC_MCU_SEND_AMOUNT; ++counter) {
+        switch (status) {
+            case 0:if (p[counter] == 0xff) status = 1;
+                break;
+            case 1:
+                if (p[counter] == 0xff && package_counter != (PROC_MCU_SEND_AMOUNT - 2))
+                    status = 1;
+                else if (p[counter] == 0xff && package_counter == (PROC_MCU_SEND_AMOUNT - 2))
+                    status = 2;
+                else {
+                    package_buffer[package_counter] = p[counter];
+                    package_counter++;
+                }
+                break;
+            case 2:unpacking_proc_to_control(package_buffer);
+                package_counter = 0;
+                status = 1;
+                break;
+            default:break;
+        }
+    }
+}
+
+#endif
+

@@ -5,7 +5,7 @@
 #ifndef MM32F3277_DEVICE_SENSOR_DECODE_H_
 #define MM32F3277_DEVICE_SENSOR_DECODE_H_
 
-#define READ_MCU_AMOUNT         252
+#define READ_MCU_AMOUNT         24
 #define PROC_MCU_SEND_AMOUNT    16
 #define SHORT_SPLIT_CHAR(x, y)  packets[x] = ((buffer[y] & 0x0000ff00) >> 8);\
                                 packets[(x)+1] = (buffer[y] & 0x000000ff);
@@ -33,7 +33,7 @@
  * xy：x占高四位；y占低四位
  * */
 typedef struct {
-    short north;
+    float north;
     float kalman_north;
     short ax;
     short ay;
@@ -68,10 +68,12 @@ typedef struct {
 
 extern decode_fixed small_packets;
 extern decode_debug debug_data;
+extern decode_proc proc_data;
 
 void precossing_proc_to_control(unsigned int packets[PROC_MCU_SEND_AMOUNT], const unsigned int *buffer);
 void unpacking_fixed_length_data(unsigned int packets[10]);
 void unpacking_variable_length_data(unsigned int *packets);
-void unpacking_proc_to_control(unsigned int packets[10]);
+void unpacking_proc_to_control(unsigned int packets[PROC_MCU_SEND_AMOUNT - 2]);
+void deal_dma_proc(const unsigned int *p);
 
 #endif // MM32F3277_DEVICE_SENSOR_DECODE_H_
