@@ -60,12 +60,9 @@ void test_riccati_solver(void) {
     float Matrix_B[3][2] = {{cosf(fai_r) * dt,       0},
                             {sinf(fai_r) * dt,       0},
                             {tanf(delta_r) * dt / L, v_r * dt / (L * cosf(delta_r) * cosf(delta_r))}};
-    float Matrix_Q[3][3] = {{1, 0, 0},
-                            {0, 1, 0},
-                            {0, 0, 1}};
-    float Matrix_R[2][2] = {{1, 0},
-                            {0, 1}};
+    float Q = 1;
+    float R = 1;
     float Matrix_P[3][3] = {0};
-    solveRiccatiIteration(Matrix_A, Matrix_B, Matrix_Q, Matrix_R, Matrix_P);
+    solveRiccatiIteration(Matrix_A, Matrix_B, Q, R, Matrix_P);
     CU_PASS("Riccati solver solved.");
 }
