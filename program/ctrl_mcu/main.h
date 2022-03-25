@@ -31,6 +31,7 @@
 ///////////// Math /////////////
 #include "qfplib.h"
 #include "verification.h"
+#include "riccati_solver.h"
 
 ///////////// Debug /////////////
 #include "debugger.h"

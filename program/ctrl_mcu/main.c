@@ -31,17 +31,35 @@ int main(void) {
     timer2_config();
     timer3_config();
     while (1) {
-        WRITE_REG(TIM3->CCR1, counter);
-        counter++;
-        if (counter == 200) {
-            while (1) {
-                counter--;
-                WRITE_REG(TIM3->CCR1, counter);
-                if (counter == 100)
-                    break;
-                delayms(20);
-            }
-        }
+//        WRITE_REG(TIM3->CCR1, counter);
+//        counter++;
+//        if (counter == 200) {
+//            while (1) {
+//                counter--;
+//                WRITE_REG(TIM3->CCR1, counter);
+//                if (counter == 100)
+//                    break;
+//                delayms(20);
+//            }
+//        }
+
+        float fai_r = 0.23f, delta_r = 0.086f, L = 0.4f, v_r = 5.1f, dt = 0.01f;
+        float Matrix_A[3][3] = {{1, 0, -v_r * dt * qfp_fsin(fai_r)},
+                                {0, 1, v_r * dt * qfp_fcos(fai_r)},
+                                {0, 0, 1}};
+        float Matrix_B[3][2] = {{qfp_fcos(fai_r) * dt, 0},
+                                {qfp_fsin(fai_r) * dt, 0},
+                                {qfp_ftan(delta_r) * dt / L, v_r * dt / (L * qfp_fcos(delta_r) * qfp_fcos(delta_r))}};
+        float Matrix_Q[3][3] = {{1, 0, 0},
+                                {0, 1, 0},
+                                {0, 0, 1}};
+        float Matrix_R[2][2] = {{1, 0},
+                                {0, 1}};
+        float Matrix_P[3][3] = {0};
+        LED1_ON();
+        solveRiccatiIteration(Matrix_A, Matrix_B, Matrix_Q, Matrix_R, Matrix_P);
+        LED1_OFF();
+
         delayms(20);
     }
 }
