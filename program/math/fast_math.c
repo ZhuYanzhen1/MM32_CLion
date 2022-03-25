@@ -91,18 +91,24 @@ float my_pow(float x, int n) {
 }
 
 float my_asin(float x) {
-
     float result = 0;
     float temp = x;
 
     int n = 1;
 
     while ((temp > 1e-15) || (temp < -1e-15)) {
+#ifdef RUNNING_UNIT_TEST
         result += temp;
         temp = (float) my_factorial(2 * n) / (my_pow(2, 2 * n) * my_pow((float) my_factorial(n), 2))
             * my_pow(x, 2 * n + 1) / (float) (2 * n + 1);
         n++;
-
+#else
+        result = qfp_fadd(result, temp);
+        temp = qfp_fmul(qfp_fdiv((float) my_factorial(2 * n),
+                                 qfp_fmul(my_pow(2, 2 * n), my_pow((float) my_factorial(n), 2))),
+                        qfp_fdiv(my_pow(x, 2 * n + 1), (float) (2 * n + 1)));
+        n++;
+#endif // RUNNING_UNIT_TEST
     }
     return result;
 }

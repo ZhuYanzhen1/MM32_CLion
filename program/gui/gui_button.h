@@ -1,15 +1,19 @@
-//
-// Created by Lao·Zhu on 2021/4/29.
-//
+/**************************************************************************/ /**
+    \file     gui_button.h
+    \brief    gui button features function Header File
+    \author   Lao·Zhu
+    \version  V1.0.1
+    \date     19. January 2022
+ ******************************************************************************/
 
 #ifndef MM32F3277_GUI_BUTTON_H_
 #define MM32F3277_GUI_BUTTON_H_
 
-#define BUTTON_COLOR_NORMAL 0xE73C
-#define BUTTON_COLOR_NORMAL_EDGE 0xCE59
+#define BUTTON_COLOR_NORMAL         0xE73C
+#define BUTTON_COLOR_NORMAL_EDGE    0xCE59
 
-#define BUTTON_COLOR_CLICK 0xF719
-#define BUTTON_COLOR_CLICK_EDGE 0x9AA0
+#define BUTTON_COLOR_CLICK          0xF719
+#define BUTTON_COLOR_CLICK_EDGE     0x9AA0
 
 typedef enum {
     button_normal_status = 0,
