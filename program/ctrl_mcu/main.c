@@ -53,20 +53,10 @@ int main(void) {
         float Q = 1;
         float R = 1;
         float Matrix_P[3][3] = {0};
+
         LED1_ON();
         solveRiccatiIteration(Matrix_A, Matrix_B, Q, R, Matrix_P);
         LED1_OFF();
-
-        printf("------------Matrix P------------\r\n");
-        _fflush(stdout);
-        delayms(30);
-        for (int counter1 = 0; counter1 < 3; ++counter1) {
-            for (int counter2 = 0; counter2 < 3; ++counter2)
-                printf("%f   ", Matrix_P[counter1][counter2]);
-            printf("\r\n");
-            _fflush(stdout);
-            delayms(30);
-        }
 
         delayms(20);
     }

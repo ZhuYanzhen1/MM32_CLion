@@ -32,6 +32,7 @@
 #include "qfplib.h"
 #include "verification.h"
 #include "riccati_solver.h"
+#include "fast_math.h"
 
 ///////////// Debug /////////////
 #include "debugger.h"

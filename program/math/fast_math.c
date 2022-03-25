@@ -85,11 +85,7 @@ float my_pow(float x, int n) {
     if (n == 0)
         return 1;
     for (int i = 0; i < n; i++) {
-#ifdef RUNNING_UNIT_TEST
         result *= x;
-#else
-        result = qfp_fmul(result, x);
-#endif // RUNNING_UNIT_TEST
     }
     return result;
 }
@@ -101,33 +97,17 @@ float my_asin(float x) {
     int n = 1;
 
     while ((temp > 1e-15) || (temp < -1e-15)) {
-#ifdef RUNNING_UNIT_TEST
         result += temp;
         temp = (float) my_factorial(2 * n) / (my_pow(2, 2 * n) * my_pow((float) my_factorial(n), 2))
             * my_pow(x, 2 * n + 1) / (float) (2 * n + 1);
         n++;
-#else
-        result = qfp_fadd(result, temp);
-        temp = qfp_fmul(qfp_fdiv((float) my_factorial(2 * n),
-                                 qfp_fmul(my_pow(2, 2 * n), my_pow((float) my_factorial(n), 2))),
-                        qfp_fdiv(my_pow(x, 2 * n + 1), (float) (2 * n + 1)));
-        n++;
-#endif // RUNNING_UNIT_TEST
     }
     return result;
 }
 
 float my_acos(float x) {
-
-#ifdef RUNNING_UNIT_TEST
     if (x < 0.5 && x > -0.5)
         return M_PI / 2 - my_asin(x);
     else
         return 2 * my_asin(fast_sqrt((1 - x) / 2));
-#else
-    if (x < 0.5 && x > -0.5)
-        return M_PI / 2 - my_asin(x);
-    else
-        return 2 * my_asin(qfp_fsqrt((1 - x) / 2));
-#endif // RUNNING_UNIT_TEST
 }
