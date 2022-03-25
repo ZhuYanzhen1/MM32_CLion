@@ -72,7 +72,7 @@ void unpacking_fixed_length_data(unsigned int packets[10]) {
         if (packets[8] & (0x80 >> i))
             packets[i] = 0xff;
 
-    small_packets.north = (short) (packets[0] | (((short) packets[5] & 0xf0) << 4));
+    small_packets.north = (float) ((short) (packets[0] | (((short) packets[5] & 0xf0) << 4))) / 10.0f;
     small_packets.kalman_north = (float) ((short) (packets[1] | (((short) packets[5] & 0x0f) << 8))) / 10.0f;
     small_packets.ax = (short) (packets[2] | (((short) packets[6] & 0xf0) << 4));
     small_packets.ay = (short) (packets[3] | ((short) (packets[6] & 0x0f) << 8));

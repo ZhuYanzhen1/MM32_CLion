@@ -62,5 +62,3 @@ void test_precossing_proc_to_control() {
     precossing_proc_to_control((unsigned int *) packets, (const unsigned int *) buffer);
     unpacking_proc_to_control(&packets[1]);
 }
-
-

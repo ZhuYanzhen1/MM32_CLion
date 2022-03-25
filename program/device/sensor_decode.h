@@ -5,7 +5,7 @@
 #ifndef MM32F3277_DEVICE_SENSOR_DECODE_H_
 #define MM32F3277_DEVICE_SENSOR_DECODE_H_
 
-#define READ_MCU_AMOUNT         252
+#define READ_MCU_AMOUNT         24
 #define PROC_MCU_SEND_AMOUNT    16
 #define SHORT_SPLIT_CHAR(x, y)  packets[x] = ((buffer[y] & 0x0000ff00) >> 8);\
                                 packets[(x)+1] = (buffer[y] & 0x000000ff);
@@ -33,7 +33,7 @@
  * xy：x占高四位；y占低四位
  * */
 typedef struct {
-    short north;
+    float north;
     float kalman_north;
     short ax;
     short ay;

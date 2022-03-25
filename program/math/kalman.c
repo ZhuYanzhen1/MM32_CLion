@@ -54,20 +54,13 @@ void kalman_config_distance(kalman_filter_t *kalman, float pos_0) {
     \note       The pos should be in degrees and the rate should be in degrees per second
                 and the delta time in seconds
 */
-float kalman_update(kalman_filter_t *kalman, float new_pos, float new_vel, float dt, unsigned char angle_flag) {
+float kalman_update(kalman_filter_t *kalman, float new_pos, float new_vel, float dt) {
 
     /* Discrete Kalman filter time update equations - Time Update ("Predict") */
     /* Update xhat - Project the state ahead */
     /* Step 1 */
     kalman->vel = new_vel - kalman->bias;
     kalman->pos += dt * kalman->vel;
-
-    /* When using geomagnetometer and gyroscope to fuse out the true north angle, flag == 1 */
-    /* Keep the angle in the range of 0~360° */
-    if (angle_flag) {
-        kalman->pos =
-            (kalman->pos < 0) ? kalman->pos + 360.0f : (kalman->pos > 360.0f) ? kalman->pos - 360.0f : kalman->pos;
-    }
 
     /* Update estimation error covariance - Project the error covariance ahead */
     /* Step 2 */
@@ -95,10 +88,6 @@ float kalman_update(kalman_filter_t *kalman, float new_pos, float new_vel, float
     /* Step 6 */
     kalman->pos += K[0] * y;
     kalman->vel += K[1] * y;
-    /* Overcome the transition from 360° to 0° */
-    if (angle_flag)
-        if (y >= 300 || y <= -300)
-            kalman->pos = new_pos;
 
     /* Calculate estimation error covariance - Update the error covariance */
     /* Step 7 */
