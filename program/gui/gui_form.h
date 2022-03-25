@@ -27,4 +27,4 @@ void gui_form_update(unsigned char x_pos, unsigned char y_pos);
 void gui_form_bind_label(form_struct_t *form, void *label);
 void gui_form_bind_button(form_struct_t *form, void *button);
 
-#endif // MM32F3277_GUI_FORM_H_
+#endif  // MM32F3277_GUI_FORM_H_

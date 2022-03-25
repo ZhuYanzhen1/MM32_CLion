@@ -1,6 +1,10 @@
-//
-// Created by LaoZhu on 2022/2/28.
-//
+/**************************************************************************/ /**
+    \file       fast_math.c
+    \brief      Fast development, fast inverse trigonometric functions
+    \author     Lao·Zhu & ZGL
+    \version    V1.3.3
+    \date       22. March 2022
+******************************************************************************/
 
 #include "fast_math.h"
 #include "qfplib.h"

@@ -13,7 +13,7 @@
 #include "../ctrl_mcu/pin.h"
 #else
 #include "../proc_mcu/pin.h"
-#endif
+#endif // IS_CONTROL_MCU
 
 void led_config(void) {
     GPIO_InitTypeDef GPIO_InitStruct;

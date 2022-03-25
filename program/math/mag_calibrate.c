@@ -1,3 +1,11 @@
+/**************************************************************************/ /**
+    \file     mag_calibrate.c
+    \brief    mag_calibrate features function Source File
+    \author   Lao·Zhu
+    \version  V1.0.1
+    \date     21. March 2022
+ ******************************************************************************/
+
 #include "mag_calibrate.h"
 #include "fast_math.h"
 
@@ -8,7 +16,7 @@
 #else
 #include "printf.h"
 #include "delay.h"
-#endif
+#endif  // RUNNING_UNIT_TEST
 
 #define OUTPUT_DEBUG_INFO   0
 
@@ -261,12 +269,13 @@ char run_gn_sphere_fit(const float x[], const float y[], const float z[], unsign
 
     deltavalue = fast_sqrt(deltavalue);
 
-    calc_mean_residual(x, y, z, size, *offset_x, *offset_y, *offset_z, *sphere_radius,
-                       *diag_x, *diag_y, *diag_z, *offdiag_x, *offdiag_y, *offdiag_z);
+    calc_mean_residual(x, y, z, size, *offset_x, *offset_y, *offset_z,
+                       *sphere_radius, *diag_x, *diag_y, *diag_z, *offdiag_x,
+                       *offdiag_y, *offdiag_z);
 
 #if OUTPUT_DEBUG_INFO == 1
     printf("Residual = %lf, Increment = %lf\r\n", residual, deltavalue);
-#endif
+#endif  // OUTPUT_DEBUG_INFO == 1
 
     *sphere_radius = fit_params[0];
     *offset_x = fit_params[1];
@@ -344,11 +353,12 @@ char run_gn_ellipsoid_fit(const float x[], const float y[], const float z[], uns
     }
     deltavalue = fast_sqrt(deltavalue);
 
-    calc_mean_residual(x, y, z, size, *offset_x, *offset_y, *offset_z, *sphere_radius,
-                       *diag_x, *diag_y, *diag_z, *offdiag_x, *offdiag_y, *offdiag_z);
+    calc_mean_residual(x, y, z, size, *offset_x, *offset_y, *offset_z,
+                       *sphere_radius, *diag_x, *diag_y, *diag_z,
+                       *offdiag_x, *offdiag_y, *offdiag_z);
 #if OUTPUT_DEBUG_INFO == 1
     printf("Residual = %lf, Increment = %lf\r\n", residual, deltavalue);
-#endif
+#endif  // OUTPUT_DEBUG_INFO == 1
 
     *offset_x = fit_params[0];
     *offset_y = fit_params[1];
@@ -387,13 +397,14 @@ void ellipsoid_fit_least_squares(float x[],
 #ifndef RUNNING_UNIT_TEST
     delayms(100);
 #endif
-#endif
+#endif  // OUTPUT_DEBUG_INFO == 1
     for (int i = 0; i < max_iterations; i++) {
         stopflag = run_gn_sphere_fit(x, y, z, size, &offset_x, &offset_y, &offset_z,
-                                     &sphere_radius, &diag_x, &diag_y, &diag_z, &offdiag_x, &offdiag_y, &offdiag_z);
+                                     &sphere_radius, &diag_x, &diag_y, &diag_z,
+                                     &offdiag_x, &offdiag_y, &offdiag_z);
 #ifndef RUNNING_UNIT_TEST
         delayms(100);
-#endif
+#endif  // RUNNING_UNIT_TEST
         if (stopflag == 1)
             break;
     }
@@ -404,14 +415,14 @@ void ellipsoid_fit_least_squares(float x[],
 #ifndef RUNNING_UNIT_TEST
     delayms(100);
 #endif
-#endif
+#endif  // OUTPUT_DEBUG_INFO == 1
     for (int i = 0; i < max_iterations; i++) {
         stopflag = run_gn_ellipsoid_fit(x, y, z, size, &offset_x, &offset_y, &offset_z,
                                         &sphere_radius, &diag_x, &diag_y, &diag_z,
                                         &offdiag_x, &offdiag_y, &offdiag_z);
 #ifndef RUNNING_UNIT_TEST
         delayms(100);
-#endif
+#endif  // RUNNING_UNIT_TEST
         if (stopflag == 1)
             break;
     }
@@ -421,7 +432,7 @@ void ellipsoid_fit_least_squares(float x[],
 #ifndef RUNNING_UNIT_TEST
     delayms(100);
 #endif
-#endif
+#endif  // OUTPUT_DEBUG_INFO == 1
     *finalfitness = calc_mean_residual(x, y, z, size, offset_x, offset_y, offset_z, sphere_radius,
                                        diag_x, diag_y, diag_z, offdiag_x, offdiag_y, offdiag_z);
 #if OUTPUT_DEBUG_INFO == 1
@@ -429,7 +440,7 @@ void ellipsoid_fit_least_squares(float x[],
     delayms(100);
 #endif
     printf("Final fitness = %f\r\n", *finalfitness);
-#endif
+#endif  // OUTPUT_DEBUG_INFO == 1
 
     //置换回去
     calibrate_param->offset[0] = offset_x;
@@ -446,11 +457,12 @@ void ellipsoid_fit_least_squares(float x[],
 
 char check_calibration_result(calpara_t calibrate_param, float fitness) {
     float tolerance = 15.0f;
-    //The maximum measurement range is ~1.9 Ga, the earth field is ~0.6 Ga, so an offset larger than ~1.3 Ga means the mag will saturate in some directions.
+    /* The maximum measurement range is ~1.9 Ga, the earth field is ~0.6 Ga, so an offset larger than
+     ~1.3 Ga means the mag will saturate in some directions. */
     float offset_max = 1300;    //mG
     if ((fitness <= tolerance) &&
         (calibrate_param.radius > 150) && (calibrate_param.radius < 950) &&
-        //Earth's magnetic field strength range: 250-850mG
+        /* Earth's magnetic field strength range: 250-850mG */
         (fast_absf(calibrate_param.offset[0]) < offset_max) &&
         (fast_absf(calibrate_param.offset[1]) < offset_max) &&
         (fast_absf(calibrate_param.offset[2]) < offset_max) &&
@@ -492,7 +504,7 @@ char CompassCal(float sample[3]) {
             samples_collected++;
 #if OUTPUT_DEBUG_INFO == 1
             printf("samples_collected = %d\r\n", samples_collected);
-#endif
+#endif  // OUTPUT_DEBUG_INFO == 1
             if (samples_collected == COMPASS_CAL_NUM_SAMPLES)
                 cal_state++;
         }

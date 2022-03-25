@@ -1,6 +1,10 @@
-//
-// Created by Lao·Zhu on 2021/5/1.
-//
+/**************************************************************************/ /**
+    \file     gui_label.c
+    \brief    gui from features function Source File
+    \author   Lao·Zhu
+    \version  V1.3.2
+    \date     21. March 2022
+ ******************************************************************************/
 
 #include "gui_label.h"
 #include "gui_base.h"

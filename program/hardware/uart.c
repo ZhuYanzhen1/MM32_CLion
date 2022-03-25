@@ -12,7 +12,7 @@
 #include "../ctrl_mcu/config.h"
 #else
 #include "../proc_mcu/config.h"
-#endif
+#endif  // IS_CONTROL_MCU
 #include "dma.h"
 
 void uart1_config() {
@@ -223,7 +223,7 @@ void uart6_config() {
     UART_ITConfig(UART6, UART_IT_RXIEN, ENABLE);
     UART_Cmd(UART6, ENABLE);
 }
-#endif
+#endif  // IS_CONTROL_MCU
 
 #ifdef IS_PROCESS_MCU
 void uart8_config() {

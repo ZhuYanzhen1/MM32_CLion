@@ -3,8 +3,8 @@
     \brief      Coordinate system transformation
                 Data Transformation
     \author     ZGL
-    \version    V1.3.2
-    \date       06. March 2022
+    \version    V1.3.3
+    \date       22. March 2022
 ******************************************************************************/
 #ifndef MM32F3277_MATH_DATA_CONVERSION_H_
 #define MM32F3277_MATH_DATA_CONVERSION_H_
@@ -32,4 +32,4 @@ extern neu_infomation neu;
 void sensor_unit_conversion();
 void coordinate_system_transformation_kalman_v(float delta);
 
-#endif // MM32F3277_MATH_DATA_CONVERSION_H_
+#endif  // MM32F3277_MATH_DATA_CONVERSION_H_

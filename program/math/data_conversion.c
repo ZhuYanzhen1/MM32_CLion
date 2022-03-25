@@ -3,8 +3,8 @@
     \brief      Coordinate system transformation
                 Data Transformation
     \author     ZGL
-    \version    V1.3.2
-    \date       06. March 2022
+    \version    V1.3.3
+    \date       22. March 2022
 ******************************************************************************/
 
 #include "data_conversion.h"
@@ -59,10 +59,8 @@ float get_distance_m_lon(float lon) {
 }
 
 /*!
-    \brief      Preceding steps of Kalman Fusion
-                Convert the acceleration of imu and velocity of gps to NEU coordinate system
-                Convert the data units read from the sensor to m/s^2, m/s, m
-    \param[in]  True North Angle
+    \brief  Converting GPS-derived latitude,
+            longitude, velocity and acceleration into the international system of units
 */
 void sensor_unit_conversion() {
     float temp_latitude = unit_to_degree(gps_rmc.latitude, 4);
@@ -76,7 +74,10 @@ void sensor_unit_conversion() {
     int v_decimal = num_times_nth_power_of_10(1, gps_rmc.decimal_places_speed);
     neu.v = KNOT_TO_M_S(temp_v / v_decimal);
 }
-
+/*
+    \brief  The velocity obtained after Kalman filtering
+            becomes the velocity in the northeast sky coordinate system
+*/
 void coordinate_system_transformation_kalman_v(float delta) {
     float temp_delta = GEO_ANGLE(delta);
     neu.north_v = kalman_data.v * qfp_fcos(temp_delta);

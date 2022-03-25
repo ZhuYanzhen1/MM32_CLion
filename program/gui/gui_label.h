@@ -1,6 +1,10 @@
-//
-// Created by Lao·Zhu on 2021/5/1.
-//
+/**************************************************************************/ /**
+    \file     gui_label.h
+    \brief    gui from features function Header File
+    \author   Lao·Zhu
+    \version  V1.3.2
+    \date     21. March 2022
+ ******************************************************************************/
 
 #ifndef MM32F3277_GUI_LABLE_H_
 #define MM32F3277_GUI_LABLE_H_
@@ -28,4 +32,4 @@ void gui_label_init(label_struct_t *label,
 void gui_label_settext(label_struct_t *label, const char *fmt, ...);
 void gui_label_update(label_struct_t *label);
 
-#endif // MM32F3277_GUI_LABLE_H_
+#endif  // MM32F3277_GUI_LABLE_H_

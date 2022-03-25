@@ -1,3 +1,11 @@
+/**************************************************************************/ /**
+    \file     mag_calibrate.c
+    \brief    mag_calibrate features function Source File
+    \author   Lao·Zhu
+    \version  V1.0.1
+    \date     21. March 2022
+ ******************************************************************************/
+
 typedef struct {
     unsigned char vflg;
     float offset[3];  //bias error
