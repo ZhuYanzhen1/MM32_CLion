@@ -9,7 +9,7 @@
 #ifndef MM32F3277_DEVICE_SENSOR_DECODE_H_
 #define MM32F3277_DEVICE_SENSOR_DECODE_H_
 
-#define READ_MCU_AMOUNT         24
+#define READ_MCU_AMOUNT         158
 #define PROC_MCU_SEND_AMOUNT    16
 #define SHORT_SPLIT_CHAR(x, y)  packets[x] = ((buffer[y] & 0x0000ff00) >> 8);\
                                 packets[(x)+1] = (buffer[y] & 0x000000ff);
@@ -38,7 +38,7 @@
  * */
 typedef struct {
     float north;
-    float kalman_north;
+    float chebyshev_north;
     short ax;
     short ay;
     short az;
@@ -52,14 +52,14 @@ typedef struct {
     int offset_x;
     int offset_y;
     int offset_z;
-    int bias_x;
-    int bias_y;
-    int bias_z;
-    int offbias_x;
-    int offbias_y;
-    int offbias_z;
+    int diag_x;
+    int diag_y;
+    int diag_z;
+    int offdiag_x;
+    int offdiag_y;
+    int offdiag_z;
     int residual;
-    int step_length;
+    int step_length;    // 步长
     int num;    // 收到第几个数据
     int checksum;
 } decode_debug;

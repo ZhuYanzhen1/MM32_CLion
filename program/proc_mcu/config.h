@@ -21,7 +21,7 @@
 /* use mdtp protocol to print buffer */
 #define DEBUG_USE_PROTOCOL      1
 /* use vTaskList to report task info */
-#define USE_FREERTOS_REPORT     1
+#define USE_FREERTOS_REPORT     0
 /* GUI CallBack Function Priority set to 2 */
 #define GUI_CALLBACK_PRIO       2
 

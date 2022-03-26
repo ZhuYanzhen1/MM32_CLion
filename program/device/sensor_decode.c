@@ -77,7 +77,7 @@ void unpacking_fixed_length_data(unsigned int packets[10]) {
             packets[i] = 0xff;
 
     small_packets.north = (float) ((short) (packets[0] | (((short) packets[5] & 0xf0) << 4))) / 10.0f;
-    small_packets.kalman_north = (float) ((short) (packets[1] | (((short) packets[5] & 0x0f) << 8))) / 10.0f;
+    small_packets.chebyshev_north = (float) ((short) (packets[1] | (((short) packets[5] & 0x0f) << 8))) / 10.0f;
     small_packets.ax = (short) (packets[2] | (((short) packets[6] & 0xf0) << 4));
     small_packets.ay = (short) (packets[3] | ((short) (packets[6] & 0x0f) << 8));
     small_packets.az = (short) (packets[4] | ((short) (packets[7] & 0xf0) << 4));
@@ -107,12 +107,12 @@ void unpacking_variable_length_data(unsigned int *packets) {
     DECODE_TO_INT(debug_data.offset_x, 12)
     DECODE_TO_INT(debug_data.offset_y, 16)
     DECODE_TO_INT(debug_data.offset_z, 20)
-    DECODE_TO_INT(debug_data.bias_x, 24)
-    DECODE_TO_INT(debug_data.bias_y, 28)
-    DECODE_TO_INT(debug_data.bias_z, 32)
-    DECODE_TO_INT(debug_data.offbias_x, 36)
-    DECODE_TO_INT(debug_data.offbias_y, 40)
-    DECODE_TO_INT(debug_data.offbias_z, 44)
+    DECODE_TO_INT(debug_data.diag_x, 24)
+    DECODE_TO_INT(debug_data.diag_y, 28)
+    DECODE_TO_INT(debug_data.diag_z, 32)
+    DECODE_TO_INT(debug_data.offdiag_x, 36)
+    DECODE_TO_INT(debug_data.offdiag_y, 40)
+    DECODE_TO_INT(debug_data.offdiag_z, 44)
     DECODE_TO_INT(debug_data.residual, 48)
     DECODE_TO_INT(debug_data.step_length, 52)
     DECODE_TO_SHORT(debug_data.num, 56)
