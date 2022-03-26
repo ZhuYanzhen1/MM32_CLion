@@ -21,7 +21,7 @@ static label_struct_t kalman_east_distance_lable;
 void gui_show_fusion(void *parameter) {
     (void) parameter;
     gui_label_settext(&north_label, " north:%f   ", small_packets.north);
-    gui_label_settext(&kalman_north_label, " k_north:%f   ", small_packets.kalman_north);
+    gui_label_settext(&kalman_north_label, " k_north:%f   ", small_packets.chebyshev_north);
     gui_label_settext(&gnss_status_label, " status:%c ", gps_rmc.status);
     gui_label_settext(&north_distance_label, " nd:%f  ", neu.north_distance);
     gui_label_settext(&east_distance_label, " ed:%f  ", neu.east_distance);
