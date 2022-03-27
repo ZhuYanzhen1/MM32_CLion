@@ -62,7 +62,7 @@ void gui_form_bind_button(form_struct_t *form, void *button) {
 void gui_form_display(form_struct_t *form) {
     unsigned char button_counter = form->button_num;
     unsigned char label_counter = form->label_num;
-    unsigned char text_x = 3;
+    unsigned char text_x = 4;
     gui_clear_screan(C_WHITE);
     gui_draw_rectangle(0, 0, 128, 16, FORM_TITLE_COLOR, Filled);
     gui_printf(text_x, 2, C_BLACK, FORM_TITLE_COLOR, "%s", form->text);
