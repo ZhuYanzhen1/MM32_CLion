@@ -97,8 +97,8 @@ void unpacking_variable_length_data(unsigned int *packets) {
 //    debug_data.ax = (int) ((int) (packets[0] & 0x00ff0000) | (int) (packets[1] & 0x0000ff00) |
 //        (packets[2] & 0x000000ff));
 
-    unsigned short checksum = verification_crc16((unsigned int *) packets, 58);
-    DECODE_TO_SHORT(debug_data.checksum, 58)
+    unsigned short checksum = verification_crc16((unsigned int *) packets, 64);
+    DECODE_TO_SHORT(debug_data.checksum, 64)    //
     if (checksum != debug_data.checksum) return;
 
     DECODE_TO_INT(debug_data.mag_x, 0)
@@ -116,6 +116,9 @@ void unpacking_variable_length_data(unsigned int *packets) {
     DECODE_TO_INT(debug_data.residual, 48)
     DECODE_TO_INT(debug_data.step_length, 52)
     DECODE_TO_SHORT(debug_data.num, 56)
+    DECODE_TO_SHORT(debug_data.ax, 58)
+    DECODE_TO_SHORT(debug_data.ay, 60)
+    DECODE_TO_SHORT(debug_data.az, 62)
 }
 
 #ifdef IS_CONTROL_MCU

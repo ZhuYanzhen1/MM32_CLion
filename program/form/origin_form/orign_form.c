@@ -8,6 +8,7 @@
 #include "orgin_sensor_form.h"
 
 extern form_struct_t main_form;
+
 form_struct_t orgin_form;
 static button_struct_t orgin_gnss_form_btn;
 static button_struct_t orgin_sensor_form_btn;
