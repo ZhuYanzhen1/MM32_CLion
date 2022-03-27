@@ -23,13 +23,11 @@ TaskHandle_t led_taskhandler;
 TaskHandle_t gui_taskhandler;
 TaskHandle_t touch_taskhandler;
 TaskHandle_t fusion_taskhandler;
-TaskHandle_t send_taskhandler;
 TaskHandle_t initialize_taskhandler;
 void touchscan_task(void *parameters);
 void guiupdate_task(void *parameters);
 void ledblink_task(void *parameters);
 void fusion_task(void *parameters);
-void send_task(void *parameters);
 void initialize_task(void *parameters);
 
 EventGroupHandle_t touch_event = NULL;
@@ -65,8 +63,7 @@ void initialize_task(void *parameters) {
     at24c02_readparams();
 
     debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
-    debugger_register_variable(dbg_float32, &small_packets.north, "north");
-    debugger_register_variable(dbg_float32, &small_packets.chebyshev_north, "kalman");
+    debugger_register_variable(dbg_float32, &small_packets.chebyshev_north, "compass");
     timer2_config();
 
     xTaskCreate(fusion_task, "sensor_fusion", 512, NULL, 3,
@@ -77,8 +74,6 @@ void initialize_task(void *parameters) {
                 &gui_taskhandler);
     xTaskCreate(touchscan_task, "touch_scan", 128, NULL, 1,
                 &touch_taskhandler);
-    xTaskCreate(send_task, "send_task", 128, NULL, 2,
-                &send_taskhandler);
     vTaskDelete(NULL);
 }
 
@@ -109,15 +104,7 @@ void fusion_task(void *parameters) {
                                                    neu.north_v, 0.031f);
         kalman_data.distance_east = kalman_update(&kalman_distance_earth, neu.east_distance,
                                                   neu.east_v, 0.031f);
-        delayms(100);
-//        if (debug_data.mag_x != mag_x_old)
-//            printf("%d %d %d\n\r", debug_data.mag_x, debug_data.mag_y, debug_data.mag_z);
-//        mag_x_old = debug_data.mag_x;
-    }
-}
 
-void send_task(void *parameters) {
-    while (1) {
         unsigned int proc_to_ctrl_buffer[3] =
             {*((unsigned int *) (&kalman_data.distance_north)), *((unsigned int *) (&kalman_data.distance_east)),
              *((unsigned int *) (&small_packets.chebyshev_north))};
@@ -125,7 +112,11 @@ void send_task(void *parameters) {
         for (unsigned char i = 0; i < PROC_MCU_SEND_AMOUNT; i++) {
             uart4_sendbyte(proc_to_ctrl_package[i]);
         }
-        delayms(10);
+
+        delayms(30);
+//        if (debug_data.mag_x != mag_x_old)
+//            printf("%d %d %d\n\r", debug_data.mag_x, debug_data.mag_y, debug_data.mag_z);
+//        mag_x_old = debug_data.mag_x;
     }
 }
 
@@ -143,7 +134,7 @@ void touchscan_task(void *parameters) {
         xQueueSend(touch_point_queue, &combine_pos, 0);
         while (!GPIO_ReadInputDataBit(TOUCH_PEN_PORT, TOUCH_PEN_PIN))
             delayms(20);
-        delayms(50);
+        delayms(200);
         EXTI_ClearFlag(EXTI_Line4);
         EXTI->IMR |= EXTI_Line4;
     }
