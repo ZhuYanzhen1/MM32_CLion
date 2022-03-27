@@ -31,7 +31,8 @@ add_compile_options(-O2)
 #add_definitions(-DUSE_HAL_DRIVER)
 
 include_directories(library/regs system system/cmsis library/include proc_mcu hardware system/official
-        math device debug protocol gui ctrl_mcu freertos form)
+        math device debug protocol gui ctrl_mcu freertos form form/origin_form form/fusion_form form/calibrate_form
+        form/debug_form)
 
 file(GLOB_RECURSE CONTROL_SOURCES "system/official/startup_mm32f327.s" "library/source/*.c" "math/*.c"
         "system/*.c" "system/official/*.c" "math/qfplib.s" "debug/*.c" "protocol/*.c" "debug/cmb_fault.S"

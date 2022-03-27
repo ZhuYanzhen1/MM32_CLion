@@ -3,7 +3,7 @@
 //
 
 #include "main.h"
-#include "mag_calibrate_form.h"
+#include "calibrate_mag_form.h"
 
 static form_struct_t mag_calibrate_form;
 static label_struct_t offset_x_form;
@@ -47,7 +47,7 @@ void gui_mag_calibrate_form_init() {
     gui_label_init(&residual_form, 10, C_BLACK, label_align_left, " residual");
     gui_label_init(&num_form, 0, C_BLACK, label_align_left, " num");
 
-    gui_form_init(&mag_calibrate_form, "MagCalibrateform", gui_show_mag_calibrate);
+    gui_form_init(&mag_calibrate_form, "Cal-Magnet", gui_show_mag_calibrate);
 
     gui_form_bind_label(&mag_calibrate_form, &offset_x_form);
     gui_form_bind_label(&mag_calibrate_form, &offset_y_form);
