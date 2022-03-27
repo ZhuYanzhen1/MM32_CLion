@@ -1,0 +1,10 @@
+//
+// Created by 16625 on 2022-03-27.
+//
+
+#ifndef MM32F3277_FORM_ORIGIN_FORM_ORGIN_GNSS_FORM_H_
+#define MM32F3277_FORM_ORIGIN_FORM_ORGIN_GNSS_FORM_H_
+
+void gui_orgin_gnss_form_init();
+
+#endif // MM32F3277_FORM_ORIGIN_FORM_ORGIN_GNSS_FORM_H_

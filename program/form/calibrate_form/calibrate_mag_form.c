@@ -31,7 +31,6 @@ void gui_show_mag_calibrate(void *parameter) {
     gui_label_settext(&offdiag_z_form, " offdiag_z:%d   ", debug_data.offdiag_z);
     gui_label_settext(&residual_form, " residual:%d   ", debug_data.residual);
     gui_label_settext(&num_form, " num:%d   ", debug_data.num);
-
 }
 
 void gui_mag_calibrate_form_init() {
