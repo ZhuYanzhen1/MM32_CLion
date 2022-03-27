@@ -6,7 +6,7 @@
 #include "fusion_form.h"
 #include "mag_calibrate_from.h"
 
-static form_struct_t main_form;
+form_struct_t main_form;
 static button_struct_t fusion_form_btn;
 static button_struct_t mag_calibrate_form_btn;
 
