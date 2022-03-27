@@ -20,6 +20,7 @@ static TaskHandle_t gui_callback_taskhandler;
 extern unsigned char battery_voltage;
 
 void gui_callback_task(void *parameters) {
+    vTaskDelay(220);
     ((button_struct_t *) parameters)->callback(parameters);
     vTaskDelete(NULL);
 }

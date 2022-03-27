@@ -5,6 +5,7 @@
 #include "main.h"
 #include "calibrate_touch_form.h"
 
+extern TaskHandle_t gui_taskhandler;
 extern short touch_x_offset, touch_y_offset;
 extern float touch_x_factor, touch_y_factor;
 
@@ -19,6 +20,11 @@ static button_struct_t calibrate_touch_form_return_btn;
 
 static void calibrate_touch_btn_callback(void *parameter) {
     (void) parameter;
+    vTaskSuspend(gui_taskhandler);
+    xpt2046_calibrate();
+    at24c02_saveparams();
+    gui_form_display(&calibrate_touch_form);
+    vTaskResume(gui_taskhandler);
 }
 
 static void calibrate_touch_form_return_btn_callback(void *parameter) {

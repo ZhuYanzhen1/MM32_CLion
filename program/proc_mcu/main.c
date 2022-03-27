@@ -58,8 +58,6 @@ void initialize_task(void *parameters) {
     delayms(2000);
     uart3_config();
     gps_config();
-//    xpt2046_calibrate();
-//    at24c02_saveparams();
     at24c02_readparams();
 
     debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
