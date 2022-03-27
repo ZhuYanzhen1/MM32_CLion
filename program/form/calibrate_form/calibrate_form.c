@@ -4,6 +4,7 @@
 
 #include "main.h"
 #include "calibrate_form.h"
+#include "calibrate_touch_form.h"
 
 extern form_struct_t main_form;
 form_struct_t calibrate_form;
@@ -17,6 +18,7 @@ void calibrate_mag_form_btn_callback(void *parameter) {
 
 void calibrate_touch_form_btn_callback(void *parameter) {
     (void) parameter;
+    gui_calibrate_touch_form_init();
 }
 
 void calibrate_form_return_btn_callback(void *parameter) {
