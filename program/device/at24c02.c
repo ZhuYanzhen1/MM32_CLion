@@ -147,16 +147,17 @@ unsigned char at24c02_test_memory(void) {
     return 0;
 }
 
-extern short xoffset, yoffset;
-extern float xfactor, yfactor;
+extern short touch_x_offset, touch_y_offset;
+extern float touch_x_factor, touch_y_factor;
 void at24c02_saveparams(void) {
-    unsigned int float_int32 = (*(unsigned int *) &xfactor);
-    unsigned char tmp_buf[8] = {xoffset >> 8, xoffset & 0x00ff, yoffset >> 8, yoffset & 0x00ff,
-                                float_int32 >> 24, (float_int32 >> 16) & 0x000000ff, (float_int32 >> 8) & 0x000000ff,
-                                float_int32 & 0x000000ff};
+    unsigned int float_int32 = (*(unsigned int *) &touch_x_factor);
+    unsigned char
+        tmp_buf[8] = {touch_x_offset >> 8, touch_x_offset & 0x00ff, touch_y_offset >> 8, touch_y_offset & 0x00ff,
+                      float_int32 >> 24, (float_int32 >> 16) & 0x000000ff, (float_int32 >> 8) & 0x000000ff,
+                      float_int32 & 0x000000ff};
     at24c02_writebytes(0x00, tmp_buf, 8);
 
-    float_int32 = (*(unsigned int *) &yfactor);
+    float_int32 = (*(unsigned int *) &touch_y_factor);
     tmp_buf[0] = float_int32 >> 24;
     tmp_buf[1] = (float_int32 >> 16) & 0x000000ff;
     tmp_buf[2] = (float_int32 >> 8) & 0x000000ff;
@@ -168,12 +169,12 @@ void at24c02_readparams(void) {
     unsigned char tmp_buf[8] = {0};
 
     at24c02_readbytes(0x00, tmp_buf, 8);
-    xoffset = (short) (tmp_buf[0] << 8 | tmp_buf[1]);
-    yoffset = (short) (tmp_buf[2] << 8 | tmp_buf[3]);
+    touch_x_offset = (short) (tmp_buf[0] << 8 | tmp_buf[1]);
+    touch_y_offset = (short) (tmp_buf[2] << 8 | tmp_buf[3]);
     unsigned int float_int32 = (tmp_buf[4] << 24 | tmp_buf[5] << 16 | tmp_buf[6] << 8 | tmp_buf[7]);
-    xfactor = (*(float *) &float_int32);
+    touch_x_factor = (*(float *) &float_int32);
 
     at24c02_readbytes(0x08, tmp_buf, 8);
     float_int32 = (tmp_buf[0] << 24 | tmp_buf[1] << 16 | tmp_buf[2] << 8 | tmp_buf[3]);
-    yfactor = (*(float *) &float_int32);
+    touch_y_factor = (*(float *) &float_int32);
 }
