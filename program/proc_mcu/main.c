@@ -75,7 +75,6 @@ void initialize_task(void *parameters) {
     vTaskDelete(NULL);
 }
 
-int mag_x_old = 0;
 void fusion_task(void *parameters) {
     (void) parameters;
     kalman_config_v(&kalman_v);
@@ -112,6 +111,7 @@ void fusion_task(void *parameters) {
         }
 
         delayms(30);
+//        static int mag_x_old = 0;
 //        if (debug_data.mag_x != mag_x_old)
 //            printf("%d %d %d\n\r", debug_data.mag_x, debug_data.mag_y, debug_data.mag_z);
 //        mag_x_old = debug_data.mag_x;
