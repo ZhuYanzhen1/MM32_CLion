@@ -41,14 +41,38 @@ void gui_label_update(label_struct_t *label) {
     switch (label->align) {
         default:
         case label_align_left:
+            gui_draw_rectangle(text_length,
+                               label->colum * 12 + 16,
+                               128 - text_length,
+                               12,
+                               C_WHITE,
+                               Filled);
             gui_printf(0, label->colum * 12 + 16, label->color,
                        C_WHITE, "%s", label->text);
             break;
         case label_align_middle:
+            gui_draw_rectangle(0,
+                               label->colum * 12 + 16,
+                               (128 - text_length) / 2,
+                               12,
+                               C_WHITE,
+                               Filled);
+            gui_draw_rectangle((128 - text_length) / 2 + text_length,
+                               label->colum * 12 + 16,
+                               (128 - text_length) / 2,
+                               12,
+                               C_WHITE,
+                               Filled);
             gui_printf((128 - text_length) / 2, label->colum * 12 + 16, label->color,
                        C_WHITE, "%s", label->text);
             break;
         case label_align_right:
+            gui_draw_rectangle(0,
+                               label->colum * 12 + 16,
+                               128 - text_length,
+                               12,
+                               C_WHITE,
+                               Filled);
             gui_printf(128 - text_length, label->colum * 12 + 16, label->color,
                        C_WHITE, "%s", label->text);
             break;
