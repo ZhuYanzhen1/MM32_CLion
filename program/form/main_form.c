@@ -3,8 +3,9 @@
 //
 
 #include "main.h"
-#include "calibrate_form.h"
 #include "orign_form.h"
+#include "fusion_form.h"
+#include "calibrate_form.h"
 
 form_struct_t main_form;
 static button_struct_t origin_form_btn;
@@ -19,6 +20,7 @@ void origin_form_btn_callback(void *parameter) {
 
 void fusion_form_btn_callback(void *parameter) {
     (void) parameter;
+    gui_fusion_form_init();
 }
 
 void calibrate_form_btn_callback(void *parameter) {
