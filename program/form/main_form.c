@@ -13,6 +13,7 @@ static button_struct_t mag_calibrate_form_btn;
 void mag_calibrate_form_btn_callback(void *parameter) {
     (void) parameter;
     gui_mag_calibrate_from_init();
+    uart8_sendbyte(1);
 }
 
 void fusion_form_btn_callback(void *parameter) {

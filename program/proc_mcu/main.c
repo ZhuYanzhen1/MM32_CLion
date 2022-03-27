@@ -89,6 +89,7 @@ void fusion_task(void *parameters) {
     kalman_config_distance(&kalman_distance_north, 384400);
     kalman_config_distance(&kalman_distance_earth, 1487900);
     while (1) {
+
         for (unsigned short packets_counter = 0; packets_counter < READ_MCU_AMOUNT; packets_counter++) {
             if (packages_to_be_unpacked[packets_counter] == 0xff
                 && packages_to_be_unpacked[packets_counter + 11] == 0xff) {
@@ -109,7 +110,6 @@ void fusion_task(void *parameters) {
         kalman_data.distance_east = kalman_update(&kalman_distance_earth, neu.east_distance,
                                                   neu.east_v, 0.031f);
         delayms(100);
-
 //        if (debug_data.mag_x != mag_x_old)
 //            printf("%d %d %d\n\r", debug_data.mag_x, debug_data.mag_y, debug_data.mag_z);
 //        mag_x_old = debug_data.mag_x;
