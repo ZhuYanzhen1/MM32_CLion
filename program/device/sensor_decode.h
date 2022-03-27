@@ -60,7 +60,10 @@ typedef struct {
     int offdiag_z;
     int residual;
     int step_length;    // 步长
-    int num;    // 收到第几个数据
+    int num;    // 收到第几个数
+    short ax;
+    short ay;
+    short az;
     int checksum;
 } decode_debug;
 
