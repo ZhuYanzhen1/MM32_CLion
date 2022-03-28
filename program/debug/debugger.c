@@ -26,6 +26,8 @@ static unsigned char printf_byte_counter = 0;
 static unsigned char printf_byte_buffer[8] = {0};
 static unsigned char variable_dma_counter = 0;
 
+control_signal_t control_signal = {0};
+
 /*!
     \brief        user callback function for unpacking completion of medium capacity transport protocol
     \param[in]    pid: medium capacity transport protocol package id
@@ -33,8 +35,10 @@ static unsigned char variable_dma_counter = 0;
     \retval none
 */
 void mdtp_callback_handler(unsigned char pid, const unsigned char *data) {
-    (void) pid;
-    (void) data;
+    if (pid == 0x00) {
+        control_signal.joystick_x = data[0] << 8 | data[1];
+        control_signal.joystick_y = data[2] << 8 | data[3];
+    }
 }
 
 #if DEBUG_USE_PROTOCOL == 1

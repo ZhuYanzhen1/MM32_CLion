@@ -61,7 +61,10 @@ void initialize_task(void *parameters) {
     at24c02_readparams();
 
     debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
+    debugger_register_variable(dbg_uint16, &control_signal.joystick_x, "joy_x");
+    debugger_register_variable(dbg_uint16, &control_signal.joystick_y, "joy_y");
     debugger_register_variable(dbg_float32, &small_packets.chebyshev_north, "compass");
+
     timer2_config();
 
     xTaskCreate(fusion_task, "sensor_fusion", 512, NULL, 3,

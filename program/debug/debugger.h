@@ -26,6 +26,13 @@ typedef struct DEBUGGER_VARIABLE_T {
     unsigned char var_name[16];
 } debugger_variable_t;
 
+typedef struct CONTROL_SIGNAL_T {
+    unsigned short joystick_x;
+    unsigned short joystick_y;
+} control_signal_t;
+
+extern control_signal_t control_signal;
+
 void mdtp_callback_handler(unsigned char pid, const unsigned char *data);
 void debugger_register_variable(variable_type var_type, void *variable, const char *name);
 void debugger_scan_variable(unsigned long time_stamp);
