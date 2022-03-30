@@ -27,11 +27,11 @@ unsigned char verification_checkxor_u8(const unsigned char *ptr, unsigned short 
 
 // CRC-16/MODBUS
 unsigned short verification_crc16(unsigned int *ptr, unsigned short len) {
-    unsigned char uchCRCHi = 0x000000ff;
-    unsigned char uchCRCLo = 0x000000ff;
+    unsigned char uchCRCHi = 0xff;
+    unsigned char uchCRCLo = 0xff;
     unsigned long uIndex;
     while (len--) {
-        uIndex = uchCRCHi ^ *ptr++;
+        uIndex = uchCRCHi ^ (*ptr++ & 0x000000ff);
         uchCRCHi = uchCRCLo ^ verification_crc16_tabelh[uIndex];
         uchCRCLo = verification_crc16_tabell[uIndex];
     }

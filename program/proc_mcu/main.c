@@ -88,7 +88,8 @@ void fusion_task(void *parameters) {
                 unpacking_fixed_length_data((unsigned int *) &packages_to_be_unpacked[packets_counter + 1]);
                 packets_counter = (packets_counter + 11);  // 移动到包尾位置
             } else if (packages_to_be_unpacked[packets_counter] == 0xa5
-                && packages_to_be_unpacked[packets_counter + 1] == 0x5a) {
+                && packages_to_be_unpacked[packets_counter + 1] == 0x5a
+                && ((packets_counter + packages_to_be_unpacked[2] - 1) < READ_MCU_AMOUNT)) {
                 unpacking_variable_length_data((unsigned int *) &packages_to_be_unpacked[packets_counter + 3]);
                 packets_counter = (packets_counter + packages_to_be_unpacked[2] - 1); // 移动到下一个包的前一个位置
             }

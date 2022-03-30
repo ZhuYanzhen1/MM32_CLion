@@ -19,9 +19,10 @@ void orgin_gnss_form_btn_callback(void *parameter) {
     gui_orgin_gnss_form_init();
 }
 
-void orginsensor_form_btn_callback(void *parameter) {
+void orgin_sensor_form_btn_callback(void *parameter) {
     (void) parameter;
     gui_orgin_sensor_form_init();
+    uart8_sendbyte(0x03);
 }
 
 void orgin_form_return_btn_callback(void *parameter) {
@@ -35,7 +36,7 @@ void gui_orgin_form_update(void *parameter) {
 
 void gui_orgin_form_init(void) {
     orgin_gnss_form_btn.callback = orgin_gnss_form_btn_callback;
-    orgin_sensor_form_btn.callback = orginsensor_form_btn_callback;
+    orgin_sensor_form_btn.callback = orgin_sensor_form_btn_callback;
     orgin_form_return_btn.callback = orgin_form_return_btn_callback;
 
     gui_button_init(&orgin_gnss_form_btn, 14, 50 + 6, 100, 26, "Ori-Gnss");

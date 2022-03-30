@@ -18,18 +18,19 @@ static button_struct_t sensor_return_btn;
 
 static void gui_show_orgin_sensor(void *parameter) {
     (void) parameter;
-    gui_label_settext(&ax_label, " ax:%d   ", debug_data.offset_x);
-    gui_label_settext(&ay_label, " ay:%d   ", debug_data.offset_y);
-    gui_label_settext(&az_label, " az:%d   ", debug_data.offset_z);
-    gui_label_settext(&mag_x_label, " mag_x:%d   ", debug_data.offdiag_x);
-    gui_label_settext(&mag_y_label, " mag_y:%d   ", debug_data.offdiag_y);
-    gui_label_settext(&mag_z_label, " mag_z:%d   ", debug_data.offdiag_z);
+    gui_label_settext(&ax_label, " ax:%d   ", debug_data.ax);
+    gui_label_settext(&ay_label, " ay:%d   ", debug_data.ay);
+    gui_label_settext(&az_label, " az:%d   ", debug_data.az);
+    gui_label_settext(&mag_x_label, " mag_x:%d   ", debug_data.mag_x);
+    gui_label_settext(&mag_y_label, " mag_y:%d   ", debug_data.mag_y);
+    gui_label_settext(&mag_z_label, " mag_z:%d   ", debug_data.mag_z);
 
 }
 
 static void sensor_form_return_callback(void *parameter) {
     (void) parameter;
     gui_form_display(&orgin_form);
+    uart8_sendbyte(0x00);
 }
 
 void gui_orgin_sensor_form_init() {

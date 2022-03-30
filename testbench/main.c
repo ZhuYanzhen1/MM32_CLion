@@ -32,6 +32,7 @@ int main() {
     initialize_cunit_suite(&solver_suite, "solver_suite");
     add_test_scripts_to_suite(&solver_suite, "riccati_solver", test_riccati_solver);
     add_test_scripts_to_suite(&solver_suite, "calibrate_solver", test_calibration_solver);
+    add_test_scripts_to_suite(&solver_suite, "calc_target_index", test_calc_target_index);
 
     CU_pSuite sensor_decode_suite = NULL;
     initialize_cunit_suite(&sensor_decode_suite, "sensor_decode_suite");
