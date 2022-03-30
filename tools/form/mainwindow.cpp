@@ -2,7 +2,9 @@
 #include "./ui_mainwindow.h"
 #include <QSimpleUpdater.h>
 
+static joyinfoex_tag joystick_state_last;
 void MainWindow::display_slot_row(joyinfoex_tag state_row) {
+    unsigned char data[8] = {0};
     QString string_tmp;
     string_tmp.append("dwXpos=").append(QString::number(state_row.dwXpos)).append("\n");
     string_tmp.append("dwYpos=").append(QString::number(state_row.dwYpos)).append("\n");
@@ -13,13 +15,26 @@ void MainWindow::display_slot_row(joyinfoex_tag state_row) {
     string_tmp.append("dwButtonNumber=").append(QString::number(state_row.dwButtonNumber)).append("\n");
     string_tmp.append("dwPOV=").append(QString::number(state_row.dwPOV));
     ui->joystick_txt->setText(string_tmp);
+
+    if (joystick_state_last.dwUpos != state_row.dwUpos ||
+        joystick_state_last.dwRpos != state_row.dwRpos) {
+        data[0] = (state_row.dwUpos & 0x0000ff00) >> 8;
+        data[1] = (state_row.dwUpos & 0x000000ff);
+        data[2] = (state_row.dwRpos & 0x0000ff00) >> 8;
+        data[3] = (state_row.dwRpos & 0x000000ff);
+        if(serial->isOpen())
+            mdtp_data_transmit(0x00, data);
+        joystick_state_last.dwUpos = state_row.dwUpos;
+        joystick_state_last.dwRpos = state_row.dwRpos;
+        // qDebug() << data[0] << data[1] << data[2] << data[3];
+    }
 }
 
 void MainWindow::downloadFinished(const QString &url, const QString &filepath) {
     (void) filepath;
     if (url == update_url) {
         QDir dir;
-        if(!dir.exists(QCoreApplication::applicationDirPath() + "/extract")){
+        if(!dir.exists(QCoreApplication::applicationDirPath() + "/extract")) {
             dir.mkdir(QCoreApplication::applicationDirPath() + "/extract");
         }
         QFile::copy(QCoreApplication::applicationDirPath() + "/download/monitor.exe",
@@ -35,7 +50,7 @@ void MainWindow::monitor_check_update(void) {
     updater = QSimpleUpdater::getInstance();
     connect(updater, SIGNAL(downloadFinished(QString, QString)), this, SLOT(downloadFinished(QString, QString)));
     updater->setModuleName(update_url, "monitor");
-    updater->setModuleVersion(update_url, "1.2");
+    updater->setModuleVersion(update_url, "1.3");
     updater->setNotifyOnFinish(update_url, false);
     updater->setNotifyOnUpdate(update_url, true);
     updater->setUseCustomAppcast(update_url, false);

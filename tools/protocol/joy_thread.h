@@ -7,7 +7,7 @@
 #include <iostream>
 #include <fstream>
 
-#define JOY_READ_PEROID  10
+#define JOY_READ_PEROID  100
 
 struct Joykey_Info {
     bool  A_botton=0;
