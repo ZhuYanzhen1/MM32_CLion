@@ -8,8 +8,6 @@
 #include "stdio.h"
 #include "string.h"
 
-#include "test_data.h"
-
 extern calpara_t params;
 
 void test_calibration_solver(void) {
@@ -82,38 +80,57 @@ void test_riccati_solver(void) {
     CU_ASSERT(fabsf(control_val[1][0]) > fabsf(-0.3026f + TOLERANCE_PRECISION))
 }
 
-#define MAX_ITERATION   5
-#define MAX_ERROR       0.01f
-#define INDEX_OFFSET    500
-#define DISTANCE_OFFSET 3.6f
+extern float distance_north;
+extern float distance_east;
 
-float distance_north = 25.5f;
-float distance_east = 5.7f;
-
-float calculate_distance(int ind) {
-    float distance = sqrtf(
-            ((reference_point[ind][0] - distance_north) * (reference_point[ind][0] - distance_north)
-             + (reference_point[ind][1] - distance_east) * (reference_point[ind][1] - distance_east)));
-    return distance;
-}
-
-int Newton_Iteration(int ind_last) {
-    int ind_next = 0;
-    float f_derivative;
-    for (unsigned char i = 0; i < MAX_ITERATION; i++) {
-        f_derivative = calculate_distance(ind_last) - calculate_distance(ind_last - 1);
-        ind_next = ind_last - (int) ((calculate_distance(ind_last) - DISTANCE_OFFSET) / f_derivative);
-        ind_last = ind_next;
-        if (fabsf(calculate_distance(ind_last) - DISTANCE_OFFSET) < MAX_ERROR)
-            break;
+int dichotomy(int ind_start, int ind_end) {
+    int ind_middle, ind_middle_add, ind_middle_sub;
+    for (unsigned char i = 0; i < 3; i++) {
+        ind_middle = (ind_start + ind_end) / 2;
+        ind_middle_add = (ind_middle + ind_end) / 2;
+        ind_middle_sub = (ind_start + ind_middle) / 2;
+        if (calculate_distance(ind_middle) > calculate_distance(ind_middle_add)) {
+            ind_start = ind_middle;
+            ind_middle = ind_middle_add;
+        } else {
+            ind_end = ind_middle;
+            ind_middle = ind_middle_sub;
+        }
+        printf("\r\n%d \r\n", ind_middle);
     }
-    return ind_next;
+    return ind_middle;
 }
 
 void test_calc_target_index(void) {
     int ind = 1000;
-    int ind_last_ahead = (int) Newton_Iteration(ind + INDEX_OFFSET);
-    int ind_next_rear = (int) Newton_Iteration(ind - INDEX_OFFSET);
-    ind = (ind_last_ahead + ind_next_rear) / 2;
-    (void) ind;
+    int ind_ahead = (int) newton_iteration(ind + INDEX_OFFSET);
+    int ind_rear = (int) newton_iteration(ind - INDEX_OFFSET);
+//    ind = dichotomy(ind_rear, ind_ahead);
+    CU_ASSERT_EQUAL(ind, 1279)
+    CU_ASSERT_EQUAL(ind_ahead, 1454)
+//    CU_ASSERT_EQUAL(ind_rear, 1191)
+
+    ind = 1063;
+    distance_north = 21.3f;
+    distance_east = 4.9f;
+    ind_ahead = (int) newton_iteration(ind + INDEX_OFFSET);
+    ind_rear = (int) newton_iteration(ind - INDEX_OFFSET);
+    ind = (ind_ahead + ind_rear) / 2;
+    CU_ASSERT_EQUAL(ind, 1049)
+
+    ind = 685;
+    distance_north = 13.7f;
+    distance_east = 8.6f;
+    ind_ahead = (int) newton_iteration(ind + INDEX_OFFSET);
+    ind_rear = (int) newton_iteration(ind - INDEX_OFFSET);
+    ind = (ind_ahead + ind_rear) / 2;
+    CU_ASSERT_EQUAL(ind, 676)
+
+    ind = 1522;
+    distance_north = 30.45f;
+    distance_east = 6.48f;
+    ind_ahead = (int) newton_iteration((ind + INDEX_OFFSET > 1999) ? 1999 : (ind + INDEX_OFFSET));
+    ind_rear = (int) newton_iteration((ind - INDEX_OFFSET < 0) ? 0 : (ind - INDEX_OFFSET));
+    ind = dichotomy(ind_rear, ind_ahead);
+    CU_ASSERT_EQUAL(ind, 1547) //30.9
 }

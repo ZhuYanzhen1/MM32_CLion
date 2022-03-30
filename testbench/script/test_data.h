@@ -409,7 +409,7 @@ float track_index[INDEX_NUMBER] = {
         54.960607f, 55.053938f, 55.147345f, 55.240813f, 55.334388f,
         55.428024f, 55.521751f, 55.615555f, 55.709435f, 55.803407f}; // nd, ed, yaw, servo_angle
 
-float reference_point[INDEX_NUMBER][2] = {
+float reference_point_test[INDEX_NUMBER][2] = {
         {0.000000f,  23.742432f},
         {0.020000f,  23.720840f},
         {0.040000f,  23.699512f},
