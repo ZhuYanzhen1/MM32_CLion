@@ -47,13 +47,34 @@ float calculate_distance(int ind) {
 
 #endif
 
+int dichotomy(int ind_start, int ind_end) {
+    int ind_middle, ind_middle_add, ind_middle_sub;
+    for (unsigned char i = 0; i < 3; i++) {
+        ind_middle = (ind_start + ind_end) / 2;
+        ind_middle_add = (ind_middle + ind_end) / 2;
+        ind_middle_sub = (ind_start + ind_middle) / 2;
+        if (calculate_distance(ind_middle) > calculate_distance(ind_middle_add)) {
+            ind_start = ind_middle;
+            ind_middle = ind_middle_add;
+        } else {
+            ind_end = ind_middle;
+            ind_middle = ind_middle_sub;
+        }
+    }
+    return ind_middle;
+}
+
 int newton_iteration(int ind_last) {
     int ind_next = 0;
     float f_derivative;
+    int w = 1;
     for (unsigned char i = 0; i < MAX_ITERATION; i++) {
         f_derivative = calculate_distance(ind_last) - calculate_distance(ind_last - 1);
-        ind_next = ind_last - (int) ((calculate_distance(ind_last) - DISTANCE_OFFSET) / f_derivative);
+        ind_next = ind_last - w * (int) ((calculate_distance(ind_last) - DISTANCE_OFFSET) / f_derivative);
         ind_last = ind_next;
+        if (calculate_distance(ind_last) > calculate_distance(ind_next)) {
+            w /= 2;
+        }
         if (my_abs(calculate_distance(ind_last) - DISTANCE_OFFSET) < MAX_ERROR)
             break;
     }

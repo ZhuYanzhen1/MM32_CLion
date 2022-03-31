@@ -83,48 +83,34 @@ void test_riccati_solver(void) {
 extern float distance_north;
 extern float distance_east;
 
-int dichotomy(int ind_start, int ind_end) {
-    int ind_middle, ind_middle_add, ind_middle_sub;
-    for (unsigned char i = 0; i < 3; i++) {
-        ind_middle = (ind_start + ind_end) / 2;
-        ind_middle_add = (ind_middle + ind_end) / 2;
-        ind_middle_sub = (ind_start + ind_middle) / 2;
-        if (calculate_distance(ind_middle) > calculate_distance(ind_middle_add)) {
-            ind_start = ind_middle;
-            ind_middle = ind_middle_add;
-        } else {
-            ind_end = ind_middle;
-            ind_middle = ind_middle_sub;
-        }
-        printf("\r\n%d \r\n", ind_middle);
-    }
-    return ind_middle;
-}
-
 void test_calc_target_index(void) {
     int ind = 1000;
     int ind_ahead = (int) newton_iteration(ind + INDEX_OFFSET);
     int ind_rear = (int) newton_iteration(ind - INDEX_OFFSET);
-//    ind = dichotomy(ind_rear, ind_ahead);
-    CU_ASSERT_EQUAL(ind, 1279)
+    ind = dichotomy(ind_rear, ind_ahead);
     CU_ASSERT_EQUAL(ind_ahead, 1454)
-//    CU_ASSERT_EQUAL(ind_rear, 1191)
+    CU_ASSERT_EQUAL(ind_rear, 1104)
+    CU_ASSERT_EQUAL(ind, 1257)
 
     ind = 1063;
     distance_north = 21.3f;
     distance_east = 4.9f;
     ind_ahead = (int) newton_iteration(ind + INDEX_OFFSET);
     ind_rear = (int) newton_iteration(ind - INDEX_OFFSET);
-    ind = (ind_ahead + ind_rear) / 2;
-    CU_ASSERT_EQUAL(ind, 1049)
+    ind = dichotomy(ind_rear, ind_ahead);
+    CU_ASSERT_EQUAL(ind_ahead, 1212)
+    CU_ASSERT_EQUAL(ind_rear, 887)
+    CU_ASSERT_EQUAL(ind, 1028)
 
     ind = 685;
     distance_north = 13.7f;
     distance_east = 8.6f;
     ind_ahead = (int) newton_iteration(ind + INDEX_OFFSET);
     ind_rear = (int) newton_iteration(ind - INDEX_OFFSET);
-    ind = (ind_ahead + ind_rear) / 2;
-    CU_ASSERT_EQUAL(ind, 676)
+    ind = dichotomy(ind_rear, ind_ahead);
+    CU_ASSERT_EQUAL(ind_ahead, 843)
+    CU_ASSERT_EQUAL(ind_rear, 509)
+    CU_ASSERT_EQUAL(ind, 655)
 
     ind = 1522;
     distance_north = 30.45f;
@@ -132,5 +118,7 @@ void test_calc_target_index(void) {
     ind_ahead = (int) newton_iteration((ind + INDEX_OFFSET > 1999) ? 1999 : (ind + INDEX_OFFSET));
     ind_rear = (int) newton_iteration((ind - INDEX_OFFSET < 0) ? 0 : (ind - INDEX_OFFSET));
     ind = dichotomy(ind_rear, ind_ahead);
+    CU_ASSERT_EQUAL(ind_ahead, 1641)
+    CU_ASSERT_EQUAL(ind_rear, 1344)
     CU_ASSERT_EQUAL(ind, 1547) //30.9
 }
