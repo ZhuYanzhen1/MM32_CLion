@@ -23,7 +23,7 @@ static void gui_show_orgin_gnss(void *parameter) {
     gui_label_settext(&latitude_label, " lat:%d   ", gps_rmc.latitude);
     gui_label_settext(&longitude_label, " lon:%d   ", gps_rmc.longitude);
     gui_label_settext(&latitude_direction_label, " lat_dire:%c   ", gps_rmc.latitude_direction);
-    gui_label_settext(&longitude_direction_label, " lon_dire:%d   ", gps_rmc.longitude_direction);
+    gui_label_settext(&longitude_direction_label, " lon_dire:%c   ", gps_rmc.longitude_direction);
     gui_label_settext(&speed_to_ground_label, " speed:%d   ", gps_rmc.speed_to_ground_section);
     gui_label_settext(&direction_truth_label, " turth:%d   ", gps_rmc.direction_of_ground_truth);
 }

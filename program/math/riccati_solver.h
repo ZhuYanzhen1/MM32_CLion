@@ -4,7 +4,7 @@
 #define INDEX_NUMBER        2000
 #define MAX_ITERATION       5
 #define MAX_ERROR           0.01f
-#define INDEX_OFFSET        500
+#define INDEX_OFFSET        50 // 500
 #define DISTANCE_OFFSET     3.6f
 
 int dichotomy(int ind_start, int ind_end);

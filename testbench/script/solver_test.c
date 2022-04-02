@@ -84,41 +84,56 @@ extern float distance_north;
 extern float distance_east;
 
 void test_calc_target_index(void) {
-    int ind = 1000;
-    int ind_ahead = (int) newton_iteration(ind + INDEX_OFFSET);
-    int ind_rear = (int) newton_iteration(ind - INDEX_OFFSET);
-    ind = dichotomy(ind_rear, ind_ahead);
-    CU_ASSERT_EQUAL(ind_ahead, 1454)
-    CU_ASSERT_EQUAL(ind_rear, 1104)
-    CU_ASSERT_EQUAL(ind, 1257)
+    int ind;
+    int ind_ahead;
+    int ind_rear;
+//    ind = 1000;
+//    ind_ahead = (int) newton_iteration(ind + INDEX_OFFSET);
+//    ind_rear = (int) newton_iteration(ind - INDEX_OFFSET);
+//    ind = dichotomy(ind_rear, ind_ahead);
+//    CU_ASSERT_EQUAL(ind_ahead, 1454)
+//    CU_ASSERT_EQUAL(ind_rear, 1104)
+//    CU_ASSERT_EQUAL(ind, 1257)
+//
+//    ind = 1063;
+//    distance_north = 21.3f;
+//    distance_east = 4.9f;
+//    ind_ahead = (int) newton_iteration(ind + INDEX_OFFSET);
+//    ind_rear = (int) newton_iteration(ind - INDEX_OFFSET);
+//    ind = dichotomy(ind_rear, ind_ahead);
+//    CU_ASSERT_EQUAL(ind_ahead, 1212)
+//    CU_ASSERT_EQUAL(ind_rear, 887)
+//    CU_ASSERT_EQUAL(ind, 1028)
+//
+//    ind = 685;
+//    distance_north = 13.7f;
+//    distance_east = 8.6f;
+//    ind_ahead = (int) newton_iteration(ind + INDEX_OFFSET);
+//    ind_rear = (int) newton_iteration(ind - INDEX_OFFSET);
+//    ind = dichotomy(ind_rear, ind_ahead);
+//    CU_ASSERT_EQUAL(ind_ahead, 843)
+//    CU_ASSERT_EQUAL(ind_rear, 509)
+//    CU_ASSERT_EQUAL(ind, 655)
+//
+//    ind = 1522;
+//    distance_north = 30.45f;
+//    distance_east = 6.48f;
+//    ind_ahead = (int) newton_iteration((ind + INDEX_OFFSET > 1999) ? 1999 : (ind + INDEX_OFFSET));
+//    ind_rear = (int) newton_iteration((ind - INDEX_OFFSET < 0) ? 0 : (ind - INDEX_OFFSET));
+//    ind = dichotomy(ind_rear, ind_ahead);
+//    CU_ASSERT_EQUAL(ind_ahead, 1641)
+//    CU_ASSERT_EQUAL(ind_rear, 1344)
+//    CU_ASSERT_EQUAL(ind, 1547) //30.9
 
-    ind = 1063;
-    distance_north = 21.3f;
-    distance_east = 4.9f;
-    ind_ahead = (int) newton_iteration(ind + INDEX_OFFSET);
-    ind_rear = (int) newton_iteration(ind - INDEX_OFFSET);
-    ind = dichotomy(ind_rear, ind_ahead);
-    CU_ASSERT_EQUAL(ind_ahead, 1212)
-    CU_ASSERT_EQUAL(ind_rear, 887)
-    CU_ASSERT_EQUAL(ind, 1028)
 
-    ind = 685;
-    distance_north = 13.7f;
-    distance_east = 8.6f;
-    ind_ahead = (int) newton_iteration(ind + INDEX_OFFSET);
-    ind_rear = (int) newton_iteration(ind - INDEX_OFFSET);
-    ind = dichotomy(ind_rear, ind_ahead);
-    CU_ASSERT_EQUAL(ind_ahead, 843)
-    CU_ASSERT_EQUAL(ind_rear, 509)
-    CU_ASSERT_EQUAL(ind, 655)
-
-    ind = 1522;
-    distance_north = 30.45f;
-    distance_east = 6.48f;
-    ind_ahead = (int) newton_iteration((ind + INDEX_OFFSET > 1999) ? 1999 : (ind + INDEX_OFFSET));
+//    {23.164415f, 140.739357f},
+//    25.032100f, 140.478674f
+    ind = 137;
+    distance_north = 23.463922f;
+    distance_east = 140.948782f; // 注：修改了窗口 和 计算距离的函数内存放位置点的数据
+    ind_ahead = (int) newton_iteration((ind + INDEX_OFFSET > 412) ? 412 : (ind + INDEX_OFFSET));
     ind_rear = (int) newton_iteration((ind - INDEX_OFFSET < 0) ? 0 : (ind - INDEX_OFFSET));
     ind = dichotomy(ind_rear, ind_ahead);
-    CU_ASSERT_EQUAL(ind_ahead, 1641)
-    CU_ASSERT_EQUAL(ind_rear, 1344)
-    CU_ASSERT_EQUAL(ind, 1547) //30.9
+    CU_ASSERT_EQUAL(ind, 139)
+
 }

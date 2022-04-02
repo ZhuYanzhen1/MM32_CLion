@@ -61,17 +61,17 @@ void initialize_task(void *parameters) {
     at24c02_readparams();
 
     debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
-    debugger_register_variable(dbg_uint16, &control_signal.joystick_x, "joy_x");
-    debugger_register_variable(dbg_uint16, &control_signal.joystick_y, "joy_y");
-    debugger_register_variable(dbg_float32, &small_packets.chebyshev_north, "compass");
+//    debugger_register_variable(dbg_uint16, &control_signal.joystick_x, "joy_x");
+//    debugger_register_variable(dbg_uint16, &control_signal.joystick_y, "joy_y");
+//    debugger_register_variable(dbg_float32, &small_packets.chebyshev_north, "compass");
 
     timer2_config();
 
-    xTaskCreate(fusion_task, "sensor_fusion", 512, NULL, 3,
+    xTaskCreate(fusion_task, "sensor_fusion", 1024, NULL, 3,
                 &fusion_taskhandler);
     xTaskCreate(ledblink_task, "led_blink", 1024, NULL, 1,
                 &led_taskhandler);
-    xTaskCreate(guiupdate_task, "gui_update", 1024, NULL, 1,
+    xTaskCreate(guiupdate_task, "gui_update", 2048, NULL, 1,
                 &gui_taskhandler);
     xTaskCreate(touchscan_task, "touch_scan", 128, NULL, 1,
                 &touch_taskhandler);
@@ -84,7 +84,6 @@ void fusion_task(void *parameters) {
     kalman_config_distance(&kalman_distance_north, 384400);
     kalman_config_distance(&kalman_distance_earth, 1487900);
     while (1) {
-
         for (unsigned short packets_counter = 0; packets_counter < READ_MCU_AMOUNT; packets_counter++) {
             if (packages_to_be_unpacked[packets_counter] == 0xff
                 && packages_to_be_unpacked[packets_counter + 11] == 0xff) {
@@ -97,6 +96,8 @@ void fusion_task(void *parameters) {
                 packets_counter = (packets_counter + packages_to_be_unpacked[2] - 1); // 移动到下一个包的前一个位置
             }
         }
+        while (gps_rmc.status == 'V')
+            delayms(1);
         sensor_unit_conversion();
         kalman_data.v = kalman_update(&kalman_v, neu.v, neu.acceleration,
                                       0.031f);
@@ -117,7 +118,7 @@ void fusion_task(void *parameters) {
         delayms(30);
 //        static int mag_x_old = 0;
 //        if (debug_data.mag_x != mag_x_old)
-//            printf("%d %d %d\n\r", debug_data.mag_x, debug_data.mag_y, debug_data.mag_z);
+//            printf("%d %d %d\r\n", debug_data.mag_x, debug_data.mag_y, debug_data.mag_z);
 //        mag_x_old = debug_data.mag_x;
     }
 }
@@ -202,8 +203,10 @@ void print_task_status(void) {
 void ledblink_task(void *parameters) {
     (void) parameters;
     while (1) {
+        printf("%.2f,%.2f\r\n", kalman_data.distance_north, kalman_data.distance_east);
+        _fflush(stdout);
         LED1_TOGGLE();
-        delayms(500);
+        delayms(200);
     }
 }
 #endif  // USE_FREERTOS_REPORT == 1
