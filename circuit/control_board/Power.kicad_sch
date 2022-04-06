@@ -6,8 +6,8 @@
 
   (title_block
     (title "MM32 Control Board")
-    (date "2022-03-28")
-    (rev "1.4.1")
+    (date "2022-04-06")
+    (rev "1.5.2")
   )
 
   (lib_symbols
