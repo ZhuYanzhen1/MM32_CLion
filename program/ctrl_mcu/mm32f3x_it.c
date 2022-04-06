@@ -32,6 +32,13 @@ void UART1_IRQHandler(void) {
     }
 }
 
+void UART7_IRQHandler(void) {
+    if (UART_GetITStatus(UART7, UART_ISR_RX) != RESET) {
+        unsigned char recvbyte = UART_ReceiveData(UART7);
+        UART_ClearITPendingBit(UART7, UART_ISR_RX);
+    }
+}
+
 typedef enum { buffer_no_1 = 1, buffer_no_2 = 2 } buffer_no;
 static buffer_no uart6_free_buffer_no = buffer_no_1;
 unsigned int uart6_dma_buffer_1[PROC_MCU_SEND_AMOUNT];
@@ -72,24 +79,24 @@ void DMA1_Channel4_IRQHandler(void) {
     }
 }
 
-///* 还不确定要发多少东西，发的东西有多大 */
-//static buffer_no uart7_free_buffer_no = buffer_no_1;
-//unsigned int uart7_dma_buffer_1[0];
-//unsigned int uart7_dma_buffer_2[0];
-//void DMA2_Channel1_IRQHandler(void) {
-//    if (DMA_GetITStatus(DMA1_IT_TC1)) {
-//        /* Clear all interrupt flags */
-//        DMA_ClearITPendingBit(DMA1_IT_TC1);
-//
+/* 还不确定要发多少东西，发的东西有多大 */
+static buffer_no uart7_free_buffer_no = buffer_no_1;
+unsigned int uart7_dma_receive_buffer_1[UART7_DMA_RECEIVE_BUFFER];
+unsigned int uart7_dma_receive_buffer_2[UART7_DMA_RECEIVE_BUFFER];
+void DMA2_Channel1_IRQHandler(void) {
+    if (DMA_GetITStatus(DMA2_IT_TC1)) {
+        /* Clear all interrupt flags */
+        DMA_ClearITPendingBit(DMA2_IT_TC1);
+        uart7_dma_set_transmit_buffer(uart7_dma_receive_buffer_1, UART7_DMA_RECEIVE_BUFFER);
 //        /* Double ping pong buffer */
 //        if (uart7_free_buffer_no == buffer_no_1) {
-//            uart7_dma_set_transmit_buffer(uart6_dma_buffer_2, 0);
+//            uart7_dma_set_transmit_buffer(uart7_dma_receive_buffer_1, UART7_DMA_RECEIVE_BUFFER);
 //            uart7_free_buffer_no = buffer_no_2;
 ////            deal_dma_proc(uart6_dma_buffer_1);
 //        } else {
-//            uart7_dma_set_transmit_buffer(uart6_dma_buffer_1, 0);
+//            uart7_dma_set_transmit_buffer(uart7_dma_receive_buffer_1, UART7_DMA_RECEIVE_BUFFER);
 //            uart7_free_buffer_no = buffer_no_1;
 ////            deal_dma_proc(uart6_dma_buffer_2);  // 解包，从proc传过来的，双乒乓缓冲区有时会导致乱
 //        }
-//    }
-//}
+    }
+}

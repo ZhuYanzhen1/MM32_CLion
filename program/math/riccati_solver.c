@@ -56,10 +56,8 @@ int dichotomy(int ind_start, int ind_end) {
         ind_middle_sub = (ind_start + ind_middle) / 2;
         if (calculate_distance(ind_middle) > calculate_distance(ind_middle_add)) {
             ind_start = ind_middle;
-            ind_middle = ind_middle_add;
         } else if (calculate_distance(ind_middle) > calculate_distance(ind_middle_sub)) {
             ind_end = ind_middle;
-            ind_middle = ind_middle_sub;
         } else
             break;
     }
