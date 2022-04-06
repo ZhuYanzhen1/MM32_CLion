@@ -8,6 +8,8 @@ Github Pages用于部署一些通过Github Actions自动生成出的报告文件
 
 [主控板交互式BOM](https://zhuyanzhen1.github.io/MM32_CLion/circuit/control_board_ibom.html)
 
+[无刷电机驱动板交互式BOM](https://zhuyanzhen1.github.io/MM32_CLion/circuit/bldc_driver_ibom.html)
+
 [无线调试器交互式BOM](https://zhuyanzhen1.github.io/MM32_CLion/circuit/wireless_debugger_ibom.html)
 
 [PC端串口透传交互式BOM](https://zhuyanzhen1.github.io/MM32_CLion/circuit/uart_tt_pc_ibom.html)
