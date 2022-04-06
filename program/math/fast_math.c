@@ -111,3 +111,10 @@ float my_acos(float x) {
     else
         return 2 * my_asin(fast_sqrt((1 - x) / 2));
 }
+
+float my_abs(float x) {
+    if (x >= 0)
+        return x;
+    else
+        return -x;
+}

@@ -11,6 +11,9 @@
 extern unsigned int uart6_dma_buffer_1[PROC_MCU_SEND_AMOUNT];
 extern unsigned int uart6_dma_buffer_2[PROC_MCU_SEND_AMOUNT];
 
+extern unsigned int uart7_dma_receive_buffer_1[UART7_DMA_RECEIVE_BUFFER];
+unsigned int uart7_dma_send_buffer[UART7_DMA_SEND_BUFFER] = {0};
+
 int main(void) {
     delay_config();
     led_config();
@@ -21,8 +24,8 @@ int main(void) {
     uart6_dma_set_transmit_buffer(uart6_dma_buffer_1, PROC_MCU_SEND_AMOUNT);
     uart7_config();
     uart7_dma_nvic_config();
-//    uart7_dma_receive_config(uart7_dma_buffer_1, 0);
-//    uart7_dma_set_transmit_buffer(uart7_dma_buffer_1, 0);
+    uart7_dma_receive_config(uart7_dma_receive_buffer_1, UART7_DMA_RECEIVE_BUFFER);
+    uart7_dma_sent_config(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
     cm_backtrace_config("mm32f3277", "1.0.1", "1.0.1");
     debugger_register_variable(dbg_float32, &proc_data.distance_north, "nd");
     debugger_register_variable(dbg_float32, &proc_data.distance_east, "ed");
@@ -46,11 +49,17 @@ int main(void) {
         float r = 1;
         float q = 1;
 
-        solve_riccati_equation(a, b, q, r, p);
-        solve_feedback_value(p, a, b, x, r, control_val);
-        printf("dv=%.4f ds=%.4f\r\n", control_val[0][0], control_val[1][0]);
-        _fflush(stdout);
+//        solve_riccati_equation(a, b, q, r, p);
+//        solve_feedback_value(p, a, b, x, r, control_val);
+//        printf("dv=%.4f ds=%.4f\r\n", control_val[0][0], control_val[1][0]);
+//        _fflush(stdout);
 
-        delayms(20);
+//        uart7_sendbyte(0x05);
+        for (unsigned char i = 0; i < UART7_DMA_SEND_BUFFER; i++) {
+            uart7_dma_send_buffer[i] = 0xa5;
+        }
+        uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
+
+        delayms(100);
     }
 }
