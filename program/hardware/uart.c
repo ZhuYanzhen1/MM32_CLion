@@ -157,7 +157,7 @@ void uart6_config() {
 void uart7_config() {
     UART_InitTypeDef UART_InitStruct;
     GPIO_InitTypeDef GPIO_InitStruct;
-//    NVIC_InitTypeDef NVIC_InitStruct;
+    NVIC_InitTypeDef NVIC_InitStruct;
 
     RCC_APB1PeriphClockCmd(RCC_APB1ENR_UART7, ENABLE);
     RCC_AHBPeriphClockCmd(RCC_AHBENR_GPIOB, ENABLE);
@@ -174,11 +174,11 @@ void uart7_config() {
     GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IPU;
     GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-//    NVIC_InitStruct.NVIC_IRQChannel = UART7_IRQn;
-//    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = UART7_DMA_PRIORITY;
-//    NVIC_InitStruct.NVIC_IRQChannelSubPriority = 0;
-//    NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
-//    NVIC_Init(&NVIC_InitStruct);
+    NVIC_InitStruct.NVIC_IRQChannel = UART7_IRQn;
+    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = UART7_DMA_PRIORITY;
+    NVIC_InitStruct.NVIC_IRQChannelSubPriority = 0;
+    NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStruct);
 
     UART_StructInit(&UART_InitStruct);
     UART_InitStruct.BaudRate = UART7_BAUDRATE;
@@ -189,7 +189,7 @@ void uart7_config() {
     UART_InitStruct.Mode = UART_Mode_Rx | UART_Mode_Tx;
 
     UART_Init(UART7, &UART_InitStruct);
-//    UART_ITConfig(UART7, UART_IT_RXIEN, ENABLE);
+    UART_ITConfig(UART7, UART_IT_RXIEN, ENABLE);
     UART_Cmd(UART7, ENABLE);
 }
 #else

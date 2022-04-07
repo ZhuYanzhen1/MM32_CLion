@@ -9,8 +9,7 @@
 #ifndef MM32F3277_HARDWARE_UART_H_
 #define MM32F3277_HARDWARE_UART_H_
 
-#define UART7_DMA_RECEIVE_BUFFER    10
-#define UART7_DMA_SEND_BUFFER    10
+#define UART7_DMA_SEND_BUFFER       4
 
 void uart1_config();
 
