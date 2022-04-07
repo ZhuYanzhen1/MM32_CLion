@@ -6,8 +6,8 @@
 
   (title_block
     (title "BLDC Driver 6-Step")
-    (date "2022-03-26")
-    (rev "1.1.2")
+    (date "2022-04-07")
+    (rev "1.2.4")
   )
 
   (lib_symbols
@@ -803,10 +803,10 @@
   (symbol (lib_id "Device:R") (at 160.02 78.74 0) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid f51b4d00-45cf-44bd-b180-b57f01223638)
-    (property "Reference" "R36" (id 0) (at 161.29 77.47 0)
+    (property "Reference" "R36" (id 0) (at 153.035 77.47 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "10KR" (id 1) (at 161.29 80.01 0)
+    (property "Value" "10kR" (id 1) (at 153.035 80.01 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Footprint" "BLDC_Driver:R_0603_1608Metric" (id 2) (at 158.242 78.74 90)

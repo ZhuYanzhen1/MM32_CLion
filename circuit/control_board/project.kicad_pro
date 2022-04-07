@@ -45,7 +45,7 @@
         "silk_text_upright": false,
         "zones": {
           "45_degree_only": false,
-          "min_clearance": 0.19999999999999998
+          "min_clearance": 0.205
         }
       },
       "diff_pair_dimensions": [
@@ -79,7 +79,7 @@
         "length_out_of_range": "error",
         "malformed_courtyard": "error",
         "microvia_drill_out_of_range": "error",
-        "missing_courtyard": "warning",
+        "missing_courtyard": "ignore",
         "missing_footprint": "warning",
         "net_conflict": "warning",
         "npth_inside_courtyard": "ignore",
@@ -474,6 +474,10 @@
     [
       "7c560bda-f929-4e77-960a-fa15837ad328",
       "Coprocessor"
+    ],
+    [
+      "99919f16-809b-4d37-b44a-061baa0477d2",
+      "Flash&USB"
     ]
   ],
   "text_variables": {}
