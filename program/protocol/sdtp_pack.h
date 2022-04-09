@@ -10,6 +10,6 @@
 #define MAIN_C_PROTOCOL_SDTP_PACK_H_
 
 void sdtp_data_transmit(const unsigned char *data);
-void sdtp_data_transmit_speed(float sent_data, unsigned int transmit_buffer[4]);
+void sdtp_data_transmit_speed(const unsigned short sent_data, unsigned int transmit_buffer[4]);
 
 #endif  // MAIN_C_PROTOCOL_SDTP_PACK_H_

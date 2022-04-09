@@ -96,8 +96,8 @@ void fusion_task(void *parameters) {
                 packets_counter = (packets_counter + packages_to_be_unpacked[2] - 1); // 移动到下一个包的前一个位置
             }
         }
-        while (gps_rmc.status == 'V')
-            delayms(1);
+//        while (gps_rmc.status == 'V')
+//            delayms(1);
         sensor_unit_conversion();
         kalman_data.v = kalman_update(&kalman_v, neu.v, neu.acceleration,
                                       0.031f);

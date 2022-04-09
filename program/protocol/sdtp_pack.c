@@ -6,7 +6,7 @@
     \date     19. January 2022
 ******************************************************************************/
 #include "sdtp_pack.h"
-
+#include "verification.h"
 #ifndef RUNNING_UNIT_TEST
 #include "uart.h"
 #define common_sendbyte uart3_sendbyte
@@ -41,13 +41,13 @@ void sdtp_data_transmit(const unsigned char *data) {
     \param[out] transmit_buffer: Packetize the sent data
     \retval     none
 */
-void sdtp_data_transmit_speed(const float sent_data, unsigned int transmit_buffer[4]) {
+void sdtp_data_transmit_speed(const unsigned short sent_data, unsigned int transmit_buffer[4]) {
     unsigned char data[3] = {0};
-//    unsigned int temp = *((unsigned int *) (&sent_data));
-    unsigned int temp = (unsigned int) (sent_data * 1000);
-    data[0] = (temp & 0x00ff0000) >> 16;
-    data[1] = (temp & 0x0000ff00) >> 8;
-    data[2] = temp & 0x000000ff;
+    data[0] = (sent_data & 0xff00) >> 8;
+    data[1] = sent_data & 0x00ff;
+
+    unsigned int check[2] = {data[0], data[1]};
+    data[2] = verification_crc8(check, 2);
 
     /* add packet header after splitting data bytes */
     transmit_buffer[0] = (data[0] >> 2);

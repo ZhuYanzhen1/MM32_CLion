@@ -7,14 +7,18 @@
 ******************************************************************************/
 
 #include "sdtp_unpack.h"
+#include "verification.h"
 
+bldc_t bldc;
 static unsigned char receive_buffer[3];
-float actual_speed = 0;
 
 void sdtp_callback_handler(const unsigned char *buffer) {
-    unsigned int temp = (unsigned int) (((int) buffer[0] << 16) |
-        ((int) buffer[1] << 8) | ((int) buffer[2]));
-    actual_speed = (float) temp / 1000;
+    unsigned int check[2] = {buffer[0], buffer[1]};
+    unsigned int checksum = verification_crc8(check, 2);
+    if (checksum != buffer[2])
+        return;
+    bldc.current = (float) buffer[0] / 10;
+    bldc.temperature = buffer[1];
 }
 
 /*!
