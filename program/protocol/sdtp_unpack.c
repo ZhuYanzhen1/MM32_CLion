@@ -18,7 +18,7 @@ void sdtp_callback_handler(const unsigned char *buffer) {
     if (checksum != buffer[2])
         return;
     bldc.current = (float) buffer[0] / 10;
-    bldc.temperature = buffer[1];
+    bldc.temperature = (float) buffer[1];
 }
 
 /*!

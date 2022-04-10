@@ -24,6 +24,11 @@ void TIM2_IRQHandler(void) {
     debugger_scan_variable(global_time_stamp);
 }
 
+void TIM4_IRQHandler(void) {
+    TIM_ClearITPendingBit(TIM4, TIM_IT_Update);
+
+}
+
 void UART1_IRQHandler(void) {
     if (UART_GetITStatus(UART1, UART_ISR_RX) != RESET) {
         unsigned char recvbyte = UART_ReceiveData(UART1);

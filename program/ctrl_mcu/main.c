@@ -26,12 +26,15 @@ int main(void) {
 //    uart7_dma_receive_config(uart7_dma_receive_buffer, UART7_DMA_RECEIVE_BUFFER);
     uart7_dma_sent_config(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
     cm_backtrace_config("mm32f3277", "1.0.1", "1.0.1");
-    debugger_register_variable(dbg_float32, &proc_data.distance_north, "nd");
-    debugger_register_variable(dbg_float32, &proc_data.distance_east, "ed");
-    debugger_register_variable(dbg_float32, &proc_data.north_angle, "north");
+    debugger_register_variable(dbg_uint16, &control_signal.joystick_x, "x");
+    debugger_register_variable(dbg_uint16, &control_signal.joystick_y, "y");
     timer2_config();
     timer3_config();
-    while (1) {
+    timer4_config();
+
+    delayms(5000);
+
+//    while (1) {
 //        WRITE_REG(TIM3->CCR1, 100);           // 控制舵机打角，输入值范围100~200
 
 //        float fai_r = 0.23f, delta_r = 0.086f, L = 0.4f, v_r = 5.1f, dt = 0.01f;
@@ -54,18 +57,33 @@ int main(void) {
 //        _fflush(stdout);
 //        for (unsigned char i = 0; i < UART7_DMA_SEND_BUFFER; i++)
 //            uart7_dma_send_buffer[i] = 3;
+//}
+//    for (int counter = 0; counter < 10; ++counter) {
+//        WRITE_REG(TIM3->CCR1, 110);
+//        sdtp_data_transmit_speed(3000, uart7_dma_send_buffer);
+//        uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
+//        delayms(1000);
+//    }
+//
+//    while (1) {
+//        WRITE_REG(TIM3->CCR1, 150);
+//        sdtp_data_transmit_speed(0, uart7_dma_send_buffer);
+//        uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
+//        delayms(1000);
+//    }
 
-        sdtp_data_transmit_speed(4000, uart7_dma_send_buffer);
+    unsigned short angle;
+    unsigned short speed;
+    while (1) {
+        // 前，左是 0~32766
+        angle = 200 - control_signal.joystick_x / 655;
+        if (control_signal.joystick_y > 32766)
+            speed = 0;
+        else
+            speed = (32767 - control_signal.joystick_y) * 4000 / 32766;
+        WRITE_REG(TIM3->CCR1, angle);
+        sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
         uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
-        delayms(2000);
-        sdtp_data_transmit_speed(2000, uart7_dma_send_buffer);
-        uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
-        delayms(2000);
-        sdtp_data_transmit_speed(10000, uart7_dma_send_buffer);
-        uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
-        delayms(2000);
-        sdtp_data_transmit_speed(5000, uart7_dma_send_buffer);
-        uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
-        delayms(2000);
+        delayms(10);
     }
 }

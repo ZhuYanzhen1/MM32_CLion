@@ -8,12 +8,14 @@
 
 #include "main.h"
 
+unsigned short playground_ind = 0;
+
 extern unsigned int packages_to_be_unpacked[READ_MCU_AMOUNT];
 unsigned int proc_to_ctrl_package[PROC_MCU_SEND_AMOUNT] = {0};
 
 /* Kalman fusion to obtain northward and eastward velocities
  * (GPS velocity + imu acceleration) */
-kalman_data_t kalman_data;
+kalman_data_t kalman_data = {0};
 kalman_filter_t kalman_v = {0};
 kalman_filter_t kalman_distance_north = {0};
 kalman_filter_t kalman_distance_earth = {0};
@@ -67,6 +69,9 @@ void initialize_task(void *parameters) {
 
     timer2_config();
 
+//    xpt2046_calibrate();
+//    at24c02_saveparams();
+
     xTaskCreate(fusion_task, "sensor_fusion", 1024, NULL, 3,
                 &fusion_taskhandler);
     xTaskCreate(ledblink_task, "led_blink", 1024, NULL, 1,
@@ -81,8 +86,8 @@ void initialize_task(void *parameters) {
 void fusion_task(void *parameters) {
     (void) parameters;
     kalman_config_v(&kalman_v);
-    kalman_config_distance(&kalman_distance_north, 384400);
-    kalman_config_distance(&kalman_distance_earth, 1487900);
+    kalman_config_distance(&kalman_distance_north, 337970.9400000f);
+    kalman_config_distance(&kalman_distance_earth, 346666.0600000f);
     while (1) {
         for (unsigned short packets_counter = 0; packets_counter < READ_MCU_AMOUNT; packets_counter++) {
             if (packages_to_be_unpacked[packets_counter] == 0xff
@@ -96,8 +101,11 @@ void fusion_task(void *parameters) {
                 packets_counter = (packets_counter + packages_to_be_unpacked[2] - 1); // 移动到下一个包的前一个位置
             }
         }
-//        while (gps_rmc.status == 'V')
-//            delayms(1);
+        while (gps_rmc.status == 'V') {
+            delayms(1);
+            playground_ind = 0;
+        }
+
         sensor_unit_conversion();
         kalman_data.v = kalman_update(&kalman_v, neu.v, neu.acceleration,
                                       0.031f);
@@ -115,8 +123,13 @@ void fusion_task(void *parameters) {
             uart4_sendbyte(proc_to_ctrl_package[i]);
         }
 
+        if (playground_ind < 837)
+            playground_ind =
+                dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
+                          (playground_ind + INDEX_OFFSET > 837) ? 837 : (playground_ind + INDEX_OFFSET));
+
         delayms(30);
-//        static int mag_x_old = 0;
+//        static int mag_x_old = z
 //        if (debug_data.mag_x != mag_x_old)
 //            printf("%d %d %d\r\n", debug_data.mag_x, debug_data.mag_y, debug_data.mag_z);
 //        mag_x_old = debug_data.mag_x;
