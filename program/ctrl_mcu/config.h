@@ -35,6 +35,7 @@
 
 //////////////////////////////////////// Interrupt Priority ////////////////////////////////////////
 #define TIM2_PRIORITY           10
+#define TIM4_PRIORITY           2
 #define UART1_PRIORITY          2
 #define UART1_DMA_PRIORITY      3
 #define UART6_DMA_PRIORITY      1

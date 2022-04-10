@@ -127,7 +127,7 @@ static unsigned int package_buffer[80];
 static unsigned char package_counter = 0;
 //static unsigned char package_counter_1 = 0;
 
-void deal_dma_proc(const unsigned int *p) {
+void deal_uart6_dma_proc(const unsigned int *p) {
     for (unsigned char counter = 0; counter < PROC_MCU_SEND_AMOUNT; ++counter) {
         switch (status) {
             case 0:if (p[counter] == 0xff) status = 1;

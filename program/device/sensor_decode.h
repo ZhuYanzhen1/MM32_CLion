@@ -81,6 +81,6 @@ void precossing_proc_to_control(unsigned int packets[PROC_MCU_SEND_AMOUNT], cons
 void unpacking_fixed_length_data(unsigned int packets[10]);
 void unpacking_variable_length_data(unsigned int *packets);
 void unpacking_proc_to_control(unsigned int packets[PROC_MCU_SEND_AMOUNT - 2]);
-void deal_dma_proc(const unsigned int *p);
+void deal_uart6_dma_proc(const unsigned int *p);
 
 #endif // MM32F3277_DEVICE_SENSOR_DECODE_H_

@@ -7,6 +7,8 @@
 #include "gps_parser.h"
 #include "sensor_decode.h"
 #include "fast_math.h"
+#include "sdtp_pack.h"
+#include "sdtp_unpack.h"
 
 void test_nmea_gnrmc_analysis() {
     float i = 0.732f;

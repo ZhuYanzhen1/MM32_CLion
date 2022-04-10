@@ -52,7 +52,7 @@ void test_calibration_solver(void) {
     }
 }
 
-#define TOLERANCE_PRECISION     0.1f
+#define TOLERANCE_PRECISION     0.2f
 
 void test_riccati_solver(void) {
     float fai_r = 0.23f, delta_r = 0.086f, L = 0.4f, v_r = 5.1f, dt = 0.01f;
@@ -133,7 +133,7 @@ void test_calc_target_index(void) {
     distance_east = 140.948782f; // 注：修改了窗口 和 计算距离的函数内存放位置点的数据
     ind_ahead = (int) newton_iteration((ind + INDEX_OFFSET > 412) ? 412 : (ind + INDEX_OFFSET));
     ind_rear = (int) newton_iteration((ind - INDEX_OFFSET < 0) ? 0 : (ind - INDEX_OFFSET));
-    ind = dichotomy(ind_rear, ind_ahead);
+    ind = dichotomy(ind, ind_ahead);
     CU_ASSERT_EQUAL(ind, 139)
 
 }
