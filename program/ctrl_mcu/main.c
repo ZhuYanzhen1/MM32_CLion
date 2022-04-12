@@ -78,7 +78,6 @@ int main(void) {
     while (1) {
         // 前，左是 0~32766
         angle = 200 - control_signal.joystick_x / 655;
-
         if (control_signal.joystick_y > 32766)
             speed = 2000;
         else
