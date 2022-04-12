@@ -26,7 +26,7 @@ static unsigned char printf_byte_counter = 0;
 static unsigned char printf_byte_buffer[8] = {0};
 static unsigned char variable_dma_counter = 0;
 
-control_signal_t control_signal = {0};
+control_signal_t control_signal = {32767, 32767};
 
 /*!
     \brief        user callback function for unpacking completion of medium capacity transport protocol

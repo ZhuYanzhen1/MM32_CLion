@@ -72,15 +72,31 @@ int main(void) {
 //        delayms(1000);
 //    }
 
-    unsigned short angle;
-    unsigned short speed;
+    volatile unsigned short angle = 150;
+    volatile unsigned short speed = 0;
+    unsigned char counter = 0;
     while (1) {
         // 前，左是 0~32766
         angle = 200 - control_signal.joystick_x / 655;
+
         if (control_signal.joystick_y > 32766)
-            speed = 0;
+            speed = 2000;
         else
-            speed = (32767 - control_signal.joystick_y) * 4000 / 32766;
+            speed = 2000 + (32767 - control_signal.joystick_y) * 3000 / 32766;
+//        if (counter == 20) {
+//            angle = 100;
+//        } else if (counter == 40) {
+//            angle = 200;
+//        }
+//        counter++;
+//        if (counter == 50) {
+//            if (speed <= 3000)
+//                speed = 6000;
+//            else if (speed >= 6000)
+//                speed = 3000;
+//            counter = 0;
+//        }
+
         WRITE_REG(TIM3->CCR1, angle);
         sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
         uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
