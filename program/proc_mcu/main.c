@@ -12,6 +12,12 @@ unsigned short playground_ind = 0;
 
 extern unsigned int packages_to_be_unpacked[READ_MCU_AMOUNT];
 unsigned int proc_to_ctrl_package[PROC_MCU_SEND_AMOUNT] = {0};
+unsigned int proc_to_ctrl_buffer[3] = {0};
+
+// 从proc_mcu发送给ctr_mcu 时，需要将真北角转换成航向角再发送过去
+float reference_yaw;
+float yaw = 0;
+unsigned char yaw_counter = 0;
 
 /* Kalman fusion to obtain northward and eastward velocities
  * (GPS velocity + imu acceleration) */
@@ -104,8 +110,14 @@ void fusion_task(void *parameters) {
         while (gps_rmc.status == 'V') {
             delayms(1);
             playground_ind = 0;
+            proc_to_ctrl_buffer[0] = 0;
+            proc_to_ctrl_buffer[1] = 0;
+            proc_to_ctrl_buffer[2] = 0;
+            precossing_proc_to_control(proc_to_ctrl_package, proc_to_ctrl_buffer);
+            for (unsigned char i = 0; i < PROC_MCU_SEND_AMOUNT; i++) {
+                uart4_sendbyte(proc_to_ctrl_package[i]);
+            }
         }
-
         sensor_unit_conversion();
         kalman_data.v = kalman_update(&kalman_v, neu.v, neu.acceleration,
                                       0.031f);
@@ -115,9 +127,12 @@ void fusion_task(void *parameters) {
         kalman_data.distance_east = kalman_update(&kalman_distance_earth, neu.east_distance,
                                                   neu.east_v, 0.031f);
 
-        unsigned int proc_to_ctrl_buffer[3] =
-            {*((unsigned int *) (&kalman_data.distance_north)), *((unsigned int *) (&kalman_data.distance_east)),
-             *((unsigned int *) (&small_packets.chebyshev_north))};
+//        unsigned int proc_to_ctrl_buffer[3] =
+//            {*((unsigned int *) (&kalman_data.distance_north)), *((unsigned int *) (&kalman_data.distance_east)),
+//             *((unsigned int *) (&small_packets.chebyshev_north))};
+        proc_to_ctrl_buffer[0] = *((unsigned int *) (&kalman_data.distance_north));
+        proc_to_ctrl_buffer[1] = *((unsigned int *) (&kalman_data.distance_east));
+        proc_to_ctrl_buffer[2] = *((unsigned int *) (&small_packets.chebyshev_north));
         precossing_proc_to_control(proc_to_ctrl_package, proc_to_ctrl_buffer);
         for (unsigned char i = 0; i < PROC_MCU_SEND_AMOUNT; i++) {
             uart4_sendbyte(proc_to_ctrl_package[i]);

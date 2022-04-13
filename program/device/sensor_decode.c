@@ -48,8 +48,8 @@ void precossing_proc_to_control(unsigned int packets[PROC_MCU_SEND_AMOUNT], cons
 void unpacking_proc_to_control(unsigned int packets[PROC_MCU_SEND_AMOUNT - 2]) {
     unsigned int temp;
     short checksum = verification_crc8((unsigned int *) packets, 13);
-    small_packets.checksum = (short) packets[13];
-    if (checksum != small_packets.checksum) return;
+    proc_data.checksum = (short) packets[13];
+    if (checksum != proc_data.checksum) return;
     // 调整位恢复原始数据，和校验的顺序不能换，因为封包的时候是先算校验，再计算调整位
     for (unsigned char i = 0; i < 12; ++i)
         if (packets[12] & (0x80 >> i))
@@ -128,7 +128,7 @@ static unsigned char package_counter = 0;
 //static unsigned char package_counter_1 = 0;
 
 void deal_uart6_dma_proc(const unsigned int *p) {
-    for (unsigned char counter = 0; counter < PROC_MCU_SEND_AMOUNT; ++counter) {
+    for (unsigned char counter = 0; counter < CTRL_MCU_RECEIVE_AMOUNT; ++counter) {
         switch (status) {
             case 0:if (p[counter] == 0xff) status = 1;
                 break;

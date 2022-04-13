@@ -131,9 +131,9 @@ void test_calc_target_index(void) {
     ind = 137;
     distance_north = 23.463922f;
     distance_east = 140.948782f; // 注：修改了窗口 和 计算距离的函数内存放位置点的数据
-    ind_ahead = (int) newton_iteration((ind + INDEX_OFFSET > 412) ? 412 : (ind + INDEX_OFFSET));
-    ind_rear = (int) newton_iteration((ind - INDEX_OFFSET < 0) ? 0 : (ind - INDEX_OFFSET));
-    ind = dichotomy(ind, ind_ahead);
+//    ind_ahead = (int) newton_iteration((ind + INDEX_OFFSET > 412) ? 412 : (ind + INDEX_OFFSET));
+//    ind_rear = (int) newton_iteration((ind - INDEX_OFFSET < 0) ? 0 : (ind - INDEX_OFFSET));
+    ind = dichotomy(ind - 2, ind + 10);
     CU_ASSERT_EQUAL(ind, 139)
 
 }

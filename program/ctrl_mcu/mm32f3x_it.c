@@ -24,6 +24,8 @@ void TIM2_IRQHandler(void) {
     debugger_scan_variable(global_time_stamp);
 }
 
+/* LQR控制 */
+
 void TIM4_IRQHandler(void) {
     TIM_ClearITPendingBit(TIM4, TIM_IT_Update);
 
@@ -48,8 +50,8 @@ void UART7_IRQHandler(void) {
 
 typedef enum { buffer_no_1 = 1, buffer_no_2 = 2 } buffer_no;
 static buffer_no uart6_free_buffer_no = buffer_no_1;
-unsigned int uart6_dma_buffer_1[PROC_MCU_SEND_AMOUNT];
-unsigned int uart6_dma_buffer_2[PROC_MCU_SEND_AMOUNT];
+unsigned int uart6_dma_buffer_1[CTRL_MCU_RECEIVE_AMOUNT];
+unsigned int uart6_dma_buffer_2[CTRL_MCU_RECEIVE_AMOUNT];
 void DMA1_Channel1_IRQHandler(void) {
     if (DMA_GetITStatus(DMA1_IT_TC1)) {
         /* Clear all interrupt flags */
@@ -57,11 +59,11 @@ void DMA1_Channel1_IRQHandler(void) {
 
         /* Double ping pong buffer */
         if (uart6_free_buffer_no == buffer_no_1) {
-            uart6_dma_set_transmit_buffer(uart6_dma_buffer_2, PROC_MCU_SEND_AMOUNT);
+            uart6_dma_set_transmit_buffer(uart6_dma_buffer_2, CTRL_MCU_RECEIVE_AMOUNT);
             uart6_free_buffer_no = buffer_no_2;
             deal_uart6_dma_proc(uart6_dma_buffer_1);
         } else {
-            uart6_dma_set_transmit_buffer(uart6_dma_buffer_1, PROC_MCU_SEND_AMOUNT);
+            uart6_dma_set_transmit_buffer(uart6_dma_buffer_1, CTRL_MCU_RECEIVE_AMOUNT);
             uart6_free_buffer_no = buffer_no_1;
             deal_uart6_dma_proc(uart6_dma_buffer_2);  // 解包，从proc传过来的，双乒乓缓冲区有时会导致乱
         }

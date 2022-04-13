@@ -8,8 +8,12 @@
 
 #include "main.h"
 
-extern unsigned int uart6_dma_buffer_1[PROC_MCU_SEND_AMOUNT];
-extern unsigned int uart6_dma_buffer_2[PROC_MCU_SEND_AMOUNT];
+volatile short angle = 150;
+volatile unsigned short speed = 0;
+unsigned short playground_ind = 0;
+
+extern unsigned int uart6_dma_buffer_1[CTRL_MCU_RECEIVE_AMOUNT];
+extern unsigned int uart6_dma_buffer_2[CTRL_MCU_RECEIVE_AMOUNT];
 
 unsigned int uart7_dma_send_buffer[UART7_DMA_SEND_BUFFER] = {0};
 
@@ -19,8 +23,8 @@ int main(void) {
     uart1_config();
     uart6_config();
     uart6_dma_nvic_config();
-    uart6_dma_receive_config(uart6_dma_buffer_1, PROC_MCU_SEND_AMOUNT);
-    uart6_dma_set_transmit_buffer(uart6_dma_buffer_1, PROC_MCU_SEND_AMOUNT);
+    uart6_dma_receive_config(uart6_dma_buffer_1, CTRL_MCU_RECEIVE_AMOUNT);
+    uart6_dma_set_transmit_buffer(uart6_dma_buffer_1, CTRL_MCU_RECEIVE_AMOUNT);
     uart7_config();
 //    uart7_dma_nvic_config();
 //    uart7_dma_receive_config(uart7_dma_receive_buffer, UART7_DMA_RECEIVE_BUFFER);
@@ -72,33 +76,30 @@ int main(void) {
 //        delayms(1000);
 //    }
 
-    volatile unsigned short angle = 150;
-    volatile unsigned short speed = 0;
+
     unsigned char counter = 0;
     while (1) {
         // 前，左是 0~32766
-        angle = 200 - control_signal.joystick_x / 655;
-        if (control_signal.joystick_y > 32766)
-            speed = 2000;
-        else
-            speed = 2000 + (32767 - control_signal.joystick_y) * 3000 / 32766;
-//        if (counter == 20) {
-//            angle = 100;
-//        } else if (counter == 40) {
-//            angle = 200;
-//        }
-//        counter++;
-//        if (counter == 50) {
-//            if (speed <= 3000)
-//                speed = 6000;
-//            else if (speed >= 6000)
-//                speed = 3000;
-//            counter = 0;
-//        }
+//        angle = 200 - control_signal.joystick_x / 655;
+//        if (control_signal.joystick_y > 32766)
+//            speed = 2000;
+//        else
+//            speed = 2000 + (32767 - control_signal.joystick_y) * 3000 / 32766;
+        if (proc_data.distance_east != 0) {
+            if (playground_ind < 837)
+                playground_ind =
+                    dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
+                              (playground_ind + INDEX_OFFSET > 837) ? 837 : (playground_ind + INDEX_OFFSET));
 
-        WRITE_REG(TIM3->CCR1, angle);
-        sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
-        uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
+            lqr_control(playground_ind);
+            WRITE_REG(TIM3->CCR1, angle);
+        }
+
+
+//        sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
+//        uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
         delayms(10);
+//        printf("%.3f, %.3f", proc_data.distance_north, proc_data.distance_east);
+
     }
 }

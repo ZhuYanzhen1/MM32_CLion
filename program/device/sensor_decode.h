@@ -11,6 +11,7 @@
 
 #define READ_MCU_AMOUNT         158
 #define PROC_MCU_SEND_AMOUNT    16
+#define CTRL_MCU_RECEIVE_AMOUNT 48
 #define SHORT_SPLIT_CHAR(x, y)  packets[x] = ((buffer[y] & 0x0000ff00) >> 8);\
                                 packets[(x)+1] = (buffer[y] & 0x000000ff);
 #define INT_SPLIT_CHAR(x, y)    packets[x] = ((buffer[y] & 0x00ff0000) >> 16);\
@@ -71,6 +72,7 @@ typedef struct {
     float distance_north; // 先发北再发东
     float distance_east;
     float north_angle;
+    short checksum;
 } decode_proc;
 
 extern decode_fixed small_packets;
