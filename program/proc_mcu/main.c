@@ -57,9 +57,9 @@ void initialize_task(void *parameters) {
     spi2_config();
     spi3_config();
     uart1_config();
+    uart2_config();
     uart4_config();
     uart6_config();
-    uart8_config();
     xpt2046_gpio_config();
     cm_backtrace_config("mm32f3277", "1.3.3", "1.3.3");
     gui_config();

@@ -234,48 +234,48 @@ void uart6_config() {
 #endif  // IS_CONTROL_MCU
 
 #ifdef IS_PROCESS_MCU
-void uart8_config() {
+void uart2_config() {
     UART_InitTypeDef UART_InitStruct;
     GPIO_InitTypeDef GPIO_InitStruct;
     NVIC_InitTypeDef NVIC_InitStruct;
 
-    RCC_APB1PeriphClockCmd(RCC_APB1ENR_UART8, ENABLE);
-    RCC_AHBPeriphClockCmd(RCC_AHBENR_GPIOD, ENABLE);
+    RCC_APB1PeriphClockCmd(RCC_APB1ENR_UART2, ENABLE); //
+    RCC_AHBPeriphClockCmd(RCC_AHBENR_GPIOA, ENABLE);
 
-    GPIO_PinAFConfig(GPIOD, GPIO_PinSource0, GPIO_AF_8);
-    GPIO_PinAFConfig(GPIOD, GPIO_PinSource1, GPIO_AF_8);
+    GPIO_PinAFConfig(GPIOA, GPIO_PinSource2, GPIO_AF_7);
+    GPIO_PinAFConfig(GPIOA, GPIO_PinSource3, GPIO_AF_7);
 
-    NVIC_InitStruct.NVIC_IRQChannel = UART8_IRQn;
-    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = UART8_PRIORITY;
+    NVIC_InitStruct.NVIC_IRQChannel = UART2_IRQn;
+    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = UART2_PRIORITY;
     NVIC_InitStruct.NVIC_IRQChannelSubPriority = 0;
     NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStruct);
 
     GPIO_StructInit(&GPIO_InitStruct);
-    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_0;
+    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_2;              // Tx  PA2
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;
-    GPIO_Init(GPIOD, &GPIO_InitStruct);
-    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_1;
+    GPIO_Init(GPIOA, &GPIO_InitStruct);
+    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_3;              // Rx  PA3
     GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IPU;
-    GPIO_Init(GPIOD, &GPIO_InitStruct);
+    GPIO_Init(GPIOA, &GPIO_InitStruct);
 
     UART_StructInit(&UART_InitStruct);
-    UART_InitStruct.BaudRate = UART8_BAUDRATE;
+    UART_InitStruct.BaudRate = UART2_BAUDRATE;
     UART_InitStruct.WordLength = UART_WordLength_8b;
     UART_InitStruct.StopBits = UART_StopBits_1;
     UART_InitStruct.Parity = UART_Parity_No;
     UART_InitStruct.HWFlowControl = UART_HWFlowControl_None;
     UART_InitStruct.Mode = UART_Mode_Rx | UART_Mode_Tx;
 
-    UART_Init(UART8, &UART_InitStruct);
-    UART_ITConfig(UART8, UART_IT_RXIEN, ENABLE);
-    UART_Cmd(UART8, ENABLE);
+    UART_Init(UART2, &UART_InitStruct);
+    UART_ITConfig(UART2, UART_IT_RXIEN, ENABLE);
+    UART_Cmd(UART2, ENABLE);
 }
 
-void uart8_sendbyte(unsigned char data) {
-    UART_SendData(UART8, data);
-    while (!UART_GetFlagStatus(UART8, UART_FLAG_TXEPT));
+void uart2_sendbyte(unsigned char data) {
+    UART_SendData(UART2, data);
+    while (!UART_GetFlagStatus(UART2, UART_FLAG_TXEPT));
 }
 #endif // IS_PROCESS_MCU
 

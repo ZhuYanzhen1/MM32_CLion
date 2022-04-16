@@ -44,17 +44,17 @@
 #define UART1_DMA_PRIORITY      4
 #define SPI3_DMA_PRIORITY       6
 #define EXTI4_PRIORITY          6
-#define UART8_PRIORITY          1
-#define UART6_PRIORITY          5
+#define UART2_PRIORITY          1
 #define UART4_PRIORITY          1
+#define UART6_PRIORITY          5
 
 
 //////////////////////////////////////// Peripherals Speed ////////////////////////////////////////
 #define UART1_BAUDRATE          115200
+#define UART2_BAUDRATE          115200
 #define UART3_BAUDRATE          115200
 #define UART4_BAUDRATE          115200
 #define UART6_BAUDRATE          115200
-#define UART8_BAUDRATE          115200
 
 #define IIC1_SPEED              400000
 

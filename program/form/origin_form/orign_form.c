@@ -22,7 +22,7 @@ void orgin_gnss_form_btn_callback(void *parameter) {
 void orgin_sensor_form_btn_callback(void *parameter) {
     (void) parameter;
     gui_orgin_sensor_form_init();
-    uart8_sendbyte(0x03);
+    uart2_sendbyte(0x03);
 }
 
 void orgin_form_return_btn_callback(void *parameter) {

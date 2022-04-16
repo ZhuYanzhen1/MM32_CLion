@@ -36,23 +36,23 @@ void UART1_IRQHandler(void) {
     }
 }
 
+static unsigned char uart2_counter = 0;
+unsigned int packages_to_be_unpacked[READ_MCU_AMOUNT];
+void UART2_IRQHandler(void) {
+    if (UART_GetITStatus(UART2, UART_ISR_RX) != RESET) {
+        unsigned char recvbyte = UART_ReceiveData(UART2);
+        packages_to_be_unpacked[uart2_counter] = recvbyte;
+        uart2_counter = (uart2_counter + 1) % READ_MCU_AMOUNT;
+        UART_ClearITPendingBit(UART2, UART_ISR_RX);
+    }
+}
+
 unsigned char battery_voltage = 0x00;
 void UART6_IRQHandler(void) {
     if (UART_GetITStatus(UART6, UART_ISR_RX) != RESET) {
         unsigned char recvbyte = UART_ReceiveData(UART6);
         UART_ClearITPendingBit(UART6, UART_ISR_RX);
         battery_voltage = (recvbyte >> 3) + 140;
-    }
-}
-
-static unsigned char uart8_counter = 0;
-unsigned int packages_to_be_unpacked[READ_MCU_AMOUNT];
-void UART8_IRQHandler(void) {
-    if (UART_GetITStatus(UART8, UART_ISR_RX) != RESET) {
-        unsigned char recvbyte = UART_ReceiveData(UART8);
-        packages_to_be_unpacked[uart8_counter] = recvbyte;
-        uart8_counter = (uart8_counter + 1) % READ_MCU_AMOUNT;
-        UART_ClearITPendingBit(UART8, UART_ISR_RX);
     }
 }
 

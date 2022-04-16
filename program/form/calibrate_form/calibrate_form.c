@@ -15,7 +15,7 @@ static button_struct_t calibrate_form_return_btn;
 
 void calibrate_mag_form_btn_callback(void *parameter) {
     (void) parameter;
-    uart8_sendbyte(0x02);
+    uart2_sendbyte(0x02);
     gui_mag_calibrate_form_init();
 }
 
