@@ -237,19 +237,12 @@ void uart6_config() {
 void uart2_config() {
     UART_InitTypeDef UART_InitStruct;
     GPIO_InitTypeDef GPIO_InitStruct;
-    NVIC_InitTypeDef NVIC_InitStruct;
 
     RCC_APB1PeriphClockCmd(RCC_APB1ENR_UART2, ENABLE); //
     RCC_AHBPeriphClockCmd(RCC_AHBENR_GPIOA, ENABLE);
 
     GPIO_PinAFConfig(GPIOA, GPIO_PinSource2, GPIO_AF_7);
     GPIO_PinAFConfig(GPIOA, GPIO_PinSource3, GPIO_AF_7);
-
-    NVIC_InitStruct.NVIC_IRQChannel = UART2_IRQn;
-    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = UART2_PRIORITY;
-    NVIC_InitStruct.NVIC_IRQChannelSubPriority = 0;
-    NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
-    NVIC_Init(&NVIC_InitStruct);
 
     GPIO_StructInit(&GPIO_InitStruct);
     GPIO_InitStruct.GPIO_Pin = GPIO_Pin_2;              // Tx  PA2
@@ -269,7 +262,6 @@ void uart2_config() {
     UART_InitStruct.Mode = UART_Mode_Rx | UART_Mode_Tx;
 
     UART_Init(UART2, &UART_InitStruct);
-    UART_ITConfig(UART2, UART_IT_RXIEN, ENABLE);
     UART_Cmd(UART2, ENABLE);
 }
 

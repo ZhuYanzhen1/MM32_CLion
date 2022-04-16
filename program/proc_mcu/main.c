@@ -58,6 +58,9 @@ void initialize_task(void *parameters) {
     spi3_config();
     uart1_config();
     uart2_config();
+    uart2_dma_nvic_config();
+    uart2_dma_receive_config(packages_to_be_unpacked, READ_MCU_AMOUNT);
+    uart2_dma_set_transmit_buffer(packages_to_be_unpacked, READ_MCU_AMOUNT);
     uart4_config();
     uart6_config();
     xpt2046_gpio_config();

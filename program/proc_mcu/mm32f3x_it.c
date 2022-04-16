@@ -99,6 +99,13 @@ void DMA1_Channel4_IRQHandler(void) {
     }
 }
 
+void DMA1_Channel6_IRQHandler(void) {
+    if (DMA_GetITStatus(DMA1_IT_TC6)) {
+        DMA_ClearITPendingBit(DMA1_IT_TC6);
+        uart2_dma_set_transmit_buffer(packages_to_be_unpacked, READ_MCU_AMOUNT);
+    }
+}
+
 extern volatile unsigned char lcd_buffer[128 * 160 * 2];
 void DMA2_Channel2_IRQHandler(void) {
     if (DMA_GetITStatus(DMA2_IT_TC2)) {
