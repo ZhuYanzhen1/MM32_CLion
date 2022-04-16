@@ -85,46 +85,6 @@ extern float distance_east;
 
 void test_calc_target_index(void) {
     int ind;
-    int ind_ahead;
-    int ind_rear;
-//    ind = 1000;
-//    ind_ahead = (int) newton_iteration(ind + INDEX_OFFSET);
-//    ind_rear = (int) newton_iteration(ind - INDEX_OFFSET);
-//    ind = dichotomy(ind_rear, ind_ahead);
-//    CU_ASSERT_EQUAL(ind_ahead, 1454)
-//    CU_ASSERT_EQUAL(ind_rear, 1104)
-//    CU_ASSERT_EQUAL(ind, 1257)
-//
-//    ind = 1063;
-//    distance_north = 21.3f;
-//    distance_east = 4.9f;
-//    ind_ahead = (int) newton_iteration(ind + INDEX_OFFSET);
-//    ind_rear = (int) newton_iteration(ind - INDEX_OFFSET);
-//    ind = dichotomy(ind_rear, ind_ahead);
-//    CU_ASSERT_EQUAL(ind_ahead, 1212)
-//    CU_ASSERT_EQUAL(ind_rear, 887)
-//    CU_ASSERT_EQUAL(ind, 1028)
-//
-//    ind = 685;
-//    distance_north = 13.7f;
-//    distance_east = 8.6f;
-//    ind_ahead = (int) newton_iteration(ind + INDEX_OFFSET);
-//    ind_rear = (int) newton_iteration(ind - INDEX_OFFSET);
-//    ind = dichotomy(ind_rear, ind_ahead);
-//    CU_ASSERT_EQUAL(ind_ahead, 843)
-//    CU_ASSERT_EQUAL(ind_rear, 509)
-//    CU_ASSERT_EQUAL(ind, 655)
-//
-//    ind = 1522;
-//    distance_north = 30.45f;
-//    distance_east = 6.48f;
-//    ind_ahead = (int) newton_iteration((ind + INDEX_OFFSET > 1999) ? 1999 : (ind + INDEX_OFFSET));
-//    ind_rear = (int) newton_iteration((ind - INDEX_OFFSET < 0) ? 0 : (ind - INDEX_OFFSET));
-//    ind = dichotomy(ind_rear, ind_ahead);
-//    CU_ASSERT_EQUAL(ind_ahead, 1641)
-//    CU_ASSERT_EQUAL(ind_rear, 1344)
-//    CU_ASSERT_EQUAL(ind, 1547) //30.9
-
 
 //    {23.164415f, 140.739357f},
 //    25.032100f, 140.478674f
@@ -133,7 +93,22 @@ void test_calc_target_index(void) {
     distance_east = 140.948782f; // 注：修改了窗口 和 计算距离的函数内存放位置点的数据
 //    ind_ahead = (int) newton_iteration((ind + INDEX_OFFSET > 412) ? 412 : (ind + INDEX_OFFSET));
 //    ind_rear = (int) newton_iteration((ind - INDEX_OFFSET < 0) ? 0 : (ind - INDEX_OFFSET));
-    ind = dichotomy(ind - 2, ind + 10);
-    CU_ASSERT_EQUAL(ind, 139)
+    ind = dichotomy(ind - 2, ind + 20);
+    CU_ASSERT_EQUAL(ind, 138)
 
+}
+
+void test_lqr_contrl(void) {
+    short angle_ctrl = 150;
+    unsigned short index;
+    float distance_n, distance_e, angle_yaw;
+
+    index = 13, distance_n = 337766.5684576f, distance_e = 347231.9391565f, angle_yaw = 300; // 337766.5684576f, 347231.9391565f
+    lqr_control_test(index, angle_ctrl, angle_yaw, distance_n, distance_e);
+
+    index = 16, distance_n = 337764.781f, distance_e = 347232.688f, angle_yaw = 242.7f; // 337766.5684576f, 347231.9391565f
+    lqr_control_test(index, angle_ctrl, angle_yaw, distance_n, distance_e);
+
+    index = 15, distance_n = 337765.781f, distance_e = 347231.938f, angle_yaw = 147.5f; // 337766.5684576f, 347231.9391565f
+    lqr_control_test(index, angle_ctrl, angle_yaw, distance_n, distance_e);
 }

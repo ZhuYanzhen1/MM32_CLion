@@ -133,9 +133,10 @@ void deal_uart6_dma_proc(const unsigned int *p) {
             case 0:if (p[counter] == 0xff) status = 1;
                 break;
             case 1:
-                if (p[counter] == 0xff && package_counter != (PROC_MCU_SEND_AMOUNT - 2))
+                if (p[counter] == 0xff && package_counter != (PROC_MCU_SEND_AMOUNT - 2)) {
                     status = 1;
-                else if (p[counter] == 0xff && package_counter == (PROC_MCU_SEND_AMOUNT - 2))
+                    package_counter = 0;    // 原本没有的
+                } else if (p[counter] == 0xff && package_counter == (PROC_MCU_SEND_AMOUNT - 2))
                     status = 2;
                 else {
                     package_buffer[package_counter] = p[counter];

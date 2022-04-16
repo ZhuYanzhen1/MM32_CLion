@@ -3,6 +3,7 @@
 
 #define INDEX_OFFSET    20
 
+void lqr_control_test(unsigned short index, int angle_ctrl, float angle_yaw, float distance_n, float distance_e);
 void lqr_control(unsigned short index);
 int dichotomy(int ind_start, int ind_end);
 float calculate_distance(int ind);

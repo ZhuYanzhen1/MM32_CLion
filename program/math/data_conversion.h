@@ -13,7 +13,9 @@
 #define QRIGIN_LAT      20  /* The starting point is set as(20°N,110°E) */
 #define QRIGIN_LON      110
 #define EARTH_RADIUS    6371000
-#define FACTOR_ALLC     1.25f
+#define FACTOR_ALLC_X   1.778f
+#define FACTOR_ALLC_Y   1.811f
+#define FACTOR_ALLC_Z   1.899f
 #define GEO_ANGLE(x)    ((x) * 0.0174533f)  // PI / 180 = 0.0174533f
 #define KNOT_TO_M_S(x)  ((x) * 0.514444f)
 #define MG_TO_M_S_2(x)  ((x) / 102.1627f)
