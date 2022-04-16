@@ -23,6 +23,7 @@ void orgin_sensor_form_btn_callback(void *parameter) {
     (void) parameter;
     gui_orgin_sensor_form_init();
     uart2_sendbyte(0x03);
+    uart2_dma_buffer_size = 96; // debug_data_size
 }
 
 void orgin_form_return_btn_callback(void *parameter) {

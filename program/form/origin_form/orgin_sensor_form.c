@@ -31,6 +31,7 @@ static void sensor_form_return_callback(void *parameter) {
     (void) parameter;
     gui_form_display(&orgin_form);
     uart2_sendbyte(0x00);
+    uart2_dma_buffer_size = 16; // small_packets_size
 }
 
 void gui_orgin_sensor_form_init() {

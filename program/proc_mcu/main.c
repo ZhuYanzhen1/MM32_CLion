@@ -10,7 +10,7 @@
 
 unsigned short playground_ind = 0;
 
-extern unsigned int packages_to_be_unpacked[READ_MCU_AMOUNT];
+extern unsigned int packages_to_be_unpacked_1[READ_MCU_AMOUNT];
 unsigned int proc_to_ctrl_package[PROC_MCU_SEND_AMOUNT] = {0};
 unsigned int proc_to_ctrl_buffer[3] = {0};
 
@@ -59,8 +59,8 @@ void initialize_task(void *parameters) {
     uart1_config();
     uart2_config();
     uart2_dma_nvic_config();
-    uart2_dma_receive_config(packages_to_be_unpacked, READ_MCU_AMOUNT);
-    uart2_dma_set_transmit_buffer(packages_to_be_unpacked, READ_MCU_AMOUNT);
+    uart2_dma_receive_config(packages_to_be_unpacked_1, uart2_dma_buffer_size);
+    uart2_dma_set_transmit_buffer(packages_to_be_unpacked_1, uart2_dma_buffer_size);
     uart4_config();
     uart6_config();
     xpt2046_gpio_config();
@@ -98,18 +98,18 @@ void fusion_task(void *parameters) {
     kalman_config_distance(&kalman_distance_north, 337970.9400000f);
     kalman_config_distance(&kalman_distance_earth, 346666.0600000f);
     while (1) {
-        for (unsigned short packets_counter = 0; packets_counter < READ_MCU_AMOUNT; packets_counter++) {
-            if (packages_to_be_unpacked[packets_counter] == 0xff
-                && packages_to_be_unpacked[packets_counter + 11] == 0xff) {
-                unpacking_fixed_length_data((unsigned int *) &packages_to_be_unpacked[packets_counter + 1]);
-                packets_counter = (packets_counter + 11);  // 移动到包尾位置
-            } else if (packages_to_be_unpacked[packets_counter] == 0xa5
-                && packages_to_be_unpacked[packets_counter + 1] == 0x5a
-                && ((packets_counter + packages_to_be_unpacked[2] - 1) < READ_MCU_AMOUNT)) {
-                unpacking_variable_length_data((unsigned int *) &packages_to_be_unpacked[packets_counter + 3]);
-                packets_counter = (packets_counter + packages_to_be_unpacked[2] - 1); // 移动到下一个包的前一个位置
-            }
-        }
+//        for (unsigned short packets_counter = 0; packets_counter < READ_MCU_AMOUNT; packets_counter++) {
+//            if (packages_to_be_unpacked_1[packets_counter] == 0xff
+//                && packages_to_be_unpacked_1[packets_counter + 11] == 0xff) {
+//                unpacking_fixed_length_data((unsigned int *) &packages_to_be_unpacked_1[packets_counter + 1]);
+//                packets_counter = (packets_counter + 11);  // 移动到包尾位置
+//            } else if (packages_to_be_unpacked_1[packets_counter] == 0xa5
+//                && packages_to_be_unpacked_1[packets_counter + 1] == 0x5a
+//                && ((packets_counter + packages_to_be_unpacked_1[2] - 1) < READ_MCU_AMOUNT)) {
+//                unpacking_variable_length_data((unsigned int *) &packages_to_be_unpacked_1[packets_counter + 3]);
+//                packets_counter = (packets_counter + packages_to_be_unpacked_1[2] - 1); // 移动到下一个包的前一个位置
+//            }
+//        }
         while (gps_rmc.status == 'V') {
             delayms(1);
             playground_ind = 0;
@@ -118,7 +118,7 @@ void fusion_task(void *parameters) {
             proc_to_ctrl_buffer[2] = 0;
             precossing_proc_to_control(proc_to_ctrl_package, proc_to_ctrl_buffer);
             for (unsigned char i = 0; i < PROC_MCU_SEND_AMOUNT; i++) {
-                uart4_sendbyte(proc_to_ctrl_package[i]);
+                uart3_sendbyte(proc_to_ctrl_package[i]);
             }
         }
         sensor_unit_conversion();
@@ -138,7 +138,7 @@ void fusion_task(void *parameters) {
         proc_to_ctrl_buffer[2] = *((unsigned int *) (&small_packets.chebyshev_north));
         precossing_proc_to_control(proc_to_ctrl_package, proc_to_ctrl_buffer);
         for (unsigned char i = 0; i < PROC_MCU_SEND_AMOUNT; i++) {
-            uart4_sendbyte(proc_to_ctrl_package[i]);
+            uart3_sendbyte(proc_to_ctrl_package[i]);
         }
 
         if (playground_ind < 837)
