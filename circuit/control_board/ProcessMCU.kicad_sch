@@ -6,8 +6,8 @@
 
   (title_block
     (title "MM32 Control Board")
-    (date "2022-04-06")
-    (rev "1.5.2")
+    (date "2022-04-17")
+    (rev "1.5.3")
   )
 
   (lib_symbols
@@ -1094,7 +1094,7 @@
   (no_connect (at 161.29 67.31) (uuid 46a20b99-b616-4fa4-af79-eecf92b5c191))
   (no_connect (at 135.89 151.13) (uuid 5080cf4c-abda-4232-b279-44d0e6b9bde3))
   (no_connect (at 135.89 46.99) (uuid 537e7089-362f-4ae8-8634-9b72c8705c74))
-  (no_connect (at 138.43 46.99) (uuid 537e7089-362f-4ae8-8634-9b72c8705c74))
+  (no_connect (at 138.43 46.99) (uuid 537e7089-362f-4ae8-8634-9b72c8705c75))
   (no_connect (at 52.07 85.09) (uuid 57e17378-f1f7-42d0-9ad3-fb44c2d5cdc3))
   (no_connect (at 161.29 138.43) (uuid 5891aa7f-2e48-4492-8db1-d54810991036))
   (no_connect (at 161.29 92.71) (uuid 5953ac02-dd84-453b-a6ad-4448da89eab3))
