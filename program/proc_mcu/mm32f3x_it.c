@@ -36,23 +36,23 @@ void UART1_IRQHandler(void) {
     }
 }
 
+static unsigned char uart2_counter = 0;
+unsigned int packages_to_be_unpacked[READ_MCU_AMOUNT];
+void UART2_IRQHandler(void) {
+    if (UART_GetITStatus(UART2, UART_ISR_RX) != RESET) {
+        unsigned char recvbyte = UART_ReceiveData(UART2);
+        packages_to_be_unpacked[uart2_counter] = recvbyte;
+        uart2_counter = (uart2_counter + 1) % READ_MCU_AMOUNT;
+        UART_ClearITPendingBit(UART2, UART_ISR_RX);
+    }
+}
+
 unsigned char battery_voltage = 0x00;
 void UART6_IRQHandler(void) {
     if (UART_GetITStatus(UART6, UART_ISR_RX) != RESET) {
         unsigned char recvbyte = UART_ReceiveData(UART6);
         UART_ClearITPendingBit(UART6, UART_ISR_RX);
         battery_voltage = (recvbyte >> 3) + 140;
-    }
-}
-
-static unsigned char uart8_counter = 0;
-unsigned int packages_to_be_unpacked[READ_MCU_AMOUNT];
-void UART8_IRQHandler(void) {
-    if (UART_GetITStatus(UART8, UART_ISR_RX) != RESET) {
-        unsigned char recvbyte = UART_ReceiveData(UART8);
-        packages_to_be_unpacked[uart8_counter] = recvbyte;
-        uart8_counter = (uart8_counter + 1) % READ_MCU_AMOUNT;
-        UART_ClearITPendingBit(UART8, UART_ISR_RX);
     }
 }
 
@@ -95,6 +95,25 @@ void DMA1_Channel4_IRQHandler(void) {
             uart1_dma_set_transmit_buffer(printf_mdtp_dma_buffer[0], printf_dma_counter * 12);
             printf_dma_counter = 0;
             printf_sending_flag = 1;
+        }
+    }
+}
+
+static buffer_no uart2_free_buffer_no = buffer_no_1;
+volatile unsigned int packages_to_be_unpacked_1[READ_MCU_AMOUNT] = {0};
+volatile unsigned int packages_to_be_unpacked_2[READ_MCU_AMOUNT] = {0};
+void DMA1_Channel6_IRQHandler(void) {
+    if (DMA_GetITStatus(DMA1_IT_TC6)) {
+        DMA_ClearITPendingBit(DMA1_IT_TC6);
+
+        if (uart2_free_buffer_no == buffer_no_1) {
+            uart2_dma_set_transmit_buffer((unsigned int *) packages_to_be_unpacked_2, uart2_dma_buffer_size);
+            uart2_free_buffer_no = buffer_no_2;
+            deal_dma_read_mcu((unsigned int *) packages_to_be_unpacked_1);
+        } else {
+            uart2_dma_set_transmit_buffer((unsigned int *) packages_to_be_unpacked_1, uart2_dma_buffer_size);
+            uart2_free_buffer_no = buffer_no_1;
+            deal_dma_read_mcu((unsigned int *) packages_to_be_unpacked_2);
         }
     }
 }

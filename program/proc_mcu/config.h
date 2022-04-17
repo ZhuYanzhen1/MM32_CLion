@@ -19,7 +19,7 @@
 /* debugger variable maximum size set to 12 */
 #define VARIABLE_BUFFER_SIZE    12
 /* use mdtp protocol to print buffer */
-#define DEBUG_USE_PROTOCOL      1
+#define DEBUG_USE_PROTOCOL      0
 /* use vTaskList to report task info */
 #define USE_FREERTOS_REPORT     0
 /* GUI CallBack Function Priority set to 2 */
@@ -40,21 +40,22 @@
 //////////////////////////////////////// Interrupt Priority ////////////////////////////////////////
 #define TIM2_PRIORITY           5
 #define UART1_PRIORITY          3
+#define UART2_DMA_PRIORITY      2
 #define UART3_DMA_PRIORITY      2
 #define UART1_DMA_PRIORITY      4
 #define SPI3_DMA_PRIORITY       6
 #define EXTI4_PRIORITY          6
-#define UART8_PRIORITY          1
-#define UART6_PRIORITY          5
+#define UART2_PRIORITY          1
 #define UART4_PRIORITY          1
+#define UART6_PRIORITY          5
 
 
 //////////////////////////////////////// Peripherals Speed ////////////////////////////////////////
 #define UART1_BAUDRATE          115200
+#define UART2_BAUDRATE          115200
 #define UART3_BAUDRATE          115200
 #define UART4_BAUDRATE          115200
 #define UART6_BAUDRATE          115200
-#define UART8_BAUDRATE          115200
 
 #define IIC1_SPEED              400000
 

@@ -32,6 +32,8 @@ int main(void) {
     cm_backtrace_config("mm32f3277", "1.0.1", "1.0.1");
     debugger_register_variable(dbg_uint16, &control_signal.joystick_x, "x");
     debugger_register_variable(dbg_uint16, &control_signal.joystick_y, "y");
+    debugger_register_variable(dbg_float32, &proc_data.distance_north, "nd");
+    debugger_register_variable(dbg_float32, &proc_data.distance_east, "ed");
     timer2_config();
     timer3_config();
     timer4_config();
@@ -86,20 +88,30 @@ int main(void) {
 //        else
 //            speed = 2000 + (32767 - control_signal.joystick_y) * 3000 / 32766;
         if (proc_data.distance_east != 0) {
-            if (playground_ind < 837)
+            /* 国防生 */
+//            if (playground_ind < 837)
+//                playground_ind =
+//                    dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
+//                              (playground_ind + INDEX_OFFSET > 837) ? 837 : (playground_ind + INDEX_OFFSET));
+//
+//            lqr_control(playground_ind);
+//            WRITE_REG(TIM3->CCR1, angle);
+//            printf("%.3f, %.3f \r", proc_data.distance_north, proc_data.distance_east);
+            /* 工一楼顶 */
+            if (playground_ind < 175)
                 playground_ind =
                     dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
-                              (playground_ind + INDEX_OFFSET > 837) ? 837 : (playground_ind + INDEX_OFFSET));
+                              (playground_ind + INDEX_OFFSET > 175) ? 175 : (playground_ind + INDEX_OFFSET));
 
             lqr_control(playground_ind);
             WRITE_REG(TIM3->CCR1, angle);
+//            printf("%.3f, %.3f \r", proc_data.distance_north, proc_data.distance_east);
         }
 
 
 //        sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
 //        uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
-        delayms(10);
-//        printf("%.3f, %.3f", proc_data.distance_north, proc_data.distance_east);
+        delayms(200);
 
     }
 }

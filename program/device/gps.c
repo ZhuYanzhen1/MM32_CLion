@@ -14,14 +14,14 @@
 #include "dma.h"
 #include "hal_conf.h"
 
-#define UART3_CONFIG_GPS(cmdbuf)            for (unsigned char i = 0; i < (unsigned char) sizeof(cmdbuf); i++)\
-                                                uart3_sendbyte((cmdbuf)[i]);\
+#define UART4_CONFIG_GPS(cmdbuf)            for (unsigned char i = 0; i < (unsigned char) sizeof(cmdbuf); i++)\
+                                                uart4_sendbyte((cmdbuf)[i]);\
                                             delayms(100);
 #define CLOSE_PACKAGE_OUTPUT(a, b, c, d)    output_rmc[7]=a;\
                                             output_rmc[8]=b;\
                                             output_rmc[9]=c;\
                                             output_rmc[10]=d;\
-                                            UART3_CONFIG_GPS(output_rmc)
+                                            UART4_CONFIG_GPS(output_rmc)
 
 extern unsigned int usart3_dma_buffer_1[74];
 extern unsigned int usart3_dma_buffer_2[74];
@@ -49,8 +49,8 @@ void gps_config() {
     uart3_dma_receive_config(usart3_dma_buffer_1, 74);
     DMA_Cmd(DMA1_Channel3, DISABLE);
     delayms(10);
-    UART3_CONFIG_GPS(output_frequency_10Hz)
-    UART3_CONFIG_GPS(output_rmc)
+    UART4_CONFIG_GPS(output_frequency_10Hz)
+    UART4_CONFIG_GPS(output_rmc)
     CLOSE_PACKAGE_OUTPUT(0x00, 0x00, 0xFA, 0x0F)
     CLOSE_PACKAGE_OUTPUT(0x01, 0x00, 0xFB, 0x11)
     CLOSE_PACKAGE_OUTPUT(0x02, 0x00, 0xFC, 0x13)

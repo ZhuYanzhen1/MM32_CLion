@@ -8,9 +8,11 @@
 
 #include "main.h"
 
+extern unsigned int test_counter;
+
 unsigned short playground_ind = 0;
 
-extern unsigned int packages_to_be_unpacked[READ_MCU_AMOUNT];
+extern unsigned int packages_to_be_unpacked_1[READ_MCU_AMOUNT];
 unsigned int proc_to_ctrl_package[PROC_MCU_SEND_AMOUNT] = {0};
 unsigned int proc_to_ctrl_buffer[3] = {0};
 
@@ -57,9 +59,12 @@ void initialize_task(void *parameters) {
     spi2_config();
     spi3_config();
     uart1_config();
+    uart2_config();
+    uart2_dma_nvic_config();
+    uart2_dma_receive_config(packages_to_be_unpacked_1, uart2_dma_buffer_size);
+    uart2_dma_set_transmit_buffer(packages_to_be_unpacked_1, uart2_dma_buffer_size);
     uart4_config();
     uart6_config();
-    uart8_config();
     xpt2046_gpio_config();
     cm_backtrace_config("mm32f3277", "1.3.3", "1.3.3");
     gui_config();
@@ -69,8 +74,15 @@ void initialize_task(void *parameters) {
     at24c02_readparams();
 
     debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
+//    debugger_register_variable(dbg_int16, &small_packets.ax, "ax");
+//    debugger_register_variable(dbg_int16, &small_packets.ay, "ay");
+//    debugger_register_variable(dbg_int16, &small_packets.az, "az");
 //    debugger_register_variable(dbg_uint16, &control_signal.joystick_x, "joy_x");
 //    debugger_register_variable(dbg_uint16, &control_signal.joystick_y, "joy_y");
+//    debugger_register_variable(dbg_float32, &kalman_data.distance_north, "dn");
+//    debugger_register_variable(dbg_float32, &kalman_data.distance_east, "de");
+//    debugger_register_variable(dbg_float32, &kalman_data.v, "v");
+//    debugger_register_variable(dbg_float32, &small_packets.chebyshev_north, "north");
 //    debugger_register_variable(dbg_float32, &small_packets.chebyshev_north, "compass");
 
     timer2_config();
@@ -95,18 +107,6 @@ void fusion_task(void *parameters) {
     kalman_config_distance(&kalman_distance_north, 337970.9400000f);
     kalman_config_distance(&kalman_distance_earth, 346666.0600000f);
     while (1) {
-        for (unsigned short packets_counter = 0; packets_counter < READ_MCU_AMOUNT; packets_counter++) {
-            if (packages_to_be_unpacked[packets_counter] == 0xff
-                && packages_to_be_unpacked[packets_counter + 11] == 0xff) {
-                unpacking_fixed_length_data((unsigned int *) &packages_to_be_unpacked[packets_counter + 1]);
-                packets_counter = (packets_counter + 11);  // 移动到包尾位置
-            } else if (packages_to_be_unpacked[packets_counter] == 0xa5
-                && packages_to_be_unpacked[packets_counter + 1] == 0x5a
-                && ((packets_counter + packages_to_be_unpacked[2] - 1) < READ_MCU_AMOUNT)) {
-                unpacking_variable_length_data((unsigned int *) &packages_to_be_unpacked[packets_counter + 3]);
-                packets_counter = (packets_counter + packages_to_be_unpacked[2] - 1); // 移动到下一个包的前一个位置
-            }
-        }
         while (gps_rmc.status == 'V') {
             delayms(1);
             playground_ind = 0;
@@ -115,35 +115,32 @@ void fusion_task(void *parameters) {
             proc_to_ctrl_buffer[2] = 0;
             precossing_proc_to_control(proc_to_ctrl_package, proc_to_ctrl_buffer);
             for (unsigned char i = 0; i < PROC_MCU_SEND_AMOUNT; i++) {
-                uart4_sendbyte(proc_to_ctrl_package[i]);
+                uart3_sendbyte(proc_to_ctrl_package[i]);
             }
         }
         sensor_unit_conversion();
         kalman_data.v = kalman_update(&kalman_v, neu.v, neu.acceleration,
-                                      0.031f);
+                                      0.021f);
         coordinate_system_transformation_kalman_v(small_packets.chebyshev_north);
         kalman_data.distance_north = kalman_update(&kalman_distance_north, neu.north_distance,
-                                                   neu.north_v, 0.031f);
+                                                   neu.north_v, 0.021f);
         kalman_data.distance_east = kalman_update(&kalman_distance_earth, neu.east_distance,
-                                                  neu.east_v, 0.031f);
+                                                  neu.east_v, 0.021f);
 
-//        unsigned int proc_to_ctrl_buffer[3] =
-//            {*((unsigned int *) (&kalman_data.distance_north)), *((unsigned int *) (&kalman_data.distance_east)),
-//             *((unsigned int *) (&small_packets.chebyshev_north))};
         proc_to_ctrl_buffer[0] = *((unsigned int *) (&kalman_data.distance_north));
         proc_to_ctrl_buffer[1] = *((unsigned int *) (&kalman_data.distance_east));
         proc_to_ctrl_buffer[2] = *((unsigned int *) (&small_packets.chebyshev_north));
         precossing_proc_to_control(proc_to_ctrl_package, proc_to_ctrl_buffer);
         for (unsigned char i = 0; i < PROC_MCU_SEND_AMOUNT; i++) {
-            uart4_sendbyte(proc_to_ctrl_package[i]);
+            uart3_sendbyte(proc_to_ctrl_package[i]);
         }
 
-        if (playground_ind < 837)
-            playground_ind =
-                dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
-                          (playground_ind + INDEX_OFFSET > 837) ? 837 : (playground_ind + INDEX_OFFSET));
-
-        delayms(30);
+//        if (playground_ind < 837)
+//            playground_ind =
+//                dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
+//                          (playground_ind + INDEX_OFFSET > 837) ? 837 : (playground_ind + INDEX_OFFSET));
+        printf("%.2f,%.2f\r\n", kalman_data.v, neu.v);
+        delayms(20);
 //        static int mag_x_old = z
 //        if (debug_data.mag_x != mag_x_old)
 //            printf("%d %d %d\r\n", debug_data.mag_x, debug_data.mag_y, debug_data.mag_z);
@@ -231,8 +228,6 @@ void print_task_status(void) {
 void ledblink_task(void *parameters) {
     (void) parameters;
     while (1) {
-        printf("%.2f,%.2f\r\n", kalman_data.distance_north, kalman_data.distance_east);
-        _fflush(stdout);
         LED1_TOGGLE();
         delayms(200);
     }

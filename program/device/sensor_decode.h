@@ -9,7 +9,7 @@
 #ifndef MM32F3277_DEVICE_SENSOR_DECODE_H_
 #define MM32F3277_DEVICE_SENSOR_DECODE_H_
 
-#define READ_MCU_AMOUNT         158
+#define READ_MCU_AMOUNT         96
 #define PROC_MCU_SEND_AMOUNT    16
 #define CTRL_MCU_RECEIVE_AMOUNT 48
 #define SHORT_SPLIT_CHAR(x, y)  packets[x] = ((buffer[y] & 0x0000ff00) >> 8);\
@@ -78,11 +78,13 @@ typedef struct {
 extern decode_fixed small_packets;
 extern decode_debug debug_data;
 extern decode_proc proc_data;
+extern unsigned char uart2_dma_buffer_size;
 
 void precossing_proc_to_control(unsigned int packets[PROC_MCU_SEND_AMOUNT], const unsigned int *buffer);
 void unpacking_fixed_length_data(unsigned int packets[10]);
 void unpacking_variable_length_data(unsigned int *packets);
 void unpacking_proc_to_control(unsigned int packets[PROC_MCU_SEND_AMOUNT - 2]);
 void deal_uart6_dma_proc(const unsigned int *p);
+void deal_dma_read_mcu(const unsigned int *p);
 
 #endif // MM32F3277_DEVICE_SENSOR_DECODE_H_

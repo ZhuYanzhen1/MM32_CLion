@@ -131,11 +131,13 @@ void deal_uart6_dma_proc(const unsigned int *p) {
     for (unsigned char counter = 0; counter < CTRL_MCU_RECEIVE_AMOUNT; ++counter) {
         switch (status) {
             case 0:if (p[counter] == 0xff) status = 1;
+                package_counter = 0;
                 break;
             case 1:
-                if (p[counter] == 0xff && package_counter != (PROC_MCU_SEND_AMOUNT - 2))
+                if (p[counter] == 0xff && package_counter != (PROC_MCU_SEND_AMOUNT - 2)) {
                     status = 1;
-                else if (p[counter] == 0xff && package_counter == (PROC_MCU_SEND_AMOUNT - 2))
+                    package_counter = 0;    // 原本没有的
+                } else if (p[counter] == 0xff && package_counter == (PROC_MCU_SEND_AMOUNT - 2))
                     status = 2;
                 else {
                     package_buffer[package_counter] = p[counter];
@@ -151,5 +153,68 @@ void deal_uart6_dma_proc(const unsigned int *p) {
     }
 }
 
+#else
+static unsigned char status = 0;
+static unsigned int package_buffer[80] = {0};
+static unsigned char package_counter = 0;
+static unsigned char debug_buffer_counter = 0;
+unsigned char uart2_dma_buffer_size = 16;
+
+unsigned int test_counter = 0;
+
+void deal_dma_read_mcu(const unsigned int *p) {
+    for (unsigned char counter = 0; counter < uart2_dma_buffer_size; ++counter) {
+        switch (status) {
+            case 0:
+                if (p[counter] == 0xff && uart2_dma_buffer_size == 16) status = 1;
+                else if (p[counter] == 0xa5 && uart2_dma_buffer_size == 96) status = 3;
+                package_counter = 0;
+                break;
+            case 1:
+                if (p[counter] == 0xff && package_counter != 10) {
+                    status = 1;
+                    package_counter = 0;
+                } else if (p[counter] == 0xff && package_counter == 10)
+                    status = 2;
+                else if (package_counter > 10)
+                    status = 0;
+                else {
+                    package_buffer[package_counter] = p[counter];
+                    package_counter++;
+                }
+                break;
+            case 2:unpacking_fixed_length_data((unsigned int *) package_buffer);
+                package_counter = 0;
+                status = 0;
+                break;
+            case 3:
+                if (p[counter] == 0x5a)
+                    status = 4;
+                else
+                    status = 0;
+                break;
+            case 4:debug_buffer_counter = p[counter];
+                status = 5;
+                break;
+            case 5:
+                if (debug_buffer_counter == 3)   //
+                    status = 6;
+                else {
+                    package_buffer[package_counter] = p[counter];
+                    package_counter++;
+                    debug_buffer_counter--;
+                }
+                break;
+            case 6:unpacking_variable_length_data((unsigned int *) package_buffer);
+                package_counter = 0;
+                status = 0;
+                test_counter++;
+                break;
+            default:status = 0;
+                break;
+        }
+    }
+}
 #endif
+
 

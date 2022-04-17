@@ -30,7 +30,8 @@ static void gui_show_orgin_sensor(void *parameter) {
 static void sensor_form_return_callback(void *parameter) {
     (void) parameter;
     gui_form_display(&orgin_form);
-    uart8_sendbyte(0x00);
+    uart2_sendbyte(0x00);
+    uart2_dma_buffer_size = 16; // small_packets_size
 }
 
 void gui_orgin_sensor_form_init() {
