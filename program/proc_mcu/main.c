@@ -77,17 +77,12 @@ void initialize_task(void *parameters) {
 //    debugger_register_variable(dbg_int16, &small_packets.ax, "ax");
 //    debugger_register_variable(dbg_int16, &small_packets.ay, "ay");
 //    debugger_register_variable(dbg_int16, &small_packets.az, "az");
-    debugger_register_variable(dbg_uint32, &debug_data.num, "num");
-    debugger_register_variable(dbg_int16, &debug_data.ax, "ax");
-    debugger_register_variable(dbg_int16, &debug_data.ay, "ay");
-    debugger_register_variable(dbg_int16, &debug_data.az, "az");
-    debugger_register_variable(dbg_int32, &debug_data.mag_x, "mx");
-    debugger_register_variable(dbg_int32, &debug_data.mag_y, "my");
-    debugger_register_variable(dbg_int32, &debug_data.mag_z, "mz");
-    debugger_register_variable(dbg_uint32, &test_counter, "counter");
-
 //    debugger_register_variable(dbg_uint16, &control_signal.joystick_x, "joy_x");
 //    debugger_register_variable(dbg_uint16, &control_signal.joystick_y, "joy_y");
+//    debugger_register_variable(dbg_float32, &kalman_data.distance_north, "dn");
+//    debugger_register_variable(dbg_float32, &kalman_data.distance_east, "de");
+//    debugger_register_variable(dbg_float32, &kalman_data.v, "v");
+//    debugger_register_variable(dbg_float32, &small_packets.chebyshev_north, "north");
 //    debugger_register_variable(dbg_float32, &small_packets.chebyshev_north, "compass");
 
     timer2_config();
@@ -125,12 +120,12 @@ void fusion_task(void *parameters) {
         }
         sensor_unit_conversion();
         kalman_data.v = kalman_update(&kalman_v, neu.v, neu.acceleration,
-                                      0.031f);
+                                      0.021f);
         coordinate_system_transformation_kalman_v(small_packets.chebyshev_north);
         kalman_data.distance_north = kalman_update(&kalman_distance_north, neu.north_distance,
-                                                   neu.north_v, 0.031f);
+                                                   neu.north_v, 0.021f);
         kalman_data.distance_east = kalman_update(&kalman_distance_earth, neu.east_distance,
-                                                  neu.east_v, 0.031f);
+                                                  neu.east_v, 0.021f);
 
         proc_to_ctrl_buffer[0] = *((unsigned int *) (&kalman_data.distance_north));
         proc_to_ctrl_buffer[1] = *((unsigned int *) (&kalman_data.distance_east));
@@ -140,12 +135,12 @@ void fusion_task(void *parameters) {
             uart3_sendbyte(proc_to_ctrl_package[i]);
         }
 
-        if (playground_ind < 837)
-            playground_ind =
-                dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
-                          (playground_ind + INDEX_OFFSET > 837) ? 837 : (playground_ind + INDEX_OFFSET));
-
-        delayms(30);
+//        if (playground_ind < 837)
+//            playground_ind =
+//                dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
+//                          (playground_ind + INDEX_OFFSET > 837) ? 837 : (playground_ind + INDEX_OFFSET));
+        printf("%.2f,%.2f\r\n", kalman_data.v, neu.v);
+        delayms(20);
 //        static int mag_x_old = z
 //        if (debug_data.mag_x != mag_x_old)
 //            printf("%d %d %d\r\n", debug_data.mag_x, debug_data.mag_y, debug_data.mag_z);
@@ -233,8 +228,6 @@ void print_task_status(void) {
 void ledblink_task(void *parameters) {
     (void) parameters;
     while (1) {
-        printf("%.2f,%.2f\r\n", kalman_data.distance_north, kalman_data.distance_east);
-        _fflush(stdout);
         LED1_TOGGLE();
         delayms(200);
     }

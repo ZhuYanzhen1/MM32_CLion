@@ -68,7 +68,7 @@ void sensor_unit_conversion() {
     neu.north_distance = get_distance(QRIGIN_LAT, temp_lonitude, temp_latitude, temp_lonitude);
     neu.east_distance = get_distance(temp_latitude, QRIGIN_LON, temp_latitude, temp_lonitude);
 
-    neu.acceleration = MG_TO_M_S_2(small_packets.ax * FACTOR_ALLC_X);
+    neu.acceleration = MG_TO_M_S_2(small_packets.ay * FACTOR_ALLC_Y);   // 车头前进的方向时y的正方向
 
     float temp_v = (float) gps_rmc.speed_to_ground_section;
     int v_decimal = num_times_nth_power_of_10(1, gps_rmc.decimal_places_speed);

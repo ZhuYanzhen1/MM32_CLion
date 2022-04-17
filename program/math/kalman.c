@@ -13,8 +13,8 @@ void kalman_config() {
 }
 
 void kalman_config_v(kalman_filter_t *kalman) {
-    kalman->q_pos = 0.17f;
-    kalman->q_vel = 0.0123f;
+    kalman->q_pos = 0.2f;
+    kalman->q_vel = 0.1f;
     kalman->r_pos = 0.05f;
 
     kalman->pos = 0;
@@ -37,10 +37,10 @@ void kalman_config_distance(kalman_filter_t *kalman, float pos_0) {
     kalman->vel = 0.0f;
     kalman->bias = 0.0f;
 
-    kalman->P[0][0] = 0.0526622f;
-    kalman->P[0][1] = -0.022637f;
-    kalman->P[1][0] = -0.022637f;
-    kalman->P[1][1] = 0.0232643f;
+    kalman->P[0][0] = 0;
+    kalman->P[0][1] = 0;
+    kalman->P[1][0] = 0;
+    kalman->P[1][1] = 0;
 }
 
 /*!
