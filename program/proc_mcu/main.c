@@ -8,6 +8,8 @@
 
 #include "main.h"
 
+extern unsigned int test_counter;
+
 unsigned short playground_ind = 0;
 
 extern unsigned int packages_to_be_unpacked_1[READ_MCU_AMOUNT];
@@ -72,6 +74,18 @@ void initialize_task(void *parameters) {
     at24c02_readparams();
 
     debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
+//    debugger_register_variable(dbg_int16, &small_packets.ax, "ax");
+//    debugger_register_variable(dbg_int16, &small_packets.ay, "ay");
+//    debugger_register_variable(dbg_int16, &small_packets.az, "az");
+    debugger_register_variable(dbg_uint32, &debug_data.num, "num");
+    debugger_register_variable(dbg_int16, &debug_data.ax, "ax");
+    debugger_register_variable(dbg_int16, &debug_data.ay, "ay");
+    debugger_register_variable(dbg_int16, &debug_data.az, "az");
+    debugger_register_variable(dbg_int32, &debug_data.mag_x, "mx");
+    debugger_register_variable(dbg_int32, &debug_data.mag_y, "my");
+    debugger_register_variable(dbg_int32, &debug_data.mag_z, "mz");
+    debugger_register_variable(dbg_uint32, &test_counter, "counter");
+
 //    debugger_register_variable(dbg_uint16, &control_signal.joystick_x, "joy_x");
 //    debugger_register_variable(dbg_uint16, &control_signal.joystick_y, "joy_y");
 //    debugger_register_variable(dbg_float32, &small_packets.chebyshev_north, "compass");
@@ -98,18 +112,6 @@ void fusion_task(void *parameters) {
     kalman_config_distance(&kalman_distance_north, 337970.9400000f);
     kalman_config_distance(&kalman_distance_earth, 346666.0600000f);
     while (1) {
-//        for (unsigned short packets_counter = 0; packets_counter < READ_MCU_AMOUNT; packets_counter++) {
-//            if (packages_to_be_unpacked_1[packets_counter] == 0xff
-//                && packages_to_be_unpacked_1[packets_counter + 11] == 0xff) {
-//                unpacking_fixed_length_data((unsigned int *) &packages_to_be_unpacked_1[packets_counter + 1]);
-//                packets_counter = (packets_counter + 11);  // 移动到包尾位置
-//            } else if (packages_to_be_unpacked_1[packets_counter] == 0xa5
-//                && packages_to_be_unpacked_1[packets_counter + 1] == 0x5a
-//                && ((packets_counter + packages_to_be_unpacked_1[2] - 1) < READ_MCU_AMOUNT)) {
-//                unpacking_variable_length_data((unsigned int *) &packages_to_be_unpacked_1[packets_counter + 3]);
-//                packets_counter = (packets_counter + packages_to_be_unpacked_1[2] - 1); // 移动到下一个包的前一个位置
-//            }
-//        }
         while (gps_rmc.status == 'V') {
             delayms(1);
             playground_ind = 0;
@@ -130,9 +132,6 @@ void fusion_task(void *parameters) {
         kalman_data.distance_east = kalman_update(&kalman_distance_earth, neu.east_distance,
                                                   neu.east_v, 0.031f);
 
-//        unsigned int proc_to_ctrl_buffer[3] =
-//            {*((unsigned int *) (&kalman_data.distance_north)), *((unsigned int *) (&kalman_data.distance_east)),
-//             *((unsigned int *) (&small_packets.chebyshev_north))};
         proc_to_ctrl_buffer[0] = *((unsigned int *) (&kalman_data.distance_north));
         proc_to_ctrl_buffer[1] = *((unsigned int *) (&kalman_data.distance_east));
         proc_to_ctrl_buffer[2] = *((unsigned int *) (&small_packets.chebyshev_north));
