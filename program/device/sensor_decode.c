@@ -86,6 +86,12 @@ void unpacking_fixed_length_data(unsigned int packets[10]) {
     small_packets.ax -= 2048;
     small_packets.ay -= 2048;
     small_packets.az -= 2048;
+
+    // small_packets.chebyshev_north 实际上是指向南，要将其修正为北
+    small_packets.chebyshev_north += 180;
+    small_packets.chebyshev_north = (small_packets.chebyshev_north > 360.0f) ? (small_packets.chebyshev_north - 360)
+                                                                             : small_packets.chebyshev_north;
+
 }
 
 /*!
@@ -160,8 +166,6 @@ static unsigned char package_counter = 0;
 static unsigned char debug_buffer_counter = 0;
 unsigned char uart2_dma_buffer_size = 16;
 
-unsigned int test_counter = 0;
-
 void deal_dma_read_mcu(const unsigned int *p) {
     for (unsigned char counter = 0; counter < uart2_dma_buffer_size; ++counter) {
         switch (status) {
@@ -208,7 +212,6 @@ void deal_dma_read_mcu(const unsigned int *p) {
             case 6:unpacking_variable_length_data((unsigned int *) package_buffer);
                 package_counter = 0;
                 status = 0;
-                test_counter++;
                 break;
             default:status = 0;
                 break;

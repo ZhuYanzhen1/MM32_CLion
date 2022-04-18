@@ -8,8 +8,6 @@
 
 #include "main.h"
 
-extern unsigned int test_counter;
-
 unsigned short playground_ind = 0;
 
 extern unsigned int packages_to_be_unpacked_1[READ_MCU_AMOUNT];
@@ -82,7 +80,7 @@ void initialize_task(void *parameters) {
 //    debugger_register_variable(dbg_float32, &kalman_data.distance_north, "dn");
 //    debugger_register_variable(dbg_float32, &kalman_data.distance_east, "de");
 //    debugger_register_variable(dbg_float32, &kalman_data.v, "v");
-//    debugger_register_variable(dbg_float32, &small_packets.chebyshev_north, "north");
+    debugger_register_variable(dbg_float32, &small_packets.chebyshev_north, "compass");
 //    debugger_register_variable(dbg_float32, &small_packets.chebyshev_north, "compass");
 
     timer2_config();
@@ -139,7 +137,8 @@ void fusion_task(void *parameters) {
 //            playground_ind =
 //                dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
 //                          (playground_ind + INDEX_OFFSET > 837) ? 837 : (playground_ind + INDEX_OFFSET));
-        printf("%.2f,%.2f\r\n", kalman_data.v, neu.v);
+//        printf("%.2f,%.2f\r\n", kalman_data.distance_north, neu.north_distance);
+        printf("%.2f,%.2f\r\n", kalman_data.distance_east, neu.east_distance);
         delayms(20);
 //        static int mag_x_old = z
 //        if (debug_data.mag_x != mag_x_old)
