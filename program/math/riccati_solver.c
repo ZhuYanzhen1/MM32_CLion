@@ -376,9 +376,10 @@ void solve_riccati_equation(float a[3][3], float b[3][2], float q, float r, floa
 #if OUTPUT_DEBUG_INFO == 1
             printf("\r\niteration counter:%d\r\n", counter);
 #endif
-
+#ifndef RUNNING_UNIT_TEST
             printf("\r\niteration counter:%d\r\n", counter);
             _fflush();
+#endif
             break;
         }
 
@@ -386,9 +387,24 @@ void solve_riccati_equation(float a[3][3], float b[3][2], float q, float r, floa
             for (unsigned char counter2 = 0; counter2 < 3; ++counter2)
                 p[counter1][counter2] = p_next[counter1][counter2];
     }
+
+#ifndef RUNNING_UNIT_TEST
     if (counter > 400) {
-        while (1);
+        printf("------------Matrix a------------\r\n");
+        for (int counter1 = 0; counter1 < 3; ++counter1) {
+            for (int counter2 = 0; counter2 < 3; ++counter2)
+                printf("%f   ", a[counter1][counter2]);
+        printf("\r\n");
+                    printf("------------Matrix b------------\r\n");
+        for (int counter1 = 0; counter1 < 3; ++counter1) {
+            for (int counter2 = 0; counter2 < 3; ++counter2)
+                printf("%f   ", b[counter1][counter2]);
+        printf("\r\n");
+        _fflush();
     }
+
+#endif
+
 #if OUTPUT_DEBUG_INFO == 1
     printf("------------Matrix P------------\r\n");
     for (int counter1 = 0; counter1 < 3; ++counter1) {
