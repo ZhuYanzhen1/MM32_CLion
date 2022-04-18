@@ -6,8 +6,8 @@
 
   (title_block
     (title "MM32 Control Board")
-    (date "2022-04-06")
-    (rev "1.5.2")
+    (date "2022-04-17")
+    (rev "1.5.3")
   )
 
   (lib_symbols
@@ -765,7 +765,7 @@
     (uuid 161d5af1-f0e2-4af4-a7ec-a33a8da11fd4)
     (property "Reference" "U14" (id 0) (at 100.33 92.71 0))
     (property "Value" "CH372C" (id 1) (at 109.22 123.19 0))
-    (property "Footprint" "Package_SO:SSOP-20_4.4x6.5mm_P0.65mm" (id 2) (at 104.775 125.73 0)
+    (property "Footprint" "Package_SO:SSOP-20_5.3x7.2mm_P0.65mm" (id 2) (at 104.775 125.73 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "" (id 3) (at 95.885 111.76 0)
