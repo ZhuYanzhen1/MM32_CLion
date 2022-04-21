@@ -19,12 +19,13 @@
 /* debugger variable maximum size set to 12 */
 #define VARIABLE_BUFFER_SIZE    12
 /* use mdtp protocol to print buffer */
-#define DEBUG_USE_PROTOCOL      0
+#define DEBUG_USE_PROTOCOL      1
 /* use vTaskList to report task info */
 #define USE_FREERTOS_REPORT     0
 /* GUI CallBack Function Priority set to 2 */
 #define GUI_CALLBACK_PRIO       2
-
+/* Don't calibrate touch sensor at startup */
+#define STARTUP_CALIBRATE       0
 
 //////////////////////////////////////// CMBackTrace Macro ////////////////////////////////////////
 /* enable bare metal(no OS) platform */
@@ -44,7 +45,7 @@
 #define UART3_DMA_PRIORITY      2
 #define UART1_DMA_PRIORITY      4
 #define SPI3_DMA_PRIORITY       6
-#define EXTI4_PRIORITY          6
+#define EXTI4_PRIORITY          5
 #define UART2_PRIORITY          1
 #define UART4_PRIORITY          1
 #define UART6_PRIORITY          5

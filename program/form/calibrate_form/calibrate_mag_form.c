@@ -23,6 +23,7 @@ static button_struct_t calibrate_mag_form_return_btn;
 void calibrate_mag_btn_callback(void *parameter) {
     (void) parameter;
     uart2_sendbyte(0x01);
+    uart2_dma_buffer_size = 96;
 }
 
 void calibrate_mag_form_return_btn_callback(void *parameter) {

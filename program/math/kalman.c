@@ -27,11 +27,10 @@ void kalman_config_v(kalman_filter_t *kalman) {
     kalman->P[1][1] = 0;
 };
 
-//TODO P的系数要改
 void kalman_config_distance(kalman_filter_t *kalman, float pos_0) {
     kalman->q_pos = 0.8f;
     kalman->q_vel = 0.22f;
-    kalman->r_pos = 0.2f;
+    kalman->r_pos = 0.3f;
 
     kalman->pos = pos_0;
     kalman->vel = 0.0f;

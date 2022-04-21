@@ -10,7 +10,7 @@
 #define MM32F3277_USER_PIN_H_
 
 #define LED1_PORT       GPIOA
-#define LED1_PIN        GPIO_Pin_3
+#define LED1_PIN        GPIO_Pin_4
 
 #define LCD_RES_PORT    GPIOE
 #define LCD_RES_PIN     GPIO_Pin_0
