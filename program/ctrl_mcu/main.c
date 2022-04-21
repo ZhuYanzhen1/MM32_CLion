@@ -8,9 +8,11 @@
 
 #include "main.h"
 
+FATFS filesystem;
 volatile short angle = 150;
 volatile unsigned short speed = 0;
 unsigned short playground_ind = 0;
+static unsigned char fs_buffer[FF_MAX_SS * 4];
 
 extern unsigned int uart6_dma_buffer_1[CTRL_MCU_RECEIVE_AMOUNT];
 extern unsigned int uart6_dma_buffer_2[CTRL_MCU_RECEIVE_AMOUNT];
@@ -39,7 +41,13 @@ int main(void) {
     timer4_config();
     spi3_config();
 
-    delayms(5000);
+    if (f_mount(&filesystem, "0:", 1) == FR_NO_FILESYSTEM) {
+        if (f_mkfs("0:", 0, fs_buffer, sizeof(fs_buffer)) == FR_OK)
+            f_setlabel((const TCHAR *) "0:FLASH");
+        else
+            while (1);
+    } else
+        while (1);
 
 //    while (1) {
 //        WRITE_REG(TIM3->CCR1, 100);           // 控制舵机打角，输入值范围100~200
@@ -78,27 +86,7 @@ int main(void) {
 //        uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
 //        delayms(1000);
 //    }
-    w25q32_write_enable();
-    unsigned char write_data[128] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-                                     11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-                                     21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
-                                     31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
-                                     41, 42, 43, 44, 45, 46, 47, 48, 49, 50,
-                                     51, 52, 53, 54, 55, 56, 57, 58, 59, 60,
-                                     61, 62, 63, 64, 65, 66, 67, 68, 69, 70,
-                                     71, 72, 73, 74, 75, 76, 77, 78, 79, 80,
-                                     81, 82, 83, 84, 85, 86, 87, 88, 89, 90,
-                                     91, 92, 93, 94, 95, 96, 97, 98, 99, 100,
-                                     101, 102, 103, 104, 105, 106, 107, 108,
-                                     109, 110, 111, 112, 113, 114, 115, 116,
-                                     117, 118, 119, 120, 121, 122, 123, 124,
-                                     125, 126, 127, 128};
 
-    unsigned char read_data[128] = {0};
-//    w25q32_write(write_data, 0, 128);
-
-    w25q32_read(read_data, 0, 128);
-    unsigned char counter = 0;
     while (1) {
         // 前，左是 0~32766
 //        angle = 200 - control_signal.joystick_x / 655;
