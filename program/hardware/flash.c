@@ -10,20 +10,13 @@
 /* 返回0代表写入失败；1代表成功 */
 unsigned char flash_write(unsigned int value, unsigned int addr) {
     FLASH_Unlock();
-
     // Clear All pending flags
     FLASH_ClearFlag(FLASH_FLAG_EOP | FLASH_FLAG_PGERR | FLASH_FLAG_WRPRTERR);
-
     FLASH_ErasePage(BASED_FLASH_SECTOR_ADDRESS + addr);
-
     FLASH_ClearFlag(FLASH_FLAG_EOP);
-
     FLASH_ProgramWord(BASED_FLASH_SECTOR_ADDRESS + addr, value);
-
     FLASH_ClearFlag(FLASH_FLAG_EOP);
-
     FLASH_Lock();
-
     if ((*(__IO unsigned int *) (BASED_FLASH_SECTOR_ADDRESS + addr)) != value) {
         return 0;
     }

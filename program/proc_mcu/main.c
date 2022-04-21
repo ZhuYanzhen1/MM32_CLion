@@ -69,6 +69,10 @@ void initialize_task(void *parameters) {
     delayms(2000);
     uart3_config();
     gps_config();
+#if STARTUP_CALIBRATE == 1
+    xpt2046_calibrate();
+    at24c02_saveparams();
+#endif
     at24c02_readparams();
 
     debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
@@ -138,7 +142,7 @@ void fusion_task(void *parameters) {
 //                dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
 //                          (playground_ind + INDEX_OFFSET > 837) ? 837 : (playground_ind + INDEX_OFFSET));
 //        printf("%.2f,%.2f\r\n", kalman_data.distance_north, neu.north_distance);
-        printf("%.2f,%.2f\r\n", kalman_data.distance_east, neu.east_distance);
+//        printf("%.2f,%.2f\r\n", kalman_data.distance_east, neu.east_distance);
         delayms(20);
 //        static int mag_x_old = z
 //        if (debug_data.mag_x != mag_x_old)
