@@ -17,8 +17,8 @@ DSTATUS disk_initialize(
     BYTE pdrv        /* Physical drive nmuber to identify the drive */
 ) {
     if (pdrv == 0) {
-        w25q32_read_uid();
-        w25q32_wake_up();
+        w25q64_read_uid();
+        w25q64_wake_up();
         return RES_OK;
     } else
         return STA_NOINIT;
@@ -34,7 +34,7 @@ DRESULT disk_read(
         return RES_PARERR;
     if (pdrv == 0) {
         for (; count > 0; count--) {
-            w25q32_read(buff, sector * SPI_FLASH_SECTOR_SIZE, SPI_FLASH_SECTOR_SIZE);
+            w25q64_read(buff, sector * SPI_FLASH_SECTOR_SIZE, SPI_FLASH_SECTOR_SIZE);
             sector++;
             buff += SPI_FLASH_SECTOR_SIZE;
         }
@@ -53,7 +53,7 @@ DRESULT disk_write(
         return RES_PARERR;
     if (pdrv == 0) {
         for (; count > 0; count--) {
-            w25q32_write((unsigned char *) buff, sector * SPI_FLASH_SECTOR_SIZE, SPI_FLASH_SECTOR_SIZE);
+            w25q64_write((unsigned char *) buff, sector * SPI_FLASH_SECTOR_SIZE, SPI_FLASH_SECTOR_SIZE);
             sector++;
             buff += SPI_FLASH_SECTOR_SIZE;
         }

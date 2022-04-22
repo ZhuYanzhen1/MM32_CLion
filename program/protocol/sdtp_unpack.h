@@ -6,8 +6,8 @@
     \date     19. January 2022
 ******************************************************************************/
 
-#ifndef MAIN_C_PROTOCOL_SDTP_UNPACK_H_
-#define MAIN_C_PROTOCOL_SDTP_UNPACK_H_
+#ifndef MM32F3277_PROTOCOL_SDTP_UNPACK_H_
+#define MM32F3277_PROTOCOL_SDTP_UNPACK_H_
 
 typedef struct {
     float current;
@@ -16,4 +16,4 @@ typedef struct {
 
 void sdtp_receive_handler(unsigned char data);
 
-#endif  // MAIN_C_PROTOCOL_SDTP_UNPACK_H_
+#endif  // MM32F3277_PROTOCOL_SDTP_UNPACK_H_
