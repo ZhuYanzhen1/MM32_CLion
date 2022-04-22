@@ -1794,7 +1794,7 @@
       (reference "U4") (unit 1) (value "HX9193") (footprint "ControlBoard:SOT-23-5")
     )
     (path "/00000000-0000-0000-0000-000061a493c9/40400816-8a6f-4311-b132-8c53e703f6f0"
-      (reference "U5") (unit 1) (value "MPU-6050") (footprint "Sensor_Motion:InvenSense_QFN-24_4x4mm_P0.5mm")
+      (reference "U5") (unit 1) (value "MPU-6050") (footprint "ControlBoard:InvenSense_QFN-24_4x4mm_P0.5mm")
     )
     (path "/00000000-0000-0000-0000-00006194fb75/daa2a644-065c-4056-b6cc-c693fa1b3b77"
       (reference "U6") (unit 1) (value "MM32F3277G9P") (footprint "ControlBoard:LQFP-144_20x20mm_P0.5mm")
@@ -1818,13 +1818,13 @@
       (reference "U12") (unit 1) (value "AT24C02") (footprint "ControlBoard:SOP-8_3.9x4.9mm_P1.27mm")
     )
     (path "/7c560bda-f929-4e77-960a-fa15837ad328/fd7a4681-fa6d-4441-a920-23960c45e272"
-      (reference "U13") (unit 1) (value "MM32SPIN27PS") (footprint "Package_QFP:LQFP-64_10x10mm_P0.5mm")
+      (reference "U13") (unit 1) (value "MM32SPIN27PS") (footprint "ControlBoard:LQFP-64_10x10mm_P0.5mm")
     )
     (path "/99919f16-809b-4d37-b44a-061baa0477d2/161d5af1-f0e2-4af4-a7ec-a33a8da11fd4"
-      (reference "U14") (unit 1) (value "CH372C") (footprint "Package_SO:SSOP-20_5.3x7.2mm_P0.65mm")
+      (reference "U14") (unit 1) (value "CH372C") (footprint "ControlBoard:SSOP-20_5.3x7.2mm_P0.65mm")
     )
     (path "/99919f16-809b-4d37-b44a-061baa0477d2/81777fc0-c5a7-4a15-88f6-34092c22851d"
-      (reference "U15") (unit 1) (value "W25Q64") (footprint "Package_SO:SOIC-8_5.23x5.23mm_P1.27mm")
+      (reference "U15") (unit 1) (value "W25Q64") (footprint "ControlBoard:SOIC-8_5.23x5.23mm_P1.27mm")
     )
     (path "/00000000-0000-0000-0000-00006194fb75/200af147-550b-4430-865b-758995ec72c3"
       (reference "Y1") (unit 1) (value "8MHz") (footprint "ControlBoard:Crystal_SMD_3225-4Pin_3.2x2.5mm")

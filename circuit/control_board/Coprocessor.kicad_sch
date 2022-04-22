@@ -1343,7 +1343,7 @@
     (uuid fd7a4681-fa6d-4441-a920-23960c45e272)
     (property "Reference" "U13" (id 0) (at 118.11 130.81 0))
     (property "Value" "MM32SPIN27PS" (id 1) (at 123.825 133.35 0))
-    (property "Footprint" "Package_QFP:LQFP-64_10x10mm_P0.5mm" (id 2) (at 94.615 137.16 0)
+    (property "Footprint" "ControlBoard:LQFP-64_10x10mm_P0.5mm" (id 2) (at 94.615 137.16 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "" (id 3) (at 70.485 121.92 0)

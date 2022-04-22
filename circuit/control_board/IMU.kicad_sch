@@ -910,7 +910,7 @@
     (uuid 40400816-8a6f-4311-b132-8c53e703f6f0)
     (property "Reference" "U5" (id 0) (at 107.315 116.84 0))
     (property "Value" "MPU-6050" (id 1) (at 118.745 140.335 0))
-    (property "Footprint" "Sensor_Motion:InvenSense_QFN-24_4x4mm_P0.5mm" (id 2) (at 108.585 142.875 0)
+    (property "Footprint" "ControlBoard:InvenSense_QFN-24_4x4mm_P0.5mm" (id 2) (at 108.585 142.875 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "https://store.invensense.com/datasheets/invensense/MPU-6050_DataSheet_V3%204.pdf" (id 3) (at 109.855 145.415 0)
