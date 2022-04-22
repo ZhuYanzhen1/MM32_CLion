@@ -8,8 +8,6 @@
 
 #include "main.h"
 
-unsigned short playground_ind = 0;
-
 extern unsigned int packages_to_be_unpacked_1[READ_MCU_AMOUNT];
 unsigned int proc_to_ctrl_package[PROC_MCU_SEND_AMOUNT] = {0};
 unsigned int proc_to_ctrl_buffer[3] = {0};
@@ -111,7 +109,6 @@ void fusion_task(void *parameters) {
     while (1) {
         while (gps_rmc.status == 'V') {
             delayms(1);
-            playground_ind = 0;
             proc_to_ctrl_buffer[0] = 0;
             proc_to_ctrl_buffer[1] = 0;
             proc_to_ctrl_buffer[2] = 0;
@@ -137,12 +134,6 @@ void fusion_task(void *parameters) {
             uart3_sendbyte(proc_to_ctrl_package[i]);
         }
 
-//        if (playground_ind < 837)
-//            playground_ind =
-//                dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
-//                          (playground_ind + INDEX_OFFSET > 837) ? 837 : (playground_ind + INDEX_OFFSET));
-//        printf("%.2f,%.2f\r\n", kalman_data.distance_north, neu.north_distance);
-//        printf("%.2f,%.2f\r\n", kalman_data.distance_east, neu.east_distance);
         delayms(20);
 //        static int mag_x_old = z
 //        if (debug_data.mag_x != mag_x_old)
