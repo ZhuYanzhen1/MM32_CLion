@@ -39,3 +39,27 @@ unsigned char fs_scan_files(char *path) {
     }
     return res;
 }
+
+unsigned char fs_access_file_test(void) {
+    static FIL newfile, readfile;
+    unsigned int bw, br;
+    unsigned char test_buffer[] = "hello fatfs!";
+    unsigned char buffer_read[32] = {0};
+    FRESULT fr = f_open(&newfile, "0:/test_file.txt", FA_WRITE | FA_CREATE_ALWAYS);
+    if (fr) while (1);
+    fr = f_write(&newfile, test_buffer, 12, &bw);
+    if (fr) while (1);
+    f_close(&newfile);
+
+    fr = f_open(&readfile, "0:/test_file.txt", FA_READ);
+    if (fr) while (1);
+    fr = f_read(&readfile, buffer_read, sizeof(buffer_read), &br);
+    if (fr) while (1);
+    f_close(&readfile);
+
+    for (int counter = 0; counter < sizeof(test_buffer); ++counter) {
+        if (buffer_read[counter] != test_buffer[counter])
+            return 1;
+    }
+    return 0;
+}
