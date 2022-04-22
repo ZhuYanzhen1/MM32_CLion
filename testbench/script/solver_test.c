@@ -57,20 +57,13 @@ void test_calibration_solver(void) {
 void test_riccati_solver(void) {
     float fai_r = 0.23f, delta_r = 0.086f, L = 0.4f, v_r = 5.1f, dt = 0.01f;
     float error_x = 1.2f, error_y = 0.4f, error_fai = 0.17f;
-//    float a[3][3] = {{1, 0, -v_r * dt * sinf(fai_r)},
-//                     {0, 1, v_r * dt * cosf(fai_r)},
-//                     {0, 0, 1}};
-//
-//    float b[3][2] = {{cosf(fai_r) * dt,       0},
-//                     {sinf(fai_r) * dt,       0},
-//                     {tanf(delta_r) * dt / L, v_r * dt / (L * cosf(delta_r) * cosf(delta_r))}};
+    float a[3][3] = {{1, 0, -v_r * dt * sinf(fai_r)},
+                     {0, 1, v_r * dt * cosf(fai_r)},
+                     {0, 0, 1}};
 
-    float a[3][3] = {{1.0000f, 0.0000f, 0.0391f},
-                     {0.0000f, 1.0000f, 0.0084f},
-                     {0.0000f, 0.0000f, 1.0000f}};
-    float b[3][2] = {{0.0042f, 0.0000f},
-                     {-0.0196f, 0.0000f},
-                     {-2.5505f, 195.2875f}};
+    float b[3][2] = {{cosf(fai_r) * dt, 0},
+                     {sinf(fai_r) * dt, 0},
+                     {tanf(delta_r) * dt / L, v_r * dt / (L * cosf(delta_r) * cosf(delta_r))}};
     float x[3][1] = {{error_x},
                      {error_y},
                      {error_fai}};
@@ -82,10 +75,10 @@ void test_riccati_solver(void) {
     solve_riccati_equation(a, b, q, r, p);
     solve_feedback_value(p, a, b, x, r, control_val);
 
-//    CU_ASSERT(fabsf(control_val[0][0]) < fabsf(-1.2583f - TOLERANCE_PRECISION))
-//    CU_ASSERT(fabsf(control_val[0][0]) > fabsf(-1.2583f + TOLERANCE_PRECISION))
-//    CU_ASSERT(fabsf(control_val[1][0]) < fabsf(-0.3026f - TOLERANCE_PRECISION))
-//    CU_ASSERT(fabsf(control_val[1][0]) > fabsf(-0.3026f + TOLERANCE_PRECISION))
+    CU_ASSERT(fabsf(control_val[0][0]) < fabsf(-1.2583f - TOLERANCE_PRECISION))
+    CU_ASSERT(fabsf(control_val[0][0]) > fabsf(-1.2583f + TOLERANCE_PRECISION))
+    CU_ASSERT(fabsf(control_val[1][0]) < fabsf(-0.3026f - TOLERANCE_PRECISION))
+    CU_ASSERT(fabsf(control_val[1][0]) > fabsf(-0.3026f + TOLERANCE_PRECISION))
 }
 
 extern float distance_north;
@@ -111,10 +104,12 @@ void test_lqr_contrl(void) {
     unsigned short index;
     float distance_n, distance_e, angle_yaw;
 
-    index = 16, distance_n = 337764.781f, distance_e = 347232.688f, angle_yaw = 242.7f; // 337766.6207556f, 347232.7255131f
+    index = 16, distance_n = 337764.781f, distance_e = 347232.688f, angle_yaw =
+        242.7f; // 337766.6207556f, 347232.7255131f
     lqr_control_test(index, angle_ctrl, angle_yaw, distance_n, distance_e);
 
-    index = 15, distance_n = 337765.781f, distance_e = 347231.938f, angle_yaw = 147.5f; // 337766.6029507f, 347232.4832368f
+    index = 15, distance_n = 337765.781f, distance_e = 347231.938f, angle_yaw =
+        147.5f; // 337766.6029507f, 347232.4832368f
     lqr_control_test(index, angle_ctrl, angle_yaw, distance_n, distance_e);
 
 }
