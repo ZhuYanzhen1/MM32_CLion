@@ -2,8 +2,8 @@
 // Created by 16625 on 2022-04-10.
 //
 
-#ifndef MAIN_C_MATH_TEST_H_
-#define MAIN_C_MATH_TEST_H_
+#ifndef MM32F3277_MATH_TEST_H_
+#define MM32F3277_MATH_TEST_H_
 
 float test_point[][4] = {
     {337766.4060000f, 347229.5000000f, 1.2915910f, 0.0007014f},
@@ -1023,4 +1023,4 @@ float reference_point[][4] = { // x, y, 参考航向角, 参考舵机打角
     {337974.5560427f, 346659.7571260f, -1.1710255f, 0.0004895f},
 };
 
-#endif //MAIN_C_MATH_TEST_H_
+#endif // MM32F3277_MATH_TEST_H_

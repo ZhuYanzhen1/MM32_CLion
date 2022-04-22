@@ -1,10 +1,13 @@
-//
-// Created by 16625 on 2022-04-21.
-//
+/**************************************************************************/ /**
+    \file       w25q64.c
+    \brief      w25q64 function Source File
+    \author     ZGL
+    \version    V1.3.2
+    \date       21. April 2022
+******************************************************************************/
 
 #include "w25q64.h"
 #include "spi.h"
-
 #include "hal_conf.h"
 #include "delay.h"
 
@@ -18,7 +21,7 @@
 
 static volatile unsigned int w25q_uid = 0;
 
-void w25q32_read_uid(void) {
+void w25q64_read_uid(void) {
     unsigned char uid_1, uid_2, uid_3;
     SPI3_NSS_RESET();
     delayus(1);
@@ -43,43 +46,43 @@ void w25q32_read_uid(void) {
     delayus(35);
 }
 
-unsigned char w25q32_read_sr(void) {
+unsigned char w25q64_read_sr(void) {
     static volatile unsigned char byte = 0;
     SPI3_NSS_RESET();
     delayus(1);
-    spi3_readwrite_byte(W25Q32_READ_STATUS_REG);
+    spi3_readwrite_byte(W25Q64_READ_STATUS_REG);
     byte = spi3_readwrite_byte(0xff);
     SPI3_NSS_SET();
     return byte;
 }
 
-void w25q32_write_sr(unsigned char sr) {
+void w25q64_write_sr(unsigned char sr) {
     SPI3_NSS_RESET();
     delayus(1);
-    spi3_readwrite_byte(W25Q32_WRITE_STATUS_REG);
+    spi3_readwrite_byte(W25Q64_WRITE_STATUS_REG);
     spi3_readwrite_byte(sr);
     SPI3_NSS_SET();
 }
 
-void w25q32_write_enable(void) {
+void w25q64_write_enable(void) {
     SPI3_NSS_RESET();
     delayus(1);
-    spi3_readwrite_byte(W25Q32_WRITE_ENABLE);
+    spi3_readwrite_byte(W25Q64_WRITE_ENABLE);
     SPI3_NSS_SET();
 }
 
-void w25q32_write_disable(void) {
+void w25q64_write_disable(void) {
     SPI3_NSS_RESET();
     delayus(1);
-    spi3_readwrite_byte(W25Q32_WRITE_DISABLE);
+    spi3_readwrite_byte(W25Q64_WRITE_DISABLE);
     SPI3_NSS_SET();
 }
 
-void w25q32_read(unsigned char *p_buffer, unsigned int read_addr, unsigned short num_byte_to_read) {
+void w25q64_read(unsigned char *p_buffer, unsigned int read_addr, unsigned short num_byte_to_read) {
     unsigned short i;
     SPI3_NSS_RESET();
     delayus(1);
-    spi3_readwrite_byte(W25Q32_READ_DATA);
+    spi3_readwrite_byte(W25Q64_READ_DATA);
     spi3_readwrite_byte((unsigned char) ((read_addr) >> 16));
     spi3_readwrite_byte((unsigned char) ((read_addr) >> 8));
     spi3_readwrite_byte((unsigned char) read_addr);
@@ -89,24 +92,24 @@ void w25q32_read(unsigned char *p_buffer, unsigned int read_addr, unsigned short
     SPI3_NSS_SET();
 }
 
-static void w25q32_write_page(unsigned char *p_buffer,
+static void w25q64_write_page(unsigned char *p_buffer,
                               unsigned int write_addr,
                               unsigned short num_byte_to_write) {
     static unsigned short i = 0;
-    w25q32_write_enable();                    //SET WEL
+    w25q64_write_enable();                    //SET WEL
     SPI3_NSS_RESET();
     delayus(1);
-    spi3_readwrite_byte(W25Q32_PAGE_PROGRAM);
+    spi3_readwrite_byte(W25Q64_PAGE_PROGRAM);
     spi3_readwrite_byte((unsigned char) ((write_addr >> 16) & 0x000000FFUL));
     spi3_readwrite_byte((unsigned char) ((write_addr >> 8) & 0x000000FFUL));
     spi3_readwrite_byte((unsigned char) (write_addr & 0x000000FFUL));
     for (i = 0; i < num_byte_to_write; i++)
         spi3_readwrite_byte(p_buffer[i]);
     SPI3_NSS_SET();
-    w25q32_wait_busy();
+    w25q64_wait_busy();
 }
 
-static void w25q32_write_no_check(unsigned char *p_buffer,
+static void w25q64_write_no_check(unsigned char *p_buffer,
                                   unsigned int write_addr,
                                   unsigned short num_byte_to_write) {
     static unsigned short pageremain = 0;
@@ -114,7 +117,7 @@ static void w25q32_write_no_check(unsigned char *p_buffer,
     if (num_byte_to_write <= pageremain)
         pageremain = num_byte_to_write;
     while (1) {
-        w25q32_write_page(p_buffer, write_addr, pageremain);
+        w25q64_write_page(p_buffer, write_addr, pageremain);
         if (num_byte_to_write == pageremain)
             break;
         else { //num_byte_to_write>pageremain
@@ -129,8 +132,8 @@ static void w25q32_write_no_check(unsigned char *p_buffer,
     };
 }
 
-static unsigned char w25q32_buffer[4096] = {0};
-void w25q32_write(unsigned char *p_buffer, unsigned int write_addr, unsigned short num_byte_to_write) {
+static unsigned char w25q64_buffer[4096] = {0};
+void w25q64_write(unsigned char *p_buffer, unsigned int write_addr, unsigned short num_byte_to_write) {
     static volatile unsigned int secpos = 0, i = 0;
     static volatile unsigned short secoff = 0, secremain = 0;
     secpos = write_addr / 4096;
@@ -139,18 +142,18 @@ void w25q32_write(unsigned char *p_buffer, unsigned int write_addr, unsigned sho
     if (num_byte_to_write <= secremain)
         secremain = num_byte_to_write;
     while (1) {
-        w25q32_read((unsigned char *) w25q32_buffer, secpos * 4096, 4096);
+        w25q64_read((unsigned char *) w25q64_buffer, secpos * 4096, 4096);
         for (i = 0; i < secremain; i++) {
-            if (w25q32_buffer[secoff + i] != 0xFF)
+            if (w25q64_buffer[secoff + i] != 0xFF)
                 break;
         }
         if (i < secremain) {
-            w25q32_erase_sector(secpos);
+            w25q64_erase_sector(secpos);
             for (i = 0; i < secremain; i++)
-                w25q32_buffer[i + secoff] = p_buffer[i];
-            w25q32_write_no_check(w25q32_buffer, secpos * 4096, 4096);
+                w25q64_buffer[i + secoff] = p_buffer[i];
+            w25q64_write_no_check(w25q64_buffer, secpos * 4096, 4096);
         } else
-            w25q32_write_no_check(p_buffer, write_addr, secremain);
+            w25q64_write_no_check(p_buffer, write_addr, secremain);
         if (num_byte_to_write == secremain)
             break;
         else {
@@ -168,47 +171,47 @@ void w25q32_write(unsigned char *p_buffer, unsigned int write_addr, unsigned sho
     }
 }
 
-void w25q32_erase_chip(void) {
-    w25q32_write_enable();                        //SET WEL
-    w25q32_wait_busy();
+void w25q64_erase_chip(void) {
+    w25q64_write_enable();                        //SET WEL
+    w25q64_wait_busy();
     SPI3_NSS_RESET();
     delayus(1);
-    spi3_readwrite_byte(W25Q32_CHIP_ERASE);
+    spi3_readwrite_byte(W25Q64_CHIP_ERASE);
     SPI3_NSS_SET();
-    w25q32_wait_busy();
+    w25q64_wait_busy();
 }
 
-void w25q32_erase_sector(unsigned int dst_addr) {
+void w25q64_erase_sector(unsigned int dst_addr) {
     dst_addr *= 4096;
-    w25q32_write_enable();                    //SET WEL
-    w25q32_wait_busy();
+    w25q64_write_enable();                    //SET WEL
+    w25q64_wait_busy();
     SPI3_NSS_RESET();
     delayus(1);
-    spi3_readwrite_byte(W25Q32_SECTOR_ERASE);
+    spi3_readwrite_byte(w25q64_SECTOR_ERASE);
     spi3_readwrite_byte((unsigned char) ((dst_addr) >> 16));
     spi3_readwrite_byte((unsigned char) ((dst_addr) >> 8));
     spi3_readwrite_byte((unsigned char) dst_addr);
     SPI3_NSS_SET();
-    w25q32_wait_busy();
+    w25q64_wait_busy();
 }
 
-void w25q32_wait_busy(void) {
-    while ((w25q32_read_sr() & 0x01) == 0x01)
+void w25q64_wait_busy(void) {
+    while ((w25q64_read_sr() & 0x01) == 0x01)
         delayms(1);
 }
 
-void w25q32_power_down(void) {
+void w25q64_power_down(void) {
     SPI3_NSS_RESET();
     delayus(1);
-    spi3_readwrite_byte(W25Q32_POWER_DOMN);
+    spi3_readwrite_byte(W25Q64_POWER_DOMN);
     SPI3_NSS_SET();
     delayus(3);
 }
 
-void w25q32_wake_up(void) {
+void w25q64_wake_up(void) {
     SPI3_NSS_RESET();
     delayus(1);
-    spi3_readwrite_byte(W25Q32_RELEASE_POWER_DOWM);    //  send W25Q32_POWER_DOMN command 0xAB
+    spi3_readwrite_byte(W25Q64_RELEASE_POWER_DOWM);    //  send w25q64_POWER_DOMN command 0xAB
     SPI3_NSS_SET();
     delayus(3);
 }
@@ -216,11 +219,11 @@ void w25q32_wake_up(void) {
 unsigned char w25q64_test_flash(void) {
     static unsigned char write_data[128] = {0};
     static unsigned char read_data[128] = {0};
-    w25q32_read_uid();
-    w25q32_wake_up();
+    w25q64_read_uid();
+    w25q64_wake_up();
     for (int counter = 0; counter < 1024; ++counter) {
-        w25q32_write(write_data, counter * 1024 + 512, sizeof(write_data));
-        w25q32_read(read_data, counter * 1024 + 512, sizeof(write_data));
+        w25q64_write(write_data, counter * 1024 + 512, sizeof(write_data));
+        w25q64_read(read_data, counter * 1024 + 512, sizeof(write_data));
         for (unsigned int i = 0; i < sizeof(write_data); ++i) {
             if (write_data[i] != read_data[i])
                 return 1;

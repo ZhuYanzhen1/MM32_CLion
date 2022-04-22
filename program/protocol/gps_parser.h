@@ -59,4 +59,4 @@ int nmea_pow(char m, char n);
 int num_times_nth_power_of_10(int num, int n);
 float unit_to_degree(unsigned int degree, char decimal_places);
 
-#endif // MAIN_C_PROTOCOL_GPS_PARSER_H_
+#endif // MM32F3277_PROTOCOL_GPS_PARSER_H_
