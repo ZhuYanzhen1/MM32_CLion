@@ -16,7 +16,10 @@
 #include "hal_conf.h"
 #include "mm32_device.h"
 #include "printf.h"
+
+///////////// FATFS /////////////
 #include "ff.h"
+#include "fstest.h"
 
 ///////////// Device /////////////
 #include "sensor_decode.h"

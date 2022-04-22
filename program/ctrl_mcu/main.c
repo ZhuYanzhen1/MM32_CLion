@@ -47,6 +47,9 @@ int main(void) {
     } else if (result != FR_OK)
         while (1);
 
+    fs_get_free("0:");
+    fs_scan_files("0:");
+
     while (1) {
         LED1_TOGGLE();
         if (proc_data.distance_east != 0) {
@@ -72,5 +75,6 @@ int main(void) {
 //        uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
         }
         delayms(200);
+
     }
 }
