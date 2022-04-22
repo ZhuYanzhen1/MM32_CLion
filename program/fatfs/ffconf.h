@@ -113,7 +113,7 @@
 */
 
 
-#define FF_USE_LFN        0
+#define FF_USE_LFN        1
 #define FF_MAX_LFN        255
 /* The FF_USE_LFN switches the support for LFN (long file name).
 /
@@ -146,7 +146,7 @@
 
 
 #define FF_LFN_BUF        255
-#define FF_SFN_BUF        12
+#define FF_SFN_BUF        16
 /* This set of options defines size of file name members in the FILINFO structure
 /  which is used to read out directory items. These values should be suffcient for
 /  the file names to read. The maximum possible length of the read file name depends

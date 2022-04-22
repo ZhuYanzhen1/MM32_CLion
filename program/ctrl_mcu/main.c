@@ -51,6 +51,17 @@ int main(void) {
     } else if (result != FR_OK)
         while (1);
 
+//    FIL newfile;
+//    unsigned int bw;
+//    FRESULT fr = f_open(&newfile, "0:test_file.txt", FA_WRITE | FA_CREATE_ALWAYS);
+//    if (fr) while (1);
+//    fr = f_write(&newfile, "hello fatfs!", 12, &bw);
+//    if (fr) while (1);
+//    f_close(&newfile);
+
+    fs_get_free("0:");
+    fs_scan_files("0:");
+
 //    while (1) {
 //        WRITE_REG(TIM3->CCR1, 100);           // 控制舵机打角，输入值范围100~200
 
