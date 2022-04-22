@@ -88,7 +88,6 @@ void gui_form_update(unsigned char x_pos, unsigned char y_pos) {
     button_struct_t *pressed_button = NULL;
     unsigned char button_counter = current_form->button_num;
     unsigned char label_counter = current_form->label_num;
-    current_form->callback(current_form);
     gui_printf(95, 2, C_BLACK, FORM_TITLE_COLOR, "%02d.%01dV", battery_voltage / 10, battery_voltage % 10);
     if (button_counter != 0) {
         /* Update button status */
@@ -130,4 +129,5 @@ void gui_form_update(unsigned char x_pos, unsigned char y_pos) {
         xTaskCreate(gui_callback_task, "gui_callback", 256,
                     pressed_button, GUI_CALLBACK_PRIO, &gui_callback_taskhandler);
     }
+    current_form->callback(current_form);
 }
