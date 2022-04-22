@@ -20,7 +20,7 @@
 
 ///////////// Device /////////////
 #include "sensor_decode.h"
-#include "w25q32.h"
+#include "w25q64.h"
 
 ///////////// Hardware /////////////
 #include "led.h"

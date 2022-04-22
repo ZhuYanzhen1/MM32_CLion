@@ -1,10 +1,11 @@
 #include "ff.h"
 #include "diskio.h"
-#include "w25q32.h"
+#include "w25q64.h"
 
-#define SPI_FLASH_SECTOR_SIZE     512
-#define SPI_FLASH_SECTOR_COUNT    1024 * 4 * 2
-#define SPI_FLASH_BLOCK_SIZE      8
+#define SPI_FLASH_SIZE_IN_MBYTE     8           // 8MB Flash
+#define SPI_FLASH_SECTOR_SIZE       512
+#define SPI_FLASH_SECTOR_COUNT      2048 * SPI_FLASH_SIZE_IN_MBYTE
+#define SPI_FLASH_BLOCK_SIZE        8
 
 DSTATUS disk_status(
     BYTE pdrv        /* Physical drive nmuber to identify the drive */
@@ -49,7 +50,7 @@ DRESULT disk_write(
     UINT count           /* Number of sectors to write */
 ) {
     if (!count)
-        return RES_PARERR;//count不能等于0，否则返回参数错误
+        return RES_PARERR;
     if (pdrv == 0) {
         for (; count > 0; count--) {
             w25q32_write((unsigned char *) buff, sector * SPI_FLASH_SECTOR_SIZE, SPI_FLASH_SECTOR_SIZE);

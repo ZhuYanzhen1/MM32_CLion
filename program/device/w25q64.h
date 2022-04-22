@@ -2,8 +2,8 @@
 // Created by 16625 on 2022-04-21.
 //
 
-#ifndef MAIN_C_DEVICE_W25Q32_H_
-#define MAIN_C_DEVICE_W25Q32_H_
+#ifndef MAIN_C_DEVICE_W25Q64_H_
+#define MAIN_C_DEVICE_W25Q64_H_
 
 #ifndef IS_PROCESS_MCU
 
@@ -35,6 +35,7 @@ void w25q32_write(unsigned char *p_buffer, unsigned int write_addr, unsigned sho
 void w25q32_erase_chip(void);
 void w25q32_erase_sector(unsigned int dst_addr);
 void w25q32_wake_up(void);
+unsigned char w25q64_test_flash(void);
 #endif
 
-#endif //MAIN_C_DEVICE_W25Q32_H_
+#endif //MAIN_C_DEVICE_W25Q64_H_

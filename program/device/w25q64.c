@@ -2,7 +2,7 @@
 // Created by 16625 on 2022-04-21.
 //
 
-#include "w25q32.h"
+#include "w25q64.h"
 #include "spi.h"
 
 #include "hal_conf.h"
@@ -213,6 +213,23 @@ void w25q32_wake_up(void) {
     delayus(3);
 }
 
+unsigned char w25q64_test_flash(void) {
+    static unsigned char write_data[128] = {0};
+    static unsigned char read_data[128] = {0};
+    w25q32_read_uid();
+    w25q32_wake_up();
+    for (int counter = 0; counter < 1024; ++counter) {
+        w25q32_write(write_data, counter * 1024 + 512, sizeof(write_data));
+        w25q32_read(read_data, counter * 1024 + 512, sizeof(write_data));
+        for (unsigned int i = 0; i < sizeof(write_data); ++i) {
+            if (write_data[i] != read_data[i])
+                return 1;
+            else
+                write_data[i] = (global_time_stamp + i) % 0xff;
+        }
+    }
+    return 0;
+}
 #pragma GCC pop_options
 
 #endif
