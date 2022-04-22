@@ -27,9 +27,6 @@
 #include <stdbool.h>
 #include "types.h"
 
-
-
-
 #if defined ( __CC_ARM )
 #pragma anon_unions
 #endif
@@ -61,54 +58,67 @@
 #ifdef USENCOMBINEREGISTER
 typedef struct {
     union {
-        __IO u32 TDR;                                                               ///< SPI transmit data register,                    offset: 0x00
+        __IO u32
+            TDR;                                                               ///< SPI transmit data register,                    offset: 0x00
         __IO u32 TXREG;
     };
     union {
-        __IO u32 RDR;                                                               ///< SPI receive data register,                     offset: 0x04
+        __IO u32
+            RDR;                                                               ///< SPI receive data register,                     offset: 0x04
         __IO u32 RXREG;
     };
     union {
-        __IO u32 SR;                                                                ///< SPI current state register,                    offset: 0x08
+        __IO u32
+            SR;                                                                ///< SPI current state register,                    offset: 0x08
         __IO u32 CSTAT;
     };
     union {
-        __IO u32 ISR;                                                               ///< SPI interruput state register,                 offset: 0x0C
+        __IO u32
+            ISR;                                                               ///< SPI interruput state register,                 offset: 0x0C
         __IO u32 INTSTAT;
     };
     union {
-        __IO u32 IER;                                                               ///< SPI interruput enable register,                offset: 0x10
+        __IO u32
+            IER;                                                               ///< SPI interruput enable register,                offset: 0x10
         __IO u32 INTEN;
     };
     union {
-        __IO u32 ICR;                                                               ///< SPI interruput control register,               offset: 0x14
+        __IO u32
+            ICR;                                                               ///< SPI interruput control register,               offset: 0x14
         __IO u32 INTCLR;
     };
     union {
-        __IO u32 GCR;                                                               ///< SPI global control register,                   offset: 0x18
+        __IO u32
+            GCR;                                                               ///< SPI global control register,                   offset: 0x18
         __IO u32 GCTL;
     };
     union {
-        __IO u32 CCR;                                                               ///< SPI common control register,                   offset: 0x1C
+        __IO u32
+            CCR;                                                               ///< SPI common control register,                   offset: 0x1C
         __IO u32 CCTL;
     };
     union {
-        __IO u32 BRR;                                                               ///< SPI baud rate control register,                offset: 0x20
+        __IO u32
+            BRR;                                                               ///< SPI baud rate control register,                offset: 0x20
         __IO u32 SPBRG;
     };
     union {
-        __IO u32 RDNR;                                                              ///< SPI receive data number register,              offset: 0x24
+        __IO u32
+            RDNR;                                                              ///< SPI receive data number register,              offset: 0x24
         __IO u32 RXDNR;
     };
     union {
-        __IO u32 NSSR;                                                              ///< SPI chip select register,                      offset: 0x28
+        __IO u32
+            NSSR;                                                              ///< SPI chip select register,                      offset: 0x28
         __IO u32 SCSR;
     };
     union {
-        __IO u32 ECR;                                                               ///< SPI extand control register,                   offset: 0x2C
+        __IO u32
+            ECR;                                                               ///< SPI extand control register,                   offset: 0x2C
         __IO u32 EXTCTL;
     };
-    __IO u32 CFGR;                                                              ///< I2S configuration register,                   offset: 0x30
+    __IO u32
+        CFGR;                                                              ///< I2S configuration register,                   offset: 0x30
 } SPI_TypeDef;
 #endif
 #ifdef USENNEWREGISTER

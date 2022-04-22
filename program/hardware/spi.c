@@ -10,6 +10,7 @@
 #include "hal_conf.h"
 #include "hal_gpio.h"
 
+#ifdef IS_PROCESS_MCU
 unsigned int spi2_readwrite_byte(unsigned int tx_data) {
     SPI_SendData(SPI2, tx_data);
     while (1) {
@@ -62,7 +63,6 @@ void spi2_config(void) {
     SPI_Cmd(SPI2, ENABLE);
 }
 
-#ifdef IS_PROCESS_MCU
 void spi3_readwrite_byte(unsigned int tx_data) {
     SPI_SendData(SPI3, tx_data);
     while (1) {
@@ -105,11 +105,18 @@ void spi3_config(void) {
     SPI_Cmd(SPI3, ENABLE);
 }
 #else
-unsigned int spi3_readwrite_byte(unsigned int tx_data) {
-    SPI_SendData(SPI3, tx_data);
+unsigned char spi3_readwrite_byte(unsigned char tx_data) {
+    __asm volatile("cpsid i");
+    WRITE_REG(SPI3->TDR, tx_data);
+    __asm volatile("cpsie i");
     while (1) {
-        if (SPI_GetFlagStatus(SPI3, SPI_FLAG_RXAVL))
-            return SPI_ReceiveData(SPI3);
+        if ((SPI3->SR & SPI_FLAG_RXAVL) != 0) {
+            unsigned char result;
+            __asm volatile("cpsid i");
+            result = READ_REG(SPI3->RDR);
+            __asm volatile("cpsie i");
+            return result;
+        }
     }
 }
 

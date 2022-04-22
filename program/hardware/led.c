@@ -18,7 +18,6 @@
 void led_config(void) {
     GPIO_InitTypeDef GPIO_InitStruct;
     RCC_AHBPeriphClockCmd(RCC_AHBENR_GPIOA, ENABLE);
-    RCC_AHBPeriphClockCmd(RCC_AHBENR_GPIOE, ENABLE);
 
     GPIO_StructInit(&GPIO_InitStruct);
     GPIO_InitStruct.GPIO_Pin = LED1_PIN;

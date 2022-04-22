@@ -16,7 +16,8 @@ DSTATUS disk_initialize(
     BYTE pdrv        /* Physical drive nmuber to identify the drive */
 ) {
     if (pdrv == 0) {
-        w25q32_write_enable();
+        w25q32_read_uid();
+        w25q32_wake_up();
         return RES_OK;
     } else
         return STA_NOINIT;

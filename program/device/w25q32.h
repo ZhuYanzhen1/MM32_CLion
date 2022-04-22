@@ -24,18 +24,17 @@
 #define W25Q32_MANUFACT_DEVICE_ID   0x90
 #define W25Q32_JEDEC_DEVICE_ID      0x9F
 
-unsigned int w25q32_read_uid(void);
+void w25q32_read_uid(void);
 void w25q32_wait_busy(void);
 unsigned char w25q32_read_sr(void);
 void w25q32_write_sr(unsigned char sr);
 void w25q32_write_enable(void);
 void w25q32_write_disable(void);
 void w25q32_read(unsigned char *p_buffer, unsigned int read_addr, unsigned short num_byte_to_read);
-void w25q32_write_page(unsigned char *p_buffer, unsigned int write_addr, unsigned short num_byte_to_write);
-void w25q32_write_no_check(unsigned char *p_buffer, unsigned int write_addr, unsigned short num_byte_to_write);
 void w25q32_write(unsigned char *p_buffer, unsigned int write_addr, unsigned short num_byte_to_write);
 void w25q32_erase_chip(void);
 void w25q32_erase_sector(unsigned int dst_addr);
+void w25q32_wake_up(void);
 #endif
 
 #endif //MAIN_C_DEVICE_W25Q32_H_
