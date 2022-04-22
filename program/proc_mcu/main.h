@@ -29,7 +29,6 @@
 #include "timer.h"
 #include "gpio.h"
 #include "iic.h"
-#include "flash.h"
 
 ///////////// Math /////////////
 #include "qfplib.h"
