@@ -17,7 +17,7 @@ volatile unsigned char lcd_buffer[128 * 160 * 2] = {0};
 
 void gui_config(void) {
     lcd_config();
-    lcd_set_direction(4);
+    lcd_set_direction(1);
     for (unsigned short i = 0; i < 128 * 160; i++)
         ((unsigned short *) lcd_buffer)[i] = C_WHITE;
     lcd_set_address(0, 0, 127, 159);

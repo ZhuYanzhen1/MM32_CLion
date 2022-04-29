@@ -113,8 +113,8 @@ void xpt2046_calibrate(void) {
     px[1] = (valueX[3] + valueX[2]) / 2;
     py[1] = (valueY[3] + valueY[1]) / 2;
 
-    touch_x_factor = (float) LCD_CAL_X / (float) (px[1] - px[0]);
-    touch_y_factor = (float) LCD_CAL_Y / (float) (py[1] - py[0]);
+    touch_x_factor = (float) LCD_CAL_X / ((float) px[1] - (float) px[0]);
+    touch_y_factor = (float) LCD_CAL_Y / ((float) py[1] - (float) py[0]);
     touch_x_offset = (short) ((float) LCD_CALx_MAX - ((float) px[1] * touch_x_factor));
     touch_y_offset = (short) ((float) LCD_CALy_MAX - ((float) py[1] * touch_y_factor));
 }
@@ -123,8 +123,8 @@ unsigned char xpt2046_scan(unsigned char *x_pos, unsigned char *y_pos) {
     unsigned short valueX, valueY;
     if (xpt2046_readxy(&valueX, &valueY) == 0xFF)
         return 0xFF;
-    *x_pos = (char) qfp_fmul(valueX, touch_x_factor) + touch_x_offset;
-    *y_pos = (char) qfp_fmul(valueY, touch_y_factor) + touch_x_offset;
+    *x_pos = (unsigned char) ((float) valueX * touch_x_factor + (float) touch_x_offset);
+    *y_pos = (unsigned char) ((float) valueY * touch_y_factor + (float) touch_y_offset);
     if ((*x_pos > 128) || (*y_pos > 160))
         return 0xFE;
     return 0;

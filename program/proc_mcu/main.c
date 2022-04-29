@@ -65,8 +65,9 @@ void initialize_task(void *parameters) {
 #if STARTUP_CALIBRATE == 1
     xpt2046_calibrate();
     at24c02_saveparams();
-#endif
+#else
     at24c02_readparams();
+#endif
 
     debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
     debugger_register_variable(dbg_float32, &small_packets.chebyshev_north, "compass");
