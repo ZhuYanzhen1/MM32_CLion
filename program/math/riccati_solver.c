@@ -148,8 +148,7 @@ void solve_feedback_value(float p[3][3], float a[3][3], float b[3][2], float x[3
     float bt_pn_b_diag = -(bt_pn_b[0][1] * bt_pn_b[1][0]) + bt_pn_b[0][0] * bt_pn_b[1][1] +
         bt_pn_b[0][0] * r + bt_pn_b[1][1] * r + r * r;
     float bt_pn_b_inv_m[2][2] = {{-((bt_pn_b[1][1] + r) / (bt_pn_b_diag)), bt_pn_b[0][1] / (bt_pn_b_diag)},
-                                 {bt_pn_b[1][0] / (bt_pn_b_diag), -((bt_pn_b[0][0] + r) /
-                                     (bt_pn_b_diag))}};
+                                 {bt_pn_b[1][0] / (bt_pn_b_diag), -((bt_pn_b[0][0] + r) / (bt_pn_b_diag))}};
     float matrix_k[2][3] = {{bt_pn_a[0][0] * bt_pn_b_inv_m[0][0] + bt_pn_a[1][0] * bt_pn_b_inv_m[0][1],
                              bt_pn_a[0][1] * bt_pn_b_inv_m[0][0] + bt_pn_a[1][1] * bt_pn_b_inv_m[0][1],
                              bt_pn_a[0][2] * bt_pn_b_inv_m[0][0] + bt_pn_a[1][2] * bt_pn_b_inv_m[0][1]},

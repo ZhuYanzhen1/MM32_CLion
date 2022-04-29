@@ -28,6 +28,8 @@ void calibrate_mag_btn_callback(void *parameter) {
 
 void calibrate_mag_form_return_btn_callback(void *parameter) {
     (void) parameter;
+    uart2_sendbyte(0x00);
+    uart2_dma_buffer_size = 16; // small_packets_size
     gui_form_display(&calibrate_form);
 }
 

@@ -8,6 +8,8 @@
 
 #include "main.h"
 
+unsigned char angle_flag = 0;
+
 FATFS filesystem;
 volatile short angle = 150;
 volatile unsigned short speed = 0;
@@ -21,6 +23,15 @@ unsigned int uart7_dma_send_buffer[UART7_DMA_SEND_BUFFER] = {0};
 
 int main(void) {
     delay_config();
+
+    GPIO_InitTypeDef GPIO_InitStructure;
+    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(GPIOB, &GPIO_InitStructure);
+    GPIO_ResetBits(GPIOB, GPIO_Pin_4);
+
     led_config();
     uart1_config();
     uart6_config();
@@ -33,10 +44,10 @@ int main(void) {
     debugger_register_variable(dbg_float32, &proc_data.distance_north, "nd");
     debugger_register_variable(dbg_float32, &proc_data.distance_east, "ed");
     timer2_config();
-    timer3_config();
     timer4_config();
     spi3_config();
     delayms(2000);
+    timer3_config();
 
     FRESULT result = f_mount(&filesystem, "0:", 1);
     if (result == FR_NO_FILESYSTEM) {
@@ -68,13 +79,14 @@ int main(void) {
                     dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
                               (playground_ind + INDEX_OFFSET > 175) ? 175 : (playground_ind + INDEX_OFFSET));
 
-            lqr_control(playground_ind);
-            WRITE_REG(TIM3->CCR1, angle);
-//            printf("%.3f, %.3f \r", proc_data.distance_north, proc_data.distance_east);
-//        sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
-//        uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
+//            lqr_control(playground_ind);
+//            WRITE_REG(TIM3->CCR1, angle);
+            printf("%.3f, %.3f \r", proc_data.distance_north, proc_data.distance_east);
+            sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
+            uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
         }
-        delayms(200);
-
+//        printf("%.3f, %.3f \r", proc_data.distance_north, proc_data.distance_east);
+        WRITE_REG(TIM3->CCR1, angle);
+        delayms(20);
     }
 }

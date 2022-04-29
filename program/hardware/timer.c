@@ -56,6 +56,7 @@ void timer3_config(void) {  // PB4
     TIM_CtrlPWMOutputs(TIM3, ENABLE);
 
     TIM_Cmd(TIM3, ENABLE);
+    WRITE_REG(TIM3->CCR1, 150);
 }
 
 void timer2_config() {

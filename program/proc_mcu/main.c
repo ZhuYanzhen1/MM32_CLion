@@ -12,11 +12,6 @@ extern unsigned int packages_to_be_unpacked_1[READ_MCU_AMOUNT];
 unsigned int proc_to_ctrl_package[PROC_MCU_SEND_AMOUNT] = {0};
 unsigned int proc_to_ctrl_buffer[3] = {0};
 
-// 从proc_mcu发送给ctr_mcu 时，需要将真北角转换成航向角再发送过去
-float reference_yaw;
-float yaw = 0;
-unsigned char yaw_counter = 0;
-
 /* Kalman fusion to obtain northward and eastward velocities
  * (GPS velocity + imu acceleration) */
 kalman_data_t kalman_data = {0};
@@ -74,29 +69,20 @@ void initialize_task(void *parameters) {
     at24c02_readparams();
 
     debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
-//    debugger_register_variable(dbg_int16, &small_packets.ax, "ax");
-//    debugger_register_variable(dbg_int16, &small_packets.ay, "ay");
-//    debugger_register_variable(dbg_int16, &small_packets.az, "az");
-//    debugger_register_variable(dbg_uint16, &control_signal.joystick_x, "joy_x");
-//    debugger_register_variable(dbg_uint16, &control_signal.joystick_y, "joy_y");
-//    debugger_register_variable(dbg_float32, &kalman_data.distance_north, "dn");
-//    debugger_register_variable(dbg_float32, &kalman_data.distance_east, "de");
-//    debugger_register_variable(dbg_float32, &kalman_data.v, "v");
     debugger_register_variable(dbg_float32, &small_packets.chebyshev_north, "compass");
-//    debugger_register_variable(dbg_float32, &small_packets.chebyshev_north, "compass");
 
     timer2_config();
 
 //    xpt2046_calibrate();
 //    at24c02_saveparams();
 
-    xTaskCreate(fusion_task, "sensor_fusion", 1024, NULL, 3,
+    xTaskCreate(fusion_task, "sensor_fusion", 1024, NULL, 4,
                 &fusion_taskhandler);
-    xTaskCreate(ledblink_task, "led_blink", 1024, NULL, 1,
+    xTaskCreate(ledblink_task, "led_blink", 1024, NULL, 2,
                 &led_taskhandler);
-    xTaskCreate(guiupdate_task, "gui_update", 2048, NULL, 1,
+    xTaskCreate(guiupdate_task, "gui_update", 2048, NULL, 2,
                 &gui_taskhandler);
-    xTaskCreate(touchscan_task, "touch_scan", 128, NULL, 1,
+    xTaskCreate(touchscan_task, "touch_scan", 128, NULL, 2,
                 &touch_taskhandler);
     vTaskDelete(NULL);
 }
@@ -108,7 +94,7 @@ void fusion_task(void *parameters) {
     kalman_config_distance(&kalman_distance_earth, 346666.0600000f);
     while (1) {
         while (gps_rmc.status == 'V') {
-            delayms(1);
+            delayms(20);
             proc_to_ctrl_buffer[0] = 0;
             proc_to_ctrl_buffer[1] = 0;
             proc_to_ctrl_buffer[2] = 0;
