@@ -11,7 +11,7 @@
 //      16.2375   31.0814    8.2303
 //      -2.0601    8.2303   11.3719
 
-#define YAW_TO_ANGLE        (-60.3111346f)     // 180/pi * (-50/47.5)
+#define YAW_TO_ANGLE        (-63.66203f)     // 180/pi * (-50/45)
 #define OUTPUT_DEBUG_INFO   (0)
 #define ITERATION_ACCURACY  (0.1f)
 #define ANGLE_TO_RADIAN     (0.0174533f)
@@ -73,20 +73,17 @@ void lqr_control(unsigned short index) {
                      {yaw_error}};
     float p[3][3] = {0};
     float control_val[2][1] = {0};
+    float q = 2.5f;
     float r = 1;
-    float q = 1;
 
     solve_riccati_equation(a, b, q, r, p);
     solve_feedback_value(p, a, b, x, r, control_val);
     //    speed = speed +control_val[0][0];
-    short delta_angle = (short) (control_val[1][0] * YAW_TO_ANGLE);
-//    if (delta_angle > 162 || delta_angle < -162)
-//        return;
-    angle = (short) (angle + delta_angle);
-    if (angle > 190)
-        angle = 190;
-    else if (angle < 110)
-        angle = 110;
+    angle = (short) ((control_val[1][0] + test_point[index][3]) * YAW_TO_ANGLE);
+    if (angle > 195)
+        angle = 195;
+    else if (angle < 105)
+        angle = 105;
 }
 
 #endif  // RUNNING_UNIT_TEST
@@ -261,6 +258,7 @@ void solve_riccati_equation(float a[3][3], float b[3][2], float q, float r, floa
                 p[counter1][counter2] = p_next[counter1][counter2];
 
 //        printf("accuracy:%f\r\n", uabs(p_max_coefficient - p_next_max_coefficient));
+
         if (uabs(p_max_coefficient - p_next_max_coefficient) < ITERATION_ACCURACY) {
 
 #ifndef RUNNING_UNIT_TEST

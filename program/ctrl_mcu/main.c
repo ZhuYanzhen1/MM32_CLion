@@ -8,7 +8,7 @@
 
 #include "main.h"
 
-unsigned char angle_flag = 0;
+#define INDEX_NUM   114
 
 FATFS filesystem;
 volatile short angle = 150;
@@ -49,17 +49,17 @@ int main(void) {
     delayms(2000);
     timer3_config();
 
-    FRESULT result = f_mount(&filesystem, "0:", 1);
-    if (result == FR_NO_FILESYSTEM) {
-        if (f_mkfs("0:", 0, fs_buffer, sizeof(fs_buffer)) == FR_OK)
-            f_setlabel((const TCHAR *) "0:FLASH");
-        else
-            while (1);
-    } else if (result != FR_OK)
-        while (1);
-
-    fs_get_free("0:");
-    fs_scan_files("0:");
+//    FRESULT result = f_mount(&filesystem, "0:", 1);
+//    if (result == FR_NO_FILESYSTEM) {
+//        if (f_mkfs("0:", 0, fs_buffer, sizeof(fs_buffer)) == FR_OK)
+//            f_setlabel((const TCHAR *) "0:FLASH");
+//        else
+//            while (1);
+//    } else if (result != FR_OK)
+//        while (1);
+//
+//    fs_get_free("0:");
+//    fs_scan_files("0:");
 
     while (1) {
         LED1_TOGGLE();
@@ -74,19 +74,25 @@ int main(void) {
 //            WRITE_REG(TIM3->CCR1, angle);
 //            printf("%.3f, %.3f \r", proc_data.distance_north, proc_data.distance_east);
             /* 工一楼顶 */
-            if (playground_ind < 175)
+
+            if (playground_ind < INDEX_NUM)
                 playground_ind =
                     dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
-                              (playground_ind + INDEX_OFFSET > 175) ? 175 : (playground_ind + INDEX_OFFSET));
+                              (playground_ind + INDEX_OFFSET > INDEX_NUM) ? INDEX_NUM : (playground_ind
+                                  + INDEX_OFFSET));
+            else {
+                // 到最后终点要刹车
+            }
 
-//            lqr_control(playground_ind);
-//            WRITE_REG(TIM3->CCR1, angle);
+            lqr_control(playground_ind);
+            WRITE_REG(TIM3->CCR1, angle);
             printf("%.3f, %.3f \r", proc_data.distance_north, proc_data.distance_east);
             sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
             uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
+
         }
-//        printf("%.3f, %.3f \r", proc_data.distance_north, proc_data.distance_east);
-        WRITE_REG(TIM3->CCR1, angle);
+        printf("%.3f, %.3f \r", proc_data.distance_north, proc_data.distance_east);
+//        WRITE_REG(TIM3->CCR1, angle);
         delayms(20);
     }
 }

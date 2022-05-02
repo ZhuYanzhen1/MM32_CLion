@@ -91,8 +91,8 @@ void initialize_task(void *parameters) {
 void fusion_task(void *parameters) {
     (void) parameters;
     kalman_config_v(&kalman_v);
-    kalman_config_distance(&kalman_distance_north, 337970.9400000f);
-    kalman_config_distance(&kalman_distance_earth, 346666.0600000f);
+    kalman_config_distance(&kalman_distance_north, 4180.424805f);
+    kalman_config_distance(&kalman_distance_earth, 40245.59766f);
     while (1) {
         while (gps_rmc.status == 'V') {
             delayms(20);
@@ -124,7 +124,7 @@ void fusion_task(void *parameters) {
         delayms(20);
 //        static int mag_x_old = z
 //        if (debug_data.mag_x != mag_x_old)
-//            printf("%d %d %d\r\n", debug_data.mag_x, debug_data.mag_y, debug_data.mag_z);
+        printf("%.4f ,%.4f \r", kalman_data.distance_north, kalman_data.distance_east);
 //        mag_x_old = debug_data.mag_x;
     }
 }
