@@ -4,7 +4,7 @@
 
 #include "main.h"
 
-int main() {
+int main(int argc, char **argv) {
     CU_pSuite fast_math_suite = NULL;
     initialize_cunit_suite(&fast_math_suite, "fast_math_suit");
     add_test_scripts_to_suite(&fast_math_suite, "fast_math-atan", test_operation_arctan);
@@ -43,5 +43,17 @@ int main() {
 //    add_test_scripts_to_suite(&sensor_decode_suite, "test_precossing_variable_length_data",
 //                              test_precossing_variable_length_data);
 
-    return generate_statements_report();
+    int unittest_result = generate_statements_report();
+
+#ifdef USING_GTK_GUI_MACRO
+    GtkApplication *app;
+    int status;
+    app = gtk_application_new("org.freescale.unittest", G_APPLICATION_FLAGS_NONE);
+    g_signal_connect (app, "activate", G_CALLBACK(activate), NULL);
+    status = g_application_run(G_APPLICATION (app), argc, argv);
+    g_object_unref(app);
+    return status | unittest_result;
+#else
+    return unittest_result;
+#endif
 }
