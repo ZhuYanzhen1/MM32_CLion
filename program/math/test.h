@@ -5,6 +5,8 @@
 #ifndef MM32F3277_MATH_TEST_H_
 #define MM32F3277_MATH_TEST_H_
 
+#define INDEX_NUM   747
+
 float test_point[][4] = {
     {4385.7630000f, 39692.2030000f, -1.3563084f, 0.0000941f},
     {4385.7795000f, 39692.1272000f, -1.2887732f, 0.0000941f},
