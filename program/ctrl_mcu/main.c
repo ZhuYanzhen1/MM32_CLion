@@ -8,7 +8,7 @@
 
 #include "main.h"
 
-#define INDEX_NUM   114
+#define INDEX_NUM   747
 
 FATFS filesystem;
 volatile short angle = 150;
@@ -93,6 +93,6 @@ int main(void) {
         }
         printf("%.3f, %.3f \r", proc_data.distance_north, proc_data.distance_east);
 //        WRITE_REG(TIM3->CCR1, angle);
-        delayms(20);
+        delayms(333);
     }
 }
