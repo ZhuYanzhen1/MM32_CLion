@@ -21,7 +21,7 @@ int generate_statements_report(void) {
 int initialize_cunit_suite(CU_pSuite *psuite_ptr, const char *strName) {
     static int initialize_registry_flag = 0;
     if (initialize_registry_flag == 0) {
-        printf("Initialize redistry.\r\n");
+        printf("Initialize registry.\r\n");
         /* initialize the CUnit test registry */
         if (CUE_SUCCESS != CU_initialize_registry())
             return CU_get_error();

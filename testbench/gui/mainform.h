@@ -5,8 +5,6 @@
 #ifndef TESTBENCH_GUI_MAINFORM_H_
 #define TESTBENCH_GUI_MAINFORM_H_
 
-#include <gtk/gtk.h>
-
-void activate(GtkApplication *app, gpointer user_data);
+int mainform_config(int argc, char **argv);
 
 #endif //TESTBENCH_GUI_MAINFORM_H_

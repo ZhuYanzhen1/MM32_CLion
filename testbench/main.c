@@ -43,17 +43,9 @@ int main(int argc, char **argv) {
 //    add_test_scripts_to_suite(&sensor_decode_suite, "test_precossing_variable_length_data",
 //                              test_precossing_variable_length_data);
 
-    int unittest_result = generate_statements_report();
-
 #ifdef USING_GTK_GUI_MACRO
-    GtkApplication *app;
-    int status;
-    app = gtk_application_new("org.freescale.unittest", G_APPLICATION_FLAGS_NONE);
-    g_signal_connect (app, "activate", G_CALLBACK(activate), NULL);
-    status = g_application_run(G_APPLICATION (app), argc, argv);
-    g_object_unref(app);
-    return status | unittest_result;
+    return mainform_config(argc, argv) | generate_statements_report();
 #else
-    return unittest_result;
+    return generate_statements_report();
 #endif
 }
