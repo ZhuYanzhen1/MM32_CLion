@@ -4,7 +4,7 @@
 
 #include "main.h"
 
-int main() {
+int main(int argc, char **argv) {
     CU_pSuite fast_math_suite = NULL;
     initialize_cunit_suite(&fast_math_suite, "fast_math_suit");
     add_test_scripts_to_suite(&fast_math_suite, "fast_math-atan", test_operation_arctan);
@@ -43,5 +43,9 @@ int main() {
 //    add_test_scripts_to_suite(&sensor_decode_suite, "test_precossing_variable_length_data",
 //                              test_precossing_variable_length_data);
 
+#ifdef USING_GTK_GUI_MACRO
+    return mainform_config(argc, argv) | generate_statements_report();
+#else
     return generate_statements_report();
+#endif
 }

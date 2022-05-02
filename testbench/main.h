@@ -21,6 +21,9 @@
 #include "verification_test.h"
 #include "sensor_decode_test.h"
 
+/////////////// GUI ///////////////
+#include "mainform.h"
+
 int initialize_cunit_suite(CU_pSuite *psuite_ptr, const char *strName);
 
 int generate_statements_report(void);
