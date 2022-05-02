@@ -3,8 +3,8 @@
 //
 
 #include "mainform.h"
-#include <gtk/gtk.h>
-#include "math.h"
+#include "gtk/gtk.h"
+#include "simulate_line.h"
 
 static void draw_function(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer user_data) {
     double dashes[] = {5.0,  /* ink */
@@ -15,10 +15,8 @@ static void draw_function(GtkDrawingArea *area, cairo_t *cr, int width, int heig
     cairo_set_dash(cr, dashes, sizeof(dashes) / sizeof(dashes[0]), -50.0);
     cairo_set_line_width(cr, 2.0);
     cairo_set_source_rgb(cr, 1, 0, 0);
-    cairo_move_to(cr, 100, (double) height / 2);
-    for (int counter = 0; counter < 100; ++counter)
-        cairo_line_to(cr, 100 + counter * 6, (double) height / 2 + sin((double) counter / 8.0) * 100);
-
+    cairo_move_to(cr, 0, 0);
+    draw_track(cr, width, height);
     cairo_stroke(cr);
 }
 

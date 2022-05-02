@@ -61,8 +61,8 @@ float distance_east;
 
 float calculate_distance(int ind) {
     float distance = sqrtf(
-            ((test_point_unit[ind][0] - distance_north) * (test_point_unit[ind][0] - distance_north)
-             + (test_point_unit[ind][1] - distance_east) * (test_point_unit[ind][1] - distance_east)));
+        ((test_point_unit[ind][0] - distance_north) * (test_point_unit[ind][0] - distance_north)
+            + (test_point_unit[ind][1] - distance_east) * (test_point_unit[ind][1] - distance_east)));
     return distance;
 }
 
@@ -86,8 +86,8 @@ void lqr_control_test(unsigned short index, int angle_ctrl, float angle_yaw, flo
                      {0, 0, 1}};
     float b[3][2] = {{cosf(test_point_unit[index][2]) * dt, 0},
                      {sinf(test_point_unit[index][2]) * dt, 0},
-                     {tanf(yaw_error) * dt / L,             v_r * dt /
-                                                            (L * cosf(yaw_error) * cosf(yaw_error))}};
+                     {tanf(yaw_error) * dt / L, v_r * dt /
+                         (L * cosf(yaw_error) * cosf(yaw_error))}};
 
     // 获得速度误差量、前轮转角误差量两个控制量
     float x[3][1] = {{x_error},
@@ -116,8 +116,8 @@ void test_riccati_solver(void) {
                      {0, 1, v_r * dt * cosf(fai_r)},
                      {0, 0, 1}};
 
-    float b[3][2] = {{cosf(fai_r) * dt,       0},
-                     {sinf(fai_r) * dt,       0},
+    float b[3][2] = {{cosf(fai_r) * dt, 0},
+                     {sinf(fai_r) * dt, 0},
                      {tanf(delta_r) * dt / L, v_r * dt / (L * cosf(delta_r) * cosf(delta_r))}};
     float x[3][1] = {{error_x},
                      {error_y},
@@ -141,10 +141,11 @@ void test_lqr_contrl(void) {
     unsigned short index;
     float distance_n, distance_e, angle_yaw;
 
-    index = 16, distance_n = 337764.781f, distance_e = 347232.688f, angle_yaw = 242.7f; // 337766.6207556f, 347232.7255131f
+    index = 16, distance_n = 337764.781f, distance_e = 347232.688f, angle_yaw = 242.7f;
+    // 337766.6207556f, 347232.7255131f
     lqr_control_test(index, angle_ctrl, angle_yaw, distance_n, distance_e);
 
-    index = 15, distance_n = 337765.781f, distance_e = 347231.938f, angle_yaw = 147.5f; // 337766.6029507f, 347232.4832368f
+    index = 15, distance_n = 337765.781f, distance_e = 347231.938f, angle_yaw = 147.5f;
+    // 337766.6029507f, 347232.4832368f
     lqr_control_test(index, angle_ctrl, angle_yaw, distance_n, distance_e);
-
 }
