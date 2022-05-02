@@ -7,10 +7,10 @@
 #include "simulate_line.h"
 
 static void draw_function(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer user_data) {
-    double dashes[] = {5.0,  /* ink */
-                       5.0,  /* skip */
-                       5.0,  /* ink */
-                       5.0   /* skip */
+    double dashes[] = {2.0,  /* ink */
+                       2.0,  /* skip */
+                       2.0,  /* ink */
+                       2.0   /* skip */
     };
     cairo_set_dash(cr, dashes, sizeof(dashes) / sizeof(dashes[0]), -50.0);
     cairo_set_line_width(cr, 2.0);

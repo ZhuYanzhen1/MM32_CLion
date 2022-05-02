@@ -4,10 +4,8 @@
 #include "math.h"
 #include "riccati_solver.h"
 #include "mag_calibrate.h"
-#include "fast_math.h"
 #include "stdio.h"
 #include "string.h"
-#include "test_data.h"
 
 #define TOLERANCE_PRECISION     0.2f
 #define YAW_TO_ANGLE            (-60.3111346f)     // 180/pi * (-50/47.5)
@@ -60,10 +58,7 @@ float distance_north;
 float distance_east;
 
 float calculate_distance(int ind) {
-    float distance = sqrtf(
-            ((test_point_1[ind][0] - distance_north) * (test_point_1[ind][0] - distance_north)
-             + (test_point_1[ind][1] - distance_east) * (test_point_1[ind][1] - distance_east)));
-    return distance;
+    return 0;
 }
 
 void test_riccati_solver(void) {
@@ -73,8 +68,8 @@ void test_riccati_solver(void) {
                      {0, 1, v_r * dt * cosf(fai_r)},
                      {0, 0, 1}};
 
-    float b[3][2] = {{cosf(fai_r) * dt,       0},
-                     {sinf(fai_r) * dt,       0},
+    float b[3][2] = {{cosf(fai_r) * dt, 0},
+                     {sinf(fai_r) * dt, 0},
                      {tanf(delta_r) * dt / L, v_r * dt / (L * cosf(delta_r) * cosf(delta_r))}};
     float x[3][1] = {{error_x},
                      {error_y},
