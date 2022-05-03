@@ -55,9 +55,9 @@ void draw_track(cairo_t *cr, int width, int height) {
         points_y[counter] = (TRAJECTORY_ARRAY[counter][0] - min_north) * total_scale_factor + y_offset;
     }
 
-    cairo_move_to(cr, points_x[0], points_y[0]);
-    for (int counter = 1; counter < (INDEX_NUM + 1); ++counter)
-        cairo_line_to(cr, points_x[counter], points_y[counter]);
+//    cairo_move_to(cr, points_x[0], points_y[0]);
+//    for (int counter = 1; counter < (INDEX_NUM + 1); ++counter)
+//        cairo_line_to(cr, points_x[counter], points_y[counter]);
 
     free(points_x);
     free(points_y);
