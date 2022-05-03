@@ -6,12 +6,8 @@
 #include "mag_calibrate.h"
 #include "stdio.h"
 #include "string.h"
-#include "simulate.h"
-//#include "test_data.h"
 
-#define ANGLE_TO_RADIAN         (0.0174533f)
 #define TOLERANCE_PRECISION     (0.2f)
-#define YAW_TO_ANGLE            (-63.66203f)     // 180/pi * (-50/47.5)
 
 extern calpara_t params;
 
@@ -57,10 +53,6 @@ void test_calibration_solver(void) {
     }
 }
 
-float calculate_distance(int ind) {
-    return 0;
-}
-
 void test_riccati_solver(void) {
     float fai_r = 0.23f, delta_r = 0.086f, L = 0.4f, v_r = 5.1f, dt = 0.01f;
     float error_x = 1.2f, error_y = 0.4f, error_fai = 0.17f;
@@ -87,51 +79,3 @@ void test_riccati_solver(void) {
     CU_ASSERT(fabsf(control_val[1][0]) < fabsf(-0.3026f - TOLERANCE_PRECISION))
     CU_ASSERT(fabsf(control_val[1][0]) > fabsf(-0.3026f + TOLERANCE_PRECISION))
 }
-//
-//void test_lqr_contrl(void) {
-//    unsigned short index = 0;
-//    float *distance_n = &test_point_1[0][0], *distance_e = &test_point_1[0][1], *angle_yaw = &test_point_1[0][2], *v = 0, *Delta = 0;
-//    float v_r = 2, dt = 0.02f, L = 0.3f;
-//
-//    while (index < INDEX_NUM) {
-//
-//        if (index < INDEX_NUM)
-//            index = dichotomy(((index - 2) <= 0) ? 0 : (index - 2),
-//                              (index + INDEX_OFFSET > INDEX_NUM) ? INDEX_NUM : (index
-//                                                                                + INDEX_OFFSET));
-//
-//        // 求位置、航向角的误差
-//        float yaw_temp = ((*angle_yaw) < 180) ? (*angle_yaw) : ((*angle_yaw) - 360);
-//        yaw_temp *= ANGLE_TO_RADIAN;
-//
-//        float x_error = (*distance_n) - test_point_1[index][0];
-//        float y_error = (*distance_e) - test_point_1[index][1];
-//        float yaw_error = yaw_temp - test_point_1[index][2];
-//
-//        // 由状态方程矩阵系数，计算K
-//        float a[3][3] = {{1, 0, -v_r * dt * sinf(test_point_1[index][2])},
-//                         {0, 1, v_r * dt * cosf(test_point_1[index][2])},
-//                         {0, 0, 1}};
-//        float b[3][2] = {{cosf(test_point_1[index][2]) * dt,     0},
-//                         {sinf(test_point_1[index][2]) * dt,     0},
-//                         {tanf(test_point_1[index][3]) * dt / L, v_r * dt /
-//                                                                 (L * cosf(test_point_1[index][3]) *
-//                                                                  cosf(test_point_1[index][3]))}};
-//
-//        // 获得速度误差量、前轮转角误差量两个控制量
-//        float X[3][1] = {{x_error},
-//                         {y_error},
-//                         {yaw_error}};
-//        float p[3][3] = {0};
-//        float control_val[2][1] = {0};
-//        float q = 1;
-//        float r = 1;
-//
-//        solve_riccati_equation(a, b, q, r, p);
-//        solve_feedback_value(p, a, b, X, r, control_val);
-//        float v_delta = control_val[0][0];
-//        float Delta_delta = control_val[1][0];
-//
-//        lqr_update(test_point_1[index][3], Delta_delta, v_delta, distance_n, distance_e, angle_yaw, v, Delta);
-//    }
-//}
