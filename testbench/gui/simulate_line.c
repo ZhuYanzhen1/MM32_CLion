@@ -30,7 +30,7 @@ void find_max_point(float *minx, float *miny) {
 }
 
 void draw_track(cairo_t *cr, int width, int height) {
-    int x_y_offset = 50;
+    int x_offset = 50, y_offset = 50;
     float min_north = 0, min_east = 0, max_north = 0, max_east = 0;
     double north_scale_factor, east_scale_factor, total_scale_factor;
     double *points_x = malloc(2 * sizeof(TRAJECTORY_ARRAY) / sizeof(TRAJECTORY_ARRAY[0][0]));
@@ -38,13 +38,15 @@ void draw_track(cairo_t *cr, int width, int height) {
 
     find_min_point(&min_east, &min_north);
     find_max_point(&max_east, &max_north);
-    north_scale_factor = (double) (height - x_y_offset) / (double) (max_north - min_north);
-    east_scale_factor = (double) (width - x_y_offset) / (double) (max_east - min_east);
+    north_scale_factor = (double) (height - y_offset) / (double) (max_north - min_north);
+    east_scale_factor = (double) (width - x_offset) / (double) (max_east - min_east);
     total_scale_factor = east_scale_factor < north_scale_factor ? east_scale_factor : north_scale_factor;
+    x_offset = (int) ((double) width - ((double) (max_east - min_east) * total_scale_factor)) / 2;
+    y_offset = (int) ((double) height - ((double) (max_north - min_north) * total_scale_factor)) / 2;
 
     for (int counter = 0; counter < sizeof(TRAJECTORY_ARRAY) / (4 * sizeof(TRAJECTORY_ARRAY[0][0])); ++counter) {
-        points_y[counter] = (TRAJECTORY_ARRAY[counter][0] - min_north) * total_scale_factor + (double) x_y_offset / 2;
-        points_x[counter] = (TRAJECTORY_ARRAY[counter][1] - min_east) * total_scale_factor + (double) x_y_offset / 2;
+        points_x[counter] = (TRAJECTORY_ARRAY[counter][1] - min_east) * total_scale_factor + x_offset;
+        points_y[counter] = (TRAJECTORY_ARRAY[counter][0] - min_north) * total_scale_factor + y_offset;
     }
 
     cairo_move_to(cr, points_x[0], points_y[0]);
