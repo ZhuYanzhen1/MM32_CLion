@@ -15,6 +15,7 @@
 #define OUTPUT_DEBUG_INFO   (0)
 #define ITERATION_ACCURACY  (0.1f)
 #define ANGLE_TO_RADIAN     (0.0174533f)
+#define _2PI_               (6.2831853f)
 
 #ifndef RUNNING_UNIT_TEST
 extern volatile unsigned short speed;
@@ -41,7 +42,7 @@ void lqr_control(unsigned short index) {
     float v_r = 2, dt = 0.02f, L = 0.3f;
 
     // 求位置、航向角的误差
-    float yaw_temp = (proc_data.north_angle < 360) ? proc_data.north_angle : (proc_data.north_angle - 360);
+    float yaw_temp = (proc_data.north_angle < 180) ? proc_data.north_angle : (proc_data.north_angle - 360);
     yaw_temp *= ANGLE_TO_RADIAN;
 
     /* 国防生 */
@@ -53,6 +54,10 @@ void lqr_control(unsigned short index) {
     float x_error = proc_data.distance_north - test_point[index][0];
     float y_error = proc_data.distance_east - test_point[index][1];
     float yaw_error = yaw_temp - test_point[index][2];
+    if (yaw_error > 3.14)
+        yaw_error -= _2PI_;
+    else if (yaw_error < -3.14)
+        yaw_error += _2PI_;
 
     // 计算横向误差
     float lateral_error = y_error * qfp_fcos(test_point[index][2]) - x_error * qfp_fsin(test_point[index][2]);
@@ -145,29 +150,29 @@ float uabs(float value) {
 
 void solve_feedback_value(float p[3][3], float a[3][3], float b[3][2], float x[3][1], float r, float fb[2][1]) {
     float bt_pn_b[2][2] = {{b[0][0] * (b[0][0] * p[0][0] + b[1][0] * p[1][0] + b[2][0] * p[2][0]) +
-        b[1][0] * (b[0][0] * p[0][1] + b[1][0] * p[1][1] + b[2][0] * p[2][1]) +
-        b[2][0] * (b[0][0] * p[0][2] + b[1][0] * p[1][2] + b[2][0] * p[2][2]),
-                            b[2][1] * (b[0][0] * p[0][2] + b[1][0] * p[1][2] + b[2][0] * p[2][2])},
+                            b[1][0] * (b[0][0] * p[0][1] + b[1][0] * p[1][1] + b[2][0] * p[2][1]) +
+                            b[2][0] * (b[0][0] * p[0][2] + b[1][0] * p[1][2] + b[2][0] * p[2][2]),
+                               b[2][1] * (b[0][0] * p[0][2] + b[1][0] * p[1][2] + b[2][0] * p[2][2])},
                            {b[0][0] * b[2][1] * p[2][0] + b[1][0] * b[2][1] * p[2][1] + b[2][0] * b[2][1] * p[2][2],
-                            b[2][1] * b[2][1] * p[2][2]}};
+                               b[2][1] * b[2][1] * p[2][2]}};
     float bt_pn_a[2][3] = {{b[0][0] * p[0][0] + b[1][0] * p[1][0] + b[2][0] * p[2][0],
-                            b[0][0] * p[0][1] + b[1][0] * p[1][1] + b[2][0] * p[2][1],
-                            b[0][0] * p[0][2] + b[1][0] * p[1][2]
-                                + a[0][2] * (b[0][0] * p[0][0] + b[1][0] * p[1][0] + b[2][0] * p[2][0]) +
-                                a[1][2] * (b[0][0] * p[0][1] + b[1][0] * p[1][1] + b[2][0] * p[2][1])
-                                + b[2][0] * p[2][2]},
+                                               b[0][0] * p[0][1] + b[1][0] * p[1][1] + b[2][0] * p[2][1],
+                               b[0][0] * p[0][2] + b[1][0] * p[1][2]
+                               + a[0][2] * (b[0][0] * p[0][0] + b[1][0] * p[1][0] + b[2][0] * p[2][0]) +
+                               a[1][2] * (b[0][0] * p[0][1] + b[1][0] * p[1][1] + b[2][0] * p[2][1])
+                               + b[2][0] * p[2][2]},
                            {b[2][1] * p[2][0], b[2][1] * p[2][1],
-                            a[0][2] * b[2][1] * p[2][0] + a[1][2] * b[2][1] * p[2][1] + b[2][1] * p[2][2]}};
+                               a[0][2] * b[2][1] * p[2][0] + a[1][2] * b[2][1] * p[2][1] + b[2][1] * p[2][2]}};
     float bt_pn_b_diag = -(bt_pn_b[0][1] * bt_pn_b[1][0]) + bt_pn_b[0][0] * bt_pn_b[1][1] +
-        bt_pn_b[0][0] * r + bt_pn_b[1][1] * r + r * r;
+                         bt_pn_b[0][0] * r + bt_pn_b[1][1] * r + r * r;
     float bt_pn_b_inv_m[2][2] = {{-((bt_pn_b[1][1] + r) / (bt_pn_b_diag)), bt_pn_b[0][1] / (bt_pn_b_diag)},
-                                 {bt_pn_b[1][0] / (bt_pn_b_diag), -((bt_pn_b[0][0] + r) / (bt_pn_b_diag))}};
+                                 {bt_pn_b[1][0] / (bt_pn_b_diag),          -((bt_pn_b[0][0] + r) / (bt_pn_b_diag))}};
     float matrix_k[2][3] = {{bt_pn_a[0][0] * bt_pn_b_inv_m[0][0] + bt_pn_a[1][0] * bt_pn_b_inv_m[0][1],
-                             bt_pn_a[0][1] * bt_pn_b_inv_m[0][0] + bt_pn_a[1][1] * bt_pn_b_inv_m[0][1],
-                             bt_pn_a[0][2] * bt_pn_b_inv_m[0][0] + bt_pn_a[1][2] * bt_pn_b_inv_m[0][1]},
+                                bt_pn_a[0][1] * bt_pn_b_inv_m[0][0] + bt_pn_a[1][1] * bt_pn_b_inv_m[0][1],
+                                bt_pn_a[0][2] * bt_pn_b_inv_m[0][0] + bt_pn_a[1][2] * bt_pn_b_inv_m[0][1]},
                             {bt_pn_a[0][0] * bt_pn_b_inv_m[1][0] + bt_pn_a[1][0] * bt_pn_b_inv_m[1][1],
-                             bt_pn_a[0][1] * bt_pn_b_inv_m[1][0] + bt_pn_a[1][1] * bt_pn_b_inv_m[1][1],
-                             bt_pn_a[0][2] * bt_pn_b_inv_m[1][0] + bt_pn_a[1][2] * bt_pn_b_inv_m[1][1]}};
+                                bt_pn_a[0][1] * bt_pn_b_inv_m[1][0] + bt_pn_a[1][1] * bt_pn_b_inv_m[1][1],
+                                bt_pn_a[0][2] * bt_pn_b_inv_m[1][0] + bt_pn_a[1][2] * bt_pn_b_inv_m[1][1]}};
     fb[0][0] = x[0][0] * matrix_k[0][0] + x[1][0] * matrix_k[0][1] + x[2][0] * matrix_k[0][2];
     fb[1][0] = x[0][0] * matrix_k[1][0] + x[1][0] * matrix_k[1][1] + x[2][0] * matrix_k[1][2];
 }
@@ -187,85 +192,85 @@ void solve_riccati_equation(float a[3][3], float b[3][2], float q, float r, floa
     p[2][2] = q;
 
     for (counter = 0; counter < 500; ++counter) {
-        float at_pn_a[3][3] = {{p[0][0], p[0][1],
-                                A02 * p[0][0] + A12 * p[0][1] +
-                                    p[0][2]},
-                               {p[1][0], p[1][1], A02 * p[1][0] + A12 * p[1][1] +
-                                   p[1][2]},
+        float at_pn_a[3][3] = {{p[0][0],                                 p[0][1],
+                                                                                  A02 * p[0][0] + A12 * p[0][1] +
+                                                                                  p[0][2]},
+                               {p[1][0],                                 p[1][1], A02 * p[1][0] + A12 * p[1][1] +
+                                                                                  p[1][2]},
                                {A02 * p[0][0] + A12 * p[1][0] + p[2][0], A02 * p[0][1] + A12 * p[1][1] + p[2][1],
-                                A02 * p[0][2] + A12 * p[1][2] + A02 *
-                                    (A02 *
-                                        p[0][0] +
-                                        A12 *
-                                            p[1][0] +
-                                        p[2][0])
-                                    + A12 *
-                                        (A02 * p[0][1] + A12 * p[1][1] +
-                                            p[2][1]) + p[2][2]}};
+                                                                                  A02 * p[0][2] + A12 * p[1][2] + A02 *
+                                                                                                                  (A02 *
+                                                                                                                   p[0][0] +
+                                                                                                                   A12 *
+                                                                                                                   p[1][0] +
+                                                                                                                   p[2][0])
+                                                                                  + A12 *
+                                                                                    (A02 * p[0][1] + A12 * p[1][1] +
+                                                                                     p[2][1]) + p[2][2]}};
         float at_pn_b[3][2] = {{B00 * p[0][0] + B10 * p[0][1] + B20 * p[0][2], B21 * p[0][2]},
                                {B00 * p[1][0] + B10 * p[1][1] + B20 * p[1][2], B21 * p[1][2]},
                                {B00 * (A02 * p[0][0] + A12 * p[1][0] + p[2][0]) +
-                                   B10 * (A02 * p[0][1] + A12 * p[1][1] + p[2][1])
-                                    + B20 * (A02 * p[0][2] + A12 * p[1][2] + p[2][2]),
-                                B21 * (A02 * p[0][2] + A12 * p[1][2] +
-                                    p[2][2])}};
+                                B10 * (A02 * p[0][1] + A12 * p[1][1] + p[2][1])
+                                + B20 * (A02 * p[0][2] + A12 * p[1][2] + p[2][2]),
+                                                                               B21 * (A02 * p[0][2] + A12 * p[1][2] +
+                                                                                      p[2][2])}};
         float r_bt_pn_b[2][2] = {{B00 * (B00 * p[0][0] + B10 * p[1][0] + B20 * p[2][0]) +
-            B10 * (B00 * p[0][1] + B10 * p[1][1] + B20 * p[2][1])
-                                      + B20 * (B00 * p[0][2] + B10 * p[1][2] + B20 * p[2][2]) + r,
-                                  B21 * (B00 * p[0][2] + B10 * p[1][2] + B20 * p[2][2])},
+                                  B10 * (B00 * p[0][1] + B10 * p[1][1] + B20 * p[2][1])
+                                  + B20 * (B00 * p[0][2] + B10 * p[1][2] + B20 * p[2][2]) + r,
+                                     B21 * (B00 * p[0][2] + B10 * p[1][2] + B20 * p[2][2])},
                                  {B00 * B21 * p[2][0] + B10 * B21 * p[2][1] + B20 * B21 * p[2][2],
-                                  B21 * B21 * p[2][2] + r}};
+                                     B21 * B21 * p[2][2] + r}};
         float bt_pn_a[2][3] =
             {{B00 * p[0][0] + B10 * p[1][0] + B20 * p[2][0], B00 * p[0][1] + B10 * p[1][1] + B20 * p[2][1],
-              B00 * p[0][2] + B10 * p[1][2] + A02 *
-                  (B00 *
-                      p[0][0] +
-                      B10 *
-                          p[1][0] +
-                      B20 *
-                          p[2][0])
-                  + A12 * (B00 * p[0][1] + B10 * p[1][1] +
-                      B20 * p[2][1]) +
-                  B20 * p[2][2]},
-             {B21 * p[2][0], B21 * p[2][1], A02 * B21 * p[2][0] +
-                 A12 * B21 * p[2][1] + B21 * p[2][2]}};
+                                                                            B00 * p[0][2] + B10 * p[1][2] + A02 *
+                                                                                                            (B00 *
+                                                                                                             p[0][0] +
+                                                                                                             B10 *
+                                                                                                             p[1][0] +
+                                                                                                             B20 *
+                                                                                                             p[2][0])
+                                                                            + A12 * (B00 * p[0][1] + B10 * p[1][1] +
+                                                                                     B20 * p[2][1]) +
+                                                                            B20 * p[2][2]},
+             {B21 * p[2][0],                                 B21 * p[2][1], A02 * B21 * p[2][0] +
+                                                                            A12 * B21 * p[2][1] + B21 * p[2][2]}};
 
         float r_bt_pn_b_diag = r_bt_pn_b[0][0] * r_bt_pn_b[1][1] - r_bt_pn_b[0][1] * r_bt_pn_b[1][0];
 
-        float r_bt_pn_b_inv[2][2] = {{r_bt_pn_b[1][1] / r_bt_pn_b_diag, -(r_bt_pn_b[0][1] / r_bt_pn_b_diag)},
+        float r_bt_pn_b_inv[2][2] = {{r_bt_pn_b[1][1] / r_bt_pn_b_diag,       -(r_bt_pn_b[0][1] / r_bt_pn_b_diag)},
                                      {-(r_bt_pn_b[1][0] / (-r_bt_pn_b_diag)), r_bt_pn_b[0][0] / r_bt_pn_b_diag}};
 
         float big_matrix[3][3] =
             {{bt_pn_a[0][0] * (at_pn_b[0][0] * r_bt_pn_b_inv[0][0] + at_pn_b[0][1] * r_bt_pn_b_inv[1][0]) +
-                bt_pn_a[1][0] * (at_pn_b[0][0] * r_bt_pn_b_inv[0][1] + at_pn_b[0][1] * r_bt_pn_b_inv[1][1]),
-              bt_pn_a[0][1] *
-                  (at_pn_b[0][0] * r_bt_pn_b_inv[0][0] + at_pn_b[0][1] * r_bt_pn_b_inv[1][0]) +
-                  bt_pn_a[1][1] *
-                      (at_pn_b[0][0] * r_bt_pn_b_inv[0][1] + at_pn_b[0][1] * r_bt_pn_b_inv[1][1]),
-              bt_pn_a[0][2] *
-                  (at_pn_b[0][0] * r_bt_pn_b_inv[0][0] + at_pn_b[0][1] * r_bt_pn_b_inv[1][0]) +
-                  bt_pn_a[1][2] *
-                      (at_pn_b[0][0] * r_bt_pn_b_inv[0][1] + at_pn_b[0][1] * r_bt_pn_b_inv[1][1])},
+              bt_pn_a[1][0] * (at_pn_b[0][0] * r_bt_pn_b_inv[0][1] + at_pn_b[0][1] * r_bt_pn_b_inv[1][1]),
+                 bt_pn_a[0][1] *
+                 (at_pn_b[0][0] * r_bt_pn_b_inv[0][0] + at_pn_b[0][1] * r_bt_pn_b_inv[1][0]) +
+                 bt_pn_a[1][1] *
+                 (at_pn_b[0][0] * r_bt_pn_b_inv[0][1] + at_pn_b[0][1] * r_bt_pn_b_inv[1][1]),
+                 bt_pn_a[0][2] *
+                 (at_pn_b[0][0] * r_bt_pn_b_inv[0][0] + at_pn_b[0][1] * r_bt_pn_b_inv[1][0]) +
+                 bt_pn_a[1][2] *
+                 (at_pn_b[0][0] * r_bt_pn_b_inv[0][1] + at_pn_b[0][1] * r_bt_pn_b_inv[1][1])},
              {bt_pn_a[0][0] * (at_pn_b[1][0] * r_bt_pn_b_inv[0][0] + at_pn_b[1][1] * r_bt_pn_b_inv[1][0]) +
-                 bt_pn_a[1][0] * (at_pn_b[1][0] * r_bt_pn_b_inv[0][1] + at_pn_b[1][1] * r_bt_pn_b_inv[1][1]),
-              bt_pn_a[0][1] *
-                  (at_pn_b[1][0] * r_bt_pn_b_inv[0][0] + at_pn_b[1][1] * r_bt_pn_b_inv[1][0]) +
-                  bt_pn_a[1][1] *
-                      (at_pn_b[1][0] * r_bt_pn_b_inv[0][1] + at_pn_b[1][1] * r_bt_pn_b_inv[1][1]),
-              bt_pn_a[0][2] *
-                  (at_pn_b[1][0] * r_bt_pn_b_inv[0][0] + at_pn_b[1][1] * r_bt_pn_b_inv[1][0]) +
-                  bt_pn_a[1][2] *
-                      (at_pn_b[1][0] * r_bt_pn_b_inv[0][1] + at_pn_b[1][1] * r_bt_pn_b_inv[1][1])},
+              bt_pn_a[1][0] * (at_pn_b[1][0] * r_bt_pn_b_inv[0][1] + at_pn_b[1][1] * r_bt_pn_b_inv[1][1]),
+                 bt_pn_a[0][1] *
+                 (at_pn_b[1][0] * r_bt_pn_b_inv[0][0] + at_pn_b[1][1] * r_bt_pn_b_inv[1][0]) +
+                 bt_pn_a[1][1] *
+                 (at_pn_b[1][0] * r_bt_pn_b_inv[0][1] + at_pn_b[1][1] * r_bt_pn_b_inv[1][1]),
+                 bt_pn_a[0][2] *
+                 (at_pn_b[1][0] * r_bt_pn_b_inv[0][0] + at_pn_b[1][1] * r_bt_pn_b_inv[1][0]) +
+                 bt_pn_a[1][2] *
+                 (at_pn_b[1][0] * r_bt_pn_b_inv[0][1] + at_pn_b[1][1] * r_bt_pn_b_inv[1][1])},
              {bt_pn_a[0][0] * (at_pn_b[2][0] * r_bt_pn_b_inv[0][0] + at_pn_b[2][1] * r_bt_pn_b_inv[1][0]) +
-                 bt_pn_a[1][0] * (at_pn_b[2][0] * r_bt_pn_b_inv[0][1] + at_pn_b[2][1] * r_bt_pn_b_inv[1][1]),
-              bt_pn_a[0][1] *
-                  (at_pn_b[2][0] * r_bt_pn_b_inv[0][0] + at_pn_b[2][1] * r_bt_pn_b_inv[1][0]) +
-                  bt_pn_a[1][1] *
-                      (at_pn_b[2][0] * r_bt_pn_b_inv[0][1] + at_pn_b[2][1] * r_bt_pn_b_inv[1][1]),
-              bt_pn_a[0][2] *
-                  (at_pn_b[2][0] * r_bt_pn_b_inv[0][0] + at_pn_b[2][1] * r_bt_pn_b_inv[1][0]) +
-                  bt_pn_a[1][2] *
-                      (at_pn_b[2][0] * r_bt_pn_b_inv[0][1] + at_pn_b[2][1] * r_bt_pn_b_inv[1][1])}};
+              bt_pn_a[1][0] * (at_pn_b[2][0] * r_bt_pn_b_inv[0][1] + at_pn_b[2][1] * r_bt_pn_b_inv[1][1]),
+                 bt_pn_a[0][1] *
+                 (at_pn_b[2][0] * r_bt_pn_b_inv[0][0] + at_pn_b[2][1] * r_bt_pn_b_inv[1][0]) +
+                 bt_pn_a[1][1] *
+                 (at_pn_b[2][0] * r_bt_pn_b_inv[0][1] + at_pn_b[2][1] * r_bt_pn_b_inv[1][1]),
+                 bt_pn_a[0][2] *
+                 (at_pn_b[2][0] * r_bt_pn_b_inv[0][0] + at_pn_b[2][1] * r_bt_pn_b_inv[1][0]) +
+                 bt_pn_a[1][2] *
+                 (at_pn_b[2][0] * r_bt_pn_b_inv[0][1] + at_pn_b[2][1] * r_bt_pn_b_inv[1][1])}};
 
         p_next[0][0] = at_pn_a[0][0] - big_matrix[0][0] + q;
         p_next[0][1] = at_pn_a[0][1] - big_matrix[0][1];

@@ -15,6 +15,8 @@ void test_operation_arctan(void) {
     CU_ASSERT((atanm1 < -0.7853f && atanm1 > -0.7854f))
     CU_ASSERT((atan10 > 1.4711f && atan10 < 1.4712f))
     CU_ASSERT((atanm10 < -1.4711f && atanm10 > -1.4712f))
+
+
 }
 
 void test_operation_sqrt(void) {
