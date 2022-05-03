@@ -7,8 +7,7 @@
 #include "stdio.h"
 #include "string.h"
 
-#define TOLERANCE_PRECISION     0.2f
-#define YAW_TO_ANGLE            (-60.3111346f)     // 180/pi * (-50/47.5)
+#define TOLERANCE_PRECISION     (0.2f)
 
 extern calpara_t params;
 
@@ -54,13 +53,6 @@ void test_calibration_solver(void) {
     }
 }
 
-float distance_north;
-float distance_east;
-
-float calculate_distance(int ind) {
-    return 0;
-}
-
 void test_riccati_solver(void) {
     float fai_r = 0.23f, delta_r = 0.086f, L = 0.4f, v_r = 5.1f, dt = 0.01f;
     float error_x = 1.2f, error_y = 0.4f, error_fai = 0.17f;
@@ -68,8 +60,8 @@ void test_riccati_solver(void) {
                      {0, 1, v_r * dt * cosf(fai_r)},
                      {0, 0, 1}};
 
-    float b[3][2] = {{cosf(fai_r) * dt, 0},
-                     {sinf(fai_r) * dt, 0},
+    float b[3][2] = {{cosf(fai_r) * dt,       0},
+                     {sinf(fai_r) * dt,       0},
                      {tanf(delta_r) * dt / L, v_r * dt / (L * cosf(delta_r) * cosf(delta_r))}};
     float x[3][1] = {{error_x},
                      {error_y},
@@ -86,13 +78,4 @@ void test_riccati_solver(void) {
     CU_ASSERT(fabsf(control_val[0][0]) > fabsf(-1.2583f + TOLERANCE_PRECISION))
     CU_ASSERT(fabsf(control_val[1][0]) < fabsf(-0.3026f - TOLERANCE_PRECISION))
     CU_ASSERT(fabsf(control_val[1][0]) > fabsf(-0.3026f + TOLERANCE_PRECISION))
-}
-
-void test_lqr_contrl(void) {
-    short angle_ctrl = 150;
-    unsigned short index;
-    float distance_n, distance_e, angle_yaw;
-
-//    for (unsigned short i = 0; i < INDEX_NUM; i++)
-//        printf("%.4f,%.4f \r\n", test_point_1[i][0], test_point_1[i][1]);
 }

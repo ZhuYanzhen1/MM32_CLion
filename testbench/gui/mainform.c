@@ -5,6 +5,7 @@
 #include "mainform.h"
 #include "gtk/gtk.h"
 #include "simulate_line.h"
+#include "simulate.h"
 
 static void draw_function(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer user_data) {
 //    double dashes[] = {2.0,  /* ink */
@@ -17,6 +18,7 @@ static void draw_function(GtkDrawingArea *area, cairo_t *cr, int width, int heig
     cairo_set_source_rgb(cr, 1, 0, 0);
     cairo_move_to(cr, 0, 0);
     draw_track(cr, width, height);
+    simulate_lqr_control();
     draw_actual_trace(cr);
     cairo_stroke(cr);
 }
