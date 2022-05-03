@@ -1,14 +1,9 @@
 //
-// Created by 16625 on 2022-03-30.
+// Created by 16625 on 2022-05-03.
 //
 
-#ifndef TESTBENCH_TEST_DATA_H
-#define TESTBENCH_TEST_DATA_H
-
-#define INDEX_NUM       747
-
-//extern float test_point_1[INDEX_NUM + 1][4];
-
+//#include "test_data.h"
+/*
 float test_point_1[INDEX_NUM + 1][4] = {
         {4385.7630000f, 39692.2030000f, -1.3563084f, 0.0000941f},
         {4385.7795000f, 39692.1272000f, -1.2887732f, 0.0000941f},
@@ -759,5 +754,4 @@ float test_point_1[INDEX_NUM + 1][4] = {
         {4382.3376823f, 39694.8083399f, -1.0748310f, 0.0007358f},
         {4382.6048141f, 39694.3146060f, -1.0748310f, 0.0020509f},
 };
-
-#endif  // TESTBENCH_TEST_DATA_H
+*/
