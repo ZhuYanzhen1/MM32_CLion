@@ -8,5 +8,6 @@
 #include "gtk/gtk.h"
 
 void draw_track(cairo_t *cr, int width, int height);
+void draw_actual_trace(cairo_t *cr);
 
 #endif //TESTBENCH_GUI_SIMULATE_LINE_H_

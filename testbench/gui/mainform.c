@@ -8,17 +8,18 @@
 #include "simulate.h"
 
 static void draw_function(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer user_data) {
-    double dashes[] = {2.0,  /* ink */
-                       2.0,  /* skip */
-                       2.0,  /* ink */
-                       2.0   /* skip */
-    };
-    cairo_set_dash(cr, dashes, sizeof(dashes) / sizeof(dashes[0]), -50.0);
-    cairo_set_line_width(cr, 2.0);
+//    double dashes[] = {2.0,  /* ink */
+//                       2.0,  /* skip */
+//                       2.0,  /* ink */
+//                       2.0   /* skip */
+//    };
+//    cairo_set_dash(cr, dashes, sizeof(dashes) / sizeof(dashes[0]), -50.0);
+    cairo_set_line_width(cr, 4.0);
     cairo_set_source_rgb(cr, 1, 0, 0);
     cairo_move_to(cr, 0, 0);
     draw_track(cr, width, height);
     simulate_lqr_control();
+    draw_actual_trace(cr);
     cairo_stroke(cr);
 }
 
