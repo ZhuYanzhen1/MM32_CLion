@@ -87,19 +87,20 @@ void lqr_update(float refDelta,
 
 float calculate_distance(int ind, float x, float y) {
     float distance = (sqrtf
-            ((test_point_1[ind][0] - x)
+        ((test_point_1[ind][0] - x)
              * (test_point_1[ind][0] - x)
              + (test_point_1[ind][1] - y) *
-               (test_point_1[ind][1] - y)));
+                 (test_point_1[ind][1] - y)));
     return distance;
 }
 
 float pos[100000][2] = {0};
+unsigned int max_pos = 0;
 
 void simulate_lqr_control(void) {
     unsigned short index = 0;
     float dn = test_point_1[0][0] - 0.5f, de = test_point_1[0][1] + 0.5f,
-            ay = test_point_1[0][2] - 0.02f, speed = 0, delta = 0;
+        ay = test_point_1[0][2] - 0.02f, speed = 0, delta = 0;
     float *distance_n = &dn, *distance_e = &de, *angle_yaw = &ay, *v = &speed, *Delta = &delta;
     float v_r = refSpeed;
 
@@ -129,11 +130,11 @@ void simulate_lqr_control(void) {
         float a[3][3] = {{1, 0, -v_r * dt * sinf(test_point_1[index][2])},
                          {0, 1, v_r * dt * cosf(test_point_1[index][2])},
                          {0, 0, 1}};
-        float b[3][2] = {{cosf(test_point_1[index][2]) * dt,     0},
-                         {sinf(test_point_1[index][2]) * dt,     0},
+        float b[3][2] = {{cosf(test_point_1[index][2]) * dt, 0},
+                         {sinf(test_point_1[index][2]) * dt, 0},
                          {tanf(test_point_1[index][3]) * dt / L, v_r * dt /
-                                                                 (L * cosf(test_point_1[index][3]) *
-                                                                  cosf(test_point_1[index][3]))}};
+                             (L * cosf(test_point_1[index][3]) *
+                                 cosf(test_point_1[index][3]))}};
 
         // 获得速度误差量、前轮转角误差量两个控制量
         float X[3][1] = {{x_error},
@@ -153,7 +154,8 @@ void simulate_lqr_control(void) {
         pos[time][0] = *distance_n;
         pos[time][1] = *distance_e;
         time++;
-        if (time > 100000)
+        max_pos++;
+        if (time > 500)
             break;
     }
 }
