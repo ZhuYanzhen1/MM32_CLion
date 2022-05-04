@@ -10,6 +10,8 @@
 
 #define INDEX_NUM   747
 
+unsigned char run_flag = 1;
+
 FATFS filesystem;
 volatile short angle = 150;
 volatile unsigned short speed = 0;
@@ -63,7 +65,7 @@ int main(void) {
 
     while (1) {
         LED1_TOGGLE();
-        if (proc_data.distance_east != 0) {
+        if (proc_data.distance_east != 0 && run_flag == 1) {
             /* 国防生 */
 //            if (playground_ind < 837)
 //                playground_ind =
@@ -75,16 +77,17 @@ int main(void) {
 //            printf("%.3f, %.3f \r", proc_data.distance_north, proc_data.distance_east);
             /* 工一楼顶 */
 
-            if (playground_ind < INDEX_NUM)
+            if (playground_ind < INDEX_NUM) {
                 playground_ind =
                     dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
                               (playground_ind + INDEX_OFFSET > INDEX_NUM) ? INDEX_NUM : (playground_ind
                                   + INDEX_OFFSET));
-            else {
+                lqr_control(playground_ind);
+            } else if (playground_ind > INDEX_NUM - 10) {
                 // 到最后终点要刹车
+                speed = 0;
+                run_flag = 0;
             }
-
-            lqr_control(playground_ind);
             WRITE_REG(TIM3->CCR1, angle);
             printf("%.3f, %.3f \r", proc_data.distance_north, proc_data.distance_east);
             sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
