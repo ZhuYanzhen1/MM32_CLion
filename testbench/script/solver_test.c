@@ -60,8 +60,8 @@ void test_riccati_solver(void) {
                      {0, 1, v_r * dt * cosf(fai_r)},
                      {0, 0, 1}};
 
-    float b[3][2] = {{cosf(fai_r) * dt,       0},
-                     {sinf(fai_r) * dt,       0},
+    float b[3][2] = {{cosf(fai_r) * dt, 0},
+                     {sinf(fai_r) * dt, 0},
                      {tanf(delta_r) * dt / L, v_r * dt / (L * cosf(delta_r) * cosf(delta_r))}};
     float x[3][1] = {{error_x},
                      {error_y},
@@ -79,3 +79,15 @@ void test_riccati_solver(void) {
     CU_ASSERT(fabsf(control_val[1][0]) < fabsf(-0.3026f - TOLERANCE_PRECISION))
     CU_ASSERT(fabsf(control_val[1][0]) > fabsf(-0.3026f + TOLERANCE_PRECISION))
 }
+
+#ifndef USING_GTK_GUI_MACRO
+#include "test_data.h"
+float calculate_distance(int ind, float x, float y) {
+    float distance = (sqrtf
+        ((test_point_1[ind][0] - x)
+             * (test_point_1[ind][0] - x)
+             + (test_point_1[ind][1] - y) *
+                 (test_point_1[ind][1] - y)));
+    return distance;
+}
+#endif

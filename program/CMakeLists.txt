@@ -25,8 +25,8 @@ add_compile_options(-mcpu=cortex-m3 -mthumb -mthumb-interwork)
 add_compile_options(-ffunction-sections -fdata-sections -fno-common -fmessage-length=0)
 
 message(STATUS "Optimization for speed")
-#add_compile_options(-O0)
-add_compile_options(-O2)
+add_compile_options(-O0)
+#add_compile_options(-O2)
 
 #add_definitions(-DUSE_HAL_DRIVER)
 
@@ -36,7 +36,7 @@ include_directories(library/regs system system/cmsis library/include proc_mcu ha
 
 file(GLOB_RECURSE CONTROL_SOURCES "system/official/startup_mm32f327.s" "library/source/*.c" "math/*.c"
         "system/*.c" "system/official/*.c" "math/qfplib.s" "debug/*.c" "protocol/*.c" "debug/cmb_fault.S"
-        "hardware/*.c" "ctrl_mcu/*.c" "device/sensor_decode.c" "device/w25q64.c" "fatfs/*.c")
+        "hardware/*.c" "ctrl_mcu/*.c" "device/sensor_decode.c" "device/w25q64.c" "fatfs/*.c" "device/ch372c.c")
 
 file(GLOB_RECURSE PROCESS_SOURCES "system/official/startup_mm32f327.s" "library/source/*.c" "math/*.c"
         "proc_mcu/*.c" "hardware/*.c" "system/*.c" "system/official/*.c" "math/qfplib.s" "device/*.c"

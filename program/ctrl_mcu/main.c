@@ -51,17 +51,19 @@ int main(void) {
     delayms(2000);
     timer3_config();
 
-//    FRESULT result = f_mount(&filesystem, "0:", 1);
-//    if (result == FR_NO_FILESYSTEM) {
-//        if (f_mkfs("0:", 0, fs_buffer, sizeof(fs_buffer)) == FR_OK)
-//            f_setlabel((const TCHAR *) "0:FLASH");
-//        else
-//            while (1);
-//    } else if (result != FR_OK)
-//        while (1);
-//
-//    fs_get_free("0:");
-//    fs_scan_files("0:");
+    FRESULT result = f_mount(&filesystem, "0:", 1);
+    if (result == FR_NO_FILESYSTEM) {
+        if (f_mkfs("0:", 0, fs_buffer, sizeof(fs_buffer)) == FR_OK)
+            f_setlabel((const TCHAR *) "0:FLASH");
+        else
+            while (1);
+    } else if (result != FR_OK)
+        while (1);
+
+    fs_get_free("0:");
+    fs_scan_files("0:");
+
+    ch372_config();
 
     while (1) {
         LED1_TOGGLE();
@@ -89,12 +91,12 @@ int main(void) {
                 run_flag = 0;
             }
             WRITE_REG(TIM3->CCR1, angle);
-            printf("%.3f, %.3f \r", proc_data.distance_north, proc_data.distance_east);
+//            printf("%.3f, %.3f \r", proc_data.distance_north, proc_data.distance_east);
             sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
             uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
 
         }
-        printf("%.3f, %.3f \r", proc_data.distance_north, proc_data.distance_east);
+//        printf("%.3f, %.3f \r", proc_data.distance_north, proc_data.distance_east);
 //        WRITE_REG(TIM3->CCR1, angle);
         delayms(333);
     }
