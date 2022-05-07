@@ -10,8 +10,6 @@
 
 #define INDEX_NUM   747
 
-unsigned char run_flag = 1;
-
 FATFS filesystem;
 volatile short angle = 150;
 volatile unsigned short speed = 0;
@@ -25,15 +23,7 @@ unsigned int uart7_dma_send_buffer[UART7_DMA_SEND_BUFFER] = {0};
 
 int main(void) {
     delay_config();
-
-    GPIO_InitTypeDef GPIO_InitStructure;
-    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(GPIOB, &GPIO_InitStructure);
-    GPIO_ResetBits(GPIOB, GPIO_Pin_4);
-
+    tim3_pwm_gpio_config();
     led_config();
     uart1_config();
     uart6_config();
@@ -68,41 +58,19 @@ int main(void) {
     while (1) {
         LED1_TOGGLE();
         if (proc_data.distance_east != 0) {
-            /* 国防生 */
-//            if (playground_ind < 837)
-//                playground_ind =
-//                    dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
-//                              (playground_ind + INDEX_OFFSET > 837) ? 837 : (playground_ind + INDEX_OFFSET));
-//
-//            lqr_control(playground_ind);
-//            WRITE_REG(TIM3->CCR1, angle);
-//            printf("%.3f, %.3f \r", proc_data.distance_north, proc_data.distance_east);
-            /* 工一楼顶 */
             for (unsigned char i = 0; i < 20; i++) {
-                if (playground_ind < INDEX_NUM) {
-                    playground_ind =
-                        dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
-                                  (playground_ind + INDEX_OFFSET > INDEX_NUM) ? INDEX_NUM : (playground_ind
-                                      + INDEX_OFFSET));
-                    lqr_control(playground_ind + 2);
-
-                }
-//            else if (playground_ind > INDEX_NUM - 10) {
-//                // 到最后终点要刹车
-//                speed = 0;
-//                run_flag = 0;
-//            }
-                delayms(15);
+                playground_ind =
+                    dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
+                              (playground_ind + INDEX_OFFSET > INDEX_NUM) ? INDEX_NUM : (playground_ind
+                                  + INDEX_OFFSET));
+                lqr_control(playground_ind + 2);
                 WRITE_REG(TIM3->CCR1, angle);
-//            printf("%.3f, %.3f \r", proc_data.distance_north, proc_data.distance_east);
+                delayms(15);
             }
+            speed = 3000;
+            sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
+            uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
+            //            printf("%.3f, %.3f \r", proc_data.distance_north, proc_data.distance_east);
         }
-
-        speed = 3000;
-        sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
-        uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
-//        printf("%.3f, %.3f \r", proc_data.distance_north, proc_data.distance_east);
-//        WRITE_REG(TIM3->CCR1, angle);
-//        delayms(100);
     }
 }
