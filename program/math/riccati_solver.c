@@ -5,11 +5,8 @@
 #include "printf.h"
 #include "qfplib.h"
 #include "sensor_decode.h"
+#include "delay.h"
 #endif
-
-//  P = 96.7181   16.2375   -2.0601
-//      16.2375   31.0814    8.2303
-//      -2.0601    8.2303   11.3719
 
 #define YAW_TO_ANGLE        (-63.66203f)     // 180/pi * (-50/45)
 #define OUTPUT_DEBUG_INFO   (0)
@@ -20,17 +17,8 @@
 #ifndef RUNNING_UNIT_TEST
 extern volatile unsigned short speed;
 extern volatile short angle;
-extern volatile unsigned char run_flag;
 
 float calculate_distance(int ind) {
-    /* 国防生 */
-    //    float distance = (qfp_fsqrt
-    //        ((reference_point[ind][0] - proc_data.distance_north)
-    //             * (reference_point[ind][0] - proc_data.distance_north)
-    //             + (reference_point[ind][1] - proc_data.distance_east) *
-    //                 (reference_point[ind][1] - proc_data.distance_east)));
-    //    return distance;
-    /* 工一楼顶 */
     float distance = (qfp_fsqrt
         ((test_point[ind][0] - proc_data.distance_north)
              * (test_point[ind][0] - proc_data.distance_north)
@@ -39,8 +27,10 @@ float calculate_distance(int ind) {
     return distance;
 }
 
+static unsigned int last_global_time_stamp = 0;
 void lqr_control(unsigned short index) {
-    float v_r = 2, dt = 0.02f, L = 0.28f;
+    float v_r = 2, dt = (float) (global_time_stamp - last_global_time_stamp) * 0.001f, L = 0.28f;
+    last_global_time_stamp = global_time_stamp;
 
     // 求位置、航向角的误差
     float yaw_temp = (proc_data.north_angle < 180) ? proc_data.north_angle : (proc_data.north_angle - 360);
@@ -54,14 +44,8 @@ void lqr_control(unsigned short index) {
     else if (yaw_error < -3.14)
         yaw_error += _2PI_;
 
-    // 计算横向误差
-    float lateral_error = y_error * qfp_fcos(test_point[index][2]) - x_error * qfp_fsin(test_point[index][2]);
-    if (lateral_error > 5) {    // 有问题
-        speed = 0;
-        run_flag = 0;
-        return;
-    } else
-        run_flag = 1;
+//     计算横向误差
+//    float lateral_error = y_error * qfp_fcos(test_point[index][2]) - x_error * qfp_fsin(test_point[index][2]);
 
     // 由状态方程矩阵系数，计算K
     float a[3][3] = {{1, 0, -v_r * dt * qfp_fsin(test_point[index][2])},
