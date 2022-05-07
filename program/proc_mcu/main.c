@@ -131,7 +131,7 @@ void fusion_task(void *parameters) {
         delayms(20);
 //        static int mag_x_old = z
 //        if (debug_data.mag_x != mag_x_old)
-//        printf("%.4f ,%.4f \r ", temp_dis_e, kalman_data.distance_east);
+
 //        mag_x_old = debug_data.   mag_x;
     }
 }
@@ -217,7 +217,8 @@ void ledblink_task(void *parameters) {
     (void) parameters;
     while (1) {
         LED1_TOGGLE();
-        delayms(200);
+        printf("%.4f ,%.4f \r ", kalman_data.distance_north, kalman_data.distance_east);
+        delayms(500);
     }
 }
 #endif  // USE_FREERTOS_REPORT == 1
