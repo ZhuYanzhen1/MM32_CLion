@@ -29,6 +29,8 @@ float calculate_distance(int ind) {
 
 static unsigned int last_global_time_stamp = 0;
 void lqr_control(unsigned short index) {
+    if (last_global_time_stamp == 0)
+        last_global_time_stamp = global_time_stamp - 20;
     float v_r = 2, dt = (float) (global_time_stamp - last_global_time_stamp) * 0.001f, L = 0.28f;
     last_global_time_stamp = global_time_stamp;
 
