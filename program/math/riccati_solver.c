@@ -46,12 +46,6 @@ void lqr_control(unsigned short index) {
     float yaw_temp = (proc_data.north_angle < 180) ? proc_data.north_angle : (proc_data.north_angle - 360);
     yaw_temp *= ANGLE_TO_RADIAN;
 
-    /* 国防生 */
-//    float x_error = proc_data.distance_north - reference_point[index][0];
-//    float y_error = proc_data.distance_east - reference_point[index][1];
-//    float yaw_error = yaw_temp - reference_point[index][2];
-
-    /* 工一楼顶 */
     float x_error = proc_data.distance_north - test_point[index][0];
     float y_error = proc_data.distance_east - test_point[index][1];
     float yaw_error = yaw_temp - test_point[index][2];
@@ -62,11 +56,12 @@ void lqr_control(unsigned short index) {
 
     // 计算横向误差
     float lateral_error = y_error * qfp_fcos(test_point[index][2]) - x_error * qfp_fsin(test_point[index][2]);
-    if (lateral_error > 5) {
+    if (lateral_error > 5) {    // 有问题
         speed = 0;
         run_flag = 0;
         return;
-    }
+    } else
+        run_flag = 1;
 
     // 由状态方程矩阵系数，计算K
     float a[3][3] = {{1, 0, -v_r * dt * qfp_fsin(test_point[index][2])},

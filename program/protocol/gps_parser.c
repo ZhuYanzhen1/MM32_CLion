@@ -18,6 +18,9 @@
 extern CHELowPass filter_distance_n;
 extern CHELowPass filter_distance_e;
 
+float temp_dis_n = 0;
+float temp_dis_e = 0;
+
 nmea_rmc gps_rmc = {0};
 float last_output_n = 4385.7630000f;    // 4385.7630000f, 39692.2030000f
 float last_output_e = 39692.2030000f;
@@ -235,6 +238,9 @@ void nmea_gnrmc_analysis(char *buffer) {
 
     neu.north_distance = get_distance(QRIGIN_LAT, temp_lonitude, temp_latitude, temp_lonitude);
     neu.east_distance = get_distance(temp_latitude, QRIGIN_LON, temp_latitude, temp_lonitude);
+
+//    temp_dis_n = neu.north_distance;
+//    temp_dis_e = neu.east_distance;
 
     neu.north_distance = rc_low_pass(neu.north_distance, last_output_n);
     neu.east_distance = rc_low_pass(neu.east_distance, last_output_e);

@@ -8,6 +8,9 @@
 
 #include "main.h"
 
+extern float temp_dis_n;
+extern float temp_dis_e;
+
 extern unsigned int packages_to_be_unpacked_1[READ_MCU_AMOUNT];
 unsigned int proc_to_ctrl_package[PROC_MCU_SEND_AMOUNT] = {0};
 unsigned int proc_to_ctrl_buffer[3] = {0};
@@ -125,11 +128,11 @@ void fusion_task(void *parameters) {
             uart3_sendbyte(proc_to_ctrl_package[i]);
         }
 
-        delayms(50);
+        delayms(20);
 //        static int mag_x_old = z
 //        if (debug_data.mag_x != mag_x_old)
-//        printf("%.4f ,%.4f \r ", kalman_data.distance_north, kalman_data.distance_east);
-//        mag_x_old = debug_data.mag_x;
+//        printf("%.4f ,%.4f \r ", temp_dis_e, kalman_data.distance_east);
+//        mag_x_old = debug_data.   mag_x;
     }
 }
 
