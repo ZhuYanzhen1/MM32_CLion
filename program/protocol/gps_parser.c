@@ -8,14 +8,19 @@
 ******************************************************************************/
 
 #include "gps_parser.h"
+#include "data_conversion.h"
+#include "filter.h"
 
 #define STRING_TO_NUM(x, y, num)    if(comma_position[(num)-1]!=0) \
                                         (x) = nmea_str2num(p + comma_position[(num)-1] +1, &(y));
 #define STRING_TO_STR(x, num)       if (comma_position[(num)-1]!=0) \
                                         (x) = *(p + comma_position[(num)-1]+1);
+extern CHELowPass filter_distance_n;
+extern CHELowPass filter_distance_e;
 
 nmea_rmc gps_rmc = {0};
-
+float last_output_n = 4385.7630000f;    // 4385.7630000f, 39692.2030000f
+float last_output_e = 39692.2030000f;
 /*!
     \brief      Get the location of all commas in the gps packet at once
     \param[in]  buffer: Digital storage area
@@ -220,6 +225,25 @@ void nmea_gnrmc_analysis(char *buffer) {
     STRING_TO_NUM(gps_rmc.direction_of_ground_truth, gps_rmc.decimal_places_direction, 8)
     STRING_TO_NUM(gps_rmc.date, decimal_places, 9)
     STRING_TO_STR(gps_rmc.mode, 12)
+
+#ifndef RUNNING_UNIT_TEST
+
+    if (gps_rmc.status != 'A')
+        return;
+    float temp_latitude = unit_to_degree(gps_rmc.latitude, 4);
+    float temp_lonitude = unit_to_degree(gps_rmc.longitude, 4);
+
+    neu.north_distance = get_distance(QRIGIN_LAT, temp_lonitude, temp_latitude, temp_lonitude);
+    neu.east_distance = get_distance(temp_latitude, QRIGIN_LON, temp_latitude, temp_lonitude);
+
+    neu.north_distance = rc_low_pass(neu.north_distance, last_output_n);
+    neu.east_distance = rc_low_pass(neu.east_distance, last_output_e);
+
+    last_output_n = neu.north_distance;
+    last_output_e = neu.east_distance;
+//    neu.north_distance = che_low_pass(&filter_distance_n, neu.north_distance);   // 滤波
+//    neu.east_distance = che_low_pass(&filter_distance_e, neu.east_distance);    // 滤波
+#endif
 }
 
 static unsigned char status = 0;

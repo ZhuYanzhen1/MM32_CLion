@@ -18,6 +18,8 @@ kalman_data_t kalman_data = {0};
 kalman_filter_t kalman_v = {0};
 kalman_filter_t kalman_distance_north = {0};
 kalman_filter_t kalman_distance_earth = {0};
+CHELowPass filter_distance_n = {0};
+CHELowPass filter_distance_e = {0};
 
 //////////////////////////////////// Task Handler ////////////////////////////////////
 TaskHandle_t led_taskhandler;
@@ -91,8 +93,10 @@ void initialize_task(void *parameters) {
 void fusion_task(void *parameters) {
     (void) parameters;
     kalman_config_v(&kalman_v);
-    kalman_config_distance(&kalman_distance_north, 4180.424805f);
-    kalman_config_distance(&kalman_distance_earth, 40245.59766f);
+    kalman_config_distance(&kalman_distance_north, 4385.7630000f);
+    kalman_config_distance(&kalman_distance_earth, 39692.2030000f);
+    create_che_low_pass_filter(0.5f, 10, 1, &filter_distance_n);
+    create_che_low_pass_filter(0.5f, 10, 1, &filter_distance_e);
     while (1) {
         while (gps_rmc.status == 'V') {
             delayms(20);
@@ -121,10 +125,10 @@ void fusion_task(void *parameters) {
             uart3_sendbyte(proc_to_ctrl_package[i]);
         }
 
-        delayms(20);
+        delayms(50);
 //        static int mag_x_old = z
 //        if (debug_data.mag_x != mag_x_old)
-        printf("%.4f ,%.4f \r", kalman_data.distance_north, kalman_data.distance_east);
+//        printf("%.4f ,%.4f \r ", kalman_data.distance_north, kalman_data.distance_east);
 //        mag_x_old = debug_data.mag_x;
     }
 }

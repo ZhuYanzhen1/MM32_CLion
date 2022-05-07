@@ -40,7 +40,7 @@ float calculate_distance(int ind) {
 }
 
 void lqr_control(unsigned short index) {
-    float v_r = 2, dt = 0.02f, L = 0.3f;
+    float v_r = 2, dt = 0.02f, L = 0.28f;
 
     // 求位置、航向角的误差
     float yaw_temp = (proc_data.north_angle < 180) ? proc_data.north_angle : (proc_data.north_angle - 360);
@@ -84,7 +84,7 @@ void lqr_control(unsigned short index) {
     float p[3][3] = {0};
     float control_val[2][1] = {0};
     float q = 1;
-    float r = 1;
+    float r = 2;
 
     solve_riccati_equation(a, b, q, r, p);
     solve_feedback_value(p, a, b, x, r, control_val);

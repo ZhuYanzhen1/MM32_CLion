@@ -118,3 +118,13 @@ float my_abs(float x) {
     else
         return -x;
 }
+
+#ifndef RUNNING_UNIT_TEST
+float my_sinh(float x) {
+    return (qfp_fexp(x) - qfp_fexp(-x)) * 0.5f;
+}
+
+float my_cosh(float x) {
+    return (qfp_fexp(x) + qfp_fexp(-x)) * 0.5f;
+}
+#endif

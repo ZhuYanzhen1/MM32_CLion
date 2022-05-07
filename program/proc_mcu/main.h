@@ -38,6 +38,7 @@
 #include "mag_calibrate.h"
 #include "fast_math.h"
 #include "riccati_solver.h"
+#include "filter.h"
 
 ///////////// Device /////////////
 #include "xpt2046.h"

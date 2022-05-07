@@ -63,12 +63,10 @@ float get_distance_m_lon(float lon) {
             longitude, velocity and acceleration into the international system of units
 */
 void sensor_unit_conversion() {
-    float temp_latitude = unit_to_degree(gps_rmc.latitude, 4);
-    float temp_lonitude = unit_to_degree(gps_rmc.longitude, 4);
-    neu.north_distance = get_distance(QRIGIN_LAT, temp_lonitude, temp_latitude, temp_lonitude);
-    neu.east_distance = get_distance(temp_latitude, QRIGIN_LON, temp_latitude, temp_lonitude);
 
     neu.acceleration = MG_TO_M_S_2(small_packets.ay * FACTOR_ALLC_Y);   // 车头前进的方向时y的正方向
+
+
 
     float temp_v = (float) gps_rmc.speed_to_ground_section;
     int v_decimal = num_times_nth_power_of_10(1, gps_rmc.decimal_places_speed);

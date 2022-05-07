@@ -6,6 +6,8 @@
 #define MM32F3277_MATH_TEST_H_
 
 #define INDEX_NUM   747
+#define FIRST_N     4385.7630000f
+#define FIRST_E     39692.2030000f
 
 float test_point[][4] = {
     {4385.7630000f, 39692.2030000f, -1.3563084f, 0.0000941f},

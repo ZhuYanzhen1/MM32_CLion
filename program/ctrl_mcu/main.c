@@ -63,11 +63,11 @@ int main(void) {
     fs_get_free("0:");
     fs_scan_files("0:");
 
-    ch372_config();
+//    ch372_config();
 
     while (1) {
         LED1_TOGGLE();
-        if (proc_data.distance_east != 0 && run_flag == 1) {
+        if (proc_data.distance_east != 0) {
             /* 国防生 */
 //            if (playground_ind < 837)
 //                playground_ind =
@@ -78,26 +78,31 @@ int main(void) {
 //            WRITE_REG(TIM3->CCR1, angle);
 //            printf("%.3f, %.3f \r", proc_data.distance_north, proc_data.distance_east);
             /* 工一楼顶 */
+            for (unsigned char i = 0; i < 20; i++) {
+                if (playground_ind < INDEX_NUM) {
+                    playground_ind =
+                        dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
+                                  (playground_ind + INDEX_OFFSET > INDEX_NUM) ? INDEX_NUM : (playground_ind
+                                      + INDEX_OFFSET));
+                    lqr_control(playground_ind + 2);
 
-            if (playground_ind < INDEX_NUM) {
-                playground_ind =
-                    dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
-                              (playground_ind + INDEX_OFFSET > INDEX_NUM) ? INDEX_NUM : (playground_ind
-                                  + INDEX_OFFSET));
-                lqr_control(playground_ind);
-            } else if (playground_ind > INDEX_NUM - 10) {
-                // 到最后终点要刹车
-                speed = 0;
-                run_flag = 0;
-            }
-            WRITE_REG(TIM3->CCR1, angle);
+                }
+//            else if (playground_ind > INDEX_NUM - 10) {
+//                // 到最后终点要刹车
+//                speed = 0;
+//                run_flag = 0;
+//            }
+                delayms(15);
+                WRITE_REG(TIM3->CCR1, angle);
 //            printf("%.3f, %.3f \r", proc_data.distance_north, proc_data.distance_east);
-            sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
-            uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
-
+            }
         }
+
+        speed = 3000;
+        sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
+        uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
 //        printf("%.3f, %.3f \r", proc_data.distance_north, proc_data.distance_east);
 //        WRITE_REG(TIM3->CCR1, angle);
-        delayms(333);
+//        delayms(100);
     }
 }

@@ -31,6 +31,7 @@ typedef volatile struct {
 
 extern neu_infomation neu;
 
+float get_distance(float lat_2, float lon_2, float lat_1, float lon_1);
 void sensor_unit_conversion();
 void coordinate_system_transformation_kalman_v(float delta);
 
