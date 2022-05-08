@@ -9,12 +9,13 @@
 #include "main.h"
 
 // 检测gps稳定和与gps滤波有关的变量
-unsigned short stable_counter = 0;
-unsigned short sum_counter = 0;
 extern float last_output_n;
 extern float last_output_e;
 extern float temp_filter_lon;
 extern float temp_filter_lat;
+extern unsigned int temp_stable[100][2];
+unsigned int same_counter;
+unsigned char stable_flag = 0;
 
 extern unsigned int packages_to_be_unpacked_1[READ_MCU_AMOUNT];
 unsigned int proc_to_ctrl_package[PROC_MCU_SEND_AMOUNT] = {0};
@@ -114,13 +115,25 @@ void fusion_task(void *parameters) {
             uart3_sendbyte(proc_to_ctrl_package[i]);
         }
     }
-    sum_counter = 0;
-    stable_counter = 0;
-    while (stable_counter >= 50) {
-        if (sum_counter >= 100) {
-            sum_counter = 0;
-            stable_counter = 0;
+    stable_flag = 0;
+    while (stable_flag == 0) {
+        for (unsigned short i = 0; i < STABLE_NUM; i++) {
+            same_counter = 0;
+            for (unsigned short j = i + 1; j < STABLE_NUM; j++) {
+                if (temp_stable[j][0] == 0) {
+                    same_counter = 0;
+                    break;
+                }
+                if (temp_stable[i][0] == temp_stable[j][0] && temp_stable[i][1] == temp_stable[j][1]) {
+                    same_counter++;
+                }
+            }
+            if (same_counter > 40) {
+                stable_flag = 1;
+                break;
+            }
         }
+        delayms(200);
     }
     last_output_n = get_distance(QRIGIN_LAT, temp_filter_lon, temp_filter_lat, temp_filter_lon);
     last_output_e = get_distance(temp_filter_lat, QRIGIN_LON, temp_filter_lat, temp_filter_lon);

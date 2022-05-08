@@ -17,11 +17,9 @@
                                         (x) = *(p + comma_position[(num)-1]+1);
 extern CHELowPass filter_distance_n;
 extern CHELowPass filter_distance_e;
-extern unsigned short stable_counter;
-extern unsigned short sum_counter;
 
-unsigned int temp_stable_lon = 0;
-unsigned int temp_stable_lat = 0;
+unsigned int temp_stable[STABLE_NUM][2] = {0};
+static unsigned char sum_counter = 0;
 
 nmea_rmc gps_rmc = {0};
 float last_output_n = 4385.7630000f;    // 4385.7630000f, 39692.2030000f
@@ -252,11 +250,13 @@ void nmea_gnrmc_analysis(char *buffer) {
 //    neu.east_distance = che_low_pass(&filter_distance_e, neu.east_distance);    // 滤波
 
     // 检验GPS定位是否稳定
-    if ((temp_stable_lon == gps_rmc.longitude) && (temp_stable_lat == gps_rmc.latitude))
-        stable_counter++;
+    // 每次先出现一个数，如果它和之前的不等，就存入数组，如果和之前的相同，给对应的counter++
+
+    sum_counter %= STABLE_NUM;
+    temp_stable[sum_counter][0] = gps_rmc.longitude;
+    temp_stable[sum_counter][1] = gps_rmc.latitude;
     sum_counter++;
-    temp_stable_lon = gps_rmc.longitude;
-    temp_stable_lat = gps_rmc.latitude;
+
 #endif
 }
 

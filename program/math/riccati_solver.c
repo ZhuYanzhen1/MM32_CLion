@@ -79,68 +79,8 @@ void lqr_control(unsigned short index) {
     angle = (short) (150 + (control_val[1][0] + test_point[index][3]) * YAW_TO_ANGLE);
     if (angle > 195) {
         angle = 195;
-        if (index >= 100) {
-            while (1) {
-                speed = 0;
-                sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
-                uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
-                printf("------------Matrix a------------\r\n");
-                for (int counter1 = 0; counter1 < 3; ++counter1) {
-                    for (int counter2 = 0; counter2 < 3; ++counter2)
-                        printf("%.4f   ", a[counter1][counter2]);
-                    printf("\r\n");
-                    _fflush();
-                }
-                delayms(40);
-                printf("------------Matrix b------------\r\n");
-                for (int counter1 = 0; counter1 < 3; ++counter1) {
-                    for (int counter2 = 0; counter2 < 2; ++counter2)
-                        printf("%.4f   ", b[counter1][counter2]);
-                    printf("\r\n");
-                    _fflush();
-                }
-                delayms(40);
-                printf("------------Matrix control_val------------\r\n");
-                for (int counter1 = 0; counter1 < 2; ++counter1) {
-                    for (int counter2 = 0; counter2 < 1; ++counter2)
-                        printf("%f   ", p[counter1][counter2]);
-                    printf("\r\n");
-                }
-                delayms(1000);
-            }
-        }
     } else if (angle < 105) {
         angle = 105;
-        if (index >= 100) {
-            while (1) {
-                speed = 0;
-                sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
-                uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
-                printf("------------Matrix a------------\r\n");
-                for (int counter1 = 0; counter1 < 3; ++counter1) {
-                    for (int counter2 = 0; counter2 < 3; ++counter2)
-                        printf("%.4f   ", a[counter1][counter2]);
-                    printf("\r\n");
-                    _fflush();
-                }
-                delayms(40);
-                printf("------------Matrix b------------\r\n");
-                for (int counter1 = 0; counter1 < 3; ++counter1) {
-                    for (int counter2 = 0; counter2 < 2; ++counter2)
-                        printf("%.4f   ", b[counter1][counter2]);
-                    printf("\r\n");
-                    _fflush();
-                }
-                delayms(40);
-                printf("------------Matrix control_val------------\r\n");
-                for (int counter1 = 0; counter1 < 2; ++counter1) {
-                    for (int counter2 = 0; counter2 < 1; ++counter2)
-                        printf("%f   ", p[counter1][counter2]);
-                    printf("\r\n");
-                }
-                delayms(1000);
-            }
-        }
     }
 }
 /* 寻找点迹 */
@@ -186,14 +126,7 @@ float low_pass_filter_angle(float input, float last_output) {
 }
 
 /* 对轨迹进行滤波，使其更加平滑 */
-void low_pass_filter(unsigned short length) {
-    float a = 0.1f;
-    for (unsigned char i = 0; i < 2; i++) {
-        for (unsigned short j = 1; j < length; j++) {
-            reference_point[i][j] = a * reference_point[i][j] + (1 - a) * reference_point[i][j - 1];
-        }
-    }
-}
+
 
 float uabs(float value) {
     if (value < 0)
