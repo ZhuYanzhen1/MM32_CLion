@@ -246,16 +246,11 @@ void nmea_gnrmc_analysis(char *buffer) {
 
     last_output_n = neu.north_distance;
     last_output_e = neu.east_distance;
-//    neu.north_distance = che_low_pass(&filter_distance_n, neu.north_distance);   // 滤波
-//    neu.east_distance = che_low_pass(&filter_distance_e, neu.east_distance);    // 滤波
 
-    // 检验GPS定位是否稳定
-    // 每次先出现一个数，如果它和之前的不等，就存入数组，如果和之前的相同，给对应的counter++
-
-    sum_counter %= STABLE_NUM;
+    // 检验GPS定位是否稳定，存入环形缓冲区
     temp_stable[sum_counter][0] = gps_rmc.longitude;
     temp_stable[sum_counter][1] = gps_rmc.latitude;
-    sum_counter++;
+    sum_counter = (sum_counter + 1) % STABLE_NUM;
 
 #endif
 }

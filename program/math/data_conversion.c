@@ -68,6 +68,7 @@ void sensor_unit_conversion() {
     int v_decimal = num_times_nth_power_of_10(1, gps_rmc.decimal_places_speed);
     neu.v = KNOT_TO_M_S(temp_v / v_decimal);
 }
+
 /*
     \brief  The velocity obtained after Kalman filtering
             becomes the velocity in the northeast sky coordinate system
