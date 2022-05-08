@@ -63,14 +63,14 @@ int main(void) {
                     dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
                               (playground_ind + INDEX_OFFSET > INDEX_NUM) ? INDEX_NUM : (playground_ind
                                   + INDEX_OFFSET));
-                lqr_control(playground_ind + 2);
+                lqr_control(playground_ind + 3);
                 WRITE_REG(TIM3->CCR1, angle);
                 delayms(15);
             }
-            speed = 3000;
-            sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
-            uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
-            //            printf("%.3f, %.3f \r", proc_data.distance_north, proc_data.distance_east);
         }
+        speed = 3000;
+        sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
+        uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
+        printf("%.3f, %.3f \r\n", proc_data.distance_north, proc_data.distance_east);
     }
 }

@@ -63,11 +63,7 @@ float get_distance_m_lon(float lon) {
             longitude, velocity and acceleration into the international system of units
 */
 void sensor_unit_conversion() {
-
     neu.acceleration = MG_TO_M_S_2(small_packets.ay * FACTOR_ALLC_Y);   // 车头前进的方向时y的正方向
-
-
-
     float temp_v = (float) gps_rmc.speed_to_ground_section;
     int v_decimal = num_times_nth_power_of_10(1, gps_rmc.decimal_places_speed);
     neu.v = KNOT_TO_M_S(temp_v / v_decimal);

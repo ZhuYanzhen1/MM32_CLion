@@ -18,12 +18,14 @@
 extern CHELowPass filter_distance_n;
 extern CHELowPass filter_distance_e;
 
-float temp_dis_n = 0;
-float temp_dis_e = 0;
+unsigned int temp_stable[STABLE_NUM][2] = {0};
+static unsigned char sum_counter = 0;
 
 nmea_rmc gps_rmc = {0};
 float last_output_n = 4385.7630000f;    // 4385.7630000f, 39692.2030000f
 float last_output_e = 39692.2030000f;
+float temp_filter_lon = 0;
+float temp_filter_lat = 0;
 /*!
     \brief      Get the location of all commas in the gps packet at once
     \param[in]  buffer: Digital storage area
@@ -233,14 +235,11 @@ void nmea_gnrmc_analysis(char *buffer) {
 
     if (gps_rmc.status != 'A')
         return;
-    float temp_latitude = unit_to_degree(gps_rmc.latitude, 4);
-    float temp_lonitude = unit_to_degree(gps_rmc.longitude, 4);
+    temp_filter_lat = unit_to_degree(gps_rmc.latitude, 4);
+    temp_filter_lon = unit_to_degree(gps_rmc.longitude, 4);
 
-    neu.north_distance = get_distance(QRIGIN_LAT, temp_lonitude, temp_latitude, temp_lonitude);
-    neu.east_distance = get_distance(temp_latitude, QRIGIN_LON, temp_latitude, temp_lonitude);
-
-//    temp_dis_n = neu.north_distance;
-//    temp_dis_e = neu.east_distance;
+    neu.north_distance = get_distance(QRIGIN_LAT, temp_filter_lon, temp_filter_lat, temp_filter_lon);
+    neu.east_distance = get_distance(temp_filter_lat, QRIGIN_LON, temp_filter_lat, temp_filter_lon);
 
     neu.north_distance = rc_low_pass(neu.north_distance, last_output_n);
     neu.east_distance = rc_low_pass(neu.east_distance, last_output_e);
@@ -249,6 +248,15 @@ void nmea_gnrmc_analysis(char *buffer) {
     last_output_e = neu.east_distance;
 //    neu.north_distance = che_low_pass(&filter_distance_n, neu.north_distance);   // 滤波
 //    neu.east_distance = che_low_pass(&filter_distance_e, neu.east_distance);    // 滤波
+
+    // 检验GPS定位是否稳定
+    // 每次先出现一个数，如果它和之前的不等，就存入数组，如果和之前的相同，给对应的counter++
+
+    sum_counter %= STABLE_NUM;
+    temp_stable[sum_counter][0] = gps_rmc.longitude;
+    temp_stable[sum_counter][1] = gps_rmc.latitude;
+    sum_counter++;
+
 #endif
 }
 
