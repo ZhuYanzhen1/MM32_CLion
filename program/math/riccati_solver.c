@@ -6,6 +6,9 @@
 #include "qfplib.h"
 #include "sensor_decode.h"
 #include "delay.h"
+#include "sdtp_pack.h"
+#include "dma.h"
+#include "uart.h"
 #endif
 
 #define YAW_TO_ANGLE        (-63.66203f)     // 180/pi * (-50/45)
@@ -15,8 +18,11 @@
 #define _2PI_               (6.2831853f)
 
 #ifndef RUNNING_UNIT_TEST
+
+// 对电机和舵机的控制量
 extern volatile unsigned short speed;
 extern volatile short angle;
+extern unsigned int uart7_dma_send_buffer[UART7_DMA_SEND_BUFFER];
 
 float calculate_distance(int ind) {
     float distance = (qfp_fsqrt
@@ -31,7 +37,7 @@ static unsigned int last_global_time_stamp = 0;
 void lqr_control(unsigned short index) {
     if (last_global_time_stamp == 0)
         last_global_time_stamp = global_time_stamp - 20;
-    float v_r = 2, dt = (float) (global_time_stamp - last_global_time_stamp) * 0.001f, L = 0.28f;
+    float v_r = 2.5f, dt = (float) (global_time_stamp - last_global_time_stamp) * 0.001f, L = 0.28f;
     last_global_time_stamp = global_time_stamp;
 
     // 求位置、航向角的误差
@@ -71,10 +77,71 @@ void lqr_control(unsigned short index) {
     solve_feedback_value(p, a, b, x, r, control_val);
     //    speed = speed +control_val[0][0];
     angle = (short) (150 + (control_val[1][0] + test_point[index][3]) * YAW_TO_ANGLE);
-    if (angle > 195)
+    if (angle > 195) {
         angle = 195;
-    else if (angle < 105)
+        if (index >= 100) {
+            while (1) {
+                speed = 0;
+                sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
+                uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
+                printf("------------Matrix a------------\r\n");
+                for (int counter1 = 0; counter1 < 3; ++counter1) {
+                    for (int counter2 = 0; counter2 < 3; ++counter2)
+                        printf("%.4f   ", a[counter1][counter2]);
+                    printf("\r\n");
+                    _fflush();
+                }
+                delayms(40);
+                printf("------------Matrix b------------\r\n");
+                for (int counter1 = 0; counter1 < 3; ++counter1) {
+                    for (int counter2 = 0; counter2 < 2; ++counter2)
+                        printf("%.4f   ", b[counter1][counter2]);
+                    printf("\r\n");
+                    _fflush();
+                }
+                delayms(40);
+                printf("------------Matrix control_val------------\r\n");
+                for (int counter1 = 0; counter1 < 2; ++counter1) {
+                    for (int counter2 = 0; counter2 < 1; ++counter2)
+                        printf("%f   ", p[counter1][counter2]);
+                    printf("\r\n");
+                }
+                delayms(1000);
+            }
+        }
+    } else if (angle < 105) {
         angle = 105;
+        if (index >= 100) {
+            while (1) {
+                speed = 0;
+                sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
+                uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
+                printf("------------Matrix a------------\r\n");
+                for (int counter1 = 0; counter1 < 3; ++counter1) {
+                    for (int counter2 = 0; counter2 < 3; ++counter2)
+                        printf("%.4f   ", a[counter1][counter2]);
+                    printf("\r\n");
+                    _fflush();
+                }
+                delayms(40);
+                printf("------------Matrix b------------\r\n");
+                for (int counter1 = 0; counter1 < 3; ++counter1) {
+                    for (int counter2 = 0; counter2 < 2; ++counter2)
+                        printf("%.4f   ", b[counter1][counter2]);
+                    printf("\r\n");
+                    _fflush();
+                }
+                delayms(40);
+                printf("------------Matrix control_val------------\r\n");
+                for (int counter1 = 0; counter1 < 2; ++counter1) {
+                    for (int counter2 = 0; counter2 < 1; ++counter2)
+                        printf("%f   ", p[counter1][counter2]);
+                    printf("\r\n");
+                }
+                delayms(1000);
+            }
+        }
+    }
 }
 /* 寻找点迹 */
 int dichotomy(int ind_start, int ind_end) {
@@ -341,12 +408,12 @@ void solve_riccati_equation(float a[3][3], float b[3][2], float q, float r, floa
 #endif
 #endif
 #if OUTPUT_DEBUG_INFO == 1
-    w    printf("------------Matrix P------------\r\n");
-        for (int counter1 = 0; counter1 < 3; ++counter1) {
-            for (int counter2 = 0; counter2 < 3; ++counter2)
-                printf("%f   ", P[counter1][counter2]);
-            printf("\r\n");
-        }
+    printf("------------Matrix P------------\r\n");
+    for (int counter1 = 0; counter1 < 3; ++counter1) {
+        for (int counter2 = 0; counter2 < 3; ++counter2)
+            printf("%f   ", P[counter1][counter2]);
+        printf("\r\n");
+    }
 #endif
 }
 

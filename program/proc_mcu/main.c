@@ -8,8 +8,13 @@
 
 #include "main.h"
 
-extern float temp_dis_n;
-extern float temp_dis_e;
+// 检测gps稳定和与gps滤波有关的变量
+unsigned short stable_counter = 0;
+unsigned short sum_counter = 0;
+extern float last_output_n;
+extern float last_output_e;
+extern float temp_filter_lon;
+extern float temp_filter_lat;
 
 extern unsigned int packages_to_be_unpacked_1[READ_MCU_AMOUNT];
 unsigned int proc_to_ctrl_package[PROC_MCU_SEND_AMOUNT] = {0};
@@ -96,21 +101,34 @@ void initialize_task(void *parameters) {
 void fusion_task(void *parameters) {
     (void) parameters;
     kalman_config_v(&kalman_v);
-    kalman_config_distance(&kalman_distance_north, 4385.7630000f);
-    kalman_config_distance(&kalman_distance_earth, 39692.2030000f);
     create_che_low_pass_filter(0.5f, 10, 1, &filter_distance_n);
     create_che_low_pass_filter(0.5f, 10, 1, &filter_distance_e);
-    while (1) {
-        while (gps_rmc.status == 'V') {
-            delayms(20);
-            proc_to_ctrl_buffer[0] = 0;
-            proc_to_ctrl_buffer[1] = 0;
-            proc_to_ctrl_buffer[2] = 0;
-            precossing_proc_to_control(proc_to_ctrl_package, proc_to_ctrl_buffer);
-            for (unsigned char i = 0; i < PROC_MCU_SEND_AMOUNT; i++) {
-                uart3_sendbyte(proc_to_ctrl_package[i]);
-            }
+        status_V:
+    while (gps_rmc.status == 'V') {
+        delayms(20);
+        proc_to_ctrl_buffer[0] = 0;
+        proc_to_ctrl_buffer[1] = 0;
+        proc_to_ctrl_buffer[2] = 0;
+        precossing_proc_to_control(proc_to_ctrl_package, proc_to_ctrl_buffer);
+        for (unsigned char i = 0; i < PROC_MCU_SEND_AMOUNT; i++) {
+            uart3_sendbyte(proc_to_ctrl_package[i]);
         }
+    }
+    sum_counter = 0;
+    stable_counter = 0;
+    while (stable_counter >= 50) {
+        if (sum_counter >= 100) {
+            sum_counter = 0;
+            stable_counter = 0;
+        }
+    }
+    last_output_n = get_distance(QRIGIN_LAT, temp_filter_lon, temp_filter_lat, temp_filter_lon);
+    last_output_e = get_distance(temp_filter_lat, QRIGIN_LON, temp_filter_lat, temp_filter_lon);
+    kalman_config_distance(&kalman_distance_north, last_output_n);
+    kalman_config_distance(&kalman_distance_earth, last_output_e);
+    while (1) {
+        if (gps_rmc.status == 'V')
+            goto status_V;
         sensor_unit_conversion();
         kalman_data.v = kalman_update(&kalman_v, neu.v, neu.acceleration,
                                       0.021f);
