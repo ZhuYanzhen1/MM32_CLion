@@ -10,64 +10,69 @@
 #include "../ctrl_mcu/pin.h"
 
 void CH375_WR_CMD_PORT(unsigned char cmd) {                 /* 向CH375的命令端口写入命令,周期不小于4uS,如果单片机较快则延时 */
+    ch372c_gpio_output();
     for (unsigned char counter = 0; counter < 8; ++counter)
         GPIO_WriteBit(GPIOF, 1 << (3 + counter), (cmd & (1 << counter)) >> counter);
     GPIO_SetBits(CH372_A0_PORT, CH372_A0_PIN);
     GPIO_SetBits(CH372_RD_PORT, CH372_RD_PIN);
-    GPIO_ResetBits(CH372_CS_PORT, CH372_CS_PIN);
     GPIO_ResetBits(CH372_WR_PORT, CH372_WR_PIN);
     delayus(1);
-    GPIO_SetBits(CH372_CS_PORT, CH372_CS_PIN);
     GPIO_SetBits(CH372_WR_PORT, CH372_WR_PIN);
+    GPIO_SetBits(GPIOF, 0x07f8);
+    delayus(6);
+}
+
+void CH375_WR_DAT_PORT(unsigned char dat) {                 /* 向CH375的数据端口写入数据,周期不小于1.5uS,如果单片机较快则延时 */
+    ch372c_gpio_output();
+    for (unsigned char counter = 0; counter < 8; ++counter)
+        GPIO_WriteBit(GPIOF, (1 << (3 + counter)), (dat & (1 << counter)) >> counter);
+    GPIO_ResetBits(CH372_A0_PORT, CH372_A0_PIN);
+    GPIO_SetBits(CH372_RD_PORT, CH372_RD_PIN);
+    GPIO_ResetBits(CH372_WR_PORT, CH372_WR_PIN);
+    delayus(1);
+    GPIO_SetBits(CH372_WR_PORT, CH372_WR_PIN);
+    GPIO_SetBits(CH372_A0_PORT, CH372_A0_PIN);
     GPIO_SetBits(GPIOF, 0x07f8);
     delayus(4);
 }
 
-void CH375_WR_DAT_PORT(unsigned char dat) {                 /* 向CH375的数据端口写入数据,周期不小于1.5uS,如果单片机较快则延时 */
-    for (unsigned char counter = 0; counter < 8; ++counter)
-        GPIO_WriteBit(GPIOF, (1 << (3 + counter)), (dat & (1 << counter)) >> counter);
-    GPIO_SetBits(CH372_RD_PORT, CH372_RD_PIN);
-    GPIO_ResetBits(CH372_A0_PORT, CH372_A0_PIN);
-    GPIO_ResetBits(CH372_CS_PORT, CH372_CS_PIN);
-    GPIO_ResetBits(CH372_WR_PORT, CH372_WR_PIN);
-    delayus(1);
-    GPIO_SetBits(CH372_A0_PORT, CH372_A0_PIN);
-    GPIO_SetBits(CH372_CS_PORT, CH372_CS_PIN);
-    GPIO_SetBits(CH372_WR_PORT, CH372_WR_PIN);
-    GPIO_SetBits(GPIOF, 0x07f8);
-    delayus(2);
-}
-
-unsigned char CH375_RD_DAT_PORT() {                        /* 从CH375的数据端口读出数据,周期不小于1.5uS,如果单片机较快则延时 */
+unsigned char CH375_RD_DAT_PORT(void) {                        /* 从CH375的数据端口读出数据,周期不小于1.5uS,如果单片机较快则延时 */
     unsigned char result;
+    ch372c_gpio_input();
+    GPIO_ResetBits(CH372_A0_PORT, CH372_A0_PIN);
     GPIO_SetBits(CH372_WR_PORT, CH372_WR_PIN);
     GPIO_ResetBits(CH372_RD_PORT, CH372_RD_PIN);
-    GPIO_ResetBits(CH372_A0_PORT, CH372_A0_PIN);
-    GPIO_ResetBits(CH372_CS_PORT, CH372_CS_PIN);
     delayus(1);
     result = (GPIOF->IDR & 0x07f8) >> 3;
-    GPIO_SetBits(CH372_A0_PORT, CH372_A0_PIN);
-    GPIO_SetBits(CH372_CS_PORT, CH372_CS_PIN);
     GPIO_SetBits(CH372_RD_PORT, CH372_RD_PIN);
-    delayus(2);
+    GPIO_SetBits(CH372_A0_PORT, CH372_A0_PIN);
+    delayus(4);
     return result;
 }
 
 void ch372_config(void) {
-    unsigned char i;
+    static volatile unsigned char i = 0, uid_ver = 0;
     ch372c_gpio_config();
     /* 设置USB工作模式, 必要操作 */
+    GPIO_ResetBits(CH372_CS_PORT, CH372_CS_PIN);
+    delayms(1);
+    CH375_WR_CMD_PORT(CMD_RESET_ALL);
+    delayms(100);
+
+    CH375_WR_CMD_PORT(CMD_GET_IC_VER);
+    uid_ver = CH375_RD_DAT_PORT();
+
     CH375_WR_CMD_PORT(CMD_SET_USB_MODE);
     CH375_WR_DAT_PORT(1);                                    /* 设置为使用内置固件的USB设备方式 */
-    delayus(2);
+    delayus(20);
     for (i = 0xff; i != 0; i--)                /* 等待操作成功,通常需要等待10uS-20uS */
     {
-        delayus(1);
+        delayus(5);
         if (CH375_RD_DAT_PORT() == CMD_RET_SUCCESS)
             break;
     }
-    if (i == 0)
-        while (1);
+    (void) uid_ver;
+    while (1);
 }
 
 //void ch372_interrupt_callback(void) {
