@@ -29,6 +29,24 @@ void tim3_pwm_gpio_config(void) {
     GPIO_ResetBits(GPIOB, GPIO_Pin_4);
 }
 
+void ch372c_gpio_input(void) {
+    GPIO_InitTypeDef GPIO_InitStruct;
+    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6
+        | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10;
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_FLOATING;
+    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(GPIOF, &GPIO_InitStruct);
+}
+
+void ch372c_gpio_output(void) {
+    GPIO_InitTypeDef GPIO_InitStruct;
+    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6
+        | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10;
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(GPIOF, &GPIO_InitStruct);
+}
+
 void ch372c_gpio_config(void) {
     GPIO_InitTypeDef GPIO_InitStruct;
     NVIC_InitTypeDef NVIC_InitStruct;
@@ -50,7 +68,7 @@ void ch372c_gpio_config(void) {
 
     GPIO_InitStruct.GPIO_Pin = GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6
         | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10;
-    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_OD;
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
     GPIO_Init(GPIOF, &GPIO_InitStruct);
 
     GPIO_SetBits(CH372_RD_PORT, CH372_RD_PIN);

@@ -58,7 +58,7 @@ int main(void) {
     fs_get_free("0:");
     fs_scan_files("0:");
 
-//    ch372_config();
+    ch372_config();
 
     while (1) {
         LED1_TOGGLE();

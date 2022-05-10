@@ -14,8 +14,6 @@ extern float last_output_e;
 extern float temp_filter_lon;
 extern float temp_filter_lat;
 extern unsigned int temp_stable[100][2];
-unsigned int same_counter;
-unsigned char stable_flag = 0;
 
 extern unsigned int packages_to_be_unpacked_1[READ_MCU_AMOUNT];
 unsigned int proc_to_ctrl_package[PROC_MCU_SEND_AMOUNT] = {0};
@@ -27,8 +25,6 @@ kalman_data_t kalman_data = {0};
 kalman_filter_t kalman_v = {0};
 kalman_filter_t kalman_distance_north = {0};
 kalman_filter_t kalman_distance_earth = {0};
-CHELowPass filter_distance_n = {0};
-CHELowPass filter_distance_e = {0};
 
 //////////////////////////////////// Task Handler ////////////////////////////////////
 TaskHandle_t led_taskhandler;
@@ -102,8 +98,6 @@ void initialize_task(void *parameters) {
 void fusion_task(void *parameters) {
     (void) parameters;
     kalman_config_v(&kalman_v);
-    create_che_low_pass_filter(0.5f, 10, 1, &filter_distance_n);
-    create_che_low_pass_filter(0.5f, 10, 1, &filter_distance_e);
         status_V:
     while (gps_rmc.status == 'V') {
         delayms(20);
@@ -115,18 +109,15 @@ void fusion_task(void *parameters) {
             uart3_sendbyte(proc_to_ctrl_package[i]);
         }
     }
-    stable_flag = 0;
+    unsigned char stable_flag = 0;
     while (stable_flag == 0) {
         for (unsigned short i = 0; i < STABLE_NUM; i++) {
-            same_counter = 0;
+            unsigned int same_counter = 0;
             for (unsigned short j = i + 1; j < STABLE_NUM; j++) {
-                if (temp_stable[j][0] == 0) {
-                    same_counter = 0;
+                if (temp_stable[j][0] == 0)
                     break;
-                }
-                if (temp_stable[i][0] == temp_stable[j][0] && temp_stable[i][1] == temp_stable[j][1]) {
+                if (temp_stable[i][0] == temp_stable[j][0] && temp_stable[i][1] == temp_stable[j][1])
                     same_counter++;
-                }
             }
             if (same_counter > 40) {
                 stable_flag = 1;
@@ -139,31 +130,27 @@ void fusion_task(void *parameters) {
     last_output_e = get_distance(temp_filter_lat, QRIGIN_LON, temp_filter_lat, temp_filter_lon);
     kalman_config_distance(&kalman_distance_north, last_output_n);
     kalman_config_distance(&kalman_distance_earth, last_output_e);
+    unsigned int last_glbal_time_stamp = global_time_stamp - 21;
     while (1) {
+        float dt = (float) (global_time_stamp - last_glbal_time_stamp) * 0.001f;
         if (gps_rmc.status == 'V')
             goto status_V;
         sensor_unit_conversion();
-        kalman_data.v = kalman_update(&kalman_v, neu.v, neu.acceleration,
-                                      0.021f);
+        kalman_data.v = kalman_update(&kalman_v, neu.v, neu.acceleration, dt);
         coordinate_system_transformation_kalman_v(small_packets.chebyshev_north);
         kalman_data.distance_north = kalman_update(&kalman_distance_north, neu.north_distance,
-                                                   neu.north_v, 0.021f);
+                                                   neu.north_v, dt);
         kalman_data.distance_east = kalman_update(&kalman_distance_earth, neu.east_distance,
-                                                  neu.east_v, 0.021f);
+                                                  neu.east_v, dt);
 
         proc_to_ctrl_buffer[0] = *((unsigned int *) (&kalman_data.distance_north));
         proc_to_ctrl_buffer[1] = *((unsigned int *) (&kalman_data.distance_east));
         proc_to_ctrl_buffer[2] = *((unsigned int *) (&small_packets.chebyshev_north));
         precossing_proc_to_control(proc_to_ctrl_package, proc_to_ctrl_buffer);
-        for (unsigned char i = 0; i < PROC_MCU_SEND_AMOUNT; i++) {
+        for (unsigned char i = 0; i < PROC_MCU_SEND_AMOUNT; i++)
             uart3_sendbyte(proc_to_ctrl_package[i]);
-        }
 
         delayms(20);
-//        static int mag_x_old = z
-//        if (debug_data.mag_x != mag_x_old)
-
-//        mag_x_old = debug_data.   mag_x;
     }
 }
 
@@ -248,7 +235,6 @@ void ledblink_task(void *parameters) {
     (void) parameters;
     while (1) {
         LED1_TOGGLE();
-        printf("%.4f ,%.4f \r ", kalman_data.distance_north, kalman_data.distance_east);
         delayms(500);
     }
 }
