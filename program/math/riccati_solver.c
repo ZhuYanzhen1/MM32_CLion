@@ -2,12 +2,9 @@
 #include "test.h"
 
 #ifndef RUNNING_UNIT_TEST
-#include "printf.h"
 #include "qfplib.h"
 #include "sensor_decode.h"
 #include "delay.h"
-#include "sdtp_pack.h"
-#include "dma.h"
 #include "uart.h"
 #endif
 
@@ -24,6 +21,10 @@ extern volatile unsigned short speed;
 extern volatile short angle;
 extern unsigned int uart7_dma_send_buffer[UART7_DMA_SEND_BUFFER];
 
+// 测试
+extern unsigned short temp_angle[3000];
+extern unsigned short angle_counter;
+
 float calculate_distance(int ind) {
     float distance = (qfp_fsqrt
         ((test_point[ind][0] - proc_data.distance_north)
@@ -32,13 +33,14 @@ float calculate_distance(int ind) {
                  (test_point[ind][1] - proc_data.distance_east)));
     return distance;
 }
-
+float lqr_time = 0;
 static unsigned int last_global_time_stamp = 0;
 void lqr_control(unsigned short index) {
     if (last_global_time_stamp == 0)
         last_global_time_stamp = global_time_stamp - 20;
     float v_r = 2.5f, dt = (float) (global_time_stamp - last_global_time_stamp) * 0.001f, L = 0.28f;
     last_global_time_stamp = global_time_stamp;
+    lqr_time = dt;
 
     // 求位置、航向角的误差
     float yaw_temp = (proc_data.north_angle < 180) ? proc_data.north_angle : (proc_data.north_angle - 360);
@@ -82,6 +84,8 @@ void lqr_control(unsigned short index) {
     } else if (angle < 105) {
         angle = 105;
     }
+    temp_angle[angle_counter] = angle;
+    angle_counter++;
 }
 /* 寻找点迹 */
 int dichotomy(int ind_start, int ind_end) {
@@ -124,9 +128,6 @@ float low_pass_filter_angle(float input, float last_output) {
     float a = 0.1f;
     return (a * input + (1 - a) * last_output);
 }
-
-/* 对轨迹进行滤波，使其更加平滑 */
-
 
 float uabs(float value) {
     if (value < 0)
