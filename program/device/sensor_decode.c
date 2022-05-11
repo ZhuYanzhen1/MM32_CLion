@@ -9,9 +9,11 @@
 #include "sensor_decode.h"
 #include "verification.h"
 
+decode_fixed_sum small_packets_sum = {0};
 decode_fixed small_packets = {0};
 decode_debug debug_data = {0};
 decode_proc proc_data = {0};
+unsigned char lqr_flag = 0;
 
 /*!
     \brief      Packets with fixed data length
@@ -60,6 +62,7 @@ void unpacking_proc_to_control(unsigned int packets[PROC_MCU_SEND_AMOUNT - 2]) {
     DECODE_TO_FLOAT(proc_data.north_angle, 8)
 //    unsigned int tmp_float_int = *((unsigned int *) (&a));
 //    float a = *((float *) (&tmp_float_int));
+    lqr_flag = 1;
 }
 
 /*!
@@ -92,6 +95,11 @@ void unpacking_fixed_length_data(unsigned int packets[10]) {
     small_packets.chebyshev_north = (small_packets.chebyshev_north > 360.0f) ? (small_packets.chebyshev_north - 360)
                                                                              : small_packets.chebyshev_north;
 
+//    small_packets_sum.ax += small_packets.ax;  没用到
+    small_packets_sum.ay += small_packets.ay;
+//    small_packets_sum.az += small_packets.az;  没用到
+    // 角度应该得处理一下，不能直接加把
+    small_packets_sum.num++;
 }
 
 /*!

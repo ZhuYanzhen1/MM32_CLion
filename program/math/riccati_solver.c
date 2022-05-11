@@ -16,6 +16,7 @@
 
 #ifndef RUNNING_UNIT_TEST
 
+extern unsigned char lqr_flag;
 // 对电机和舵机的控制量
 extern volatile unsigned short speed;
 extern volatile short angle;
@@ -33,14 +34,13 @@ float calculate_distance(int ind) {
                  (test_point[ind][1] - proc_data.distance_east)));
     return distance;
 }
-float lqr_time = 0;
+
 static unsigned int last_global_time_stamp = 0;
 void lqr_control(unsigned short index) {
     if (last_global_time_stamp == 0)
         last_global_time_stamp = global_time_stamp - 20;
     float v_r = 2.5f, dt = (float) (global_time_stamp - last_global_time_stamp) * 0.001f, L = 0.28f;
     last_global_time_stamp = global_time_stamp;
-    lqr_time = dt;
 
     // 求位置、航向角的误差
     float yaw_temp = (proc_data.north_angle < 180) ? proc_data.north_angle : (proc_data.north_angle - 360);

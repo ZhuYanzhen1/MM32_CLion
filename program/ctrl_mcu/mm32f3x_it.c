@@ -56,7 +56,6 @@ void DMA1_Channel1_IRQHandler(void) {
     if (DMA_GetITStatus(DMA1_IT_TC1)) {
         /* Clear all interrupt flags */
         DMA_ClearITPendingBit(DMA1_IT_TC1);
-
         /* Double ping pong buffer */
         if (uart6_free_buffer_no == buffer_no_1) {
             uart6_dma_set_transmit_buffer(uart6_dma_buffer_2, CTRL_MCU_RECEIVE_AMOUNT);

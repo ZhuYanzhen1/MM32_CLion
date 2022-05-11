@@ -17,6 +17,9 @@
 extern kalman_data_t kalman_data;
 
 neu_infomation neu = {0};
+float rc_a_n = 0;
+float rc_a_e = 0;
+float k_rc_a = 0.1f;
 
 /*!
     \brief      Get the distance based on the latitude and longitude of the starting point
@@ -63,10 +66,14 @@ float get_distance_m_lon(float lon) {
             longitude, velocity and acceleration into the international system of units
 */
 void sensor_unit_conversion() {
-    neu.acceleration = MG_TO_M_S_2(small_packets.ay * FACTOR_ALLC_Y);   // 车头前进的方向时y的正方向
+    small_packets_sum.ay /= (float) small_packets_sum.num;
+
+    neu.acceleration = MG_TO_M_S_2(small_packets_sum.ay * FACTOR_ALLC_Y);   // 车头前进的方向时y的正方向
     float temp_v = (float) gps_rmc.speed_to_ground_section;
     int v_decimal = num_times_nth_power_of_10(1, gps_rmc.decimal_places_speed);
     neu.v = KNOT_TO_M_S(temp_v / v_decimal);
+    small_packets_sum.num = 0;
+    small_packets_sum.ay = 0;
 }
 
 /*
@@ -77,4 +84,8 @@ void coordinate_system_transformation_kalman_v(float delta) {
     float temp_delta = GEO_ANGLE(delta);
     neu.north_v = kalman_data.v * qfp_fcos(temp_delta);
     neu.east_v = kalman_data.v * qfp_fsin(temp_delta);
+
+    rc_a_n = k_rc_a * neu.north_v;
+    rc_a_e = k_rc_a * neu.east_v;
+
 }

@@ -11,7 +11,7 @@
 
 #define READ_MCU_AMOUNT         96
 #define PROC_MCU_SEND_AMOUNT    16
-#define CTRL_MCU_RECEIVE_AMOUNT 48
+#define CTRL_MCU_RECEIVE_AMOUNT 16
 #define SHORT_SPLIT_CHAR(x, y)  packets[x] = ((buffer[y] & 0x0000ff00) >> 8);\
                                 packets[(x)+1] = (buffer[y] & 0x000000ff);
 #define INT_SPLIT_CHAR(x, y)    packets[x] = ((buffer[y] & 0x00ff0000) >> 16);\
@@ -47,6 +47,16 @@ typedef struct {
 } decode_fixed;
 
 typedef struct {
+    float north;
+    float chebyshev_north;
+    float ax;
+    float ay;
+    float az;
+    short checksum;
+    short num;  // 接收的数量
+} decode_fixed_sum;
+
+typedef struct {
     int mag_x;
     int mag_y;
     int mag_z;
@@ -75,6 +85,7 @@ typedef struct {
     short checksum;
 } decode_proc;
 
+extern decode_fixed_sum small_packets_sum;
 extern decode_fixed small_packets;
 extern decode_debug debug_data;
 extern decode_proc proc_data;

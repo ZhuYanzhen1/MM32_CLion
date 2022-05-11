@@ -45,7 +45,6 @@ float che_low_pass(CHELowPass *filter, float x) {
     return x * filter->ep;
 }
 
-float a = 0.3f;
-float rc_low_pass(float input, float last_output) {
+float rc_low_pass(float input, float last_output, float a) {
     return a * input + (1 - a) * last_output;
 }

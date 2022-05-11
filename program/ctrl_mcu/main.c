@@ -10,7 +10,7 @@
 
 #define INDEX_NUM   88
 
-extern float lqr_time;
+extern unsigned char lqr_flag;
 
 FATFS filesystem;
 volatile short angle = 150;
@@ -58,28 +58,31 @@ int main(void) {
     fs_get_free("0:");
     fs_scan_files("0:");
 
-    ch372_config();
+//    ch372_config();
 
     while (1) {
         LED1_TOGGLE();
         if (proc_data.distance_east != 0) {
-            for (unsigned char j = 0; j < 20; j++) {
-                for (unsigned char i = 0; i < 20; i++) {
-                    playground_ind =
-                        dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
-                                  (playground_ind + INDEX_OFFSET > INDEX_NUM) ? INDEX_NUM : (playground_ind
-                                      + INDEX_OFFSET));
-                    lqr_control(playground_ind + 5);
-                    WRITE_REG(TIM3->CCR1, angle);
-                    delayms(20);
+            for (unsigned char i = 0; i < 20; i++) {
+                while (1) {
+                    if (lqr_flag == 1) {
+                        lqr_flag = 0;
+                        playground_ind =
+                            dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
+                                      (playground_ind + INDEX_OFFSET > INDEX_NUM) ? INDEX_NUM : (playground_ind
+                                          + INDEX_OFFSET));
+                        lqr_control(playground_ind + 5);
+                        WRITE_REG(TIM3->CCR1, angle);
+                        break;
+                    }
                 }
-                speed = 3000;
-                sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
-                uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
-                printf("%.3f, %.3f , \r\n", proc_data.distance_north, proc_data.distance_east);
             }
-            printf(", %.3f , \r\n", lqr_time);
+            speed = 3000;
+            sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
+            uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
+            printf("%.3f, %.3f , \r\n", proc_data.distance_north, proc_data.distance_east);
         }
+
 //        if (playground_ind > INDEX_NUM - 10 || angle_counter > 500) {
 //
 //            for (unsigned short i = 0; i < 500; i++) {
