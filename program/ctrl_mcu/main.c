@@ -8,9 +8,13 @@
 
 #include "main.h"
 
-#define INDEX_NUM   88
+#define INDEX_NUM   747
 
-extern unsigned char lqr_flag;
+float east_error[1000] = {0};
+float servo_angle[1000] = {0};
+unsigned short time_counter = 0;
+
+extern volatile unsigned char lqr_flag;
 
 FATFS filesystem;
 volatile short angle = 150;
@@ -22,9 +26,6 @@ extern unsigned int uart6_dma_buffer_1[CTRL_MCU_RECEIVE_AMOUNT];
 extern unsigned int uart6_dma_buffer_2[CTRL_MCU_RECEIVE_AMOUNT];
 
 unsigned int uart7_dma_send_buffer[UART7_DMA_SEND_BUFFER] = {0};
-
-unsigned short temp_angle[700] = {0};
-unsigned short angle_counter = 0;
 
 int main(void) {
     delay_config();
@@ -83,14 +84,13 @@ int main(void) {
             printf("%.3f, %.3f , \r\n", proc_data.distance_north, proc_data.distance_east);
         }
 
-//        if (playground_ind > INDEX_NUM - 10 || angle_counter > 500) {
-//
-//            for (unsigned short i = 0; i < 500; i++) {
+//        if (playground_ind > INDEX_NUM - 10 || time_counter > 800) {
+//            for (unsigned short i = 0; i < 800; i++) {
 //                speed = 0;
 //                sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
 //                uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
-//                printf("%d \r\n", temp_angle[i]);
-//                delayms(200);
+//                printf("%.2f, %.2f\r\n", servo_angle[i], east_error[i]);
+//                delayms(50);
 //            }
 //            while (1);
 //        }

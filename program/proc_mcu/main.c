@@ -236,6 +236,11 @@ void ledblink_task(void *parameters) {
     while (1) {
         LED1_TOGGLE();
         delayms(500);
+        printf("%.4f ,%.4f ,%.4f ,%.4f ,\r\n",
+               neu.north_distance,
+               neu.east_distance,
+               kalman_data.distance_north,
+               kalman_data.distance_east);
     }
 }
 #endif  // USE_FREERTOS_REPORT == 1

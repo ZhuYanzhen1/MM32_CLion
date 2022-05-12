@@ -16,15 +16,10 @@
 
 #ifndef RUNNING_UNIT_TEST
 
-extern unsigned char lqr_flag;
 // 对电机和舵机的控制量
 extern volatile unsigned short speed;
 extern volatile short angle;
 extern unsigned int uart7_dma_send_buffer[UART7_DMA_SEND_BUFFER];
-
-// 测试
-extern unsigned short temp_angle[3000];
-extern unsigned short angle_counter;
 
 float calculate_distance(int ind) {
     float distance = (qfp_fsqrt
@@ -34,6 +29,10 @@ float calculate_distance(int ind) {
                  (test_point[ind][1] - proc_data.distance_east)));
     return distance;
 }
+
+extern float east_error[1000];
+extern float servo_angle[1000];
+extern unsigned short time_counter;
 
 static unsigned int last_global_time_stamp = 0;
 void lqr_control(unsigned short index) {
@@ -84,8 +83,9 @@ void lqr_control(unsigned short index) {
     } else if (angle < 105) {
         angle = 105;
     }
-    temp_angle[angle_counter] = angle;
-    angle_counter++;
+//    servo_angle[time_counter] = control_val[1][0] + test_point[index][3];
+//    east_error[time_counter] = y_error;
+//    time_counter++;
 }
 /* 寻找点迹 */
 int dichotomy(int ind_start, int ind_end) {
