@@ -33,6 +33,8 @@ float calculate_distance(int ind) {
 extern float east_error[1000];
 extern float servo_angle[1000];
 extern unsigned short time_counter;
+float last_yaw_error = 0;
+float k_d = 0.2f;
 
 static unsigned int last_global_time_stamp = 0;
 void lqr_control(unsigned short index) {
@@ -77,12 +79,14 @@ void lqr_control(unsigned short index) {
     solve_riccati_equation(a, b, q, r, p);
     solve_feedback_value(p, a, b, x, r, control_val);
     //    speed = speed +control_val[0][0];
-    angle = (short) (150 + (control_val[1][0] + test_point[index][3]) * YAW_TO_ANGLE);
+    angle =
+        (short) (150 + (control_val[1][0] + test_point[index][3] + k_d * (yaw_error - last_yaw_error)) * YAW_TO_ANGLE);
     if (angle > 195) {
         angle = 195;
     } else if (angle < 105) {
         angle = 105;
     }
+    last_yaw_error = yaw_error;
 //    servo_angle[time_counter] = control_val[1][0] + test_point[index][3];
 //    east_error[time_counter] = y_error;
 //    time_counter++;
