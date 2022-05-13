@@ -30,12 +30,9 @@ float calculate_distance(int ind) {
     return distance;
 }
 
-extern float east_error[1000];
-extern float servo_angle[1000];
-extern unsigned short time_counter;
 float last_yaw_error = 0;
 float k_d = 0.1f;
-
+static float last_delta = 0;
 static unsigned int last_global_time_stamp = 0;
 void lqr_control(unsigned short index) {
     if (last_global_time_stamp == 0)
@@ -44,13 +41,12 @@ void lqr_control(unsigned short index) {
     last_global_time_stamp = global_time_stamp;
 
     // 求位置、航向角的误差
+    proc_data.north_angle = proc_data.north_angle - last_delta * 0.01f;
     float yaw_temp = (proc_data.north_angle < 180) ? proc_data.north_angle : (proc_data.north_angle - 360);
     yaw_temp *= ANGLE_TO_RADIAN;
 
     float x_error = proc_data.distance_north - test_point[index][0];
     float y_error = proc_data.distance_east - test_point[index][1];
-    x_error *= 0.8f;
-    y_error *= 0.8f;
     float yaw_error = yaw_temp - test_point[index][2];
     if (yaw_error > 3.14)
         yaw_error -= _2PI_;
@@ -82,18 +78,14 @@ void lqr_control(unsigned short index) {
     solve_riccati_equation(a, b, q, r, p);
     solve_feedback_value(p, a, b, x, r, control_val);
     //    speed = speed +control_val[0][0];
-    angle =
-        (short) (150 + (control_val[1][0] + test_point[index][3] + k_d * (yaw_error - last_yaw_error)) * YAW_TO_ANGLE);
+    last_delta = control_val[1][0] + test_point[index][3] + k_d * (yaw_error - last_yaw_error);
+    angle = (short) (150 + last_delta * YAW_TO_ANGLE);
     //        (short) (150 + (control_val[1][0] + test_point[index][3]) * YAW_TO_ANGLE);
-    if (angle > 195) {
+    if (angle > 195)
         angle = 195;
-    } else if (angle < 105) {
+    else if (angle < 105)
         angle = 105;
-    }
     last_yaw_error = yaw_error;
-//    servo_angle[time_counter] = control_val[1][0] + test_point[index][3];
-//    east_error[time_counter] = y_error;
-//    time_counter++;
 }
 /* 寻找点迹 */
 int dichotomy(int ind_start, int ind_end) {

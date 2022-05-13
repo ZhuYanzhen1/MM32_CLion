@@ -8,10 +8,6 @@
 
 #include "main.h"
 
-// 测量卡尔曼融合的时滞
-extern float test_neu_n;
-extern float test_neu_e;
-
 // 检测gps稳定和与gps滤波有关的变量
 extern float last_output_n;
 extern float last_output_e;
@@ -85,9 +81,6 @@ void initialize_task(void *parameters) {
 
     timer2_config();
 
-//    xpt2046_calibrate();
-//    at24c02_saveparams();
-
     xTaskCreate(fusion_task, "sensor_fusion", 1024, NULL, 4,
                 &fusion_taskhandler);
     xTaskCreate(ledblink_task, "led_blink", 1024, NULL, 2,
@@ -123,7 +116,7 @@ void fusion_task(void *parameters) {
                 if (temp_stable[i][0] == temp_stable[j][0] && temp_stable[i][1] == temp_stable[j][1])
                     same_counter++;
             }
-            if (same_counter > 40) {
+            if (same_counter > 30) {
                 stable_flag = 1;
                 break;
             }
@@ -147,14 +140,17 @@ void fusion_task(void *parameters) {
         kalman_data.distance_east = kalman_update(&kalman_distance_earth, neu.east_distance,
                                                   neu.east_v, dt);
 
-        proc_to_ctrl_buffer[0] = *((unsigned int *) (&kalman_data.distance_north));
-        proc_to_ctrl_buffer[1] = *((unsigned int *) (&kalman_data.distance_east));
+        float predict_north = kalman_data.distance_north + 0.01f * neu.north_v;
+        float predict_east = kalman_data.distance_east + 0.01f * neu.east_v;
+        proc_to_ctrl_buffer[0] = *((unsigned int *) (&predict_north));
+        proc_to_ctrl_buffer[1] = *((unsigned int *) (&predict_east));
         proc_to_ctrl_buffer[2] = *((unsigned int *) (&small_packets.chebyshev_north));
         precossing_proc_to_control(proc_to_ctrl_package, proc_to_ctrl_buffer);
         for (unsigned char i = 0; i < PROC_MCU_SEND_AMOUNT; i++)
             uart3_sendbyte(proc_to_ctrl_package[i]);
 
-        delayms(20);
+        printf("%.2f\r\n", kalman_data.v);
+        delayms(19);
     }
 }
 
@@ -240,13 +236,6 @@ void ledblink_task(void *parameters) {
     while (1) {
         LED1_TOGGLE();
         delayms(200);
-        printf("%.4f ,%.4f ,%.4f ,%.4f ,%.4f ,%.4f , \r\n",
-               test_neu_n,
-               test_neu_e,
-               neu.north_distance,
-               neu.east_distance,
-               kalman_data.distance_north,
-               kalman_data.distance_east);
     }
 }
 #endif  // USE_FREERTOS_REPORT == 1
