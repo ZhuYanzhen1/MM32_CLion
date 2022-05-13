@@ -16,6 +16,10 @@
 #define STRING_TO_STR(x, num)       if (comma_position[(num)-1]!=0) \
                                         (x) = *(p + comma_position[(num)-1]+1);
 
+// 测试
+float test_neu_n = 0;
+float test_neu_e = 0;
+
 // 平稳
 unsigned int temp_stable[STABLE_NUM][2] = {0};
 static unsigned char sum_counter = 0;
@@ -244,6 +248,9 @@ void nmea_gnrmc_analysis(char *buffer) {
 
     neu.north_distance = get_distance(QRIGIN_LAT, temp_filter_lon, temp_filter_lat, temp_filter_lon);
     neu.east_distance = get_distance(temp_filter_lat, QRIGIN_LON, temp_filter_lat, temp_filter_lon);
+
+    test_neu_n = neu.north_distance;
+    test_neu_e = neu.east_distance;
 
     neu.north_distance = rc_low_pass(neu.north_distance, last_output_n, rc_a_n);
     neu.east_distance = rc_low_pass(neu.east_distance, last_output_e, rc_a_e);

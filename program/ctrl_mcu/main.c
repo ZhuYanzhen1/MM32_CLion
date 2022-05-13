@@ -78,7 +78,7 @@ int main(void) {
                     }
                 }
             }
-            speed = 3000;
+            speed = 6000n;
             sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
             uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
             printf("%.3f, %.3f , \r\n", proc_data.distance_north, proc_data.distance_east);

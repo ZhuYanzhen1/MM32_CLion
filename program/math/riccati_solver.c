@@ -34,7 +34,7 @@ extern float east_error[1000];
 extern float servo_angle[1000];
 extern unsigned short time_counter;
 float last_yaw_error = 0;
-float k_d = 0.2f;
+float k_d = 0.1f;
 
 static unsigned int last_global_time_stamp = 0;
 void lqr_control(unsigned short index) {
@@ -49,11 +49,14 @@ void lqr_control(unsigned short index) {
 
     float x_error = proc_data.distance_north - test_point[index][0];
     float y_error = proc_data.distance_east - test_point[index][1];
+    x_error *= 0.8f;
+    y_error *= 0.8f;
     float yaw_error = yaw_temp - test_point[index][2];
     if (yaw_error > 3.14)
         yaw_error -= _2PI_;
     else if (yaw_error < -3.14)
         yaw_error += _2PI_;
+//    yaw_error *= 1.2f;
 
 //     计算横向误差
 //    float lateral_error = y_error * qfp_fcos(test_point[index][2]) - x_error * qfp_fsin(test_point[index][2]);
@@ -81,6 +84,7 @@ void lqr_control(unsigned short index) {
     //    speed = speed +control_val[0][0];
     angle =
         (short) (150 + (control_val[1][0] + test_point[index][3] + k_d * (yaw_error - last_yaw_error)) * YAW_TO_ANGLE);
+    //        (short) (150 + (control_val[1][0] + test_point[index][3]) * YAW_TO_ANGLE);
     if (angle > 195) {
         angle = 195;
     } else if (angle < 105) {

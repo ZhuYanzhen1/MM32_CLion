@@ -8,6 +8,10 @@
 
 #include "main.h"
 
+// 测量卡尔曼融合的时滞
+extern float test_neu_n;
+extern float test_neu_e;
+
 // 检测gps稳定和与gps滤波有关的变量
 extern float last_output_n;
 extern float last_output_e;
@@ -235,8 +239,10 @@ void ledblink_task(void *parameters) {
     (void) parameters;
     while (1) {
         LED1_TOGGLE();
-        delayms(500);
-        printf("%.4f ,%.4f ,%.4f ,%.4f ,\r\n",
+        delayms(200);
+        printf("%.4f ,%.4f ,%.4f ,%.4f ,%.4f ,%.4f , \r\n",
+               test_neu_n,
+               test_neu_e,
                neu.north_distance,
                neu.east_distance,
                kalman_data.distance_north,
