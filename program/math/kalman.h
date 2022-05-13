@@ -13,12 +13,14 @@ typedef struct {
     float v;
     float distance_north;
     float distance_east;
+
 } kalman_data_t;
 
 typedef struct {
     float q_pos; // Process noise variance for the position
     float q_vel; // Process noise variance for the velocity
     float r_pos; // Measurement noise variance - this is actually the variance of the measurement noise
+    float r_old_pos;
 
     float pos;   // The pos calculated by the Kalman filter - part of the 2x1 state vector
     float vel;   // The gyro velocity calculated by the Kalman filter - part of the 2x1 state vector

@@ -52,7 +52,6 @@ void lqr_control(unsigned short index) {
         yaw_error -= _2PI_;
     else if (yaw_error < -3.14)
         yaw_error += _2PI_;
-//    yaw_error *= 1.2f;
 
 //     计算横向误差
 //    float lateral_error = y_error * qfp_fcos(test_point[index][2]) - x_error * qfp_fsin(test_point[index][2]);
@@ -87,6 +86,7 @@ void lqr_control(unsigned short index) {
         angle = 105;
     last_yaw_error = yaw_error;
 }
+
 /* 寻找点迹 */
 int dichotomy(int ind_start, int ind_end) {
     int ind_middle, ind_middle_add, ind_middle_sub;

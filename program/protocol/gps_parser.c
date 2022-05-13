@@ -23,6 +23,7 @@ float test_neu_e = 0;
 // 平稳
 unsigned int temp_stable[STABLE_NUM][2] = {0};
 static unsigned char sum_counter = 0;
+unsigned char gps_valid_flag = 0;
 
 // 滤波
 extern CHELowPass filter_distance_n;
@@ -262,6 +263,8 @@ void nmea_gnrmc_analysis(char *buffer) {
     temp_stable[sum_counter][0] = gps_rmc.longitude;
     temp_stable[sum_counter][1] = gps_rmc.latitude;
     sum_counter = (sum_counter + 1) % STABLE_NUM;
+
+    gps_valid_flag = 1;
 
 #endif
 }

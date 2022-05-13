@@ -8,7 +8,7 @@
 
 #include "main.h"
 
-#define INDEX_NUM   747
+#define INDEX_NUM   760
 
 extern volatile unsigned char lqr_flag;
 
@@ -68,7 +68,7 @@ int main(void) {
                             dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
                                       (playground_ind + INDEX_OFFSET > INDEX_NUM) ? INDEX_NUM : (playground_ind
                                           + INDEX_OFFSET));
-                        lqr_control(playground_ind + 5);
+                        lqr_control(playground_ind + 10);
                         WRITE_REG(TIM3->CCR1, angle);
                         break;
                     }

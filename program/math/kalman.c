@@ -8,14 +8,13 @@
 
 #include "kalman.h"
 
-void kalman_config() {
-
-}
+extern unsigned char gps_valid_flag;
 
 void kalman_config_v(kalman_filter_t *kalman) {
     kalman->q_pos = 0.2f;
     kalman->q_vel = 0.1f;
     kalman->r_pos = 0.05f;
+    kalman->r_old_pos = kalman->r_pos;
 
     kalman->pos = 0;
     kalman->vel = 0.0f;
@@ -28,9 +27,10 @@ void kalman_config_v(kalman_filter_t *kalman) {
 };
 
 void kalman_config_distance(kalman_filter_t *kalman, float pos_0) {
-    kalman->q_pos = 1.0f;
+    kalman->q_pos = 3.0f;
     kalman->q_vel = 0.22f;
     kalman->r_pos = 0.1f;
+    kalman->r_old_pos = kalman->r_pos;
 
     kalman->pos = pos_0;
     kalman->vel = 0.0f;
@@ -54,6 +54,10 @@ void kalman_config_distance(kalman_filter_t *kalman, float pos_0) {
                 and the delta time in seconds
 */
 float kalman_update(kalman_filter_t *kalman, float new_pos, float new_vel, float dt) {
+    if (gps_valid_flag == 1)
+        kalman->r_pos = 1000000;
+    else if (gps_valid_flag == 0)
+        kalman->r_pos = kalman->r_old_pos;
 
     /* Discrete Kalman filter time update equations - Time Update ("Predict") */
     /* Update xhat - Project the state ahead */

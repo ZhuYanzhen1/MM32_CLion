@@ -21,6 +21,7 @@ unsigned int proc_to_ctrl_buffer[3] = {0};
 
 /* Kalman fusion to obtain northward and eastward velocities
  * (GPS velocity + imu acceleration) */
+extern unsigned char gps_valid_flag;
 kalman_data_t kalman_data = {0};
 kalman_filter_t kalman_v = {0};
 kalman_filter_t kalman_distance_north = {0};
@@ -130,6 +131,7 @@ void fusion_task(void *parameters) {
     unsigned int last_glbal_time_stamp = global_time_stamp - 21;
     while (1) {
         float dt = (float) (global_time_stamp - last_glbal_time_stamp) * 0.001f;
+        last_glbal_time_stamp = global_time_stamp;
         if (gps_rmc.status == 'V')
             goto status_V;
         sensor_unit_conversion();
@@ -139,6 +141,7 @@ void fusion_task(void *parameters) {
                                                    neu.north_v, dt);
         kalman_data.distance_east = kalman_update(&kalman_distance_earth, neu.east_distance,
                                                   neu.east_v, dt);
+        gps_valid_flag = 0;
 
         float predict_north = kalman_data.distance_north + 0.01f * neu.north_v;
         float predict_east = kalman_data.distance_east + 0.01f * neu.east_v;
@@ -149,7 +152,7 @@ void fusion_task(void *parameters) {
         for (unsigned char i = 0; i < PROC_MCU_SEND_AMOUNT; i++)
             uart3_sendbyte(proc_to_ctrl_package[i]);
 
-        printf("%.2f\r\n", kalman_data.v);
+//        printf("%.2f\r\n", kalman_data.v);
         delayms(19);
     }
 }
@@ -236,6 +239,7 @@ void ledblink_task(void *parameters) {
     while (1) {
         LED1_TOGGLE();
         delayms(200);
+        printf("%.2f,%.2f\r\n", kalman_data.distance_north, kalman_data.distance_east);
     }
 }
 #endif  // USE_FREERTOS_REPORT == 1

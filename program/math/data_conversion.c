@@ -84,8 +84,8 @@ void coordinate_system_transformation_kalman_v(float delta) {
     float temp_delta = GEO_ANGLE(delta);
     neu.north_v = kalman_data.v * qfp_fcos(temp_delta);
     neu.east_v = kalman_data.v * (temp_delta);
-    rc_a_n = 0.5f;
-    rc_a_e = 0.5f;
+    rc_a_n = 0.3f;
+    rc_a_e = 0.3f;
 //    rc_a_n = (neu.north_v > 0.5f) ? 0.3f : ((neu.north_v < 0.05f) ? 0.3f : (k_rc_a * neu.north_v * neu.north_v));
 //    rc_a_e = (neu.east_v > 0.5f) ? 0.3f : ((neu.east_v < 0.05f) ? 0.3f : (k_rc_a * neu.east_v * neu.east_v));
 }
