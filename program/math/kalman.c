@@ -13,7 +13,7 @@ extern unsigned char gps_valid_flag;
 void kalman_config_v(kalman_filter_t *kalman) {
     kalman->q_pos = 0.2f;
     kalman->q_vel = 0.1f;
-    kalman->r_pos = 0.05f;
+    kalman->r_pos = 0.2f;
     kalman->r_old_pos = kalman->r_pos;
 
     kalman->pos = 0;
@@ -27,9 +27,9 @@ void kalman_config_v(kalman_filter_t *kalman) {
 };
 
 void kalman_config_distance(kalman_filter_t *kalman, float pos_0) {
-    kalman->q_pos = 3.0f;
+    kalman->q_pos = 0.8f;
     kalman->q_vel = 0.22f;
-    kalman->r_pos = 0.1f;
+    kalman->r_pos = 0.6f;
     kalman->r_old_pos = kalman->r_pos;
 
     kalman->pos = pos_0;
@@ -104,29 +104,3 @@ float kalman_update(kalman_filter_t *kalman, float new_pos, float new_vel, float
 
     return kalman->pos;
 }
-
-/*
-        iic_read_hmc5883l();
-        hmc5883l_correction();
-        adis_burst_read();
-        true_north = qfp_fadd(qfp_fmul(qfp_fatan2(magnetometer_correction.y, magnetometer_correction.x),
-                                       qfp_fdiv(180, PI)), 180);
-        true_north_final = kalman_update(&kalman_angle_north, true_north,
-                                         -(float) imu.z_gyro * 0.1f, 0.101f, 1);
-
-        while (gps_rmc.status != 'A');  //用到GPS的时候开这个，不用的时候不开
-        sensor_unit_conversion(true_north_final);
-
-        v_north = kalman_update(&kalman_v, neu.north_v, neu.north_acceleration,
-                                0.101f, 0);
-        v_east = kalman_update(&kalman_v_east, neu.east_v, neu.east_acceleration,
-                               0.101f, 0);
-        if (v_north < 1 && v_north > -1) v_north_final = neu.north_v;
-        else v_north_final = v_north;
-        if (v_east < 1 && v_east > -1) v_east_final = neu.east_v;
-        else v_east_final = v_east;
-        distance_north = kalman_update(&kalman_distance_north, neu.north_distance,
-                                       v_north_final, 0.101f, 0);
-        distance_east = kalman_update(&kalman_distance_earth, neu.east_distance,
-                                      v_east_final, 0.101f, 0);
- * */

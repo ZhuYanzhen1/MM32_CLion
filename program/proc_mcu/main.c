@@ -9,10 +9,6 @@
 #include "main.h"
 
 // 检测gps稳定和与gps滤波有关的变量
-extern float last_output_n;
-extern float last_output_e;
-extern float temp_filter_lon;
-extern float temp_filter_lat;
 extern unsigned int temp_stable[100][2];
 
 extern unsigned int packages_to_be_unpacked_1[READ_MCU_AMOUNT];
@@ -124,17 +120,20 @@ void fusion_task(void *parameters) {
         }
         delayms(200);
     }
-    last_output_n = get_distance(QRIGIN_LAT, temp_filter_lon, temp_filter_lat, temp_filter_lon);
-    last_output_e = get_distance(temp_filter_lat, QRIGIN_LON, temp_filter_lat, temp_filter_lon);
-    kalman_config_distance(&kalman_distance_north, last_output_n);
-    kalman_config_distance(&kalman_distance_earth, last_output_e);
+    kalman_config_distance(&kalman_distance_north, neu.north_distance);
+    kalman_config_distance(&kalman_distance_earth, neu.east_distance);
     unsigned int last_glbal_time_stamp = global_time_stamp - 21;
     while (1) {
         float dt = (float) (global_time_stamp - last_glbal_time_stamp) * 0.001f;
         last_glbal_time_stamp = global_time_stamp;
         if (gps_rmc.status == 'V')
             goto status_V;
-        sensor_unit_conversion();
+
+        small_packets_sum.ay /= (float) small_packets_sum.num;
+        neu.acceleration = MG_TO_M_S_2(small_packets_sum.ay * FACTOR_ALLC_Y);   // 车头前进的方向时y的正方向
+        small_packets_sum.num = 0;
+        small_packets_sum.ay = 0;
+
         kalman_data.v = kalman_update(&kalman_v, neu.v, neu.acceleration, dt);
         coordinate_system_transformation_kalman_v(small_packets.chebyshev_north);
         kalman_data.distance_north = kalman_update(&kalman_distance_north, neu.north_distance,
@@ -239,7 +238,11 @@ void ledblink_task(void *parameters) {
     while (1) {
         LED1_TOGGLE();
         delayms(200);
-        printf("%.2f,%.2f\r\n", kalman_data.distance_north, kalman_data.distance_east);
+        printf("%.2f,%.2f,%.2f,%.2f\r\n",
+               neu.north_distance,
+               neu.east_distance,
+               kalman_data.distance_north,
+               kalman_data.distance_east);
     }
 }
 #endif  // USE_FREERTOS_REPORT == 1

@@ -16,25 +16,16 @@
 #define STRING_TO_STR(x, num)       if (comma_position[(num)-1]!=0) \
                                         (x) = *(p + comma_position[(num)-1]+1);
 
-// 测试
-float test_neu_n = 0;
-float test_neu_e = 0;
+nmea_rmc gps_rmc = {0};
 
 // 平稳
-unsigned int temp_stable[STABLE_NUM][2] = {0};
 static unsigned char sum_counter = 0;
-unsigned char gps_valid_flag = 0;
+unsigned int temp_stable[STABLE_NUM][2] = {0};
+volatile unsigned char gps_valid_flag = 0;
 
 // 滤波
-extern CHELowPass filter_distance_n;
-extern CHELowPass filter_distance_e;
-extern float rc_a_n;
-extern float rc_a_e;
-nmea_rmc gps_rmc = {0};
-float last_output_n = 4385.7630000f;    // 4385.7630000f, 39692.2030000f
-float last_output_e = 39692.2030000f;
-float temp_filter_lon = 0;
-float temp_filter_lat = 0;
+float last_output_v = 2;
+
 /*!
     \brief      Get the location of all commas in the gps packet at once
     \param[in]  buffer: Digital storage area
@@ -244,20 +235,10 @@ void nmea_gnrmc_analysis(char *buffer) {
 
     if (gps_rmc.status != 'A')
         return;
-    temp_filter_lat = unit_to_degree(gps_rmc.latitude, 4);
-    temp_filter_lon = unit_to_degree(gps_rmc.longitude, 4);
 
-    neu.north_distance = get_distance(QRIGIN_LAT, temp_filter_lon, temp_filter_lat, temp_filter_lon);
-    neu.east_distance = get_distance(temp_filter_lat, QRIGIN_LON, temp_filter_lat, temp_filter_lon);
-
-    test_neu_n = neu.north_distance;
-    test_neu_e = neu.east_distance;
-
-    neu.north_distance = rc_low_pass(neu.north_distance, last_output_n, rc_a_n);
-    neu.east_distance = rc_low_pass(neu.east_distance, last_output_e, rc_a_e);
-
-    last_output_n = neu.north_distance;
-    last_output_e = neu.east_distance;
+    sensor_unit_conversion();
+    neu.v = rc_low_pass(neu.v, last_output_v, 0.3f);
+    last_output_v = neu.v;
 
     // 检验GPS定位是否稳定，存入环形缓冲区
     temp_stable[sum_counter][0] = gps_rmc.longitude;

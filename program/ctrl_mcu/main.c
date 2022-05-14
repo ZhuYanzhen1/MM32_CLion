@@ -60,7 +60,7 @@ int main(void) {
     while (1) {
         LED1_TOGGLE();
         if (proc_data.distance_east != 0) {
-            for (unsigned char i = 0; i < 20; i++) {
+            for (unsigned char i = 0; i < 3; i++) {
                 while (1) {
                     if (lqr_flag == 1) {
                         lqr_flag = 0;
@@ -77,7 +77,7 @@ int main(void) {
             speed = 4000;
             sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
             uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
-//            printf("%.3f, %.3f , \r\n", proc_data.distance_north, proc_data.distance_east);
+            printf("%.3f, %.3f , \r\n", proc_data.distance_north, proc_data.distance_east);
         }
 
 //        if (playground_ind > INDEX_NUM - 10 || time_counter > 800) {

@@ -11,7 +11,7 @@
 
 // TODO 当到了其他地方比赛之前，得先测试当地的经纬度，并更改此处的宏，否则会导致浮点运算精度丢失的问题
 #define QRIGIN_LAT      23 /* The starting point is set as(20°N,110°E) */
-#define QRIGIN_LON      113
+#define QRIGIN_LON      113  //113.4f
 #define EARTH_RADIUS    6371000
 #define FACTOR_ALLC_X   1.778f
 #define FACTOR_ALLC_Y   1.811f
