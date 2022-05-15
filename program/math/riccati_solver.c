@@ -77,8 +77,8 @@ void lqr_control(unsigned short index) {
     solve_riccati_equation(a, b, q, r, p);
     solve_feedback_value(p, a, b, x, r, control_val);
     //    speed = speed +control_val[0][0];
-    last_delta = control_val[1][0] + test_point[index][3] + k_d * (yaw_error - last_yaw_error);
-    angle = (short) (150 + last_delta * YAW_TO_ANGLE);
+    last_delta = control_val[1][0] + test_point[index][3];//+ k_d * (yaw_error - last_yaw_error);
+    angle = (short) (158 + last_delta * YAW_TO_ANGLE);
     //        (short) (150 + (control_val[1][0] + test_point[index][3]) * YAW_TO_ANGLE);
     if (angle > 195)
         angle = 195;

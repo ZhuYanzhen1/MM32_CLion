@@ -13,7 +13,7 @@
 extern volatile unsigned char lqr_flag;
 
 FATFS filesystem;
-volatile short angle = 150;
+volatile short angle = 158;
 volatile unsigned short speed = 0;
 unsigned short playground_ind = 0;
 static unsigned char fs_buffer[FF_MAX_SS * 4];
@@ -68,7 +68,7 @@ int main(void) {
                             dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
                                       (playground_ind + INDEX_OFFSET > INDEX_NUM) ? INDEX_NUM : (playground_ind
                                           + INDEX_OFFSET));
-                        lqr_control(playground_ind + 10);
+                        lqr_control(playground_ind + 5);
                         WRITE_REG(TIM3->CCR1, angle);
                         break;
                     }

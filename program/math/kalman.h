@@ -27,6 +27,7 @@ typedef struct {
     float bias;  // The bias of velocity
 
     float P[2][2]; // Error covariance 2x2 matrix
+    unsigned char gps_valid_flag;
 } kalman_filter_t;
 
 void kalman_config_angle(kalman_filter_t *kalman, float pos_0);

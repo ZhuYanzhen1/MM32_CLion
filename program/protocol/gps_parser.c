@@ -10,6 +10,7 @@
 #include "gps_parser.h"
 #include "data_conversion.h"
 #include "filter.h"
+#include "kalman.h"
 
 #define STRING_TO_NUM(x, y, num)    if(comma_position[(num)-1]!=0) \
                                         (x) = nmea_str2num(p + comma_position[(num)-1] +1, &(y));
@@ -18,13 +19,18 @@
 
 nmea_rmc gps_rmc = {0};
 
+// 卡尔曼融合
+unsigned int last_lat = 0;
+unsigned int last_lon = 0;
+extern kalman_filter_t kalman_distance_north;
+extern kalman_filter_t kalman_distance_east;
+
 // 平稳
 static unsigned char sum_counter = 0;
 unsigned int temp_stable[STABLE_NUM][2] = {0};
-volatile unsigned char gps_valid_flag = 0;
 
 // 滤波
-float last_output_v = 2;
+float last_output_v = 0;
 
 /*!
     \brief      Get the location of all commas in the gps packet at once
@@ -236,16 +242,28 @@ void nmea_gnrmc_analysis(char *buffer) {
     if (gps_rmc.status != 'A')
         return;
 
-    sensor_unit_conversion();
-    neu.v = rc_low_pass(neu.v, last_output_v, 0.3f);
-    last_output_v = neu.v;
+    if (last_lat == gps_rmc.latitude)
+        kalman_distance_north.gps_valid_flag = 1;
+    else
+        kalman_distance_north.gps_valid_flag = 2;
+    if (last_lon == gps_rmc.longitude)
+        kalman_distance_east.gps_valid_flag = 1;
+    else
+        kalman_distance_east.gps_valid_flag = 2;
+
+    last_lat = gps_rmc.latitude;
+    last_lon = gps_rmc.longitude;
+
+    float temp_lat = unit_to_degree(gps_rmc.latitude, 4);
+    float temp_lon = unit_to_degree(gps_rmc.longitude, 4);
+
+    neu.north_distance = get_distance(QRIGIN_LAT, temp_lon, temp_lat, temp_lon);
+    neu.east_distance = get_distance(temp_lat, QRIGIN_LON, temp_lat, temp_lon);
 
     // 检验GPS定位是否稳定，存入环形缓冲区
     temp_stable[sum_counter][0] = gps_rmc.longitude;
     temp_stable[sum_counter][1] = gps_rmc.latitude;
     sum_counter = (sum_counter + 1) % STABLE_NUM;
-
-    gps_valid_flag = 1;
 
 #endif
 }

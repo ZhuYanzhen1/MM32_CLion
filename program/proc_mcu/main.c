@@ -17,11 +17,10 @@ unsigned int proc_to_ctrl_buffer[3] = {0};
 
 /* Kalman fusion to obtain northward and eastward velocities
  * (GPS velocity + imu acceleration) */
-extern unsigned char gps_valid_flag;
 kalman_data_t kalman_data = {0};
 kalman_filter_t kalman_v = {0};
 kalman_filter_t kalman_distance_north = {0};
-kalman_filter_t kalman_distance_earth = {0};
+kalman_filter_t kalman_distance_east = {0};
 
 //////////////////////////////////// Task Handler ////////////////////////////////////
 TaskHandle_t led_taskhandler;
@@ -121,7 +120,7 @@ void fusion_task(void *parameters) {
         delayms(200);
     }
     kalman_config_distance(&kalman_distance_north, neu.north_distance);
-    kalman_config_distance(&kalman_distance_earth, neu.east_distance);
+    kalman_config_distance(&kalman_distance_east, neu.east_distance);
     unsigned int last_glbal_time_stamp = global_time_stamp - 21;
     while (1) {
         float dt = (float) (global_time_stamp - last_glbal_time_stamp) * 0.001f;
@@ -129,18 +128,13 @@ void fusion_task(void *parameters) {
         if (gps_rmc.status == 'V')
             goto status_V;
 
-        small_packets_sum.ay /= (float) small_packets_sum.num;
-        neu.acceleration = MG_TO_M_S_2(small_packets_sum.ay * FACTOR_ALLC_Y);   // 车头前进的方向时y的正方向
-        small_packets_sum.num = 0;
-        small_packets_sum.ay = 0;
-
+        sensor_unit_conversion();
         kalman_data.v = kalman_update(&kalman_v, neu.v, neu.acceleration, dt);
         coordinate_system_transformation_kalman_v(small_packets.chebyshev_north);
         kalman_data.distance_north = kalman_update(&kalman_distance_north, neu.north_distance,
                                                    neu.north_v, dt);
-        kalman_data.distance_east = kalman_update(&kalman_distance_earth, neu.east_distance,
+        kalman_data.distance_east = kalman_update(&kalman_distance_east, neu.east_distance,
                                                   neu.east_v, dt);
-        gps_valid_flag = 0;
 
         float predict_north = kalman_data.distance_north + 0.01f * neu.north_v;
         float predict_east = kalman_data.distance_east + 0.01f * neu.east_v;

@@ -19,7 +19,7 @@
 /* debugger variable maximum size set to 12 */
 #define VARIABLE_BUFFER_SIZE    12
 /* use mdtp protocol to print buffer */
-#define DEBUG_USE_PROTOCOL      1
+#define DEBUG_USE_PROTOCOL      0
 /* use vTaskList to report task info */
 #define USE_FREERTOS_REPORT     0
 /* GUI CallBack Function Priority set to 2 */
