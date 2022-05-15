@@ -13,7 +13,7 @@ extern unsigned int temp_stable[100][2];
 
 extern unsigned int packages_to_be_unpacked_1[READ_MCU_AMOUNT];
 unsigned int proc_to_ctrl_package[PROC_MCU_SEND_AMOUNT] = {0};
-unsigned int proc_to_ctrl_buffer[3] = {0};
+unsigned int proc_to_ctrl_buffer[4] = {0};
 
 /* Kalman fusion to obtain northward and eastward velocities
  * (GPS velocity + imu acceleration) */
@@ -97,6 +97,7 @@ void fusion_task(void *parameters) {
         proc_to_ctrl_buffer[0] = 0;
         proc_to_ctrl_buffer[1] = 0;
         proc_to_ctrl_buffer[2] = 0;
+        proc_to_ctrl_buffer[3] = 0;
         precossing_proc_to_control(proc_to_ctrl_package, proc_to_ctrl_buffer);
         for (unsigned char i = 0; i < PROC_MCU_SEND_AMOUNT; i++) {
             uart3_sendbyte(proc_to_ctrl_package[i]);
@@ -130,6 +131,7 @@ void fusion_task(void *parameters) {
 
         sensor_unit_conversion();
         kalman_data.v = kalman_update(&kalman_v, neu.v, neu.acceleration, dt);
+        kalman_v.gps_valid_flag = 1;
         coordinate_system_transformation_kalman_v(small_packets.chebyshev_north);
         kalman_data.distance_north = kalman_update(&kalman_distance_north, neu.north_distance,
                                                    neu.north_v, dt);
@@ -141,6 +143,7 @@ void fusion_task(void *parameters) {
         proc_to_ctrl_buffer[0] = *((unsigned int *) (&predict_north));
         proc_to_ctrl_buffer[1] = *((unsigned int *) (&predict_east));
         proc_to_ctrl_buffer[2] = *((unsigned int *) (&small_packets.chebyshev_north));
+        proc_to_ctrl_buffer[3] = *((unsigned int *) (&kalman_data.v));
         precossing_proc_to_control(proc_to_ctrl_package, proc_to_ctrl_buffer);
         for (unsigned char i = 0; i < PROC_MCU_SEND_AMOUNT; i++)
             uart3_sendbyte(proc_to_ctrl_package[i]);

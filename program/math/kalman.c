@@ -13,6 +13,7 @@ void kalman_config_v(kalman_filter_t *kalman) {
     kalman->q_vel = 0.1f;
     kalman->r_pos = 0.2f;
     kalman->r_old_pos = kalman->r_pos;
+    kalman->gps_valid_flag = 1;
 
     kalman->pos = 0;
     kalman->vel = 0.0f;

@@ -242,11 +242,12 @@ void nmea_gnrmc_analysis(char *buffer) {
     if (gps_rmc.status != 'A')
         return;
 
-    if (last_lat == gps_rmc.latitude)
+    if (last_lat != gps_rmc.latitude)
         kalman_distance_north.gps_valid_flag = 1;
     else
         kalman_distance_north.gps_valid_flag = 2;
-    if (last_lon == gps_rmc.longitude)
+
+    if (last_lon != gps_rmc.longitude)
         kalman_distance_east.gps_valid_flag = 1;
     else
         kalman_distance_east.gps_valid_flag = 2;

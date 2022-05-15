@@ -23,23 +23,24 @@ volatile unsigned char lqr_flag = 0;
 void precossing_proc_to_control(unsigned int packets[PROC_MCU_SEND_AMOUNT], const unsigned int *buffer) {
     // 包头
     packets[0] = 0xff;
-    packets[13] = 0x00;  // 调整位
+    packets[17] = 0x00;  // 调整位
 
     FLOAT_SPLIT_CHAR(1, 0);
     FLOAT_SPLIT_CHAR(5, 1);
     FLOAT_SPLIT_CHAR(9, 2);
+    FLOAT_SPLIT_CHAR(13, 3);
 
     // 调整位，从高到低，每一位与一个字节的数据对应，如果为1，那就代表相应的数据为0xff
-    for (unsigned char i = 1; i < 13; ++i) {
+    for (unsigned char i = 1; i < 17; ++i) {
         if (packets[i] == 0xff) {
             packets[i] = 0x00;
-            packets[13] |= 0x80 >> (i - 1);
+            packets[17] |= 0x80 >> (i - 1);
         }
     }
 
-    packets[14] = verification_crc8(&packets[1], 13);
+    packets[18] = verification_crc8(&packets[1], 13);
     // 包尾
-    packets[15] = 0xff;
+    packets[19] = 0xff;
 }
 
 /*!
@@ -49,17 +50,18 @@ void precossing_proc_to_control(unsigned int packets[PROC_MCU_SEND_AMOUNT], cons
 */
 void unpacking_proc_to_control(unsigned int packets[PROC_MCU_SEND_AMOUNT - 2]) {
     unsigned int temp;
-    short checksum = verification_crc8((unsigned int *) packets, 13);
-    proc_data.checksum = (short) packets[13];
+    short checksum = verification_crc8((unsigned int *) packets, 17);
+    proc_data.checksum = (short) packets[17];
     if (checksum != proc_data.checksum) return;
     // 调整位恢复原始数据，和校验的顺序不能换，因为封包的时候是先算校验，再计算调整位
-    for (unsigned char i = 0; i < 12; ++i)
-        if (packets[12] & (0x80 >> i))
+    for (unsigned char i = 0; i < 16; ++i)
+        if (packets[16] & (0x80 >> i))
             packets[i] = 0xff;
 
     DECODE_TO_FLOAT(proc_data.distance_north, 0)    // 如果发送的是float类型，得先转换成unsigned int的地址传进来
     DECODE_TO_FLOAT(proc_data.distance_east, 4)
     DECODE_TO_FLOAT(proc_data.north_angle, 8)
+    DECODE_TO_FLOAT(proc_data.v, 12)
 //    unsigned int tmp_float_int = *((unsigned int *) (&a));
 //    float a = *((float *) (&tmp_float_int));
     lqr_flag = 1;

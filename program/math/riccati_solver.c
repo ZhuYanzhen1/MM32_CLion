@@ -30,8 +30,6 @@ float calculate_distance(int ind) {
     return distance;
 }
 
-float last_yaw_error = 0;
-float k_d = 0.1f;
 static float last_delta = 0;
 static unsigned int last_global_time_stamp = 0;
 void lqr_control(unsigned short index) {
@@ -84,7 +82,7 @@ void lqr_control(unsigned short index) {
         angle = 195;
     else if (angle < 105)
         angle = 105;
-    last_yaw_error = yaw_error;
+//    last_yaw_error = yaw_error;
 }
 
 /* 寻找点迹 */
