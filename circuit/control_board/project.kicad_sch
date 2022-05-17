@@ -6,8 +6,8 @@
 
   (title_block
     (title "MM32 Control Board")
-    (date "2022-04-17")
-    (rev "1.5.3")
+    (date "2022-05-18")
+    (rev "1.5.4")
   )
 
   (lib_symbols
@@ -1433,9 +1433,6 @@
     (path "/00000000-0000-0000-0000-00006191448d/f5dac160-5ccd-4207-936c-555ad6002243"
       (reference "#PWR0193") (unit 1) (value "GND") (footprint "")
     )
-    (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/9ba0a8a1-f3c1-4139-a188-6ca89a29cb31"
-      (reference "#PWR0194") (unit 1) (value "GND") (footprint "")
-    )
     (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/3eedb2de-3361-48bc-9e71-2a3d34186027"
       (reference "#PWR0195") (unit 1) (value "GND") (footprint "")
     )
@@ -1691,6 +1688,9 @@
     (path "/00000000-0000-0000-0000-000061e2dd2b/aa2441be-a09e-4461-9b0c-7a011ccf520b"
       (reference "J4") (unit 1) (value "BAT_CR1220") (footprint "ControlBoard:BAT_CR1220")
     )
+    (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/2e4f721d-d8b0-4960-8455-f6903fb81c76"
+      (reference "J5") (unit 1) (value "Conn_01x06") (footprint "Connector_JST:JST_GH_SM06B-GHS-TB_1x06-1MP_P1.25mm_Horizontal")
+    )
     (path "/00000000-0000-0000-0000-000061e2dd2b/2f8ebbbf-0f11-4a15-9648-1d28e5593127"
       (reference "L1") (unit 1) (value "39nH") (footprint "ControlBoard:L_0603_1608Metric")
     )
@@ -1726,36 +1726,6 @@
     )
     (path "/b932d339-7888-4506-92dc-7b9f4a021ec5/c1a18f74-a42c-4afc-acea-8274e502b185"
       (reference "R8") (unit 1) (value "10kR") (footprint "ControlBoard:R_0603_1608Metric")
-    )
-    (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/2275492a-6359-4cd4-b350-01dd400f86da"
-      (reference "R9") (unit 1) (value "33kR") (footprint "ControlBoard:R_0603_1608Metric")
-    )
-    (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/67b0ea81-3642-46a2-8355-d60793417e57"
-      (reference "R10") (unit 1) (value "121R") (footprint "ControlBoard:R_0603_1608Metric")
-    )
-    (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/dc301244-5e61-4fd0-8b27-8600aa8a128e"
-      (reference "R11") (unit 1) (value "121R") (footprint "ControlBoard:R_0603_1608Metric")
-    )
-    (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/550032b8-ac1a-4add-998e-66bec0bec8ee"
-      (reference "R12") (unit 1) (value "121R") (footprint "ControlBoard:R_0603_1608Metric")
-    )
-    (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/9968087a-1796-4fc1-a61c-12224b3cfb36"
-      (reference "R13") (unit 1) (value "121R") (footprint "ControlBoard:R_0603_1608Metric")
-    )
-    (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/4ef7ac11-d4ed-4ace-be37-e21d7f63f921"
-      (reference "R14") (unit 1) (value "121R") (footprint "ControlBoard:R_0603_1608Metric")
-    )
-    (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/c5318030-0c39-492d-82c8-f5e8f484d6df"
-      (reference "R15") (unit 1) (value "121R") (footprint "ControlBoard:R_0603_1608Metric")
-    )
-    (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/72a8a79e-a772-48b4-ab19-23f2cc1e83e2"
-      (reference "R16") (unit 1) (value "PN13101(Z)") (footprint "ControlBoard:PN13101")
-    )
-    (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/502d3ff1-5239-4490-b785-a16dc791dfd7"
-      (reference "R17") (unit 1) (value "PN13104(XY)") (footprint "ControlBoard:PN13104")
-    )
-    (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/6152da4d-452d-4939-aedd-70eddfb32f6a"
-      (reference "R18") (unit 1) (value "PN13104(XY)") (footprint "ControlBoard:PN13104")
     )
     (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/1f5bbee2-ceb8-4588-b96b-14e47354993f"
       (reference "R19") (unit 1) (value "10kR") (footprint "ControlBoard:R_0603_1608Metric")
@@ -1810,9 +1780,6 @@
     )
     (path "/b932d339-7888-4506-92dc-7b9f4a021ec5/33a172fa-a27c-4f1b-a064-556bfc13e664"
       (reference "U10") (unit 1) (value "CH440R") (footprint "ControlBoard:TSSOP-16_4.4x5mm_P0.65mm")
-    )
-    (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/9181ff88-2f85-4129-b483-720f264e83b2"
-      (reference "U11") (unit 1) (value "RM3100_13156") (footprint "ControlBoard:QFN-28-1EP_4x4mm_P0.4mm_EP2.4x2.4mm")
     )
     (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/0c3ba1b6-7976-4c67-9efa-1457c99ef463"
       (reference "U12") (unit 1) (value "AT24C02") (footprint "ControlBoard:SOP-8_3.9x4.9mm_P1.27mm")
