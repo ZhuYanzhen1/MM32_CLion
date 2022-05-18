@@ -23,7 +23,8 @@ volatile unsigned char lqr_flag = 0;
 void precossing_proc_to_control(unsigned int packets[PROC_MCU_SEND_AMOUNT], const unsigned int *buffer) {
     // 包头
     packets[0] = 0xff;
-    packets[17] = 0x00;  // 调整位
+    packets[PROC_MCU_SEND_AMOUNT - 5] = 0x00;  // 前8个信息字节的调整位
+    packets[PROC_MCU_SEND_AMOUNT - 4] = 0x00;  // 后8个信息字节的调整位
 
     FLOAT_SPLIT_CHAR(1, 0);
     FLOAT_SPLIT_CHAR(5, 1);
@@ -31,31 +32,41 @@ void precossing_proc_to_control(unsigned int packets[PROC_MCU_SEND_AMOUNT], cons
     FLOAT_SPLIT_CHAR(13, 3);
 
     // 调整位，从高到低，每一位与一个字节的数据对应，如果为1，那就代表相应的数据为0xff
-    for (unsigned char i = 1; i < 17; ++i) {
+    for (unsigned char i = 1; i < 9; ++i) {
         if (packets[i] == 0xff) {
             packets[i] = 0x00;
-            packets[17] |= 0x80 >> (i - 1);
+            packets[PROC_MCU_SEND_AMOUNT - 5] |= 0x80 >> (i - 1);
+        }
+    }
+    for (unsigned char i = 9; i < 18; ++i) {
+        if (packets[i] == 0xff) {
+            packets[i] = 0x00;
+            packets[PROC_MCU_SEND_AMOUNT - 4] |= 0x80 >> (i - 1);
         }
     }
 
-    packets[18] = verification_crc8(&packets[1], 13);
+    // 校验位
+    packets[PROC_MCU_SEND_AMOUNT - 2] = verification_crc8(&packets[1], PROC_MCU_SEND_AMOUNT - 3);
     // 包尾
-    packets[19] = 0xff;
+    packets[PROC_MCU_SEND_AMOUNT - 1] = 0xff;
 }
 
 /*!
     \brief      Solving packets with fixed data length
-    \param[in]  packets: Packets to be solved
+    \param[in]  packets: Packets to be solved. Excluding the head and tail of the package
     \note       The package to be solved does not contain the head and tail parts of the package
 */
 void unpacking_proc_to_control(unsigned int packets[PROC_MCU_SEND_AMOUNT - 2]) {
     unsigned int temp;
-    short checksum = verification_crc8((unsigned int *) packets, 17);
-    proc_data.checksum = (short) packets[17];
+    volatile short checksum = verification_crc8((unsigned int *) packets, PROC_MCU_SEND_AMOUNT - 3);
+    proc_data.checksum = (short) packets[PROC_MCU_SEND_AMOUNT - 3];
     if (checksum != proc_data.checksum) return;
     // 调整位恢复原始数据，和校验的顺序不能换，因为封包的时候是先算校验，再计算调整位
-    for (unsigned char i = 0; i < 16; ++i)
-        if (packets[16] & (0x80 >> i))
+    for (unsigned char i = 0; i < 8; ++i)
+        if (packets[PROC_MCU_SEND_AMOUNT - 5] & (0x80 >> i))
+            packets[i] = 0xff;
+    for (unsigned char i = 8; i < 16; ++i)
+        if (packets[PROC_MCU_SEND_AMOUNT - 4] & (0x80 >> i))
             packets[i] = 0xff;
 
     DECODE_TO_FLOAT(proc_data.distance_north, 0)    // 如果发送的是float类型，得先转换成unsigned int的地址传进来
@@ -98,7 +109,7 @@ void unpacking_fixed_length_data(unsigned int packets[10]) {
                                                                              : small_packets.chebyshev_north;
 
 //    small_packets_sum.ax += small_packets.ax;  没用到
-    small_packets_sum.ay += small_packets.ay;
+    small_packets_sum.ay += (float) small_packets.ay;
 //    small_packets_sum.az += small_packets.az;  没用到
     // 角度应该得处理一下，不能直接加把
     small_packets_sum.num++;

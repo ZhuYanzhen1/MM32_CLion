@@ -6,6 +6,7 @@
 #include "sensor_decode.h"
 #include "delay.h"
 #include "uart.h"
+#include "qfplib.h"
 #endif
 
 #define YAW_TO_ANGLE        (-63.66203f)     // 180/pi * (-50/45)
@@ -15,6 +16,17 @@
 #define _2PI_               (6.2831853f)
 
 #ifndef RUNNING_UNIT_TEST
+
+void project(basic_status_t current, basic_status_t *project, float v, float t, float servo_angle) {
+    float l = 0.28f;
+    float r = l / qfp_ftan(servo_angle);
+    float theta = v * t / r;
+    float s = 2 * r * qfp_fsin(0.5f * theta);
+    float delta = v * t / l * 0.5f * qfp_ftan(servo_angle) + current.angle;
+    project->pos_n = s * qfp_fcos(delta) + current.pos_n;
+    project->pos_e = s * qfp_fsin(delta) + current.pos_e;
+    project->angle = theta + current.angle;
+}
 
 // 对电机和舵机的控制量
 extern volatile unsigned short speed;

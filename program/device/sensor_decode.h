@@ -10,8 +10,8 @@
 #define MM32F3277_DEVICE_SENSOR_DECODE_H_
 
 #define READ_MCU_AMOUNT         96
-#define PROC_MCU_SEND_AMOUNT    20
-#define CTRL_MCU_RECEIVE_AMOUNT 20
+#define PROC_MCU_SEND_AMOUNT    21
+#define CTRL_MCU_RECEIVE_AMOUNT 21
 #define SHORT_SPLIT_CHAR(x, y)  packets[x] = ((buffer[y] & 0x0000ff00) >> 8);\
                                 packets[(x)+1] = (buffer[y] & 0x000000ff);
 #define INT_SPLIT_CHAR(x, y)    packets[x] = ((buffer[y] & 0x00ff0000) >> 16);\
