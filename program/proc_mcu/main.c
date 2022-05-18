@@ -138,6 +138,12 @@ void fusion_task(void *parameters) {
         kalman_data.distance_east = kalman_update(&kalman_distance_east, neu.east_distance,
                                                   neu.east_v, dt);
 
+//        basic_status_t current_status = {kalman_data.distance_north,
+//                                         kalman_data.distance_east,
+//                                         small_packets.chebyshev_north};
+//        basic_status_t project_status = {0};
+//        project(current_status,project_status, );
+
         float predict_north = kalman_data.distance_north + 0.01f * neu.north_v;
         float predict_east = kalman_data.distance_east + 0.01f * neu.east_v;
         proc_to_ctrl_buffer[0] = *((unsigned int *) (&predict_north));
@@ -150,6 +156,12 @@ void fusion_task(void *parameters) {
 
 //        printf("%.2f\r\n", kalman_data.v);
         delayms(19);
+
+        printf("%.2f,%.2f,%.2f,%.2f\r",
+               neu.north_distance,
+               neu.east_distance,
+               kalman_data.distance_north,
+               kalman_data.distance_east);
     }
 }
 
@@ -235,11 +247,11 @@ void ledblink_task(void *parameters) {
     while (1) {
         LED1_TOGGLE();
         delayms(200);
-        printf("%.2f,%.2f,%.2f,%.2f\r\n",
-               neu.north_distance,
-               neu.east_distance,
-               kalman_data.distance_north,
-               kalman_data.distance_east);
+//        printf("%.2f,%.2f,%.2f,%.2f\r",
+//               neu.north_distance,
+//               neu.east_distance,
+//               kalman_data.distance_north,
+//               kalman_data.distance_east);
     }
 }
 #endif  // USE_FREERTOS_REPORT == 1
