@@ -38,7 +38,7 @@ void precossing_proc_to_control(unsigned int packets[PROC_MCU_SEND_AMOUNT], cons
             packets[PROC_MCU_SEND_AMOUNT - 4] |= 0x80 >> (i - 1);
         }
     }
-    for (unsigned char i = 9; i < 18; ++i) {
+    for (unsigned char i = 9; i < 17; ++i) {
         if (packets[i] == 0xff) {
             packets[i] = 0x00;
             packets[PROC_MCU_SEND_AMOUNT - 3] |= 0x80 >> (i - 9);
