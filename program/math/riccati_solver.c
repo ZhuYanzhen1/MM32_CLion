@@ -6,7 +6,6 @@
 #include "sensor_decode.h"
 #include "delay.h"
 #include "uart.h"
-#include "qfplib.h"
 #endif
 
 #define YAW_TO_ANGLE        (-63.66203f)     // 180/pi * (-50/45)
@@ -89,12 +88,10 @@ void lqr_control(unsigned short index) {
     //    speed = speed +control_val[0][0];
     last_delta = control_val[1][0] + test_point[index][3];//+ k_d * (yaw_error - last_yaw_error);
     angle = (short) (158 + last_delta * YAW_TO_ANGLE);
-    //        (short) (150 + (control_val[1][0] + test_point[index][3]) * YAW_TO_ANGLE);
     if (angle > 195)
         angle = 195;
     else if (angle < 105)
         angle = 105;
-//    last_yaw_error = yaw_error;
 }
 
 /* 寻找点迹 */

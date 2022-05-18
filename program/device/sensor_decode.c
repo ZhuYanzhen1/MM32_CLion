@@ -23,8 +23,8 @@ volatile unsigned char lqr_flag = 0;
 void precossing_proc_to_control(unsigned int packets[PROC_MCU_SEND_AMOUNT], const unsigned int *buffer) {
     // 包头
     packets[0] = 0xff;
-    packets[PROC_MCU_SEND_AMOUNT - 5] = 0x00;  // 前8个信息字节的调整位
-    packets[PROC_MCU_SEND_AMOUNT - 4] = 0x00;  // 后8个信息字节的调整位
+    packets[PROC_MCU_SEND_AMOUNT - 4] = 0x00;  // 前8个信息字节的调整位
+    packets[PROC_MCU_SEND_AMOUNT - 3] = 0x00;  // 后8个信息字节的调整位
 
     FLOAT_SPLIT_CHAR(1, 0);
     FLOAT_SPLIT_CHAR(5, 1);
@@ -35,13 +35,13 @@ void precossing_proc_to_control(unsigned int packets[PROC_MCU_SEND_AMOUNT], cons
     for (unsigned char i = 1; i < 9; ++i) {
         if (packets[i] == 0xff) {
             packets[i] = 0x00;
-            packets[PROC_MCU_SEND_AMOUNT - 5] |= 0x80 >> (i - 1);
+            packets[PROC_MCU_SEND_AMOUNT - 4] |= 0x80 >> (i - 1);
         }
     }
     for (unsigned char i = 9; i < 17; ++i) {
         if (packets[i] == 0xff) {
             packets[i] = 0x00;
-            packets[PROC_MCU_SEND_AMOUNT - 4] |= 0x80 >> (i - 9);
+            packets[PROC_MCU_SEND_AMOUNT - 3] |= 0x80 >> (i - 9);
         }
     }
 
@@ -73,8 +73,7 @@ void unpacking_proc_to_control(unsigned int packets[PROC_MCU_SEND_AMOUNT - 2]) {
     DECODE_TO_FLOAT(proc_data.distance_east, 4)
     DECODE_TO_FLOAT(proc_data.north_angle, 8)
     DECODE_TO_FLOAT(proc_data.v, 12)
-//    unsigned int tmp_float_int = *((unsigned int *) (&a));
-//    float a = *((float *) (&tmp_float_int));
+
     lqr_flag = 1;
 }
 
@@ -121,11 +120,8 @@ void unpacking_fixed_length_data(unsigned int packets[10]) {
     \note
 */
 void unpacking_variable_length_data(unsigned int *packets) {
-//    debug_data.ax = (int) ((int) (packets[0] & 0x00ff0000) | (int) (packets[1] & 0x0000ff00) |
-//        (packets[2] & 0x000000ff));
-
     unsigned short checksum = verification_crc16((unsigned int *) packets, 64);
-    DECODE_TO_SHORT(debug_data.checksum, 64)    //
+    DECODE_TO_SHORT(debug_data.checksum, 64)
     if (checksum != debug_data.checksum) return;
 
     DECODE_TO_INT(debug_data.mag_x, 0)
@@ -152,7 +148,6 @@ void unpacking_variable_length_data(unsigned int *packets) {
 static unsigned char status = 0;
 static unsigned int package_buffer[80];
 static unsigned char package_counter = 0;
-//static unsigned char package_counter_1 = 0;
 
 void deal_uart6_dma_proc(const unsigned int *p) {
     for (unsigned char counter = 0; counter < CTRL_MCU_RECEIVE_AMOUNT; ++counter) {
