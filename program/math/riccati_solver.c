@@ -51,7 +51,7 @@ void lqr_control(unsigned short index) {
     last_global_time_stamp = global_time_stamp;
 
     // 求位置、航向角的误差
-    proc_data.north_angle = proc_data.north_angle - last_delta * 0.01f;
+//    proc_data.north_angle = proc_data.north_angle - last_delta * 0.01f;
     float yaw_temp = (proc_data.north_angle < 180) ? proc_data.north_angle : (proc_data.north_angle - 360);
     yaw_temp *= ANGLE_TO_RADIAN;
 

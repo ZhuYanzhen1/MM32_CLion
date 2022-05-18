@@ -28,7 +28,7 @@ void kalman_config_v(kalman_filter_t *kalman) {
 void kalman_config_distance(kalman_filter_t *kalman, float pos_0) {
     kalman->q_pos = 0.8f;
     kalman->q_vel = 0.22f;
-    kalman->r_pos = 1.6f;
+    kalman->r_pos = 2.0f;
     kalman->r_old_pos = kalman->r_pos;
 
     kalman->pos = pos_0;
@@ -56,7 +56,7 @@ float kalman_update(kalman_filter_t *kalman, float new_pos, float new_vel, float
     if (kalman->gps_valid_flag == 1)
         kalman->r_pos = kalman->r_old_pos;
     else if (kalman->gps_valid_flag == 2)
-        kalman->r_pos = 10;
+        kalman->r_pos = 20;
     else if (kalman->gps_valid_flag == 0)
         kalman->r_pos = 100000;
     kalman->gps_valid_flag = 0;

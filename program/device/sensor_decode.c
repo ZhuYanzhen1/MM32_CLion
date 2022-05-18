@@ -38,10 +38,10 @@ void precossing_proc_to_control(unsigned int packets[PROC_MCU_SEND_AMOUNT], cons
             packets[PROC_MCU_SEND_AMOUNT - 5] |= 0x80 >> (i - 1);
         }
     }
-    for (unsigned char i = 9; i < 18; ++i) {
+    for (unsigned char i = 9; i < 17; ++i) {
         if (packets[i] == 0xff) {
             packets[i] = 0x00;
-            packets[PROC_MCU_SEND_AMOUNT - 4] |= 0x80 >> (i - 1);
+            packets[PROC_MCU_SEND_AMOUNT - 4] |= 0x80 >> (i - 9);
         }
     }
 
@@ -66,7 +66,7 @@ void unpacking_proc_to_control(unsigned int packets[PROC_MCU_SEND_AMOUNT - 2]) {
         if (packets[PROC_MCU_SEND_AMOUNT - 5] & (0x80 >> i))
             packets[i] = 0xff;
     for (unsigned char i = 8; i < 16; ++i)
-        if (packets[PROC_MCU_SEND_AMOUNT - 4] & (0x80 >> i))
+        if (packets[PROC_MCU_SEND_AMOUNT - 4] & (0x80 >> (i - 8)))
             packets[i] = 0xff;
 
     DECODE_TO_FLOAT(proc_data.distance_north, 0)    // 如果发送的是float类型，得先转换成unsigned int的地址传进来
@@ -111,7 +111,7 @@ void unpacking_fixed_length_data(unsigned int packets[10]) {
 //    small_packets_sum.ax += small_packets.ax;  没用到
     small_packets_sum.ay += (float) small_packets.ay;
 //    small_packets_sum.az += small_packets.az;  没用到
-    // 角度应该得处理一下，不能直接加把
+
     small_packets_sum.num++;
 }
 
