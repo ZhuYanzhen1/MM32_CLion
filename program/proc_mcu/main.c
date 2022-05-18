@@ -130,7 +130,10 @@ void fusion_task(void *parameters) {
             goto status_V;
 
         sensor_unit_conversion();
+        float last_output_v = kalman_data.v;
         kalman_data.v = kalman_update(&kalman_v, neu.v, neu.acceleration, dt);
+        kalman_data.v = kalman_data.v * 0.3f + 0.7f * last_output_v;
+
         kalman_v.gps_valid_flag = 1;
         coordinate_system_transformation_kalman_v(small_packets.chebyshev_north);
         kalman_data.distance_north = kalman_update(&kalman_distance_north, neu.north_distance,
@@ -157,11 +160,11 @@ void fusion_task(void *parameters) {
 //        printf("%.2f\r\n", kalman_data.v);
         delayms(19);
 
-        printf("%.2f,%.2f,%.2f,%.2f\r",
-               neu.north_distance,
-               neu.east_distance,
-               kalman_data.distance_north,
-               kalman_data.distance_east);
+//        printf("%.2f,%.2f,%.2f,%.2f\r",
+//               neu.north_distance,
+//               neu.east_distance,
+//               kalman_data.distance_north,
+//               kalman_data.distance_east);
     }
 }
 
