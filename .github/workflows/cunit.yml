@@ -60,4 +60,4 @@ jobs:
         run: |
           ls && mv ./Report-Listing.xml ./docs/unit_test/Report-Listing.xml && mv ./Report-Results.xml ./docs/unit_test/Report-Results.xml && ls
           git config --global user.email "2208213223@qq.com" && git config --global user.name "LaoZhu"
-          git add . && git commit -m "Update the latest unit test reports to Github Pages." && git push origin master
+          git add . && git commit -m "Update the latest unit test reports to Github Pages." && git pull origin master --rebase && git push origin master
