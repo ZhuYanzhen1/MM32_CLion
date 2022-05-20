@@ -45,7 +45,7 @@ static unsigned int last_global_time_stamp = 0;
 void lqr_control(unsigned short index, basic_status_t status) {
     if (last_global_time_stamp == 0)
         last_global_time_stamp = global_time_stamp - 20;
-    float v_r = 3.8f, dt = (float) (global_time_stamp - last_global_time_stamp) * 0.001f, L = 0.28f;
+    float v_r = 5.1f, dt = (float) (global_time_stamp - last_global_time_stamp) * 0.001f, L = 0.28f;
     last_global_time_stamp = global_time_stamp;
 
     // 求位置、航向角的误差
