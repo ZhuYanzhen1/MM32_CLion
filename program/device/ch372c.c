@@ -18,7 +18,7 @@ void CH375_WR_CMD_PORT(unsigned char cmd) {                 /* 向CH375的命令
     GPIO_ResetBits(CH372_WR_PORT, CH372_WR_PIN);
     delayus(1);
     GPIO_SetBits(CH372_WR_PORT, CH372_WR_PIN);
-    GPIO_SetBits(GPIOF, 0x07f8);
+//    GPIO_SetBits(GPIOF, 0x07f8);
     delayus(6);
 }
 

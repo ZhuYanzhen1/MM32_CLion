@@ -28,7 +28,7 @@ void kalman_config_v(kalman_filter_t *kalman) {
 void kalman_config_distance(kalman_filter_t *kalman, float pos_0) {
     kalman->q_pos = 0.8f;
     kalman->q_vel = 0.22f;
-    kalman->r_pos = 2.0f;
+    kalman->r_pos = 3.0f;
     kalman->r_old_pos = kalman->r_pos;
 
     kalman->pos = pos_0;

@@ -8,7 +8,6 @@
 #include "uart.h"
 #endif
 
-#define YAW_TO_ANGLE        (-63.66203f)     // 180/pi * (-50/45)
 #define OUTPUT_DEBUG_INFO   (0)
 #define ITERATION_ACCURACY  (0.1f)
 #define ANGLE_TO_RADIAN     (0.0174533f)
@@ -43,25 +42,27 @@ float calculate_distance(int ind) {
 
 static float last_delta = 0;
 static unsigned int last_global_time_stamp = 0;
-void lqr_control(unsigned short index) {
+void lqr_control(unsigned short index, basic_status_t status) {
     if (last_global_time_stamp == 0)
         last_global_time_stamp = global_time_stamp - 20;
-    float v_r = 2.5f, dt = (float) (global_time_stamp - last_global_time_stamp) * 0.001f, L = 0.28f;
+    float v_r = 3.8f, dt = (float) (global_time_stamp - last_global_time_stamp) * 0.001f, L = 0.28f;
     last_global_time_stamp = global_time_stamp;
 
     // 求位置、航向角的误差
 //    proc_data.north_angle = proc_data.north_angle - last_delta * 0.01f;
-    float yaw_temp = (proc_data.north_angle < 180) ? proc_data.north_angle : (proc_data.north_angle - 360);
+    float yaw_temp = (status.angle < 180) ? status.angle : (status.angle - 360);
     yaw_temp *= ANGLE_TO_RADIAN;
 
-    float x_error = proc_data.distance_north - test_point[index][0];
-    float y_error = proc_data.distance_east - test_point[index][1];
+    float x_error = status.pos_n - test_point[index][0];
+    float y_error = status.pos_e - test_point[index][1];
     float yaw_error = yaw_temp - test_point[index][2];
     if (yaw_error > 3.14)
         yaw_error -= _2PI_;
     else if (yaw_error < -3.14)
         yaw_error += _2PI_;
 
+    x_error = 0.5f * x_error;
+    y_error = 0.5f * y_error;
 //     计算横向误差
 //    float lateral_error = y_error * qfp_fcos(test_point[index][2]) - x_error * qfp_fsin(test_point[index][2]);
 
@@ -81,7 +82,7 @@ void lqr_control(unsigned short index) {
     float p[3][3] = {0};
     float control_val[2][1] = {0};
     float q = 1;
-    float r = 2;
+    float r = 3;
 
     solve_riccati_equation(a, b, q, r, p);
     solve_feedback_value(p, a, b, x, r, control_val);
