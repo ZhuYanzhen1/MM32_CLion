@@ -9,6 +9,8 @@
 #ifndef MM32F3277_USER_CONFIG_H_
 #define MM32F3277_USER_CONFIG_H_
 
+#include "version.h"
+
 //////////////////////////////////////// System & Debugger Macro ////////////////////////////////////////
 /* Using FreeRTOS */
 #define USE_FREERTOS            1
