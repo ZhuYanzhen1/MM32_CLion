@@ -10,6 +10,9 @@
 
 //#define INDEX_NUM   747
 
+float angle_value[4] = {0};
+unsigned char angle_num = 0;
+
 extern volatile unsigned char lqr_flag;
 
 FATFS filesystem;
@@ -60,36 +63,49 @@ int main(void) {
     while (1) {
         LED1_TOGGLE();
         if (proc_data.distance_east != 0) {
-            for (unsigned char i = 0; i < 20; i++) {
+            for (unsigned char i = 0; i < 10; i++) {
                 while (1) {
                     if (lqr_flag == 1) {
                         lqr_flag = 0;
+
+                        basic_status_t current_status = {proc_data.distance_north,
+                                                         proc_data.distance_east,
+                                                         proc_data.north_angle};
+//                        basic_status_t project_status = {0};
+//                        project(current_status, &project_status, 3.8f, 0.1f, angle_value[1]);
+
                         playground_ind =
                             dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
                                       (playground_ind + INDEX_OFFSET > INDEX_NUM) ? INDEX_NUM : (playground_ind
                                           + INDEX_OFFSET));
 
-                        lqr_control(playground_ind + 5);
+                        lqr_control(playground_ind + OVERRUN_POINT, current_status);
+
                         WRITE_REG(TIM3->CCR1, angle);
+
+//                        for (unsigned char j = 1; j < 4; j++) {
+//                            angle_value[j - 1] = angle_value[j];
+//                        }
+//                        angle_value[3] = (float) (angle - 158) / YAW_TO_ANGLE;
                         break;
                     }
                 }
             }
-            speed = 4000;
+            speed = 15000;
             sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
             uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
             printf("%.3f, %.3f , \r\n", proc_data.distance_north, proc_data.distance_east);
         }
 
-//        if (playground_ind > INDEX_NUM - 100) {
-//            for (unsigned short i = 0; i < 800; i++) {
-//                speed = (speed > 1000) ? (speed - 1000) : 0;
-//                sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
-//                uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
-//                WRITE_REG(TIM3->CCR1, 158);
-//                delayms(400);
-//            }
-//            while (1);
-//        }
+        if (playground_ind > INDEX_NUM - 100) {
+            for (unsigned short i = 0; i < 20; i++) {
+                speed = (speed > 3000) ? (speed - 1000) : 2000;
+                sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
+                uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
+                WRITE_REG(TIM3->CCR1, 158);
+                delayms(400);
+            }
+            while (1);
+        }
     }
 }

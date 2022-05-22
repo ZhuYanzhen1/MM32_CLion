@@ -141,14 +141,8 @@ void fusion_task(void *parameters) {
         kalman_data.distance_east = kalman_update(&kalman_distance_east, neu.east_distance,
                                                   neu.east_v, dt);
 
-//        basic_status_t current_status = {kalman_data.distance_north,
-//                                         kalman_data.distance_east,
-//                                         small_packets.chebyshev_north};
-//        basic_status_t project_status = {0};
-//        project(current_status,project_status, );
-
-        float predict_north = kalman_data.distance_north + 0.01f * neu.north_v;
-        float predict_east = kalman_data.distance_east + 0.01f * neu.east_v;
+        float predict_north = kalman_data.distance_north + 0.05f * neu.north_v;
+        float predict_east = kalman_data.distance_east + 0.05f * neu.east_v;
         proc_to_ctrl_buffer[0] = *((unsigned int *) (&predict_north));
         proc_to_ctrl_buffer[1] = *((unsigned int *) (&predict_east));
         proc_to_ctrl_buffer[2] = *((unsigned int *) (&small_packets.chebyshev_north));
@@ -158,7 +152,7 @@ void fusion_task(void *parameters) {
             uart3_sendbyte(proc_to_ctrl_package[i]);
 
 //        printf("%.2f\r\n", kalman_data.v);
-        delayms(19);
+        delayms(39);
 
 //        printf("%.2f,%.2f,%.2f,%.2f\r",
 //               neu.north_distance,
