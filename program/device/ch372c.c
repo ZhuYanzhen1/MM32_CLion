@@ -39,9 +39,6 @@ void CH375_WR_DAT_PORT(unsigned char dat) {                 /* 向CH375的数据
 unsigned char CH375_RD_DAT_PORT(void) {                        /* 从CH375的数据端口读出数据,周期不小于1.5uS,如果单片机较快则延时 */
     unsigned char result;
     ch372c_gpio_input();
-
-    GPIO_SetBits(GPIOF, 0x07f8);
-
     GPIO_ResetBits(CH372_A0_PORT, CH372_A0_PIN);
     GPIO_SetBits(CH372_WR_PORT, CH372_WR_PIN);
     GPIO_ResetBits(CH372_RD_PORT, CH372_RD_PIN);
