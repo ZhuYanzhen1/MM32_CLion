@@ -37,10 +37,12 @@ int main(void) {
     uart6_dma_set_transmit_buffer(uart6_dma_buffer_1, CTRL_MCU_RECEIVE_AMOUNT);
     uart7_config();
     uart7_dma_sent_config(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
-    cm_backtrace_config("mm32f3277", "1.0.1", "1.0.1");
-    debugger_register_variable(dbg_float32, &proc_data.distance_north, "nd");
-    debugger_register_variable(dbg_float32, &proc_data.distance_east, "ed");
+
+    cm_backtrace_config("CtrlMCU", "1.5.4", "1.5.4");
+    debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
+    printf("CtrlMCU %s\r\n", GIT_HASH);
     timer2_config();
+
     timer4_config();
     spi3_config();
     delayms(2000);

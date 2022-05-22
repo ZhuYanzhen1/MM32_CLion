@@ -65,8 +65,8 @@ void timer2_config() {
     RCC_APB1PeriphClockCmd(RCC_APB1ENR_TIM2, ENABLE);
     TIM_TimeBaseStructInit(&TIM_TimeBaseStruct);
 
-    /* 50Hz */
-    TIM_TimeBaseStruct.TIM_Period = 399;            // 200 - 1
+    /* 25Hz */
+    TIM_TimeBaseStruct.TIM_Period = 399;            // 400 - 1
     TIM_TimeBaseStruct.TIM_Prescaler = 11999;
     TIM_TimeBaseStruct.TIM_ClockDivision = TIM_CKD_DIV1;
     TIM_TimeBaseStruct.TIM_CounterMode = TIM_CounterMode_Up;

@@ -30,6 +30,11 @@ add_compile_options(-O2)
 
 #add_definitions(-DUSE_HAL_DRIVER)
 
+add_custom_target(version_h BYPRODUCTS "${CMAKE_CURRENT_BINARY_DIR}/../system/version.h"
+        COMMAND ${CMAKE_COMMAND}
+        -D SRCDIR="${CMAKE_CURRENT_SOURCE_DIR}"
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/gitversion.cmake)
+
 include_directories(library/regs system system/cmsis library/include proc_mcu hardware system/official
         math device debug protocol gui ctrl_mcu freertos form form/origin_form form/fusion_form form/calibrate_form
         form/debug_form fatfs)
@@ -48,12 +53,14 @@ add_link_options(-mcpu=cortex-m3 -mthumb -mthumb-interwork)
 add_link_options(-T ${LINKER_SCRIPT})
 
 add_executable(${PROCESS_MCU}.elf ${PROCESS_SOURCES} ${LINKER_SCRIPT})
+add_dependencies(${PROCESS_MCU}.elf version_h)
 set(PROCESS_HEX_FILE ${PROJECT_BINARY_DIR}/${PROCESS_MCU}.hex)
 add_custom_command(TARGET ${PROCESS_MCU}.elf POST_BUILD
         COMMAND ${CMAKE_OBJCOPY} -Oihex $<TARGET_FILE:${PROCESS_MCU}.elf> ${PROCESS_HEX_FILE}
         COMMENT "Building ${HEX_FILE}")
 
 add_executable(${CONTROL_MCU}.elf ${CONTROL_SOURCES} ${LINKER_SCRIPT})
+add_dependencies(${CONTROL_MCU}.elf version_h)
 set(CONTROL_HEX_FILE ${PROJECT_BINARY_DIR}/${CONTROL_MCU}.hex)
 add_custom_command(TARGET ${CONTROL_MCU}.elf POST_BUILD
         COMMAND ${CMAKE_OBJCOPY} -Oihex $<TARGET_FILE:${CONTROL_MCU}.elf> ${CONTROL_HEX_FILE}
