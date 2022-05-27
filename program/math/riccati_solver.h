@@ -1,14 +1,14 @@
 #ifndef RICCATI_SOLVER_H_
 #define RICCATI_SOLVER_H_
 
-#define OVERRUN_POINT       5
+#define OVERRUN_POINT       4
 #define INDEX_OFFSET        20
 #define YAW_TO_ANGLE        (-63.66203f)     // 180/pi * (-50/45)
 #define OUTPUT_DEBUG_INFO   (0)
 #define ITERATION_ACCURACY  (0.1f)
 #define ANGLE_TO_RADIAN     (0.0174533f)
 #define _2PI_               (6.2831853f)
-#define DELTA_ANGLE         10
+#define DELTA_ANGLE         5
 
 typedef struct {
     float pos_n;

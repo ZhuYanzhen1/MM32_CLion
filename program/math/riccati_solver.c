@@ -25,7 +25,7 @@ void project(basic_status_t current, basic_status_t *project, float v, float t, 
 extern volatile unsigned short speed;
 extern volatile short angle;
 extern unsigned int uart7_dma_send_buffer[UART7_DMA_SEND_BUFFER];
-short last_angle = 158;
+short last_angle = 160;
 
 float calculate_distance(int ind) {
     float distance = (qfp_fsqrt
@@ -41,7 +41,7 @@ static unsigned int last_global_time_stamp = 0;
 void lqr_control(unsigned short index, basic_status_t status) {
     if (last_global_time_stamp == 0)
         last_global_time_stamp = global_time_stamp - 20;
-    float v_r = 7.5f, dt = (float) (global_time_stamp - last_global_time_stamp) * 0.001f, L = 0.28f;
+    float v_r = 3.5f, dt = (float) (global_time_stamp - last_global_time_stamp) * 0.001f, L = 0.28f;
     last_global_time_stamp = global_time_stamp;
 
     // 求位置、航向角的误差
@@ -59,6 +59,7 @@ void lqr_control(unsigned short index, basic_status_t status) {
 
     x_error = 0.5f * x_error;
     y_error = 0.5f * y_error;
+
 //     计算横向误差
 //    float lateral_error = y_error * qfp_fcos(test_point[index][2]) - x_error * qfp_fsin(test_point[index][2]);
 
@@ -84,16 +85,17 @@ void lqr_control(unsigned short index, basic_status_t status) {
     solve_feedback_value(p, a, b, x, r, control_val);
     //    speed = speed +control_val[0][0];
     last_delta = control_val[1][0] + test_point[index][3];//+ k_d * (yaw_error - last_yaw_error);
-    angle = (short) (158 + last_delta * YAW_TO_ANGLE);
-    if (angle > 195)
-        angle = 195;
-    else if (angle < 105)
-        angle = 105;
+    angle = (short) (160 + last_delta * YAW_TO_ANGLE);
+
+    if (angle > 185)
+        angle = 185;
+    else if (angle < 135)
+        angle = 135;
 
     angle = (short) (
         ((angle - last_angle) > DELTA_ANGLE) ? (last_angle + DELTA_ANGLE) : (
             ((last_angle - angle) > DELTA_ANGLE) ? (last_angle - DELTA_ANGLE) : angle));
-
+    last_angle = angle;
 }
 
 /* 寻找点迹 */
