@@ -109,7 +109,7 @@ int main(void) {
                 speed = (speed > 3000) ? (speed - 2000) : 2000;
                 sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
                 uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
-                WRITE_REG(TIM3->CCR1, 160);
+                WRITE_REG(TIM3->CCR1, SERVO_MID_POINT);
                 delayms(400);
             }
             while (1);
