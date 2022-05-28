@@ -25,7 +25,7 @@ void project(basic_status_t current, basic_status_t *project, float v, float t, 
 extern volatile unsigned short speed;
 extern volatile short angle;
 extern unsigned int uart7_dma_send_buffer[UART7_DMA_SEND_BUFFER];
-short last_angle = 160;
+short last_angle = SERVO_MID_POINT;
 
 float calculate_distance(int ind) {
     float distance = (qfp_fsqrt
@@ -85,16 +85,17 @@ void lqr_control(unsigned short index, basic_status_t status) {
     solve_feedback_value(p, a, b, x, r, control_val);
     //    speed = speed +control_val[0][0];
     last_delta = control_val[1][0] + test_point[index][3];//+ k_d * (yaw_error - last_yaw_error);
-    angle = (short) (160 + last_delta * YAW_TO_ANGLE);
+    angle = (short) (SERVO_MID_POINT + last_delta * YAW_TO_ANGLE);
 
-    if (angle > 185)
-        angle = 185;
-    else if (angle < 135)
-        angle = 135;
+    if (angle > SERVO_MID_POINT + MAX_DECLINATION_ANGLE)
+        angle = SERVO_MID_POINT + MAX_DECLINATION_ANGLE;
+    else if (angle < SERVO_MID_POINT - MAX_DECLINATION_ANGLE)
+        angle = SERVO_MID_POINT - MAX_DECLINATION_ANGLE;
 
-    angle = (short) (
-        ((angle - last_angle) > DELTA_ANGLE) ? (last_angle + DELTA_ANGLE) : (
-            ((last_angle - angle) > DELTA_ANGLE) ? (last_angle - DELTA_ANGLE) : angle));
+//    angle = (short) (
+//        ((angle - last_angle) > DELTA_ANGLE) ? (last_angle + DELTA_ANGLE) : (
+//            ((last_angle - angle) > DELTA_ANGLE) ? (last_angle - DELTA_ANGLE) : angle));
+
     last_angle = angle;
 }
 

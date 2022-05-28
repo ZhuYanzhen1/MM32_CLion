@@ -11,7 +11,7 @@
 extern volatile unsigned char lqr_flag;
 
 FATFS filesystem;
-volatile short angle = 160;
+volatile short angle = SERVO_MID_POINT;
 volatile unsigned short speed = 0;
 unsigned short playground_ind = 0;
 static unsigned char fs_buffer[FF_MAX_SS * 4];
@@ -89,16 +89,16 @@ int main(void) {
                             dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
                                       (playground_ind + INDEX_OFFSET > INDEX_NUM) ? INDEX_NUM : (playground_ind
                                           + INDEX_OFFSET));
-                        if (playground_ind > start_point + 5)
-                            lqr_control(playground_ind + OVERRUN_POINT, current_status);
-                        else
-                            angle = (short) (160 + test_point[playground_ind][3] * YAW_TO_ANGLE);
+//                        if (playground_ind > start_point + 5)
+                        lqr_control(playground_ind + OVERRUN_POINT, current_status);
+//                        else
+//                            angle = (short) (160 + test_point[playground_ind][3] * YAW_TO_ANGLE);
                         WRITE_REG(TIM3->CCR1, angle);
                         break;
                     }
                 }
             }
-            speed = 12000;
+            speed = 7000;
             sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
             uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
 //            printf("%.3f, %.3f , \r\n", proc_data.distance_north, proc_data.distance_east);

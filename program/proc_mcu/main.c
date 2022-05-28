@@ -140,10 +140,10 @@ void fusion_task(void *parameters) {
         kalman_data.distance_east = kalman_update(&kalman_distance_east, neu.east_distance,
                                                   neu.east_v, dt);
 
-        float predict_north = kalman_data.distance_north + 0.1f * neu.north_v;
-        float predict_east = kalman_data.distance_east + 0.1f * neu.east_v;
-        proc_to_ctrl_buffer[0] = *((unsigned int *) (&predict_north));
-        proc_to_ctrl_buffer[1] = *((unsigned int *) (&predict_east));
+//        float predict_north = kalman_data.distance_north + 0.1f * neu.north_v;
+//        float predict_east = kalman_data.distance_east + 0.1f * neu.east_v;
+        proc_to_ctrl_buffer[0] = *((unsigned int *) (&kalman_data.distance_north));
+        proc_to_ctrl_buffer[1] = *((unsigned int *) (&kalman_data.distance_east));
         proc_to_ctrl_buffer[2] = *((unsigned int *) (&small_packets.chebyshev_north));
         proc_to_ctrl_buffer[3] = *((unsigned int *) (&kalman_data.v));
         precossing_proc_to_control(proc_to_ctrl_package, proc_to_ctrl_buffer);

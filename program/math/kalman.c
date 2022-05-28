@@ -69,10 +69,15 @@ float kalman_update(kalman_filter_t *kalman, float new_pos, float new_vel, float
 
     /* Update estimation error covariance - Project the error covariance ahead */
     /* Step 2 */
-    kalman->P[0][0] += dt * (dt * kalman->P[1][1] - kalman->P[0][1] - kalman->P[1][0] + kalman->q_pos);
-    kalman->P[0][1] -= dt * kalman->P[1][1];
-    kalman->P[1][0] -= dt * kalman->P[1][1];
-    kalman->P[1][1] += kalman->q_vel * dt;
+//    kalman->P[0][0] += dt * (dt * kalman->P[1][1] - kalman->P[0][1] - kalman->P[1][0] + kalman->q_pos);
+//    kalman->P[0][1] -= dt * kalman->P[1][1];
+//    kalman->P[1][0] -= dt * kalman->P[1][1];
+//    kalman->P[1][1] += kalman->q_vel * dt;
+
+    kalman->P[0][0] += dt * (dt * kalman->P[1][1] + kalman->P[0][1] + kalman->P[1][0]) + kalman->q_pos;
+    kalman->P[0][1] += dt * kalman->P[1][1] + kalman->q_pos;
+    kalman->P[1][0] += dt * kalman->P[1][1] + kalman->q_vel;
+    kalman->P[1][1] += kalman->q_vel;
 
     /* Calculate pos and velocity - Update estimate with measurement zk (new_pos) */
     /* Step 3 */
@@ -106,3 +111,5 @@ float kalman_update(kalman_filter_t *kalman, float new_pos, float new_vel, float
 
     return kalman->pos;
 }
+
+
