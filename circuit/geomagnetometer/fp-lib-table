@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name "ControlBoard")(type "KiCad")(uri "D:/Desktop/Files/Freescale/MM32_CLion/circuit/control_board/ControlBoard.pretty")(options "")(descr ""))
+)
