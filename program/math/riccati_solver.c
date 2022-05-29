@@ -6,10 +6,11 @@
 #include "sensor_decode.h"
 #include "delay.h"
 #include "uart.h"
+#else
+#include "stdio.h"
 #endif
 
 #ifndef RUNNING_UNIT_TEST
-
 void project(basic_status_t current, basic_status_t *project, float v, float t, float servo_angle) {
     float l = 0.28f;
     float r = l / qfp_ftan(servo_angle);

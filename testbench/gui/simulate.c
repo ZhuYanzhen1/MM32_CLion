@@ -71,7 +71,7 @@ void simulate_lqr_control(void) {
                                   cosf(test_point_1[index][3]))}};
 
         // 获得速度误差量、前轮转角误差量两个控制量
-        double X[3][1] = {{x_error},
+        double x[3][1] = {{x_error},
                           {y_error},
                           {yaw_error}};
         float p[3][3] = {0};
@@ -80,7 +80,7 @@ void simulate_lqr_control(void) {
         float r = 1;
 
         solve_riccati_equation(a, b, q, r, p);
-        solve_feedback_value(p, a, b, X, r, control_val);
+        solve_feedback_value(p, a, b, x, r, control_val);
         float v_delta = control_val[0][0];
         float Delta_delta = control_val[1][0];
         angle = (short) (150 + (control_val[1][0] + test_point_1[index][3]) * YAW_TO_ANGLE);
@@ -90,7 +90,7 @@ void simulate_lqr_control(void) {
         pos[time][1] = *distance_e;
         time++;
         max_pos++;
-        if (time > 6000)
+        if (time > 8000)
             break;
         if (index > INDEX_NUM - 1)
             break;
