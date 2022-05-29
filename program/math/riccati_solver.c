@@ -3,6 +3,7 @@
 
 #ifndef RUNNING_UNIT_TEST
 #include "qfplib.h"
+#include "math.h"
 #include "sensor_decode.h"
 #include "delay.h"
 #include "uart.h"
@@ -41,7 +42,7 @@ static unsigned int last_global_time_stamp = 0;
 unsigned char lqr_control(unsigned short index, basic_status_t status) {
     if (last_global_time_stamp == 0)
         last_global_time_stamp = global_time_stamp - 20;
-    float v_r = 4.0f, dt = (float) (global_time_stamp - last_global_time_stamp) * 0.001f, L = 0.28f;
+    double v_r = 4.0, dt = (double) (global_time_stamp - last_global_time_stamp) * 0.001, L = 0.28;
     last_global_time_stamp = global_time_stamp;
 
     // 求位置、航向角的误差
@@ -61,18 +62,18 @@ unsigned char lqr_control(unsigned short index, basic_status_t status) {
 //    float lateral_error = y_error * qfp_fcos(test_point[index][2]) - x_error * qfp_fsin(test_point[index][2]);
 
     // 由状态方程矩阵系数，计算K
-    float a[3][3] = {{1, 0, -v_r * dt * qfp_fsin(test_point[index][2])},
-                     {0, 1, v_r * dt * qfp_fcos(test_point[index][2])},
-                     {0, 0, 1}};
-    float b[3][2] = {{qfp_fcos(test_point[index][2]) * dt, 0},
-                     {qfp_fsin(test_point[index][2]) * dt, 0},
-                     {qfp_ftan(test_point[index][3]) * dt / L, v_r * dt /
-                         (L * qfp_fcos(test_point[index][3]) * qfp_fcos(test_point[index][3]))}};
+    double a[3][3] = {{1, 0, -v_r * dt * sin((double) test_point[index][2])},
+                      {0, 1, v_r * dt * cos((double) test_point[index][2])},
+                      {0, 0, 1}};
+    double b[3][2] = {{cos((double) test_point[index][2]) * dt, 0},
+                      {sin((double) test_point[index][2]) * dt, 0},
+                      {tan((double) test_point[index][3]) * dt / L, v_r * dt /
+                          (L * cos((double) test_point[index][3]) * cos((double) test_point[index][3]))}};
 
     // 获得速度误差量、前轮转角误差量两个控制量
-    float x[3][1] = {{x_error},
-                     {y_error},
-                     {yaw_error}};
+    double x[3][1] = {{x_error},
+                      {y_error},
+                      {yaw_error}};
     float p[3][3] = {0};
     float control_val[2][1] = {0};
     float q = 1;
