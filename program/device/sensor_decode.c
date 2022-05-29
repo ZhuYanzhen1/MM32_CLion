@@ -12,7 +12,7 @@
 decode_fixed_sum small_packets_sum = {0};
 decode_fixed small_packets = {0};
 decode_debug debug_data = {0};
-decode_proc proc_data = {0};
+volatile decode_proc proc_data = {0};
 volatile unsigned char lqr_flag = 0;
 
 /*!

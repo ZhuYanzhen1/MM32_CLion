@@ -23,9 +23,8 @@ void project(basic_status_t current, basic_status_t *project, float v, float t, 
 
 // 对电机和舵机的控制量
 extern volatile unsigned short speed;
-extern volatile short angle;
 extern unsigned int uart7_dma_send_buffer[UART7_DMA_SEND_BUFFER];
-short last_angle = 158;
+short last_angle = SERVO_MID_POINT;
 
 float calculate_distance(int ind) {
     float distance = (qfp_fsqrt
@@ -38,10 +37,10 @@ float calculate_distance(int ind) {
 
 static float last_delta = 0;
 static unsigned int last_global_time_stamp = 0;
-void lqr_control(unsigned short index, basic_status_t status) {
+unsigned char lqr_control(unsigned short index, basic_status_t status) {
     if (last_global_time_stamp == 0)
         last_global_time_stamp = global_time_stamp - 20;
-    float v_r = 7.5f, dt = (float) (global_time_stamp - last_global_time_stamp) * 0.001f, L = 0.28f;
+    float v_r = 4.0f, dt = (float) (global_time_stamp - last_global_time_stamp) * 0.001f, L = 0.28f;
     last_global_time_stamp = global_time_stamp;
 
     // 求位置、航向角的误差
@@ -57,8 +56,6 @@ void lqr_control(unsigned short index, basic_status_t status) {
     else if (yaw_error < -3.14)
         yaw_error += _2PI_;
 
-    x_error = 0.5f * x_error;
-    y_error = 0.5f * y_error;
 //     计算横向误差
 //    float lateral_error = y_error * qfp_fcos(test_point[index][2]) - x_error * qfp_fsin(test_point[index][2]);
 
@@ -84,16 +81,18 @@ void lqr_control(unsigned short index, basic_status_t status) {
     solve_feedback_value(p, a, b, x, r, control_val);
     //    speed = speed +control_val[0][0];
     last_delta = control_val[1][0] + test_point[index][3];//+ k_d * (yaw_error - last_yaw_error);
-    angle = (short) (158 + last_delta * YAW_TO_ANGLE);
-    if (angle > 195)
-        angle = 195;
-    else if (angle < 105)
-        angle = 105;
+    short angle = (short) (SERVO_MID_POINT + last_delta * YAW_TO_ANGLE);
 
-    angle = (short) (
-        ((angle - last_angle) > DELTA_ANGLE) ? (last_angle + DELTA_ANGLE) : (
-            ((last_angle - angle) > DELTA_ANGLE) ? (last_angle - DELTA_ANGLE) : angle));
+    if (angle > SERVO_MID_POINT + MAX_DECLINATION_ANGLE)
+        angle = SERVO_MID_POINT + MAX_DECLINATION_ANGLE;
+    else if (angle < SERVO_MID_POINT - MAX_DECLINATION_ANGLE)
+        angle = SERVO_MID_POINT - MAX_DECLINATION_ANGLE;
 
+//    angle = (short) (
+//        ((angle - last_angle) > DELTA_ANGLE) ? (last_angle + DELTA_ANGLE) : (
+//            ((last_angle - angle) > DELTA_ANGLE) ? (last_angle - DELTA_ANGLE) : angle));
+//    last_angle = angle;
+    return angle;
 }
 
 /* 寻找点迹 */

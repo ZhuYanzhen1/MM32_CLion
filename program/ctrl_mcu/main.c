@@ -8,15 +8,10 @@
 
 #include "main.h"
 
-//#define INDEX_NUM   747
-
-float angle_value[4] = {0};
-unsigned char angle_num = 0;
-
 extern volatile unsigned char lqr_flag;
 
 FATFS filesystem;
-volatile short angle = 158;
+volatile short angle = SERVO_MID_POINT;
 volatile unsigned short speed = 0;
 unsigned short playground_ind = 0;
 static unsigned char fs_buffer[FF_MAX_SS * 4];
@@ -62,49 +57,60 @@ int main(void) {
 
 //    ch372_config();
 
-    while (1) {
+    static unsigned char find_counter = 0;
+    static unsigned short start_point = 0;
+    while (1) { // 寻点稳定再发车
         LED1_TOGGLE();
+        if (proc_data.distance_east != 0 && lqr_flag == 1) {
+            lqr_flag = 0;
+            playground_ind =
+                dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
+                          (playground_ind + INDEX_OFFSET > INDEX_NUM) ? INDEX_NUM : (playground_ind
+                              + INDEX_OFFSET));
+            start_point = playground_ind;
+            find_counter++;
+            if (find_counter > 10)
+                break;
+            LED1_TOGGLE();
+            delayms(50);
+        }
+    }
+    while (1) {
         if (proc_data.distance_east != 0) {
             for (unsigned char i = 0; i < 10; i++) {
                 while (1) {
                     if (lqr_flag == 1) {
                         lqr_flag = 0;
-
+                        LED1_TOGGLE();
                         basic_status_t current_status = {proc_data.distance_north,
                                                          proc_data.distance_east,
                                                          proc_data.north_angle};
-//                        basic_status_t project_status = {0};
-//                        project(current_status, &project_status, 3.8f, 0.1f, angle_value[1]);
-
                         playground_ind =
                             dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
                                       (playground_ind + INDEX_OFFSET > INDEX_NUM) ? INDEX_NUM : (playground_ind
                                           + INDEX_OFFSET));
-
+//                        if (playground_ind > start_point + 5)
                         lqr_control(playground_ind + OVERRUN_POINT, current_status);
-
+//                        else
+//                            angle = (short) (160 + test_point[playground_ind][3] * YAW_TO_ANGLE);
                         WRITE_REG(TIM3->CCR1, angle);
-
-//                        for (unsigned char j = 1; j < 4; j++) {
-//                            angle_value[j - 1] = angle_value[j];
-//                        }
-//                        angle_value[3] = (float) (angle - 158) / YAW_TO_ANGLE;
                         break;
                     }
                 }
             }
-            speed = 15000;
+            speed = 10000;
             sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
             uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
-            printf("%.3f, %.3f , \r\n", proc_data.distance_north, proc_data.distance_east);
+//            printf("%.3f, %.3f , \r\n", proc_data.distance_north, proc_data.distance_east);
         }
 
-        if (playground_ind > INDEX_NUM - 100) {
-            for (unsigned short i = 0; i < 20; i++) {
-                speed = (speed > 3000) ? (speed - 1000) : 2000;
+//        if (playground_ind > INDEX_NUM - 20) {
+        if (playground_ind > 200) {
+            for (unsigned short i = 0; i < 10; i++) {
+                speed = (speed > 3000) ? (speed - 2000) : 2000;
                 sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
                 uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
-                WRITE_REG(TIM3->CCR1, 158);
+                WRITE_REG(TIM3->CCR1, SERVO_MID_POINT);
                 delayms(400);
             }
             while (1);

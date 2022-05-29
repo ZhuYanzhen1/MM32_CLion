@@ -9,6 +9,7 @@
 #include "timer.h"
 #include "hal_conf.h"
 #include "mm32_device.h"
+#include "riccati_solver.h"
 #ifdef IS_CONTROL_MCU
 #include "../ctrl_mcu/config.h"
 #else
@@ -56,7 +57,7 @@ void timer3_config(void) {  // PB4
     TIM_CtrlPWMOutputs(TIM3, ENABLE);
 
     TIM_Cmd(TIM3, ENABLE);
-    WRITE_REG(TIM3->CCR1, 150);
+    WRITE_REG(TIM3->CCR1, SERVO_MID_POINT);
 }
 
 void timer2_config() {

@@ -5,9 +5,8 @@
 #ifndef MM32F3277_MATH_TEST_H_
 #define MM32F3277_MATH_TEST_H_
 
-#define INDEX_NUM   641  // main 最上方
-#define FIRST_N     4385.7630000f
-#define FIRST_E     39692.2030000f
+#define INDEX_NUM   671  // test_point_1：641（体育馆）    test_point_2：671（国防生）  第五道
+//#define test_point  test_point_2
 
 extern float test_point[][4];
 
