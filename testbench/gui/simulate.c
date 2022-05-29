@@ -61,19 +61,19 @@ void simulate_lqr_control(void) {
             break;
 
         // 由状态方程矩阵系数，计算K
-        float a[3][3] = {{1, 0, -v_r * dt * sinf(test_point_1[index][2])},
-                         {0, 1, v_r * dt * cosf(test_point_1[index][2])},
-                         {0, 0, 1}};
-        float b[3][2] = {{cosf(test_point_1[index][2]) * dt, 0},
-                         {sinf(test_point_1[index][2]) * dt, 0},
-                         {tanf(test_point_1[index][3]) * dt / L, v_r * dt /
-                             (L * cosf(test_point_1[index][3]) *
-                                 cosf(test_point_1[index][3]))}};
+        double a[3][3] = {{1, 0, -v_r * dt * sinf(test_point_1[index][2])},
+                          {0, 1, v_r * dt * cosf(test_point_1[index][2])},
+                          {0, 0, 1}};
+        double b[3][2] = {{cosf(test_point_1[index][2]) * dt, 0},
+                          {sinf(test_point_1[index][2]) * dt, 0},
+                          {tanf(test_point_1[index][3]) * dt / L, v_r * dt /
+                              (L * cosf(test_point_1[index][3]) *
+                                  cosf(test_point_1[index][3]))}};
 
         // 获得速度误差量、前轮转角误差量两个控制量
-        float X[3][1] = {{x_error},
-                         {y_error},
-                         {yaw_error}};
+        double X[3][1] = {{x_error},
+                          {y_error},
+                          {yaw_error}};
         float p[3][3] = {0};
         float control_val[2][1] = {0};
         float q = 1;

@@ -139,37 +139,48 @@ float uabs(float value) {
         return value;
 }
 
-void solve_feedback_value(float p[3][3], float a[3][3], float b[3][2], float x[3][1], float r, float fb[2][1]) {
-    float bt_pn_b[2][2] = {{b[0][0] * (b[0][0] * p[0][0] + b[1][0] * p[1][0] + b[2][0] * p[2][0]) +
+void solve_feedback_value(float p[3][3], double a[3][3], double b[3][2], double x[3][1], float r, float fb[2][1]) {
+    double bt_pn_b[2][2] = {{b[0][0] * (b[0][0] * p[0][0] + b[1][0] * p[1][0] + b[2][0] * p[2][0]) +
         b[1][0] * (b[0][0] * p[0][1] + b[1][0] * p[1][1] + b[2][0] * p[2][1]) +
         b[2][0] * (b[0][0] * p[0][2] + b[1][0] * p[1][2] + b[2][0] * p[2][2]),
-                            b[2][1] * (b[0][0] * p[0][2] + b[1][0] * p[1][2] + b[2][0] * p[2][2])},
-                           {b[0][0] * b[2][1] * p[2][0] + b[1][0] * b[2][1] * p[2][1] + b[2][0] * b[2][1] * p[2][2],
-                            b[2][1] * b[2][1] * p[2][2]}};
-    float bt_pn_a[2][3] = {{b[0][0] * p[0][0] + b[1][0] * p[1][0] + b[2][0] * p[2][0],
-                            b[0][0] * p[0][1] + b[1][0] * p[1][1] + b[2][0] * p[2][1],
-                            b[0][0] * p[0][2] + b[1][0] * p[1][2]
-                                + a[0][2] * (b[0][0] * p[0][0] + b[1][0] * p[1][0] + b[2][0] * p[2][0]) +
-                                a[1][2] * (b[0][0] * p[0][1] + b[1][0] * p[1][1] + b[2][0] * p[2][1])
-                                + b[2][0] * p[2][2]},
-                           {b[2][1] * p[2][0], b[2][1] * p[2][1],
-                            a[0][2] * b[2][1] * p[2][0] + a[1][2] * b[2][1] * p[2][1] + b[2][1] * p[2][2]}};
-    float bt_pn_b_diag = -(bt_pn_b[0][1] * bt_pn_b[1][0]) + bt_pn_b[0][0] * bt_pn_b[1][1] +
-        bt_pn_b[0][0] * r + bt_pn_b[1][1] * r + r * r;
-    float bt_pn_b_inv_m[2][2] = {{-((bt_pn_b[1][1] + r) / (bt_pn_b_diag)), bt_pn_b[0][1] / (bt_pn_b_diag)},
-                                 {bt_pn_b[1][0] / (bt_pn_b_diag), -((bt_pn_b[0][0] + r) / (bt_pn_b_diag))}};
-    float matrix_k[2][3] = {{bt_pn_a[0][0] * bt_pn_b_inv_m[0][0] + bt_pn_a[1][0] * bt_pn_b_inv_m[0][1],
-                             bt_pn_a[0][1] * bt_pn_b_inv_m[0][0] + bt_pn_a[1][1] * bt_pn_b_inv_m[0][1],
-                             bt_pn_a[0][2] * bt_pn_b_inv_m[0][0] + bt_pn_a[1][2] * bt_pn_b_inv_m[0][1]},
-                            {bt_pn_a[0][0] * bt_pn_b_inv_m[1][0] + bt_pn_a[1][0] * bt_pn_b_inv_m[1][1],
-                             bt_pn_a[0][1] * bt_pn_b_inv_m[1][0] + bt_pn_a[1][1] * bt_pn_b_inv_m[1][1],
-                             bt_pn_a[0][2] * bt_pn_b_inv_m[1][0] + bt_pn_a[1][2] * bt_pn_b_inv_m[1][1]}};
-    fb[0][0] = x[0][0] * matrix_k[0][0] + x[1][0] * matrix_k[0][1] + x[2][0] * matrix_k[0][2];
-    fb[1][0] = x[0][0] * matrix_k[1][0] + x[1][0] * matrix_k[1][1] + x[2][0] * matrix_k[1][2];
+                             b[2][1] * (b[0][0] * p[0][2] + b[1][0] * p[1][2] + b[2][0] * p[2][2])},
+                            {b[0][0] * b[2][1] * p[2][0] + b[1][0] * b[2][1] * p[2][1] + b[2][0] * b[2][1] * p[2][2],
+                             b[2][1] * b[2][1] * p[2][2]}};
+    double bt_pn_a[2][3] = {{b[0][0] * p[0][0] + b[1][0] * p[1][0] + b[2][0] * p[2][0],
+                             b[0][0] * p[0][1] + b[1][0] * p[1][1] + b[2][0] * p[2][1],
+                             b[0][0] * p[0][2] + b[1][0] * p[1][2]
+                                 + a[0][2] * (b[0][0] * p[0][0] + b[1][0] * p[1][0] + b[2][0] * p[2][0]) +
+                                 a[1][2] * (b[0][0] * p[0][1] + b[1][0] * p[1][1] + b[2][0] * p[2][1])
+                                 + b[2][0] * p[2][2]},
+                            {b[2][1] * p[2][0], b[2][1] * p[2][1],
+                             a[0][2] * b[2][1] * p[2][0] + a[1][2] * b[2][1] * p[2][1] + b[2][1] * p[2][2]}};
+    double bt_pn_b_inv_m[2][2] = {{(bt_pn_b[1][1] + r)
+                                       / (-(bt_pn_b[0][1] * bt_pn_b[1][0]) + bt_pn_b[0][0] * bt_pn_b[1][1]
+                                           + bt_pn_b[0][0] * r + bt_pn_b[1][1] * r + r * r),
+                                   -(bt_pn_b[0][1]
+                                       / (-(bt_pn_b[0][1] * bt_pn_b[1][0]) + bt_pn_b[0][0] * bt_pn_b[1][1]
+                                           + bt_pn_b[0][0] * r + bt_pn_b[1][1] * r + r * r))},
+                                  {-(bt_pn_b[1][0]
+                                      / (-(bt_pn_b[0][1] * bt_pn_b[1][0]) + bt_pn_b[0][0] * bt_pn_b[1][1]
+                                          + bt_pn_b[0][0] * r + bt_pn_b[1][1] * r + r * r)),
+                                   (bt_pn_b[0][0] + r)
+                                       / (-(bt_pn_b[0][1] * bt_pn_b[1][0]) + bt_pn_b[0][0] * bt_pn_b[1][1]
+                                           + bt_pn_b[0][0] * r + bt_pn_b[1][1] * r + r * r)}};
+    double matrix_k[2][3] = {{bt_pn_a[0][0] * bt_pn_b_inv_m[0][0] + bt_pn_a[1][0] * bt_pn_b_inv_m[0][1],
+                              bt_pn_a[0][1] * bt_pn_b_inv_m[0][0] + bt_pn_a[1][1] * bt_pn_b_inv_m[0][1],
+                              bt_pn_a[0][2] * bt_pn_b_inv_m[0][0] + bt_pn_a[1][2] * bt_pn_b_inv_m[0][1]},
+                             {bt_pn_a[0][0] * bt_pn_b_inv_m[1][0] + bt_pn_a[1][0] * bt_pn_b_inv_m[1][1],
+                              bt_pn_a[0][1] * bt_pn_b_inv_m[1][0] + bt_pn_a[1][1] * bt_pn_b_inv_m[1][1],
+                              bt_pn_a[0][2] * bt_pn_b_inv_m[1][0] + bt_pn_a[1][2] * bt_pn_b_inv_m[1][1]}};
+    fb[0][0] = (float) (x[0][0] * matrix_k[0][0] + x[1][0] * matrix_k[0][1] + x[2][0] * matrix_k[0][2]);
+    fb[1][0] = (float) (x[0][0] * matrix_k[1][0] + x[1][0] * matrix_k[1][1] + x[2][0] * matrix_k[1][2]);
+    fb[0][0] = -1 * fb[0][0];
+    fb[1][0] = -1 * fb[1][0];
 }
 
-void solve_riccati_equation(float a[3][3], float b[3][2], float q, float r, float p[3][3]) {
-    float A02 = a[0][2], A12 = a[1][2], B00 = b[0][0], B10 = b[1][0], B20 = b[2][0], B21 = b[2][1];
+void solve_riccati_equation(double a[3][3], double b[3][2], float q, float r, float p[3][3]) {
+    float A02 = (float) a[0][2], A12 = (float) a[1][2];
+    float B00 = (float) b[0][0], B10 = (float) b[1][0], B20 = (float) b[2][0], B21 = (float) b[2][1];
     float p_next[3][3] = {0};
     unsigned int counter;
     p[0][0] = q;
