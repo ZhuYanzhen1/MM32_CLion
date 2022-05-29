@@ -54,9 +54,22 @@ void test_calibration_solver(void) {
 }
 
 void test_riccati_solver(void) {
-    float fai_r = 1.700996560758021f, delta_r = 0.0015f, L = 0.28f, v_r = 3.0f, dt = 0.03f;
-//    float error_x = 1.2f, error_y = 0.4f, error_fai = 0.17f;
-    float error_x = 0, error_y = 0, error_fai = -0.5f;
+    basic_status_t status = {4308.05f,
+                             39635.2f,
+                             120};
+    float yaw_temp = (status.angle < 180) ? status.angle : (status.angle - 360);
+    yaw_temp *= ANGLE_TO_RADIAN;
+
+    float x_error = status.pos_n - 4305.4110000f;    // 4305.4110000f, 39632.8750000f, 3.1414113f, 0.0001956f
+    float y_error = status.pos_e - 39632.8750000f;
+    float yaw_error = yaw_temp - 3.1414113f;
+    if (yaw_error > 3.14)
+        yaw_error -= _2PI_;
+    else if (yaw_error < -3.14)
+        yaw_error += _2PI_;
+
+    float v_r = 4, dt = 0.04f, fai_r = 3.1414113f, delta_r = 0.0001956f, L = 0.28f;
+
     float a[3][3] = {{1, 0, -v_r * dt * sinf(fai_r)},
                      {0, 1, v_r * dt * cosf(fai_r)},
                      {0, 0, 1}};
@@ -64,22 +77,22 @@ void test_riccati_solver(void) {
     float b[3][2] = {{cosf(fai_r) * dt,       0},
                      {sinf(fai_r) * dt,       0},
                      {tanf(delta_r) * dt / L, v_r * dt / (L * cosf(delta_r) * cosf(delta_r))}};
-    float x[3][1] = {{error_x},
-                     {error_y},
-                     {error_fai}};
+    float x[3][1] = {{x_error},
+                     {y_error},
+                     {yaw_error}};
     float p[3][3] = {0};
     float control_val[2][1] = {0};
     float r = 1;
-    float q = 1;
+    float q = 3;
 
     solve_riccati_equation(a, b, q, r, p);
     solve_feedback_value(p, a, b, x, r, control_val);
 
     printf("\r\n\r\nangle: %f\r\n\r\n", control_val[1][0] + delta_r);
-//    CU_ASSERT(fabsf(control_val[0][0]) < fabsf(-1.2583f - TOLERANCE_PRECISION))
-//    CU_ASSERT(fabsf(control_val[0][0]) > fabsf(-1.2583f + TOLERANCE_PRECISION))
-//    CU_ASSERT(fabsf(control_val[1][0]) < fabsf(-0.3026f - TOLERANCE_PRECISION))
-//    CU_ASSERT(fabsf(control_val[1][0]) > fabsf(-0.3026f + TOLERANCE_PRECISION))
+    CU_ASSERT(fabsf(control_val[0][0]) < fabsf(-1.2583f - TOLERANCE_PRECISION))
+    CU_ASSERT(fabsf(control_val[0][0]) > fabsf(-1.2583f + TOLERANCE_PRECISION))
+    CU_ASSERT(fabsf(control_val[1][0]) < fabsf(-0.3026f - TOLERANCE_PRECISION))
+    CU_ASSERT(fabsf(control_val[1][0]) > fabsf(-0.3026f + TOLERANCE_PRECISION))
 }
 
 #ifndef USING_GTK_GUI_MACRO

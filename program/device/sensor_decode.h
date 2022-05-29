@@ -89,7 +89,7 @@ typedef struct {
 extern decode_fixed_sum small_packets_sum;
 extern decode_fixed small_packets;
 extern decode_debug debug_data;
-extern decode_proc proc_data;
+extern volatile decode_proc proc_data;
 extern unsigned char uart2_dma_buffer_size;
 
 void precossing_proc_to_control(unsigned int packets[PROC_MCU_SEND_AMOUNT], const unsigned int *buffer);

@@ -8,7 +8,7 @@
 #define DELTA_ANGLE             5
 #define YAW_TO_ANGLE            (-63.66203f)     // 180/pi * (-50/45)
 #define OUTPUT_DEBUG_INFO       (0)
-#define ITERATION_ACCURACY      (0.1f)
+#define ITERATION_ACCURACY      (0.01f)
 #define ANGLE_TO_RADIAN         (0.0174533f)
 #define _2PI_                   (6.2831853f)
 
@@ -29,7 +29,7 @@ int dichotomy(int ind_start, int ind_end);
 void project(basic_status_t current, basic_status_t *project, float v, float t, float servo_angle);
 
 void lqr_control_test(unsigned short index, int angle_ctrl, float angle_yaw, float distance_n, float distance_e);
-void lqr_control(unsigned short index, basic_status_t status);
+unsigned char lqr_control(unsigned short index, basic_status_t status);
 
 void solve_feedback_value(float p[3][3], float a[3][3], float b[3][2], float x[3][1], float r, float fb[2][1]);
 void solve_riccati_equation(float a[3][3], float b[3][2], float q, float r, float p[3][3]);

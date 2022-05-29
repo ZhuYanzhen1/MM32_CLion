@@ -98,13 +98,14 @@ int main(void) {
                     }
                 }
             }
-            speed = 7000;
+            speed = 10000;
             sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
             uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
 //            printf("%.3f, %.3f , \r\n", proc_data.distance_north, proc_data.distance_east);
         }
 
-        if (playground_ind > INDEX_NUM - 20) {
+//        if (playground_ind > INDEX_NUM - 20) {
+        if (playground_ind > 200) {
             for (unsigned short i = 0; i < 10; i++) {
                 speed = (speed > 3000) ? (speed - 2000) : 2000;
                 sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
