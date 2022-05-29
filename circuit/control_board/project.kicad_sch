@@ -977,18 +977,6 @@
     (path "/99919f16-809b-4d37-b44a-061baa0477d2/5e87493d-c45c-48c3-9a1e-f6a92466a60b"
       (reference "#PWR037") (unit 1) (value "GND") (footprint "")
     )
-    (path "/99919f16-809b-4d37-b44a-061baa0477d2/355d4027-c841-4960-ae29-d5f3ae71f546"
-      (reference "#PWR038") (unit 1) (value "GND") (footprint "")
-    )
-    (path "/99919f16-809b-4d37-b44a-061baa0477d2/4f037df9-b92b-4371-88d4-cf5b4d43c1e2"
-      (reference "#PWR039") (unit 1) (value "GND") (footprint "")
-    )
-    (path "/99919f16-809b-4d37-b44a-061baa0477d2/22a0c82b-cd74-44bc-b983-0fa6e3fc3563"
-      (reference "#PWR040") (unit 1) (value "+5V") (footprint "")
-    )
-    (path "/99919f16-809b-4d37-b44a-061baa0477d2/6aaa8cfa-e0da-416a-b679-f7034a59c742"
-      (reference "#PWR041") (unit 1) (value "GND") (footprint "")
-    )
     (path "/99919f16-809b-4d37-b44a-061baa0477d2/2145b263-fd3a-4bbd-a31a-b50503c3f94b"
       (reference "#PWR042") (unit 1) (value "+3.3VP") (footprint "")
     )
@@ -997,15 +985,6 @@
     )
     (path "/99919f16-809b-4d37-b44a-061baa0477d2/ded2999d-3eba-45e0-9663-4446951819b1"
       (reference "#PWR044") (unit 1) (value "+3.3VP") (footprint "")
-    )
-    (path "/99919f16-809b-4d37-b44a-061baa0477d2/17191966-4768-4285-bc3c-7e88e9fd7761"
-      (reference "#PWR045") (unit 1) (value "+5V") (footprint "")
-    )
-    (path "/99919f16-809b-4d37-b44a-061baa0477d2/8c88aff2-21c8-476c-ad2b-6f62702dac22"
-      (reference "#PWR046") (unit 1) (value "GND") (footprint "")
-    )
-    (path "/99919f16-809b-4d37-b44a-061baa0477d2/3873c180-2de3-4957-bb41-52aefbf3737d"
-      (reference "#PWR047") (unit 1) (value "+5V") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00006194fb75/19a1f31e-98b8-42e0-b876-540caf50ba8a"
       (reference "#PWR048") (unit 1) (value "+3.3VA") (footprint "")
@@ -1111,9 +1090,6 @@
     )
     (path "/00000000-0000-0000-0000-00006194fb75/93dcf5ab-658d-4de0-b5c4-98015ab4a9a9"
       (reference "#PWR082") (unit 1) (value "GND") (footprint "")
-    )
-    (path "/99919f16-809b-4d37-b44a-061baa0477d2/e41d037e-8298-47c6-b16d-2a97561e0c3e"
-      (reference "#PWR083") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00006194fb75/31f975bc-d851-47e5-acc1-7cd493519d5d"
       (reference "#PWR084") (unit 1) (value "+3.3VA") (footprint "")
@@ -1655,15 +1631,6 @@
     (path "/364540f7-0c58-4618-8ce3-bea6d054cb4e/5243a6ac-bc64-4886-9169-2f262dfd771b"
       (reference "C66") (unit 1) (value "100nF") (footprint "ControlBoard:C_0603_1608Metric")
     )
-    (path "/99919f16-809b-4d37-b44a-061baa0477d2/f1c32467-ca80-4cc9-bf2c-9d688b01fec0"
-      (reference "C67") (unit 1) (value "100nF") (footprint "ControlBoard:C_0603_1608Metric")
-    )
-    (path "/99919f16-809b-4d37-b44a-061baa0477d2/aeaec11c-8708-4952-9aed-3efeefb16de2"
-      (reference "C68") (unit 1) (value "10uF") (footprint "ControlBoard:C_0603_1608Metric")
-    )
-    (path "/99919f16-809b-4d37-b44a-061baa0477d2/27d2a568-8d07-43ee-b103-6b7eebeafd1d"
-      (reference "C69") (unit 1) (value "100nF") (footprint "ControlBoard:C_0603_1608Metric")
-    )
     (path "/7c560bda-f929-4e77-960a-fa15837ad328/e9af1853-22f9-4f9e-83fe-eddf80e17243"
       (reference "C70") (unit 1) (value "100nF") (footprint "ControlBoard:C_0603_1608Metric")
     )
@@ -1787,11 +1754,11 @@
     (path "/7c560bda-f929-4e77-960a-fa15837ad328/fd7a4681-fa6d-4441-a920-23960c45e272"
       (reference "U13") (unit 1) (value "MM32SPIN27PS") (footprint "ControlBoard:LQFP-64_10x10mm_P0.5mm")
     )
-    (path "/99919f16-809b-4d37-b44a-061baa0477d2/161d5af1-f0e2-4af4-a7ec-a33a8da11fd4"
-      (reference "U14") (unit 1) (value "CH372C") (footprint "ControlBoard:SSOP-20_5.3x7.2mm_P0.65mm")
+    (path "/99919f16-809b-4d37-b44a-061baa0477d2/d6889821-7908-4037-b3cb-9818aff539b6"
+      (reference "U?") (unit 1) (value "CH440R") (footprint "ControlBoard:TSSOP-16_4.4x5mm_P0.65mm")
     )
-    (path "/99919f16-809b-4d37-b44a-061baa0477d2/81777fc0-c5a7-4a15-88f6-34092c22851d"
-      (reference "U15") (unit 1) (value "W25Q64") (footprint "ControlBoard:SOIC-8_5.23x5.23mm_P1.27mm")
+    (path "/99919f16-809b-4d37-b44a-061baa0477d2/f6a9e21a-57b3-43e4-99a3-6acd62380fae"
+      (reference "U?") (unit 1) (value "MKDV1GCL-AB") (footprint "ControlBoard:LGA-8060_8")
     )
     (path "/00000000-0000-0000-0000-00006194fb75/200af147-550b-4430-865b-758995ec72c3"
       (reference "Y1") (unit 1) (value "8MHz") (footprint "ControlBoard:Crystal_SMD_3225-4Pin_3.2x2.5mm")

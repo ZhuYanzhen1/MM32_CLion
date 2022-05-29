@@ -1,3 +1,4 @@
 (sym_lib_table
   (lib (name "MM32_Periph")(type "KiCad")(uri "${KIPRJMOD}/MM32_Periph.kicad_sym")(options "")(descr ""))
+  (lib (name "Integrated-circuit_storage")(type "KiCad")(uri "${KIPRJMOD}/Integrated-circuit_storage.kicad_sym")(options "")(descr ""))
 )
