@@ -40,6 +40,7 @@
 #include "riccati_solver.h"
 #include "fast_math.h"
 #include "test.h"
+#include "data_conversion.h"
 
 ///////////// Debug /////////////
 #include "debugger.h"

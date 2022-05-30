@@ -9,4 +9,6 @@ void test_calibration_solver(void);
 
 void test_riccati_solver(void);
 
+void test_project_solver(void);
+
 #endif //TESTBENCH_SCRIPT_SOLVER_TEST_H_

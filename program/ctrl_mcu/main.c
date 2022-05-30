@@ -59,6 +59,7 @@ int main(void) {
 
     static unsigned char find_counter = 0;
     static unsigned short start_point = 0;
+    playground_ind = 370;
     while (1) { // 寻点稳定再发车
         LED1_TOGGLE();
         if (proc_data.distance_east != 0 && lqr_flag == 1) {
@@ -82,9 +83,17 @@ int main(void) {
                     if (lqr_flag == 1) {
                         lqr_flag = 0;
                         LED1_TOGGLE();
+
                         basic_status_t current_status = {proc_data.distance_north,
                                                          proc_data.distance_east,
                                                          proc_data.north_angle};
+
+                        float temp_delta = GEO_ANGLE(current_status.angle);
+                        float north_v = proc_data.v * qfp_fcos(temp_delta);
+                        float east_v = proc_data.v * qfp_fsin(temp_delta);
+                        current_status.pos_n = current_status.pos_n + 0.1f * north_v;
+                        current_status.pos_e = current_status.pos_e + 0.1f * east_v;
+
                         playground_ind =
                             dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
                                       (playground_ind + INDEX_OFFSET > INDEX_NUM) ? INDEX_NUM : (playground_ind
@@ -105,7 +114,7 @@ int main(void) {
         }
 
 //        if (playground_ind > INDEX_NUM - 20) {
-        if (playground_ind > 200) {
+        if (playground_ind > start_point + 50) {
             for (unsigned short i = 0; i < 10; i++) {
                 speed = (speed > 3000) ? (speed - 2000) : 2000;
                 sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);

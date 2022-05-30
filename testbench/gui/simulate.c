@@ -7,7 +7,7 @@
 #include "test_data.h"
 #include "riccati_solver.h"
 
-#define dt          0.02f
+#define dt          0.04f
 #define L           0.28f
 #define refSpeed    3
 #define ANGLE_TO_RADIAN         (0.0174533f)
@@ -26,10 +26,10 @@ lqr_update(float refDelta, float Delta_delta, float v_delta, float *x, float *y,
 
 float calculate_distance(int ind, float x, float y) {
     float distance = (sqrtf
-        ((test_point_1[ind][0] - x)
+            ((test_point_1[ind][0] - x)
              * (test_point_1[ind][0] - x)
              + (test_point_1[ind][1] - y) *
-                 (test_point_1[ind][1] - y)));
+               (test_point_1[ind][1] - y)));
     return distance;
 }
 
@@ -40,7 +40,7 @@ unsigned int max_pos = 0;
 void simulate_lqr_control(void) {
     unsigned short index = 0;
     float dn = test_point_1[0][0] - 0.5f, de = test_point_1[0][1] + 0.5f,
-        ay = test_point_1[0][2] - 0.02f, speed = 0, delta = 0;
+            ay = test_point_1[0][2] - 0.02f, speed = 0, delta = 0;
     float *distance_n = &dn, *distance_e = &de, *angle_yaw = &ay, *v = &speed, *Delta = &delta;
     float v_r = refSpeed;
 
@@ -64,11 +64,11 @@ void simulate_lqr_control(void) {
         double a[3][3] = {{1, 0, -v_r * dt * sinf(test_point_1[index][2])},
                           {0, 1, v_r * dt * cosf(test_point_1[index][2])},
                           {0, 0, 1}};
-        double b[3][2] = {{cosf(test_point_1[index][2]) * dt, 0},
-                          {sinf(test_point_1[index][2]) * dt, 0},
+        double b[3][2] = {{cosf(test_point_1[index][2]) * dt,     0},
+                          {sinf(test_point_1[index][2]) * dt,     0},
                           {tanf(test_point_1[index][3]) * dt / L, v_r * dt /
-                              (L * cosf(test_point_1[index][3]) *
-                                  cosf(test_point_1[index][3]))}};
+                                                                  (L * cosf(test_point_1[index][3]) *
+                                                                   cosf(test_point_1[index][3]))}};
 
         // 获得速度误差量、前轮转角误差量两个控制量
         double x[3][1] = {{x_error},
