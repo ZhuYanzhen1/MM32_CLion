@@ -15,25 +15,25 @@
 #endif
 
 #ifndef RUNNING_UNIT_TEST
-void project(basic_status_t current, basic_status_t *project, float v, float t, float servo_angle) {
+void project(basic_status_t *current, float v, float t, float servo_angle) {
     float l = 0.28f;
     float r = l / qfp_ftan(servo_angle);
     float theta = v * t / r;
     float s = 2 * r * qfp_fsin(0.5f * theta);
 //    float delta = v * t / l * 0.5f * qfp_ftan(servo_angle) + current.angle;   //
-    float delta = theta / 2 + current.angle;
-    project->pos_n = s * qfp_fcos(delta) + current.pos_n;
-    project->pos_e = s * qfp_fsin(delta) + current.pos_e;
-    project->angle = theta + current.angle;
+    float delta = theta / 2 + current->angle;
+    current->pos_n = s * qfp_fcos(delta) + current->pos_n;
+    current->pos_e = s * qfp_fsin(delta) + current->pos_e;
+    current->angle = theta + current->angle;
 
-    project->angle = (project->angle > _2PI_) ? (project->angle - _2PI_) : (
-        (project->angle < 0) ? (project->angle + _2PI_) : project->angle);
+    current->angle = (current->angle > _2PI_) ? (current->angle - _2PI_) : (
+        (current->angle < 0) ? (current->angle + _2PI_) : current->angle);
 }
 // 对电机和舵机的控制量
 extern volatile unsigned short angle;
 extern volatile unsigned short speed;
 extern unsigned int uart7_dma_send_buffer[UART7_DMA_SEND_BUFFER];
-short last_angle = SERVO_MID_POINT;
+unsigned short last_angle = SERVO_MID_POINT;
 
 float calculate_distance(int ind) {
     float distance = (qfp_fsqrt
@@ -44,12 +44,14 @@ float calculate_distance(int ind) {
     return distance;
 }
 
-static float last_delta = 0;
+float last_delta = 0;
+double dt = 0;
 static unsigned int last_global_time_stamp = 0;
 unsigned char lqr_control(unsigned short index, basic_status_t status) {
     if (last_global_time_stamp == 0)
         last_global_time_stamp = global_time_stamp - 20;
-    double v_r = 4.0, dt = (double) (global_time_stamp - last_global_time_stamp) * 0.001, L = 0.28;
+    double v_r = 4.0, L = 0.28;
+    dt = (double) (global_time_stamp - last_global_time_stamp) * 0.001;
     last_global_time_stamp = global_time_stamp;
 
     // 求位置、航向角的误差
@@ -60,16 +62,17 @@ unsigned char lqr_control(unsigned short index, basic_status_t status) {
     float x_error = status.pos_n - test_point[index][0];
     float y_error = status.pos_e - test_point[index][1];
     float yaw_error = yaw_temp - test_point[index][2];
-    if (yaw_error > 3.14)
+    if (yaw_error > 3.1415926)
         yaw_error -= _2PI_;
-    else if (yaw_error < -3.14)
+    else if (yaw_error < -3.1415926)
         yaw_error += _2PI_;
 
 //     计算横向误差
 //    float lateral_error = y_error * qfp_fcos(test_point[index][2]) - x_error * qfp_fsin(test_point[index][2]);
 
-//    x_error = 0.5f * x_error;
-//    y_error = 0.5f * y_error;
+    x_error = 0.2f * x_error;
+    y_error = 0.2f * y_error;
+//    yaw_error = 0.5f * yaw_error;
 
     // 由状态方程矩阵系数，计算K
     double a[3][3] = {{1, 0, -v_r * dt * sin((double) test_point[index][2])},
@@ -104,13 +107,24 @@ unsigned char lqr_control(unsigned short index, basic_status_t status) {
 //        ((angle - last_angle) > DELTA_ANGLE) ? (last_angle + DELTA_ANGLE) : (
 //            ((last_angle - angle) > DELTA_ANGLE) ? (last_angle - DELTA_ANGLE) : angle));
 //    last_angle = angle;
+
     return angle;
 }
 
 /* 寻找点迹 */
+int find_index(int last_index) {
+    int nearest_index = last_index;
+    for (int i = last_index; i < last_index + 10; i++) {
+        if (calculate_distance(i) < calculate_distance(nearest_index)) {
+            nearest_index = i;
+        }
+    }
+    return nearest_index;
+}
+
 int dichotomy(int ind_start, int ind_end) {
     int ind_middle, ind_middle_add, ind_middle_sub;
-    for (unsigned char i = 0; i < 5; i++) {
+    for (unsigned char i = 0; i < 10; i++) {
         ind_middle = (ind_start + ind_end) / 2;
         ind_middle_add = (ind_middle + ind_end) / 2;
         ind_middle_sub = (ind_start + ind_middle) / 2;
@@ -142,19 +156,19 @@ int dichotomy(int ind_start, int ind_end, float x, float y) {
     return ind_middle;
 }
 
-void project(basic_status_t current, basic_status_t *project, float v, float t, float servo_angle) {
+void project(basic_status_t *current, float v, float t, float servo_angle) {
     float l = 0.28f;
     float r = l / tanf(servo_angle);
     float theta = v * t / r;
     float s = 2 * r * sinf(0.5f * theta);
-//    float delta = v * t / l * 0.5f * qfp_ftan(servo_angle) + current.angle;   //
-    float delta = theta / 2 + current.angle;
-    project->pos_n = s * cosf(delta) + current.pos_n;
-    project->pos_e = s * sinf(delta) + current.pos_e;
-    project->angle = theta + current.angle;
+//    float delta = v * t / l * 0.5f * qfp_ftan(servo_angle) + current->angle;   //
+    float delta = theta / 2 + current->angle;
+    current->pos_n = s * cosf(delta) + current->pos_n;
+    current->pos_e = s * sinf(delta) + current->pos_e;
+    current->angle = theta + current->angle;
 
-    project->angle = (project->angle > _2PI_) ? (project->angle - _2PI_) : (
-        (project->angle < 0) ? (project->angle + _2PI_) : project->angle);
+    current->angle = (current->angle > _2PI_) ? (current->angle - _2PI_) : (
+            (current->angle < 0) ? (current->angle + _2PI_) : current->angle);
 }
 
 #endif  // RUNNING_UNIT_TEST
@@ -168,37 +182,37 @@ float uabs(float value) {
 
 void solve_feedback_value(float p[3][3], double a[3][3], double b[3][2], double x[3][1], float r, float fb[2][1]) {
     double bt_pn_b[2][2] = {{b[0][0] * (b[0][0] * p[0][0] + b[1][0] * p[1][0] + b[2][0] * p[2][0]) +
-                             b[1][0] * (b[0][0] * p[0][1] + b[1][0] * p[1][1] + b[2][0] * p[2][1]) +
-                             b[2][0] * (b[0][0] * p[0][2] + b[1][0] * p[1][2] + b[2][0] * p[2][2]),
-                                b[2][1] * (b[0][0] * p[0][2] + b[1][0] * p[1][2] + b[2][0] * p[2][2])},
+        b[1][0] * (b[0][0] * p[0][1] + b[1][0] * p[1][1] + b[2][0] * p[2][1]) +
+        b[2][0] * (b[0][0] * p[0][2] + b[1][0] * p[1][2] + b[2][0] * p[2][2]),
+                             b[2][1] * (b[0][0] * p[0][2] + b[1][0] * p[1][2] + b[2][0] * p[2][2])},
                             {b[0][0] * b[2][1] * p[2][0] + b[1][0] * b[2][1] * p[2][1] + b[2][0] * b[2][1] * p[2][2],
-                                b[2][1] * b[2][1] * p[2][2]}};
+                             b[2][1] * b[2][1] * p[2][2]}};
     double bt_pn_a[2][3] = {{b[0][0] * p[0][0] + b[1][0] * p[1][0] + b[2][0] * p[2][0],
-                                                b[0][0] * p[0][1] + b[1][0] * p[1][1] + b[2][0] * p[2][1],
-                                b[0][0] * p[0][2] + b[1][0] * p[1][2]
-                                + a[0][2] * (b[0][0] * p[0][0] + b[1][0] * p[1][0] + b[2][0] * p[2][0]) +
-                                a[1][2] * (b[0][0] * p[0][1] + b[1][0] * p[1][1] + b[2][0] * p[2][1])
-                                + b[2][0] * p[2][2]},
+                             b[0][0] * p[0][1] + b[1][0] * p[1][1] + b[2][0] * p[2][1],
+                             b[0][0] * p[0][2] + b[1][0] * p[1][2]
+                                 + a[0][2] * (b[0][0] * p[0][0] + b[1][0] * p[1][0] + b[2][0] * p[2][0]) +
+                                 a[1][2] * (b[0][0] * p[0][1] + b[1][0] * p[1][1] + b[2][0] * p[2][1])
+                                 + b[2][0] * p[2][2]},
                             {b[2][1] * p[2][0], b[2][1] * p[2][1],
-                                a[0][2] * b[2][1] * p[2][0] + a[1][2] * b[2][1] * p[2][1] + b[2][1] * p[2][2]}};
+                             a[0][2] * b[2][1] * p[2][0] + a[1][2] * b[2][1] * p[2][1] + b[2][1] * p[2][2]}};
     double bt_pn_b_inv_m[2][2] = {{(bt_pn_b[1][1] + r)
-                                   / (-(bt_pn_b[0][1] * bt_pn_b[1][0]) + bt_pn_b[0][0] * bt_pn_b[1][1]
-                                      + bt_pn_b[0][0] * r + bt_pn_b[1][1] * r + r * r),
-                                      -(bt_pn_b[0][1]
-                                        / (-(bt_pn_b[0][1] * bt_pn_b[1][0]) + bt_pn_b[0][0] * bt_pn_b[1][1]
+                                       / (-(bt_pn_b[0][1] * bt_pn_b[1][0]) + bt_pn_b[0][0] * bt_pn_b[1][1]
+                                           + bt_pn_b[0][0] * r + bt_pn_b[1][1] * r + r * r),
+                                   -(bt_pn_b[0][1]
+                                       / (-(bt_pn_b[0][1] * bt_pn_b[1][0]) + bt_pn_b[0][0] * bt_pn_b[1][1]
                                            + bt_pn_b[0][0] * r + bt_pn_b[1][1] * r + r * r))},
                                   {-(bt_pn_b[1][0]
-                                     / (-(bt_pn_b[0][1] * bt_pn_b[1][0]) + bt_pn_b[0][0] * bt_pn_b[1][1]
-                                        + bt_pn_b[0][0] * r + bt_pn_b[1][1] * r + r * r)),
-                                      (bt_pn_b[0][0] + r)
                                       / (-(bt_pn_b[0][1] * bt_pn_b[1][0]) + bt_pn_b[0][0] * bt_pn_b[1][1]
-                                         + bt_pn_b[0][0] * r + bt_pn_b[1][1] * r + r * r)}};
+                                          + bt_pn_b[0][0] * r + bt_pn_b[1][1] * r + r * r)),
+                                   (bt_pn_b[0][0] + r)
+                                       / (-(bt_pn_b[0][1] * bt_pn_b[1][0]) + bt_pn_b[0][0] * bt_pn_b[1][1]
+                                           + bt_pn_b[0][0] * r + bt_pn_b[1][1] * r + r * r)}};
     double matrix_k[2][3] = {{bt_pn_a[0][0] * bt_pn_b_inv_m[0][0] + bt_pn_a[1][0] * bt_pn_b_inv_m[0][1],
-                                 bt_pn_a[0][1] * bt_pn_b_inv_m[0][0] + bt_pn_a[1][1] * bt_pn_b_inv_m[0][1],
-                                 bt_pn_a[0][2] * bt_pn_b_inv_m[0][0] + bt_pn_a[1][2] * bt_pn_b_inv_m[0][1]},
+                              bt_pn_a[0][1] * bt_pn_b_inv_m[0][0] + bt_pn_a[1][1] * bt_pn_b_inv_m[0][1],
+                              bt_pn_a[0][2] * bt_pn_b_inv_m[0][0] + bt_pn_a[1][2] * bt_pn_b_inv_m[0][1]},
                              {bt_pn_a[0][0] * bt_pn_b_inv_m[1][0] + bt_pn_a[1][0] * bt_pn_b_inv_m[1][1],
-                                 bt_pn_a[0][1] * bt_pn_b_inv_m[1][0] + bt_pn_a[1][1] * bt_pn_b_inv_m[1][1],
-                                 bt_pn_a[0][2] * bt_pn_b_inv_m[1][0] + bt_pn_a[1][2] * bt_pn_b_inv_m[1][1]}};
+                              bt_pn_a[0][1] * bt_pn_b_inv_m[1][0] + bt_pn_a[1][1] * bt_pn_b_inv_m[1][1],
+                              bt_pn_a[0][2] * bt_pn_b_inv_m[1][0] + bt_pn_a[1][2] * bt_pn_b_inv_m[1][1]}};
     fb[0][0] = (float) (x[0][0] * matrix_k[0][0] + x[1][0] * matrix_k[0][1] + x[2][0] * matrix_k[0][2]);
     fb[1][0] = (float) (x[0][0] * matrix_k[1][0] + x[1][0] * matrix_k[1][1] + x[2][0] * matrix_k[1][2]);
     fb[0][0] = -1 * fb[0][0];
@@ -221,85 +235,85 @@ void solve_riccati_equation(double a[3][3], double b[3][2], float q, float r, fl
     p[2][2] = q;
 
     for (counter = 0; counter < 500; ++counter) {
-        float at_pn_a[3][3] = {{p[0][0],                                 p[0][1],
-                                                                                  A02 * p[0][0] + A12 * p[0][1] +
-                                                                                  p[0][2]},
-                               {p[1][0],                                 p[1][1], A02 * p[1][0] + A12 * p[1][1] +
-                                                                                  p[1][2]},
+        float at_pn_a[3][3] = {{p[0][0], p[0][1],
+                                A02 * p[0][0] + A12 * p[0][1] +
+                                    p[0][2]},
+                               {p[1][0], p[1][1], A02 * p[1][0] + A12 * p[1][1] +
+                                   p[1][2]},
                                {A02 * p[0][0] + A12 * p[1][0] + p[2][0], A02 * p[0][1] + A12 * p[1][1] + p[2][1],
-                                                                                  A02 * p[0][2] + A12 * p[1][2] + A02 *
-                                                                                                                  (A02 *
-                                                                                                                   p[0][0] +
-                                                                                                                   A12 *
-                                                                                                                   p[1][0] +
-                                                                                                                   p[2][0])
-                                                                                  + A12 *
-                                                                                    (A02 * p[0][1] + A12 * p[1][1] +
-                                                                                     p[2][1]) + p[2][2]}};
+                                A02 * p[0][2] + A12 * p[1][2] + A02 *
+                                    (A02 *
+                                        p[0][0] +
+                                        A12 *
+                                            p[1][0] +
+                                        p[2][0])
+                                    + A12 *
+                                        (A02 * p[0][1] + A12 * p[1][1] +
+                                            p[2][1]) + p[2][2]}};
         float at_pn_b[3][2] = {{B00 * p[0][0] + B10 * p[0][1] + B20 * p[0][2], B21 * p[0][2]},
                                {B00 * p[1][0] + B10 * p[1][1] + B20 * p[1][2], B21 * p[1][2]},
                                {B00 * (A02 * p[0][0] + A12 * p[1][0] + p[2][0]) +
-                                B10 * (A02 * p[0][1] + A12 * p[1][1] + p[2][1])
-                                + B20 * (A02 * p[0][2] + A12 * p[1][2] + p[2][2]),
-                                                                               B21 * (A02 * p[0][2] + A12 * p[1][2] +
-                                                                                      p[2][2])}};
+                                   B10 * (A02 * p[0][1] + A12 * p[1][1] + p[2][1])
+                                    + B20 * (A02 * p[0][2] + A12 * p[1][2] + p[2][2]),
+                                B21 * (A02 * p[0][2] + A12 * p[1][2] +
+                                    p[2][2])}};
         float r_bt_pn_b[2][2] = {{B00 * (B00 * p[0][0] + B10 * p[1][0] + B20 * p[2][0]) +
-                                  B10 * (B00 * p[0][1] + B10 * p[1][1] + B20 * p[2][1])
-                                  + B20 * (B00 * p[0][2] + B10 * p[1][2] + B20 * p[2][2]) + r,
-                                     B21 * (B00 * p[0][2] + B10 * p[1][2] + B20 * p[2][2])},
+            B10 * (B00 * p[0][1] + B10 * p[1][1] + B20 * p[2][1])
+                                      + B20 * (B00 * p[0][2] + B10 * p[1][2] + B20 * p[2][2]) + r,
+                                  B21 * (B00 * p[0][2] + B10 * p[1][2] + B20 * p[2][2])},
                                  {B00 * B21 * p[2][0] + B10 * B21 * p[2][1] + B20 * B21 * p[2][2],
-                                     B21 * B21 * p[2][2] + r}};
+                                  B21 * B21 * p[2][2] + r}};
         float bt_pn_a[2][3] =
             {{B00 * p[0][0] + B10 * p[1][0] + B20 * p[2][0], B00 * p[0][1] + B10 * p[1][1] + B20 * p[2][1],
-                                                                            B00 * p[0][2] + B10 * p[1][2] + A02 *
-                                                                                                            (B00 *
-                                                                                                             p[0][0] +
-                                                                                                             B10 *
-                                                                                                             p[1][0] +
-                                                                                                             B20 *
-                                                                                                             p[2][0])
-                                                                            + A12 * (B00 * p[0][1] + B10 * p[1][1] +
-                                                                                     B20 * p[2][1]) +
-                                                                            B20 * p[2][2]},
-             {B21 * p[2][0],                                 B21 * p[2][1], A02 * B21 * p[2][0] +
-                                                                            A12 * B21 * p[2][1] + B21 * p[2][2]}};
+              B00 * p[0][2] + B10 * p[1][2] + A02 *
+                  (B00 *
+                      p[0][0] +
+                      B10 *
+                          p[1][0] +
+                      B20 *
+                          p[2][0])
+                  + A12 * (B00 * p[0][1] + B10 * p[1][1] +
+                      B20 * p[2][1]) +
+                  B20 * p[2][2]},
+             {B21 * p[2][0], B21 * p[2][1], A02 * B21 * p[2][0] +
+                 A12 * B21 * p[2][1] + B21 * p[2][2]}};
 
         float r_bt_pn_b_diag = r_bt_pn_b[0][0] * r_bt_pn_b[1][1] - r_bt_pn_b[0][1] * r_bt_pn_b[1][0];
 
-        float r_bt_pn_b_inv[2][2] = {{r_bt_pn_b[1][1] / r_bt_pn_b_diag,       -(r_bt_pn_b[0][1] / r_bt_pn_b_diag)},
+        float r_bt_pn_b_inv[2][2] = {{r_bt_pn_b[1][1] / r_bt_pn_b_diag, -(r_bt_pn_b[0][1] / r_bt_pn_b_diag)},
                                      {-(r_bt_pn_b[1][0] / (-r_bt_pn_b_diag)), r_bt_pn_b[0][0] / r_bt_pn_b_diag}};
 
         float big_matrix[3][3] =
             {{bt_pn_a[0][0] * (at_pn_b[0][0] * r_bt_pn_b_inv[0][0] + at_pn_b[0][1] * r_bt_pn_b_inv[1][0]) +
-              bt_pn_a[1][0] * (at_pn_b[0][0] * r_bt_pn_b_inv[0][1] + at_pn_b[0][1] * r_bt_pn_b_inv[1][1]),
-                 bt_pn_a[0][1] *
-                 (at_pn_b[0][0] * r_bt_pn_b_inv[0][0] + at_pn_b[0][1] * r_bt_pn_b_inv[1][0]) +
-                 bt_pn_a[1][1] *
-                 (at_pn_b[0][0] * r_bt_pn_b_inv[0][1] + at_pn_b[0][1] * r_bt_pn_b_inv[1][1]),
-                 bt_pn_a[0][2] *
-                 (at_pn_b[0][0] * r_bt_pn_b_inv[0][0] + at_pn_b[0][1] * r_bt_pn_b_inv[1][0]) +
-                 bt_pn_a[1][2] *
-                 (at_pn_b[0][0] * r_bt_pn_b_inv[0][1] + at_pn_b[0][1] * r_bt_pn_b_inv[1][1])},
+                bt_pn_a[1][0] * (at_pn_b[0][0] * r_bt_pn_b_inv[0][1] + at_pn_b[0][1] * r_bt_pn_b_inv[1][1]),
+              bt_pn_a[0][1] *
+                  (at_pn_b[0][0] * r_bt_pn_b_inv[0][0] + at_pn_b[0][1] * r_bt_pn_b_inv[1][0]) +
+                  bt_pn_a[1][1] *
+                      (at_pn_b[0][0] * r_bt_pn_b_inv[0][1] + at_pn_b[0][1] * r_bt_pn_b_inv[1][1]),
+              bt_pn_a[0][2] *
+                  (at_pn_b[0][0] * r_bt_pn_b_inv[0][0] + at_pn_b[0][1] * r_bt_pn_b_inv[1][0]) +
+                  bt_pn_a[1][2] *
+                      (at_pn_b[0][0] * r_bt_pn_b_inv[0][1] + at_pn_b[0][1] * r_bt_pn_b_inv[1][1])},
              {bt_pn_a[0][0] * (at_pn_b[1][0] * r_bt_pn_b_inv[0][0] + at_pn_b[1][1] * r_bt_pn_b_inv[1][0]) +
-              bt_pn_a[1][0] * (at_pn_b[1][0] * r_bt_pn_b_inv[0][1] + at_pn_b[1][1] * r_bt_pn_b_inv[1][1]),
-                 bt_pn_a[0][1] *
-                 (at_pn_b[1][0] * r_bt_pn_b_inv[0][0] + at_pn_b[1][1] * r_bt_pn_b_inv[1][0]) +
-                 bt_pn_a[1][1] *
-                 (at_pn_b[1][0] * r_bt_pn_b_inv[0][1] + at_pn_b[1][1] * r_bt_pn_b_inv[1][1]),
-                 bt_pn_a[0][2] *
-                 (at_pn_b[1][0] * r_bt_pn_b_inv[0][0] + at_pn_b[1][1] * r_bt_pn_b_inv[1][0]) +
-                 bt_pn_a[1][2] *
-                 (at_pn_b[1][0] * r_bt_pn_b_inv[0][1] + at_pn_b[1][1] * r_bt_pn_b_inv[1][1])},
+                 bt_pn_a[1][0] * (at_pn_b[1][0] * r_bt_pn_b_inv[0][1] + at_pn_b[1][1] * r_bt_pn_b_inv[1][1]),
+              bt_pn_a[0][1] *
+                  (at_pn_b[1][0] * r_bt_pn_b_inv[0][0] + at_pn_b[1][1] * r_bt_pn_b_inv[1][0]) +
+                  bt_pn_a[1][1] *
+                      (at_pn_b[1][0] * r_bt_pn_b_inv[0][1] + at_pn_b[1][1] * r_bt_pn_b_inv[1][1]),
+              bt_pn_a[0][2] *
+                  (at_pn_b[1][0] * r_bt_pn_b_inv[0][0] + at_pn_b[1][1] * r_bt_pn_b_inv[1][0]) +
+                  bt_pn_a[1][2] *
+                      (at_pn_b[1][0] * r_bt_pn_b_inv[0][1] + at_pn_b[1][1] * r_bt_pn_b_inv[1][1])},
              {bt_pn_a[0][0] * (at_pn_b[2][0] * r_bt_pn_b_inv[0][0] + at_pn_b[2][1] * r_bt_pn_b_inv[1][0]) +
-              bt_pn_a[1][0] * (at_pn_b[2][0] * r_bt_pn_b_inv[0][1] + at_pn_b[2][1] * r_bt_pn_b_inv[1][1]),
-                 bt_pn_a[0][1] *
-                 (at_pn_b[2][0] * r_bt_pn_b_inv[0][0] + at_pn_b[2][1] * r_bt_pn_b_inv[1][0]) +
-                 bt_pn_a[1][1] *
-                 (at_pn_b[2][0] * r_bt_pn_b_inv[0][1] + at_pn_b[2][1] * r_bt_pn_b_inv[1][1]),
-                 bt_pn_a[0][2] *
-                 (at_pn_b[2][0] * r_bt_pn_b_inv[0][0] + at_pn_b[2][1] * r_bt_pn_b_inv[1][0]) +
-                 bt_pn_a[1][2] *
-                 (at_pn_b[2][0] * r_bt_pn_b_inv[0][1] + at_pn_b[2][1] * r_bt_pn_b_inv[1][1])}};
+                 bt_pn_a[1][0] * (at_pn_b[2][0] * r_bt_pn_b_inv[0][1] + at_pn_b[2][1] * r_bt_pn_b_inv[1][1]),
+              bt_pn_a[0][1] *
+                  (at_pn_b[2][0] * r_bt_pn_b_inv[0][0] + at_pn_b[2][1] * r_bt_pn_b_inv[1][0]) +
+                  bt_pn_a[1][1] *
+                      (at_pn_b[2][0] * r_bt_pn_b_inv[0][1] + at_pn_b[2][1] * r_bt_pn_b_inv[1][1]),
+              bt_pn_a[0][2] *
+                  (at_pn_b[2][0] * r_bt_pn_b_inv[0][0] + at_pn_b[2][1] * r_bt_pn_b_inv[1][0]) +
+                  bt_pn_a[1][2] *
+                      (at_pn_b[2][0] * r_bt_pn_b_inv[0][1] + at_pn_b[2][1] * r_bt_pn_b_inv[1][1])}};
 
         p_next[0][0] = at_pn_a[0][0] - big_matrix[0][0] + q;
         p_next[0][1] = at_pn_a[0][1] - big_matrix[0][1];

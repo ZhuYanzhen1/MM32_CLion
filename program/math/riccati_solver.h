@@ -1,7 +1,7 @@
 #ifndef RICCATI_SOLVER_H_
 #define RICCATI_SOLVER_H_
 
-#define OVERRUN_POINT           4
+#define OVERRUN_POINT           5
 #define INDEX_OFFSET            20
 #define SERVO_MID_POINT         150
 #define MAX_DECLINATION_ANGLE   20
@@ -24,9 +24,10 @@ int dichotomy(int ind_start, int ind_end, float x, float y);
 #else
 float calculate_distance(int ind);
 int dichotomy(int ind_start, int ind_end);
+int find_index(int last_index);
 #endif  // RUNNING_UNIT_TEST
 
-void project(basic_status_t current, basic_status_t *project, float v, float t, float servo_angle);
+void project(basic_status_t *current, float v, float t, float servo_angle);
 
 void lqr_control_test(unsigned short index, int angle_ctrl, float angle_yaw, float distance_n, float distance_e);
 unsigned char lqr_control(unsigned short index, basic_status_t status);
