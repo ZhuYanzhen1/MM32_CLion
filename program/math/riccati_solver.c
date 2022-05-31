@@ -50,7 +50,7 @@ static unsigned int last_global_time_stamp = 0;
 unsigned char lqr_control(unsigned short index, basic_status_t status) {
     if (last_global_time_stamp == 0)
         last_global_time_stamp = global_time_stamp - 20;
-    double v_r = 4.0, L = 0.28;
+    double v_r = 7, L = 0.28;
     dt = (double) (global_time_stamp - last_global_time_stamp) * 0.001;
     last_global_time_stamp = global_time_stamp;
 
@@ -72,7 +72,7 @@ unsigned char lqr_control(unsigned short index, basic_status_t status) {
 
     x_error = 0.2f * x_error;
     y_error = 0.2f * y_error;
-//    yaw_error = 0.5f * yaw_error;
+    yaw_error = 0.9f * yaw_error;
 
     // 由状态方程矩阵系数，计算K
     double a[3][3] = {{1, 0, -v_r * dt * sin((double) test_point[index][2])},
@@ -102,6 +102,22 @@ unsigned char lqr_control(unsigned short index, basic_status_t status) {
         angle = SERVO_MID_POINT + MAX_DECLINATION_ANGLE;
     else if (angle < SERVO_MID_POINT - MAX_DECLINATION_ANGLE)
         angle = SERVO_MID_POINT - MAX_DECLINATION_ANGLE;
+
+    if ((last_angle > SERVO_MID_POINT)) {
+        if (angle > last_angle)
+            angle = (short) (
+                ((angle - last_angle) > DELTA_ANGLE) ? (last_angle + DELTA_ANGLE) : (angle));
+        else if (angle < SERVO_MID_POINT)
+            angle = SERVO_MID_POINT;
+    }
+    if ((last_angle < SERVO_MID_POINT)) {
+        if (angle < last_angle)
+            angle = (short) ((last_angle - angle) > DELTA_ANGLE) ? (last_angle - DELTA_ANGLE) : angle;
+        else if (angle > SERVO_MID_POINT)
+            angle = SERVO_MID_POINT;
+
+    }
+
 
 //    angle = (short) (
 //        ((angle - last_angle) > DELTA_ANGLE) ? (last_angle + DELTA_ANGLE) : (
