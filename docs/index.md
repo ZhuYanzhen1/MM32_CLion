@@ -15,3 +15,5 @@ Github Pages用于部署一些通过Github Actions自动生成出的报告文件
 [PC端串口透传交互式BOM](https://zhuyanzhen1.github.io/MM32_CLion/circuit/uart_tt_pc_ibom.html)
 
 [MCU端串口透传交互式BOM](https://zhuyanzhen1.github.io/MM32_CLion/circuit/uart_tt_mcu_ibom.html)
+
+[地磁计交互式BOM](https://zhuyanzhen1.github.io/MM32_CLion/circuit/geomagnetometer_ibom.html)
