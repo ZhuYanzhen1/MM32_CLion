@@ -6,6 +6,8 @@
 #define MM32F3277_MATH_TEST_H_
 
 #define INDEX_NUM   671  // test_point_1：641（体育馆）    test_point_2：671（国防生）  第五道
+#define FIRST_DIS_N 4384.7150000f
+#define FIRST_DIS_E 39673.4770000f
 //#define test_point  test_point_2
 
 extern float test_point[][4];

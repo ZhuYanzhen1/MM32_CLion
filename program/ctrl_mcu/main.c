@@ -62,6 +62,12 @@ int main(void) {
     static unsigned char find_counter = 0;
     static unsigned short start_point = 0;
     volatile static unsigned short index = 0;
+//    while (1) {
+//        speed = 5000;
+//        sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
+//        uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
+//        delayms(400);
+//    }
 //    playground_ind = 370;
     while (1) { // 寻点稳定再发车
         LED1_TOGGLE();
@@ -90,11 +96,11 @@ int main(void) {
                         basic_status_t current_status = {proc_data.distance_north,
                                                          proc_data.distance_east,
                                                          proc_data.north_angle};
-
 //                        playground_ind =
 //                            dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
 //                                      (playground_ind + INDEX_OFFSET > INDEX_NUM) ? INDEX_NUM : (playground_ind
 //                                          + INDEX_OFFSET));
+
                         playground_ind = find_index(playground_ind);
 
                         index = playground_ind + OVERRUN_POINT;
@@ -105,15 +111,15 @@ int main(void) {
                     }
                 }
             }
-            speed = 15000;
+            speed = 6000;
             sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
             uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
 //            printf("%.3f, %.3f , \r\n", proc_data.distance_north, proc_data.distance_east);
         }
 
         if (playground_ind > INDEX_NUM - 20) {
-//        if (playground_ind > start_point + 120) {
-            for (unsigned short i = 0; i < 10; i++) {
+//        if (playground_ind > 450) {
+            for (unsigned short i = 0; i < 15; i++) {
                 speed = (speed > 3000) ? (speed - 2000) : 2000;
                 sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
                 uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
