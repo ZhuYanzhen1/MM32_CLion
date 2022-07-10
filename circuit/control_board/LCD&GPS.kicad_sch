@@ -6,8 +6,8 @@
 
   (title_block
     (title "MM32 Control Board")
-    (date "2022-05-18")
-    (rev "1.5.4")
+    (date "2022-07-11")
+    (rev "1.6.1")
   )
 
   (lib_symbols
@@ -731,6 +731,7 @@
       )
     )
   )
+
 
   (junction (at 200.66 98.425) (diameter 0) (color 0 0 0 0)
     (uuid 0648b195-3f37-49a2-a952-4c5886b521de)
