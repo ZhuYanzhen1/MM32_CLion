@@ -513,9 +513,9 @@
       (effects (font (size 1.27 1.27)) (justify left))
       (uuid ac4c8f26-6862-4686-a63f-ba999f649c57)
     )
-    (pin "PG4" output (at 80.01 120.015 180)
+    (pin "PD10" output (at 80.01 120.015 180)
       (effects (font (size 1.27 1.27)) (justify left))
-      (uuid 7f644faa-a0ed-41c9-97f5-0549571e5fbb)
+      (uuid fb9f1918-d5da-4dd6-92ba-88da174e5ee0)
     )
   )
 

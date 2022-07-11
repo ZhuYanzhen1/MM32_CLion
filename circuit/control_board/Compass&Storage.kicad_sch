@@ -354,7 +354,6 @@
     )
   )
 
-
   (junction (at 215.265 110.49) (diameter 0) (color 0 0 0 0)
     (uuid 0b1847de-4ecc-4278-b070-96c35b8fd8bd)
   )
@@ -546,11 +545,11 @@
     (uuid 798e45e4-7cad-4ca2-b0e3-182ec5153d4a)
   )
 
-  (hierarchical_label "Compass_MOSI" (shape input) (at 88.9 109.855 180)
+  (hierarchical_label "Compass_MOSI" (shape input) (at 88.9 104.775 180)
     (effects (font (size 1.27 1.27)) (justify right))
     (uuid 02599a0f-3043-452a-bfce-f8d30a748053)
   )
-  (hierarchical_label "Compass_CLK" (shape input) (at 88.9 104.775 180)
+  (hierarchical_label "Compass_CLK" (shape input) (at 88.9 109.855 180)
     (effects (font (size 1.27 1.27)) (justify right))
     (uuid 5da934dd-7df5-4bb3-8a0d-dd92de93c297)
   )
