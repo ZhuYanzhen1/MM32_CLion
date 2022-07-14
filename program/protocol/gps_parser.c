@@ -264,11 +264,11 @@ void nmea_gnrmc_analysis(char *buffer) {
     neu.north_distance = get_distance(QRIGIN_LAT, temp_lon, temp_lat, temp_lon);
     neu.east_distance = get_distance(temp_lat, QRIGIN_LON, temp_lat, temp_lon);
 
-    neu.north_distance = rc_low_pass(neu.north_distance, last_output_n, 0.3f);
-    neu.east_distance = rc_low_pass(neu.east_distance, last_output_e, 0.3f);
-
-    last_output_n = neu.north_distance;
-    last_output_e = neu.east_distance;
+    /* 一阶低通滤波（速度快则系数要高）（防止太滞后） */
+//    neu.north_distance = rc_low_pass(neu.north_distance, last_output_n, 0.3f);
+//    neu.east_distance = rc_low_pass(neu.east_distance, last_output_e, 0.3f);
+//    last_output_n = neu.north_distance;
+//    last_output_e = neu.east_distance;
 
     // 检验GPS定位是否稳定，存入环形缓冲区
     temp_stable[sum_counter][0] = gps_rmc.longitude;

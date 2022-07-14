@@ -31,7 +31,7 @@ void project(basic_status_t *current, float v, float t, float servo_angle) {
 }
 // 对电机和舵机的控制量
 extern volatile unsigned short angle;
-extern volatile unsigned short speed;
+extern unsigned short playground_ind;
 extern unsigned int uart7_dma_send_buffer[UART7_DMA_SEND_BUFFER];
 unsigned short last_angle = SERVO_MID_POINT;
 
@@ -50,7 +50,7 @@ static unsigned int last_global_time_stamp = 0;
 unsigned char lqr_control(unsigned short index, basic_status_t status) {
     if (last_global_time_stamp == 0)
         last_global_time_stamp = global_time_stamp - 20;
-    double v_r = 3, L = 0.28;
+    double v_r = 8, L = 0.28;
     dt = (double) (global_time_stamp - last_global_time_stamp) * 0.001;
     last_global_time_stamp = global_time_stamp;
 
@@ -90,12 +90,22 @@ unsigned char lqr_control(unsigned short index, basic_status_t status) {
     float p[3][3] = {0};
     float control_val[2][1] = {0};
     float q = 1;
-    float r = 1;
+    float r = 2;
 
     solve_riccati_equation(a, b, q, r, p);
     solve_feedback_value(p, a, b, x, r, control_val);
     //    speed = speed +control_val[0][0];
+
+    if (playground_ind > 540 && playground_ind < 930)
+        control_val[1][0] /= 2;
+    if (playground_ind < 200)
+        control_val[1][0] /= 2;
+    if (playground_ind > 1250)
+        control_val[1][0] /= 2;
+
     last_delta = control_val[1][0] + test_point[index][3];//+ k_d * (yaw_error - last_yaw_error);
+
+
     angle = (short) (SERVO_MID_POINT + last_delta * YAW_TO_ANGLE);
 
     if (angle > SERVO_MID_POINT + MAX_DECLINATION_ANGLE)
