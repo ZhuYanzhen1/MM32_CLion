@@ -9,6 +9,9 @@
 #ifndef MM32F3277_MATH_KALMAN_H_
 #define MM32F3277_MATH_KALMAN_H_
 
+#define V_Q_POS     0.2f
+#define DIS_Q_POS   0.8f
+
 typedef struct {
     float v;
     float distance_north;

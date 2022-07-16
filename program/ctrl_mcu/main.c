@@ -128,7 +128,7 @@ int main(void) {
             printf("%.3f, %.3f , \r\n", proc_data.distance_north, proc_data.distance_east);
         }
 
-        if (playground_ind > INDEX_NUM - 5) {
+        if (playground_ind > INDEX_NUM - 1) {
             for (unsigned short i = 0; i < 20; i++) {
                 speed = (speed > 2000) ? (speed - 2000) : 0;
                 sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
