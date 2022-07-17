@@ -15,8 +15,7 @@ extern unsigned int packages_to_be_unpacked_1[READ_MCU_AMOUNT];
 unsigned int proc_to_ctrl_package[PROC_MCU_SEND_AMOUNT] = {0};
 unsigned int proc_to_ctrl_buffer[4] = {0};
 
-/* Kalman fusion to obtain northward and eastward velocities
- * (GPS velocity + imu acceleration) */
+/* Kalman fusion to obtain northward and eastward velocities */
 kalman_data_t kalman_data = {0};
 kalman_filter_t kalman_v = {0};
 kalman_filter_t kalman_distance_north = {0};
@@ -140,8 +139,6 @@ void fusion_task(void *parameters) {
         kalman_data.distance_east = kalman_update(&kalman_distance_east, neu.east_distance,
                                                   neu.east_v, dt);
 
-//        float predict_north = kalman_data.distance_north + 0.1f * neu.north_v;
-//        float predict_east = kalman_data.distance_east + 0.1f * neu.east_v;
         proc_to_ctrl_buffer[0] = *((unsigned int *) (&kalman_data.distance_north));
         proc_to_ctrl_buffer[1] = *((unsigned int *) (&kalman_data.distance_east));
         proc_to_ctrl_buffer[2] = *((unsigned int *) (&small_packets.chebyshev_north));
@@ -150,9 +147,7 @@ void fusion_task(void *parameters) {
         for (unsigned char i = 0; i < PROC_MCU_SEND_AMOUNT; i++)
             uart3_sendbyte(proc_to_ctrl_package[i]);
 
-//        printf("%.2f\r\n", kalman_data.v);
         delayms(19);
-
 //        printf("%.2f,%.2f,%.2f,%.2f\r",
 //               neu.north_distance,
 //               neu.east_distance,
@@ -243,11 +238,6 @@ void ledblink_task(void *parameters) {
     while (1) {
         LED1_TOGGLE();
         delayms(200);
-//        printf("%.2f,%.2f,%.2f,%.2f\r",
-//               neu.north_distance,
-//               neu.east_distance,
-//               kalman_data.distance_north,
-//               kalman_data.distance_east);
     }
 }
 #endif  // USE_FREERTOS_REPORT == 1

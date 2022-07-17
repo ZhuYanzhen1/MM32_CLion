@@ -2,8 +2,8 @@
     \file     main.c
     \brief    main function Source File
     \author   Lao·Zhu
-    \version  V1.0.1
-    \date     14. November 2021
+    \version  V1.6.1
+    \date     17. July 2022
  ******************************************************************************/
 
 #include "main.h"
@@ -45,17 +45,17 @@ int main(void) {
     delayms(2000);
     timer3_config();
 
-    FRESULT result = f_mount(&filesystem, "0:", 1);
-    if (result == FR_NO_FILESYSTEM) {
-        if (f_mkfs("0:", 0, fs_buffer, sizeof(fs_buffer)) == FR_OK)
-            f_setlabel((const TCHAR *) "0:FLASH");
-        else
-            while (1);
-    } else if (result != FR_OK)
-        while (1);
-
-    fs_get_free("0:");
-    fs_scan_files("0:");
+//    FRESULT result = f_mount(&filesystem, "0:", 1);
+//    if (result == FR_NO_FILESYSTEM) {
+//        if (f_mkfs("0:", 0, fs_buffer, sizeof(fs_buffer)) == FR_OK)
+//            f_setlabel((const TCHAR *) "0:FLASH");
+//        else
+//            while (1);
+//    } else if (result != FR_OK)
+//        while (1);
+//
+//    fs_get_free("0:");
+//    fs_scan_files("0:");
 
     static unsigned char find_counter = 0;
     static unsigned short start_point = 0;
@@ -74,7 +74,6 @@ int main(void) {
 //            }
 //            delayms(400);
 //        }
-//
 //    }
     while (1) { // 寻点稳定再发车
         LED1_TOGGLE();
