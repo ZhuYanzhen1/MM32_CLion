@@ -36,7 +36,6 @@ extern unsigned int usart3_dma_buffer_2[74];
             6：uart3_dma_receive_config
             7：dma_nvic_config
             8：DMA_Cmd
-            TODO 没加冷启动热启动的相关初始化代码
 */
 void gps_config() {
     char output_frequency_10Hz[] = {0xF1, 0xD9, 0x06, 0x42, 0x14, 0x00, 0x00, 0x0A,

@@ -151,7 +151,7 @@ void fusion_task(void *parameters) {
             uart3_sendbyte(proc_to_ctrl_package[i]);
 
 //        printf("%.2f\r\n", kalman_data.v);
-        delayms(19);
+        delayms(49);
 
 //        printf("%.2f,%.2f,%.2f,%.2f\r",
 //               neu.north_distance,

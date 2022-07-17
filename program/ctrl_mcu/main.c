@@ -65,7 +65,7 @@ int main(void) {
 //    while (1) {
 //        for (unsigned char i = 0; i < 100; i++) {
 //            if (i < 20) {
-//                speed = 15000;
+//                speed = 3000;
 //                sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
 //                uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
 //            } else {
@@ -76,8 +76,8 @@ int main(void) {
 //            }
 //            delayms(400);
 //        }
-//
 //    }
+
     while (1) { // 寻点稳定再发车
         LED1_TOGGLE();
         if (proc_data.distance_east != 0 && lqr_flag == 1) {

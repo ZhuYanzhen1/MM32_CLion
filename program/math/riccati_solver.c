@@ -50,7 +50,7 @@ static unsigned int last_global_time_stamp = 0;
 unsigned char lqr_control(unsigned short index, basic_status_t status) {
     if (last_global_time_stamp == 0)
         last_global_time_stamp = global_time_stamp - 20;
-    double v_r = 8, L = 0.28;
+    double v_r = 10.5, L = 0.28;
     dt = (double) (global_time_stamp - last_global_time_stamp) * 0.001;
     last_global_time_stamp = global_time_stamp;
 
@@ -96,9 +96,9 @@ unsigned char lqr_control(unsigned short index, basic_status_t status) {
     solve_feedback_value(p, a, b, x, r, control_val);
     //    speed = speed +control_val[0][0];
 
-    if ((playground_ind < 160) || (playground_ind > 450 && playground_ind < 840) || (playground_ind > 1120))
+    if ((playground_ind < 160) || (playground_ind > 400 && playground_ind < 700) || (playground_ind > 980))
         control_val[1][0] /= 2;
-    else if ((playground_ind < 200 && playground_ind > 160) || (playground_ind > 840 && playground_ind < 880))
+    else if ((playground_ind < 200 && playground_ind > 160) || (playground_ind > 700 && playground_ind < 760))
         control_val[1][0] /= 1.2f;
 
     last_delta = control_val[1][0] + test_point[index][3];//+ k_d * (yaw_error - last_yaw_error);
