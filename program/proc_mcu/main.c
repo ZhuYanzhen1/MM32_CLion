@@ -60,7 +60,7 @@ void initialize_task(void *parameters) {
     uart4_config();
     uart6_config();
     xpt2046_gpio_config();
-    cm_backtrace_config("ProcMCU", "1.5.4", "1.5.4");
+    cm_backtrace_config("ProcMCU", "1.6.1", "1.6.1");
     gui_config();
     delayms(2000);
     uart3_config();
@@ -73,7 +73,7 @@ void initialize_task(void *parameters) {
 #endif
 
     debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
-    printf("ProcMCU %s\r\n", GIT_HASH);
+    printf("ProcMCU %s %s %s\r\n", __DATE__, __TIME__, GIT_HASH);
     timer2_config();
 
     xTaskCreate(fusion_task, "sensor_fusion", 1024, NULL, 4,
