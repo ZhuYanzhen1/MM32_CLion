@@ -60,7 +60,22 @@ int main(void) {
     static unsigned char find_counter = 0;
     static unsigned short start_point = 0;
     volatile static unsigned short index = 0;
-//    playground_ind = 370;
+//    while (1) {
+//        for (unsigned char i = 0; i < 100; i++) {
+//            if (i < 20) {
+//                speed = 15000;
+//                sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
+//                uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
+//            } else {
+////                speed = (speed > 5000) ? (speed - 5000) : 0;
+//                speed = 0;
+//                sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
+//                uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
+//            }
+//            delayms(400);
+//        }
+//
+//    }
     while (1) { // 寻点稳定再发车
         LED1_TOGGLE();
         if (proc_data.distance_east != 0 && lqr_flag == 1) {
@@ -88,11 +103,13 @@ int main(void) {
                         basic_status_t current_status = {proc_data.distance_north,
                                                          proc_data.distance_east,
                                                          proc_data.north_angle};
-
 //                        playground_ind =
 //                            dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
 //                                      (playground_ind + INDEX_OFFSET > INDEX_NUM) ? INDEX_NUM : (playground_ind
 //                                          + INDEX_OFFSET));
+
+                        /* 280-430 */
+
                         playground_ind = find_index(playground_ind);
 
                         index = playground_ind + OVERRUN_POINT;
@@ -106,19 +123,19 @@ int main(void) {
             speed = 15000;
             sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
             uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
-//            printf("%.3f, %.3f , \r\n", proc_data.distance_north, proc_data.distance_east);
+            printf("%.3f, %.3f , \r\n", proc_data.distance_north, proc_data.distance_east);
         }
 
-        if (playground_ind > INDEX_NUM - 20) {
-//        if (playground_ind > start_point + 120) {
-            for (unsigned short i = 0; i < 10; i++) {
-                speed = (speed > 3000) ? (speed - 2000) : 2000;
+        if (playground_ind > INDEX_NUM - 5) {
+            for (unsigned short i = 0; i < 20; i++) {
+                speed = (speed > 2000) ? (speed - 2000) : 0;
                 sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
                 uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
                 WRITE_REG(TIM3->CCR1, SERVO_MID_POINT);
                 delayms(400);
             }
             while (1);
+            // 到比赛的时候，为了确保能触发裁判系统，我们可以要求达到最后一个点的时候仍然全速冲刺，然后遥控停车
         }
     }
 }
