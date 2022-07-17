@@ -7,7 +7,7 @@ find_package(Git)
 # e.g. add spaces in the format string, will not work easily.
 
 if (Git_FOUND)
-    execute_process(COMMAND ${GIT_EXECUTABLE} log --pretty=format:%h_%ad --date=format:%m-%d_%H:%M -n 1
+    execute_process(COMMAND ${GIT_EXECUTABLE} log --pretty=format:%h -n 1
             OUTPUT_VARIABLE GIT_REV
             ERROR_QUIET
             WORKING_DIRECTORY ${SRCDIR}
@@ -33,7 +33,7 @@ else ()
             WORKING_DIRECTORY ${SRCDIR})
     if (NOT "${GIT_DIRTY}" EQUAL 0)
         #append '+' if unclean tree
-        #        set(GIT_DIFF "+")
+        set(GIT_DIFF "+")
     endif ()
 
     string(STRIP "${GIT_REV}" GIT_REV)

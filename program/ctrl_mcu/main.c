@@ -35,9 +35,9 @@ int main(void) {
     uart7_config();
     uart7_dma_sent_config(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
 
-    cm_backtrace_config("CtrlMCU", "1.5.4", "1.5.4");
+    cm_backtrace_config("CtrlMCU", "1.6.1", "1.6.1");
     debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
-    printf("CtrlMCU %s\r\n", GIT_HASH);
+    printf("CtrlMCU %s %s %s\r\n", __DATE__, __TIME__, GIT_HASH);
     timer2_config();
 
     timer4_config();
@@ -56,8 +56,6 @@ int main(void) {
 
     fs_get_free("0:");
     fs_scan_files("0:");
-
-//    ch372_config();
 
     static unsigned char find_counter = 0;
     static unsigned short start_point = 0;
