@@ -21,7 +21,7 @@ DSTATUS disk_initialize(
         if (result) {
             spi3_set_prescaler(SPI_BaudRatePrescaler_256);
             spi3_readwrite_byte(0xff);
-            spi3_set_prescaler(SPI_BaudRatePrescaler_2);
+            spi3_set_prescaler(SPI_BaudRatePrescaler_32);
             return STA_NOINIT;
         } else
             return RES_OK;
@@ -75,7 +75,7 @@ DRESULT disk_ioctl(
     DRESULT res;
     if (pdrv == 0) {
         switch (cmd) {
-            case CTRL_SYNC:sdcard_sync();
+            case CTRL_SYNC://sdcard_sync();
                 res = RES_OK;
                 break;
             case GET_SECTOR_SIZE:*(WORD *) buff = SD_CARD_SECTOR_SIZE;

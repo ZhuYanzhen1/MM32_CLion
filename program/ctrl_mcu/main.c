@@ -47,14 +47,19 @@ int main(void) {
 
     FRESULT result = f_mount(&filesystem, "0:", 1);
     if (result == FR_NO_FILESYSTEM) {
-        if (f_mkfs("0:", 0, fs_buffer, sizeof(fs_buffer)) == FR_OK)
+        printf("Making FileSystem...\r\n");
+        if (f_mkfs("0:", 0, fs_buffer, sizeof(fs_buffer)) == FR_OK) {
             f_setlabel((const TCHAR *) "0:SD");
-        else
+            printf("Make FileSystem Success\r\n");
+        } else {
+            printf("Error To Make FileSystem\r\n");
             while (1);
-    } else if (result != FR_OK)
+        }
+    } else if (result != FR_OK) {
+        printf("Error To Mount FileSystem\r\n");
         while (1);
-
-    fs_get_free("0:");
+    }
+    printf("FileSystem Mount Success!\r\n");
     fs_scan_files("0:");
 
     static unsigned char find_counter = 0;

@@ -36,7 +36,7 @@ unsigned char SD_TYPE = 0x00;
 void sdcard_sync(void) {
     GPIO_ResetBits(GPIOD, GPIO_Pin_15);
     do {
-        delayms(20);
+        delayms(1);
     } while (spi3_readwrite_byte(0xFF) != 0xFF);
     GPIO_SetBits(GPIOD, GPIO_Pin_15);
 }
@@ -127,7 +127,7 @@ unsigned char sdcard_config(void) {
         }
     }
     GPIO_SetBits(GPIOD, GPIO_Pin_15);
-    spi3_set_prescaler(SPI_BaudRatePrescaler_2);
+    spi3_set_prescaler(SPI_BaudRatePrescaler_32);
     if (SD_TYPE)
         return 0;
     else
