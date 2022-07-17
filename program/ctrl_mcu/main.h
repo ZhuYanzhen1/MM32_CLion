@@ -23,7 +23,7 @@
 
 ///////////// Device /////////////
 #include "sensor_decode.h"
-#include "w25q64.h"
+#include "tfcard.h"
 
 ///////////// Hardware /////////////
 #include "led.h"

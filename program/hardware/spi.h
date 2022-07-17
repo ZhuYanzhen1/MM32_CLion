@@ -15,6 +15,8 @@ unsigned int spi2_readwrite_byte(unsigned int tx_data);
 void spi3_config(void);
 void spi3_readwrite_byte(unsigned int tx_data);
 #else
+#include "hal_spi.h"
+void spi3_set_prescaler(SPI_BaudRatePrescaler_TypeDef SPI_BaudRatePrescaler);
 void spi3_config(void);
 unsigned char spi3_readwrite_byte(unsigned char tx_data);
 #endif

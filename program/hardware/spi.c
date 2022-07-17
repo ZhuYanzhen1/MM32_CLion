@@ -105,6 +105,11 @@ void spi3_config(void) {
     SPI_Cmd(SPI3, ENABLE);
 }
 #else
+
+void spi3_set_prescaler(SPI_BaudRatePrescaler_TypeDef SPI_BaudRatePrescaler) {
+    MODIFY_REG(SPI3->BRR, BRR_Mask, SPI_BaudRatePrescaler);
+}
+
 unsigned char spi3_readwrite_byte(unsigned char tx_data) {
     __asm volatile("cpsid i");
     WRITE_REG(SPI3->TDR, tx_data);
@@ -151,11 +156,11 @@ void spi3_config(void) {
     SPI_InitStruct.SPI_Mode = SPI_Mode_Master;
     SPI_InitStruct.SPI_DataSize = SPI_DataSize_8b;
     SPI_InitStruct.SPI_DataWidth = SPI_DataWidth_8b;
-    SPI_InitStruct.SPI_CPOL = SPI_CPOL_High;
-    SPI_InitStruct.SPI_CPHA = SPI_CPHA_2Edge;
+    SPI_InitStruct.SPI_CPOL = SPI_CPOL_Low;
+    SPI_InitStruct.SPI_CPHA = SPI_CPHA_1Edge;
     SPI_InitStruct.SPI_NSS = SPI_NSS_Soft;
 
-    SPI_InitStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_128;
+    SPI_InitStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_256;
     SPI_InitStruct.SPI_FirstBit = SPI_FirstBit_MSB;
     SPI_Init(SPI3, &SPI_InitStruct);
     if (SPI_InitStruct.SPI_BaudRatePrescaler <= 8)
