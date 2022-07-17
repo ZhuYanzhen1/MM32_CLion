@@ -1,6 +1,6 @@
 #ifndef MM32F3277_SYSTEM_VERSION_H_ 
 #define MM32F3277_SYSTEM_VERSION_H_ 
 
-#define GIT_HASH "7f91a3a_07-17_00:29" 
+#define GIT_HASH "836cbd8+" 
 
 #endif
