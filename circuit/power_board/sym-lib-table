@@ -1,4 +1,2 @@
 (sym_lib_table
-  (lib (name "power_Library")(type "KiCad")(uri "${KIPRJMOD}/power_Library.kicad_sym")(options "")(descr ""))
-  (lib (name "MM32_Periph")(type "KiCad")(uri "${KIPRJMOD}/MM32_Periph.kicad_sym")(options "")(descr ""))
 )
