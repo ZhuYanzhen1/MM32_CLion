@@ -6,8 +6,8 @@
 
   (title_block
     (title "Geomagnetometer")
-    (date "2022-07-09")
-    (rev "1.0.1")
+    (date "2022-07-18")
+    (rev "1.0.2")
   )
 
   (lib_symbols
