@@ -145,7 +145,7 @@ void fusion_task(void *parameters) {
         proc_to_ctrl_buffer[3] = *((unsigned int *) (&kalman_data.v));
         precossing_proc_to_control(proc_to_ctrl_package, proc_to_ctrl_buffer);
         for (unsigned char i = 0; i < PROC_MCU_SEND_AMOUNT; i++)
-            uart3_sendbyte(proc_to_ctrl_package[i]);
+            uart4_sendbyte(proc_to_ctrl_package[i]);
 
         delayms(19);
 //        printf("%.2f,%.2f,%.2f,%.2f\r",
