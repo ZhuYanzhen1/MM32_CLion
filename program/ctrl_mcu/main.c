@@ -35,6 +35,7 @@ int main(void) {
     uart7_config();
     uart7_dma_sent_config(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
 
+    delayms(1000);
     cm_backtrace_config("CtrlMCU", "1.6.1", "1.6.1");
     debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
     printf("CtrlMCU %s %s %s\r\n", __DATE__, __TIME__, GIT_HASH);
@@ -99,7 +100,7 @@ int main(void) {
     }
     while (1) {
         if (proc_data.distance_east != 0) {
-            for (unsigned char i = 0; i < 10; i++) {
+            for (unsigned char i = 0; i < 20; i++) {
                 while (1) {
                     if (lqr_flag == 1) {
                         lqr_flag = 0;
@@ -125,7 +126,7 @@ int main(void) {
                     }
                 }
             }
-            speed = 15000;
+            speed = 20000;
             sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
             uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
             printf("%.3f, %.3f , \r\n", proc_data.distance_north, proc_data.distance_east);
