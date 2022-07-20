@@ -96,9 +96,10 @@ unsigned char lqr_control(unsigned short index, basic_status_t status) {
     solve_feedback_value(p, a, b, x, r, control_val);
     //    speed = speed +control_val[0][0];
 
-    if ((playground_ind < 160) || (playground_ind > 400 && playground_ind < 700) || (playground_ind > 980))
+    if ((playground_ind < 100) || (playground_ind > 260 && playground_ind < 430) || (playground_ind > 620))
         control_val[1][0] /= 2;
-    else if ((playground_ind < 200 && playground_ind > 160) || (playground_ind > 700 && playground_ind < 760))
+    else if ((playground_ind < 130 && playground_ind > 100) || (playground_ind > 430 && playground_ind < 450)
+        || (playground_ind > 200 && playground_ind < 260))
         control_val[1][0] /= 1.2f;
 
     last_delta = control_val[1][0] + test_point[index][3];//+ k_d * (yaw_error - last_yaw_error);
