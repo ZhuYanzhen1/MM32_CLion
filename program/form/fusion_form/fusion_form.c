@@ -52,6 +52,7 @@ void gui_fusion_form_init() {
     gui_form_bind_label(&fusion_form, &kalman_v_lable);
     gui_form_bind_label(&fusion_form, &kalman_north_distance_lable);
     gui_form_bind_label(&fusion_form, &kalman_east_distance_lable);
+    gui_form_bind_label(&fusion_form, &max_speed_lable);
     gui_form_bind_button(&fusion_form, &fusion_form_return_btn);
     gui_form_display(&fusion_form);
 }
