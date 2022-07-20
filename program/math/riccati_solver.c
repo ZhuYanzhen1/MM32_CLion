@@ -47,6 +47,9 @@ float calculate_distance(int ind) {
 float last_delta = 0;
 double dt = 0;
 static unsigned int last_global_time_stamp = 0;
+float attenuation_rate = 0;
+float attenuation = 0;
+unsigned char attenuation_index = 0;
 unsigned char lqr_control(unsigned short index, basic_status_t status) {
     if (last_global_time_stamp == 0)
         last_global_time_stamp = global_time_stamp - 20;
@@ -96,10 +99,40 @@ unsigned char lqr_control(unsigned short index, basic_status_t status) {
     solve_feedback_value(p, a, b, x, r, control_val);
     //    speed = speed +control_val[0][0];
 
-    if ((playground_ind < 100) || (playground_ind > 230 && playground_ind < 400) || (playground_ind > 530))
+    // 后面这些数字换成宏
+    if ((playground_ind < 100)) {
         control_val[1][0] /= 2;
-    else if ((playground_ind > 100 && playground_ind < 120) || (playground_ind > 400 && playground_ind < 420))
-        control_val[1][0] /= 1.2f;
+    } else if ((playground_ind > 100 && playground_ind < 120)) {    // 出弯道    从2到1.5
+        attenuation_rate = (2 - 1.5f) / (120 - 100);                // 衰减率
+        attenuation_index = index - 100;                            // 点数
+        attenuation = (float) attenuation_index * attenuation_rate; // 衰减量
+        control_val[1][0] /= 2 - attenuation;
+    } else if ((playground_ind > 120 && playground_ind < 230)) {    // 直道  从1.5到1.3
+        attenuation_rate = (1.5f - 1.3f) / (230 - 120);             // 衰减率
+        attenuation_index = index - 120;                            // 点数
+        attenuation = (float) attenuation_index * attenuation_rate; // 衰减量
+        control_val[1][0] /= 1.5f - attenuation;
+    } else if (playground_ind > 230 && playground_ind < 400) {      // 弯道   从1.3到2
+        attenuation_rate = (2 - 1.3f) / (400 - 230);
+        attenuation_index = index - 230;
+        attenuation = (float) attenuation_index * attenuation_rate;
+        control_val[1][0] /= 1.3f + attenuation;
+    } else if ((playground_ind > 400 && playground_ind < 420)) {    // 出弯道 从2到1.5
+        attenuation_rate = (2 - 1.5f) / (420 - 400);
+        attenuation_index = index - 400;
+        attenuation = (float) attenuation_index * attenuation_rate;
+        control_val[1][0] /= 2 - attenuation;
+    } else if ((playground_ind > 420 && playground_ind < 530)) {    // 直道   从1.5到1.3
+        attenuation_rate = (1.5f - 1.3f) / (530 - 420);
+        attenuation_index = index - 420;
+        attenuation = (float) attenuation_index * attenuation_rate;
+        control_val[1][0] /= 1.5f - attenuation;
+    } else if ((playground_ind > 530)) {                            // 弯道   从1.3到2
+        attenuation_rate = (2 - 1.3f) / (INDEX_NUM - 530);
+        attenuation_index = index - 530;
+        attenuation = (float) attenuation_index * attenuation_rate;
+        control_val[1][0] /= 1.3f + attenuation;
+    }
 
     last_delta = control_val[1][0] + test_point[index][3];//+ k_d * (yaw_error - last_yaw_error);
 

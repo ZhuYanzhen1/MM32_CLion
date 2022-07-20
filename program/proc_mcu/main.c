@@ -148,7 +148,7 @@ void fusion_task(void *parameters) {
         for (unsigned char i = 0; i < PROC_MCU_SEND_AMOUNT; i++)
             uart4_sendbyte(proc_to_ctrl_package[i]);
 
-        delayms(19);
+        delayms(39);
 //        printf("%.2f,%.2f,%.2f,%.2f\r",
 //               neu.north_distance,
 //               neu.east_distance,
