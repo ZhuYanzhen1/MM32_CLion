@@ -10,7 +10,7 @@
 
 // 检测gps稳定和与gps滤波有关的变量
 extern unsigned int temp_stable[100][2];
-
+float statistic_max_speed = 0;
 extern unsigned int packages_to_be_unpacked_1[READ_MCU_AMOUNT];
 unsigned int proc_to_ctrl_package[PROC_MCU_SEND_AMOUNT] = {0};
 unsigned int proc_to_ctrl_buffer[4] = {0};
@@ -131,6 +131,7 @@ void fusion_task(void *parameters) {
         float last_output_v = kalman_data.v;
         kalman_data.v = kalman_update(&kalman_v, neu.v, neu.acceleration, dt);
         kalman_data.v = kalman_data.v * 0.3f + 0.7f * last_output_v;
+        statistic_max_speed = kalman_data.v > statistic_max_speed ? kalman_data.v : statistic_max_speed;
 
         kalman_v.gps_valid_flag = 1;
         coordinate_system_transformation_kalman_v(small_packets.chebyshev_north);

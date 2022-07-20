@@ -7,6 +7,7 @@
 
 extern form_struct_t main_form;
 extern kalman_data_t kalman_data;
+extern float statistic_max_speed;
 
 static form_struct_t fusion_form;
 static label_struct_t kalman_north_label;
@@ -14,6 +15,7 @@ static label_struct_t gnss_status_label;
 static label_struct_t kalman_v_lable;
 static label_struct_t kalman_north_distance_lable;
 static label_struct_t kalman_east_distance_lable;
+static label_struct_t max_speed_lable;
 static button_struct_t fusion_form_return_btn;
 
 void fusion_form_return_btn_callback(void *parameter) {
@@ -28,6 +30,7 @@ void gui_show_fusion(void *parameter) {
     gui_label_settext(&kalman_north_distance_lable, " k_nd:%.3f", kalman_data.distance_north);
     gui_label_settext(&kalman_east_distance_lable, " k_ed:%.3f", kalman_data.distance_east);
     gui_label_settext(&kalman_v_lable, " k_v:%f", kalman_data.v);
+    gui_label_settext(&max_speed_lable, "max_v:%.3f", statistic_max_speed);
 }
 
 void gui_fusion_form_init() {
@@ -37,6 +40,7 @@ void gui_fusion_form_init() {
     gui_label_init(&kalman_v_lable, 3, C_BLACK, label_align_left, " k_v");
     gui_label_init(&kalman_north_distance_lable, 4, C_BLACK, label_align_left, " k_nd");
     gui_label_init(&kalman_east_distance_lable, 5, C_BLACK, label_align_left, " k_ed");
+    gui_label_init(&max_speed_lable, 6, C_BLACK, label_align_left, " max_v");
 
     fusion_form_return_btn.callback = fusion_form_return_btn_callback;
     gui_button_init(&fusion_form_return_btn, 68, 129, 50, 24, "Back");
