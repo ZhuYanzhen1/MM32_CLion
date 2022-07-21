@@ -197,19 +197,18 @@ int dichotomy(int ind_start, int ind_end, float x, float y) {
     return ind_middle;
 }
 
-void project(basic_status_t *current, float v, float t, float servo_angle) {
+void track_prediction(basic_status_t *current, float v, float t, float servo_angle) {
     float l = 0.28f;
     float r = l / tanf(servo_angle);
     float theta = v * t / r;
     float s = 2 * r * sinf(0.5f * theta);
-//    float delta = v * t / l * 0.5f * qfp_ftan(servo_angle) + current->angle;   //
     float delta = theta / 2 + current->angle;
     current->pos_n = s * cosf(delta) + current->pos_n;
     current->pos_e = s * sinf(delta) + current->pos_e;
     current->angle = theta + current->angle;
 
     current->angle = (current->angle > _2PI_) ? (current->angle - _2PI_) : (
-            (current->angle < 0) ? (current->angle + _2PI_) : current->angle);
+        (current->angle < 0) ? (current->angle + _2PI_) : current->angle);
 }
 
 #endif  // RUNNING_UNIT_TEST
