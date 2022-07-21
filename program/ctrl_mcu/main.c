@@ -65,8 +65,8 @@ int main(void) {
     volatile static unsigned short index = 0;
 //    while (1) {
 //        for (unsigned char i = 0; i < 100; i++) {
-//            if (i < 20) {
-//                speed = 3000;
+//            if (i < 10) {
+//                speed = 10000;
 //                sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
 //                uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
 //            } else {
@@ -97,7 +97,7 @@ int main(void) {
     }
     while (1) {
         if (proc_data.distance_east != 0) {
-            for (unsigned char i = 0; i < 20; i++) {
+            for (unsigned char i = 0; i < 10; i++) {
                 while (1) {
                     if (lqr_flag == 1) {
                         lqr_flag = 0;
@@ -106,12 +106,6 @@ int main(void) {
                         basic_status_t current_status = {proc_data.distance_north,
                                                          proc_data.distance_east,
                                                          proc_data.north_angle};
-//                        playground_ind =
-//                            dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
-//                                      (playground_ind + INDEX_OFFSET > INDEX_NUM) ? INDEX_NUM : (playground_ind
-//                                          + INDEX_OFFSET));
-
-                        /* 280-430 */
 
                         playground_ind = find_index(playground_ind);
 
@@ -123,22 +117,12 @@ int main(void) {
                     }
                 }
             }
-            speed = 20000;
+            speed = 10000;  // 23000
+//            if (playground_ind > INDEX_NUM - 160)
+//                speed = 0;
             sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
             uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
             printf("%.3f, %.3f , \r\n", proc_data.distance_north, proc_data.distance_east);
-        }
-
-        if (playground_ind > INDEX_NUM - 1) {
-            for (unsigned short i = 0; i < 20; i++) {
-                speed = (speed > 2000) ? (speed - 2000) : 0;
-                sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
-                uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
-                WRITE_REG(TIM3->CCR1, SERVO_MID_POINT);
-                delayms(400);
-            }
-            while (1);
-            // 到比赛的时候，为了确保能触发裁判系统，我们可以要求达到最后一个点的时候仍然全速冲刺，然后遥控停车
         }
     }
 }
