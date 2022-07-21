@@ -15,7 +15,7 @@
 #endif
 
 #ifndef RUNNING_UNIT_TEST
-void project(basic_status_t *current, float v, float t, float servo_angle) {
+void track_prediction(basic_status_t *current, float v, float t, float servo_angle) {
     float l = 0.28f;
     float r = l / qfp_ftan(servo_angle);
     float theta = v * t / r;
@@ -30,7 +30,6 @@ void project(basic_status_t *current, float v, float t, float servo_angle) {
         (current->angle < 0) ? (current->angle + _2PI_) : current->angle);
 }
 // 对电机和舵机的控制量
-extern volatile unsigned short angle;
 extern unsigned short playground_ind;
 extern unsigned int uart7_dma_send_buffer[UART7_DMA_SEND_BUFFER];
 unsigned short last_angle = SERVO_MID_POINT;
@@ -44,21 +43,58 @@ float calculate_distance(int ind) {
     return distance;
 }
 
-float last_delta = 0;
-double dt = 0;
+float arranging_transition_process(float control_value, unsigned short index) {
+    float attenuation_rate;
+    float attenuation;
+    unsigned short attenuation_index;
+    // 后面这些数字换成宏
+    if ((playground_ind < 100)) {
+        control_value /= 2;
+    } else if ((playground_ind > 100 && playground_ind < 120)) {    // 出弯道    从2到1.5
+        attenuation_rate = (2 - 1.5f) / (120 - 100);                // 衰减率
+        attenuation_index = index - 100;                            // 点数
+        attenuation = (float) attenuation_index * attenuation_rate; // 衰减量
+        control_value /= 2 - attenuation;
+    } else if ((playground_ind > 120 && playground_ind < 230)) {    // 直道  从1.5到1.3
+        attenuation_rate = (1.5f - 1.3f) / (230 - 120);             // 衰减率
+        attenuation_index = index - 120;                            // 点数
+        attenuation = (float) attenuation_index * attenuation_rate; // 衰减量
+        control_value /= 1.5f - attenuation;
+    } else if (playground_ind > 230 && playground_ind < 400) {      // 弯道   从1.3到2
+        attenuation_rate = (2 - 1.3f) / (400 - 230);
+        attenuation_index = index - 230;
+        attenuation = (float) attenuation_index * attenuation_rate;
+        control_value /= 1.3f + attenuation;
+    } else if ((playground_ind > 400 && playground_ind < 420)) {    // 出弯道 从2到1.5
+        attenuation_rate = (2 - 1.5f) / (420 - 400);
+        attenuation_index = index - 400;
+        attenuation = (float) attenuation_index * attenuation_rate;
+        control_value /= 2 - attenuation;
+    } else if ((playground_ind > 420 && playground_ind < 530)) {    // 直道   从1.5到1.3
+        attenuation_rate = (1.5f - 1.3f) / (530 - 420);
+        attenuation_index = index - 420;
+        attenuation = (float) attenuation_index * attenuation_rate;
+        control_value /= 1.5f - attenuation;
+    } else if ((playground_ind > 530)) {                            // 弯道   从1.3到2
+        attenuation_rate = (2 - 1.3f) / (INDEX_NUM - 530);
+        attenuation_index = index - 530;
+        attenuation = (float) attenuation_index * attenuation_rate;
+        control_value /= 1.3f + attenuation;
+    }
+    return control_value;
+}
+
 static unsigned int last_global_time_stamp = 0;
-float attenuation_rate = 0;
-float attenuation = 0;
-unsigned char attenuation_index = 0;
 unsigned char lqr_control(unsigned short index, basic_status_t status) {
+    const double v_r = 10.5, L = 0.28;
+    const float q = 1, r = 2;
+
     if (last_global_time_stamp == 0)
         last_global_time_stamp = global_time_stamp - 20;
-    double v_r = 10.5, L = 0.28;
-    dt = (double) (global_time_stamp - last_global_time_stamp) * 0.001;
+    double dt = (double) (global_time_stamp - last_global_time_stamp) * 0.001;
     last_global_time_stamp = global_time_stamp;
 
     // 求位置、航向角的误差
-//    proc_data.north_angle = proc_data.north_angle - last_delta * 0.01f;
     float yaw_temp = (status.angle < 180) ? status.angle : (status.angle - 360);
     yaw_temp *= ANGLE_TO_RADIAN;
 
@@ -70,12 +106,8 @@ unsigned char lqr_control(unsigned short index, basic_status_t status) {
     else if (yaw_error < -3.1415926)
         yaw_error += _2PI_;
 
-//     计算横向误差
-//    float lateral_error = y_error * qfp_fcos(test_point[index][2]) - x_error * qfp_fsin(test_point[index][2]);
-
     x_error = 0.2f * x_error;
     y_error = 0.2f * y_error;
-//    yaw_error = 0.9f * yaw_error;
 
     // 由状态方程矩阵系数，计算K
     double a[3][3] = {{1, 0, -v_r * dt * sin((double) test_point[index][2])},
@@ -92,52 +124,13 @@ unsigned char lqr_control(unsigned short index, basic_status_t status) {
                       {yaw_error}};
     float p[3][3] = {0};
     float control_val[2][1] = {0};
-    float q = 1;
-    float r = 2;
 
     solve_riccati_equation(a, b, q, r, p);
     solve_feedback_value(p, a, b, x, r, control_val);
-    //    speed = speed +control_val[0][0];
 
-    // 后面这些数字换成宏
-    if ((playground_ind < 100)) {
-        control_val[1][0] /= 2;
-    } else if ((playground_ind > 100 && playground_ind < 120)) {    // 出弯道    从2到1.5
-        attenuation_rate = (2 - 1.5f) / (120 - 100);                // 衰减率
-        attenuation_index = index - 100;                            // 点数
-        attenuation = (float) attenuation_index * attenuation_rate; // 衰减量
-        control_val[1][0] /= 2 - attenuation;
-    } else if ((playground_ind > 120 && playground_ind < 230)) {    // 直道  从1.5到1.3
-        attenuation_rate = (1.5f - 1.3f) / (230 - 120);             // 衰减率
-        attenuation_index = index - 120;                            // 点数
-        attenuation = (float) attenuation_index * attenuation_rate; // 衰减量
-        control_val[1][0] /= 1.5f - attenuation;
-    } else if (playground_ind > 230 && playground_ind < 400) {      // 弯道   从1.3到2
-        attenuation_rate = (2 - 1.3f) / (400 - 230);
-        attenuation_index = index - 230;
-        attenuation = (float) attenuation_index * attenuation_rate;
-        control_val[1][0] /= 1.3f + attenuation;
-    } else if ((playground_ind > 400 && playground_ind < 420)) {    // 出弯道 从2到1.5
-        attenuation_rate = (2 - 1.5f) / (420 - 400);
-        attenuation_index = index - 400;
-        attenuation = (float) attenuation_index * attenuation_rate;
-        control_val[1][0] /= 2 - attenuation;
-    } else if ((playground_ind > 420 && playground_ind < 530)) {    // 直道   从1.5到1.3
-        attenuation_rate = (1.5f - 1.3f) / (530 - 420);
-        attenuation_index = index - 420;
-        attenuation = (float) attenuation_index * attenuation_rate;
-        control_val[1][0] /= 1.5f - attenuation;
-    } else if ((playground_ind > 530)) {                            // 弯道   从1.3到2
-        attenuation_rate = (2 - 1.3f) / (INDEX_NUM - 530);
-        attenuation_index = index - 530;
-        attenuation = (float) attenuation_index * attenuation_rate;
-        control_val[1][0] /= 1.3f + attenuation;
-    }
-
-    last_delta = control_val[1][0] + test_point[index][3];//+ k_d * (yaw_error - last_yaw_error);
-
-
-    angle = (short) (SERVO_MID_POINT + last_delta * YAW_TO_ANGLE);
+    control_val[1][0] = arranging_transition_process(control_val[1][0], index);
+    float output_angle = control_val[1][0] + test_point[index][3];
+    unsigned char angle = (short) (SERVO_MID_POINT + output_angle * YAW_TO_ANGLE);
 
     if (angle > SERVO_MID_POINT + MAX_DECLINATION_ANGLE)
         angle = SERVO_MID_POINT + MAX_DECLINATION_ANGLE;
@@ -157,11 +150,6 @@ unsigned char lqr_control(unsigned short index, basic_status_t status) {
         else if (angle > SERVO_MID_POINT)
             angle = SERVO_MID_POINT;
     }
-
-//    angle = (short) (
-//        ((angle - last_angle) > DELTA_ANGLE) ? (last_angle + DELTA_ANGLE) : (
-//            ((last_angle - angle) > DELTA_ANGLE) ? (last_angle - DELTA_ANGLE) : angle));
-//    last_angle = angle;
 
     return angle;
 }

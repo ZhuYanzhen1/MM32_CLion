@@ -27,7 +27,7 @@ int dichotomy(int ind_start, int ind_end);
 int find_index(int last_index);
 #endif  // RUNNING_UNIT_TEST
 
-void project(basic_status_t *current, float v, float t, float servo_angle);
+void track_prediction(basic_status_t *current, float v, float t, float servo_angle);
 
 void lqr_control_test(unsigned short index, int angle_ctrl, float angle_yaw, float distance_n, float distance_e);
 unsigned char lqr_control(unsigned short index, basic_status_t status);

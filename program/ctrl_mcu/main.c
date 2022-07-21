@@ -9,11 +9,8 @@
 #include "main.h"
 
 extern volatile unsigned char lqr_flag;
-extern float last_delta;
-extern double dt;
 
 FATFS filesystem;
-volatile short angle = SERVO_MID_POINT;
 volatile unsigned short speed = 0;
 unsigned short playground_ind = 0;
 static unsigned char fs_buffer[FF_MAX_SS * 4];
@@ -119,7 +116,7 @@ int main(void) {
                         playground_ind = find_index(playground_ind);
 
                         index = playground_ind + OVERRUN_POINT;
-                        lqr_control(index, current_status);
+                        unsigned char angle = lqr_control(index, current_status);
 
                         WRITE_REG(TIM3->CCR1, angle);
                         break;
