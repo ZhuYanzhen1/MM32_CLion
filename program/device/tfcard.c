@@ -28,9 +28,6 @@
 
 #ifndef IS_PROCESS_MCU
 
-#pragma GCC push_options
-#pragma GCC optimize("O0")
-
 unsigned char SD_TYPE = 0x00;
 
 void sdcard_sync(void) {
@@ -127,7 +124,7 @@ unsigned char sdcard_config(void) {
         }
     }
     GPIO_SetBits(GPIOD, GPIO_Pin_15);
-    spi3_set_prescaler(SPI_BaudRatePrescaler_32);
+    spi3_set_prescaler(SPI_BaudRatePrescaler_8);
     if (SD_TYPE)
         return 0;
     else
@@ -235,7 +232,7 @@ unsigned char sdcard_read_disk(unsigned char *buf, unsigned int sector, unsigned
             result = sdcard_receive_data(buf, 512);
         }
     } else {
-        result = sdcard_send_cmd(CMD18, sector, 0X01);
+        sdcard_send_cmd(CMD18, sector, 0X01);
         do {
             result = sdcard_receive_data(buf, 512);
             buf += 512;
@@ -245,7 +242,5 @@ unsigned char sdcard_read_disk(unsigned char *buf, unsigned int sector, unsigned
     GPIO_SetBits(GPIOD, GPIO_Pin_15);
     return result;
 }
-
-#pragma GCC pop_options
 
 #endif

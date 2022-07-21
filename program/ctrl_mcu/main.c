@@ -97,7 +97,7 @@ int main(void) {
     }
     while (1) {
         if (proc_data.distance_east != 0) {
-            for (unsigned char i = 0; i < 10; i++) {
+            for (unsigned char i = 0; i < 20; i++) {
                 while (1) {
                     if (lqr_flag == 1) {
                         lqr_flag = 0;
