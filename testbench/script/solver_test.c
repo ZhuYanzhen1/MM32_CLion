@@ -100,7 +100,7 @@ void test_project_solver(void) {
 //    float v = 4, t = 0.1f, servo_angle = 0.0016771f;
     basic_status_t current_status = {0, 0, 10 * 3.1315926f / 180}, project_status = {0};
     float v = 4, t = 0.1f, servo_angle = -20 * ANGLE_TO_RADIAN;
-    project(&current_status, v, t, servo_angle);
+    track_prediction(&current_status, v, t, servo_angle);
 
 }
 

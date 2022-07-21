@@ -48,34 +48,27 @@ float arranging_transition_process(float control_value, unsigned short index) {
     float attenuation;
     unsigned short attenuation_index;
     // 后面这些数字换成宏
-    if ((playground_ind < 100)) {
-        control_value /= 2;
-    } else if ((playground_ind > 100 && playground_ind < 120)) {    // 出弯道    从2到1.5
-        attenuation_rate = (2 - 1.5f) / (120 - 100);                // 衰减率
-        attenuation_index = index - 100;                            // 点数
-        attenuation = (float) attenuation_index * attenuation_rate; // 衰减量
+    if (playground_ind < 100 || playground_ind > 530) {                                    // 弯道    2
+        control_value /= 2.0f;
+    } else if (playground_ind > 100 && playground_ind <= 120) {    // 出弯道    从2到1.5
+        attenuation_rate = (2 - 1.3f) / (120 - 100);
+        attenuation_index = index - 100;
+        attenuation = (float) attenuation_index * attenuation_rate;
         control_value /= 2 - attenuation;
-    } else if ((playground_ind > 120 && playground_ind < 230)) {    // 直道  从1.5到1.3
-        attenuation_rate = (1.5f - 1.3f) / (230 - 120);             // 衰减率
-        attenuation_index = index - 120;                            // 点数
-        attenuation = (float) attenuation_index * attenuation_rate; // 衰减量
-        control_value /= 1.5f - attenuation;
-    } else if (playground_ind > 230 && playground_ind < 400) {      // 弯道   从1.3到2
+    } else if ((playground_ind > 120 && playground_ind <= 230) ||
+        (playground_ind > 420 && playground_ind <= 530)) {          // 直道  1.3
+        control_value /= 1.3f;
+    } else if (playground_ind > 230 && playground_ind <= 400) {      // 进弯道 从1.3到2
         attenuation_rate = (2 - 1.3f) / (400 - 230);
         attenuation_index = index - 230;
         attenuation = (float) attenuation_index * attenuation_rate;
         control_value /= 1.3f + attenuation;
-    } else if ((playground_ind > 400 && playground_ind < 420)) {    // 出弯道 从2到1.5
-        attenuation_rate = (2 - 1.5f) / (420 - 400);
+    } else if (playground_ind > 400 && playground_ind <= 420) {    // 出弯道 从2到1.3
+        attenuation_rate = (2 - 1.3f) / (420 - 400);
         attenuation_index = index - 400;
         attenuation = (float) attenuation_index * attenuation_rate;
         control_value /= 2 - attenuation;
-    } else if ((playground_ind > 420 && playground_ind < 530)) {    // 直道   从1.5到1.3
-        attenuation_rate = (1.5f - 1.3f) / (530 - 420);
-        attenuation_index = index - 420;
-        attenuation = (float) attenuation_index * attenuation_rate;
-        control_value /= 1.5f - attenuation;
-    } else if ((playground_ind > 530)) {                            // 弯道   从1.3到2
+    } else if (playground_ind > 530) {                            // 弯道   从1.3到2
         attenuation_rate = (2 - 1.3f) / (INDEX_NUM - 530);
         attenuation_index = index - 530;
         attenuation = (float) attenuation_index * attenuation_rate;
@@ -199,19 +192,18 @@ int dichotomy(int ind_start, int ind_end, float x, float y) {
     return ind_middle;
 }
 
-void project(basic_status_t *current, float v, float t, float servo_angle) {
+void track_prediction(basic_status_t *current, float v, float t, float servo_angle) {
     float l = 0.28f;
     float r = l / tanf(servo_angle);
     float theta = v * t / r;
     float s = 2 * r * sinf(0.5f * theta);
-//    float delta = v * t / l * 0.5f * qfp_ftan(servo_angle) + current->angle;   //
     float delta = theta / 2 + current->angle;
     current->pos_n = s * cosf(delta) + current->pos_n;
     current->pos_e = s * sinf(delta) + current->pos_e;
     current->angle = theta + current->angle;
 
     current->angle = (current->angle > _2PI_) ? (current->angle - _2PI_) : (
-            (current->angle < 0) ? (current->angle + _2PI_) : current->angle);
+        (current->angle < 0) ? (current->angle + _2PI_) : current->angle);
 }
 
 #endif  // RUNNING_UNIT_TEST
