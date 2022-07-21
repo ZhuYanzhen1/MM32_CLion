@@ -106,12 +106,6 @@ int main(void) {
                         basic_status_t current_status = {proc_data.distance_north,
                                                          proc_data.distance_east,
                                                          proc_data.north_angle};
-//                        playground_ind =
-//                            dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
-//                                      (playground_ind + INDEX_OFFSET > INDEX_NUM) ? INDEX_NUM : (playground_ind
-//                                          + INDEX_OFFSET));
-
-                        /* 280-430 */
 
                         playground_ind = find_index(playground_ind);
 
@@ -126,7 +120,7 @@ int main(void) {
             speed = 20000;
             sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
             uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
-            printf("%.3f, %.3f , \r\n", proc_data.distance_north, proc_data.distance_east);
+//            printf("%.3f, %.3f , \r\n", proc_data.distance_north, proc_data.distance_east);
         }
 
         if (playground_ind > INDEX_NUM - 1) {

@@ -21,7 +21,7 @@ DSTATUS disk_initialize(
         if (result) {
             spi3_set_prescaler(SPI_BaudRatePrescaler_256);
             spi3_readwrite_byte(0xff);
-            spi3_set_prescaler(SPI_BaudRatePrescaler_32);
+            spi3_set_prescaler(SPI_BaudRatePrescaler_8);
             return STA_NOINIT;
         } else
             return RES_OK;
