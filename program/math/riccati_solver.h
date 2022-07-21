@@ -15,10 +15,10 @@
 #define _2PI_                       (6.2831853f)
 
 ///////////////////// Trace Transition //////////////////
-#define DIVIDING_POINT_1            125
-#define DIVIDING_POINT_2            270
-#define DIVIDING_POINT_3            460
-#define DIVIDING_POINT_4            620
+#define DIVIDING_POINT_1            110
+#define DIVIDING_POINT_2            255
+#define DIVIDING_POINT_3            430
+#define DIVIDING_POINT_4            580
 #define DIVIDING_POINT_5            800
 #define TRANSITION_SECTION          30
 #define CURVES_ATTENUATION_RATE     1.9f

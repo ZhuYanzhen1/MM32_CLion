@@ -117,8 +117,8 @@ int main(void) {
                     }
                 }
             }
-            speed = 23000;  // 23000
-            if (playground_ind > INDEX_NUM - 160)
+            speed = 25000;  // 23000
+            if (playground_ind > INDEX_NUM - 130)
                 speed = 0;
             sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
             uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);

@@ -84,7 +84,7 @@ float arranging_transition_process(float control_value, unsigned short index) {
 
 static unsigned int last_global_time_stamp = 0;
 unsigned char lqr_control(unsigned short index, basic_status_t status) {
-    const double v_r = 12, L = 0.28;
+    const double v_r = 13.3, L = 0.28;
     const float q = 1, r = 2;
 
     if (last_global_time_stamp == 0)
