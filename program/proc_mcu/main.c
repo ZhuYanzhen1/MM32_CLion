@@ -8,9 +8,14 @@
 
 #include "main.h"
 
+// 统计其它控制器的信息
+unsigned char pc_connect_flag = 0;
+float statistic_max_speed = 0;
+float statistic_max_current = 0;
+extern unsigned char battery_current;
+
 // 检测gps稳定和与gps滤波有关的变量
 extern unsigned int temp_stable[100][2];
-float statistic_max_speed = 0;
 extern unsigned int packages_to_be_unpacked_1[READ_MCU_AMOUNT];
 unsigned int proc_to_ctrl_package[PROC_MCU_SEND_AMOUNT] = {0};
 unsigned int proc_to_ctrl_buffer[4] = {0};
@@ -49,6 +54,7 @@ void initialize_task(void *parameters) {
     delay_config();
     led_config();
     iic1_config();
+    at24c02_readparams();
     spi2_config();
     spi3_config();
     uart1_config();
@@ -67,8 +73,6 @@ void initialize_task(void *parameters) {
 #if STARTUP_CALIBRATE == 1
     xpt2046_calibrate();
     at24c02_saveparams();
-#else
-    at24c02_readparams();
 #endif
 
     debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
@@ -147,6 +151,9 @@ void fusion_task(void *parameters) {
         precossing_proc_to_control(proc_to_ctrl_package, proc_to_ctrl_buffer);
         for (unsigned char i = 0; i < PROC_MCU_SEND_AMOUNT; i++)
             uart4_sendbyte(proc_to_ctrl_package[i]);
+
+        statistic_max_current =
+            (float) battery_current > statistic_max_current ? (float) battery_current : statistic_max_current;
 
         delayms(39);
 //        printf("%.2f,%.2f,%.2f,%.2f\r",
