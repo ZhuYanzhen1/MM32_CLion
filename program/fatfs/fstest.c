@@ -6,6 +6,7 @@
 #include "ff.h"
 #include "printf.h"
 #include "delay.h"
+#include "version.h"
 
 unsigned char fs_get_free(char *drv) {
     FATFS *fs1;
@@ -38,6 +39,30 @@ unsigned char fs_scan_files(char *path) {
         }
     }
     return res;
+}
+
+static unsigned short statistic_str_length(char *buffer) {
+    unsigned short string_length = 0;
+    for (unsigned short counter = 0; counter < 0xFFFF; ++counter) {
+        if (*buffer != '\0')
+            string_length++;
+        else
+            break;
+        buffer++;
+    }
+    return string_length;
+}
+
+void fs_write_current_info(void) {
+    FIL newfile;
+    unsigned int bw;
+    char buffer[64] = {0};
+    sprintf(buffer, "CtrlMCU %s %s %s\r\n", __DATE__, __TIME__, GIT_HASH);
+    FRESULT fr = f_open(&newfile, "0:/CurrentInfo.txt", FA_WRITE | FA_CREATE_ALWAYS);
+    if (fr) while (1);
+    fr = f_write(&newfile, buffer, statistic_str_length(buffer), &bw);
+    if (fr) while (1);
+    f_close(&newfile);
 }
 
 unsigned char fs_access_file_test(void) {

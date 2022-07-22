@@ -43,6 +43,7 @@ int main(void) {
     delayms(2000);
     timer3_config();
 
+    sdcard_switch_device(0);
     FRESULT result = f_mount(&filesystem, "0:", 1);
     if (result == FR_NO_FILESYSTEM) {
         printf("Making FileSystem...\r\n");
@@ -58,6 +59,7 @@ int main(void) {
         while (1);
     }
     printf("FileSystem Mount Success!\r\n");
+    fs_write_current_info();
     fs_scan_files("0:");
 
     static unsigned char find_counter = 0;

@@ -75,8 +75,7 @@ DRESULT disk_ioctl(
     DRESULT res;
     if (pdrv == 0) {
         switch (cmd) {
-            case CTRL_SYNC://sdcard_sync();
-                res = RES_OK;
+            case CTRL_SYNC:res = RES_OK;
                 break;
             case GET_SECTOR_SIZE:*(WORD *) buff = SD_CARD_SECTOR_SIZE;
                 res = RES_OK;
