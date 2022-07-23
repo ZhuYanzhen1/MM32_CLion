@@ -121,7 +121,7 @@ void fusion_task(void *parameters) {
                 if (temp_stable[i][0] == temp_stable[j][0] && temp_stable[i][1] == temp_stable[j][1])
                     same_counter++;
             }
-            if (same_counter > 30) {
+            if (same_counter > 20) {
                 stable_flag = 1;
                 break;
             }

@@ -48,43 +48,46 @@ float arranging_transition_process(float control_value, unsigned short index) {
     float attenuation;
     unsigned short attenuation_index;
     // 后面这些数字换成宏
-    if ((playground_ind < DIVIDING_POINT_1) || (playground_ind > DIVIDING_POINT_2 && playground_ind < DIVIDING_POINT_3)
-        || (playground_ind > DIVIDING_POINT_4)) {
+    if ((playground_ind > DIVIDING_POINT_3 && playground_ind < DIVIDING_POINT_4)
+        || (playground_ind > DIVIDING_POINT_1 && playground_ind < DIVIDING_POINT_2)) {
         control_value /= CURVES_ATTENUATION_RATE;
-    } else if ((playground_ind > DIVIDING_POINT_1 && playground_ind < DIVIDING_POINT_2)) {  // 出弯道    从2到1.3
+    } else if (playground_ind < DIVIDING_POINT_1) {  // 出弯道    从2到1.3
         attenuation_rate =
             (CURVES_ATTENUATION_RATE - STRAIGHT_ATTENUATION_RATE) / TRANSITION_SECTION;     // 衰减率
-        if (playground_ind < BUFFER_BELT_1) {
-            attenuation_index = index - DIVIDING_POINT_1;                                   // 点数
-            attenuation = (float) attenuation_index * attenuation_rate;                     // 衰减量
-            control_value /= CURVES_ATTENUATION_RATE - attenuation;
-        } else if (playground_ind > BUFFER_BELT_2) {
+        if (playground_ind > BUFFER_BELT_2) {
             attenuation_index = index - BUFFER_BELT_2;                                      // 点数
             attenuation = (float) attenuation_index * attenuation_rate;                     // 衰减量
             control_value /= STRAIGHT_ATTENUATION_RATE + attenuation;
-        } else {
+        } else
             control_value /= STRAIGHT_ATTENUATION_RATE;
-        }
-    } else if ((playground_ind > DIVIDING_POINT_3 && playground_ind < DIVIDING_POINT_4)) {  // 出弯道 从2到1.3
+    } else if ((playground_ind > DIVIDING_POINT_2 && playground_ind < DIVIDING_POINT_3)) {  // 出弯道 从2到1.3
         attenuation_rate = (CURVES_ATTENUATION_RATE - STRAIGHT_ATTENUATION_RATE) / TRANSITION_SECTION;
         if (playground_ind < BUFFER_BELT_3) {
-            attenuation_index = index - DIVIDING_POINT_3;                                   // 点数
+            attenuation_index = index - DIVIDING_POINT_2;                                   // 点数
             attenuation = (float) attenuation_index * attenuation_rate;                     // 衰减量
             control_value /= CURVES_ATTENUATION_RATE - attenuation;
         } else if (playground_ind > BUFFER_BELT_4) {
             attenuation_index = index - BUFFER_BELT_4;                                      // 点数
             attenuation = (float) attenuation_index * attenuation_rate;                     // 衰减量
             control_value /= STRAIGHT_ATTENUATION_RATE + attenuation;
-        } else {
+        } else
             control_value /= STRAIGHT_ATTENUATION_RATE;
-        }
+    } else {
+        attenuation_rate =
+            (CURVES_ATTENUATION_RATE - STRAIGHT_ATTENUATION_RATE) / TRANSITION_SECTION;     // 衰减率
+        if (playground_ind < BUFFER_BELT_5) {
+            attenuation_index = index - DIVIDING_POINT_4;                                   // 点数
+            attenuation = (float) attenuation_index * attenuation_rate;                     // 衰减量
+            control_value /= CURVES_ATTENUATION_RATE - attenuation;
+        } else
+            control_value /= STRAIGHT_ATTENUATION_RATE;
     }
     return control_value;
 }
 
 static unsigned int last_global_time_stamp = 0;
 unsigned char lqr_control(unsigned short index, basic_status_t status) {
-    const double v_r = 13.3, L = 0.28;
+    const double v_r = 12.3, L = 0.28;
     const float q = 1, r = 2;
 
     if (last_global_time_stamp == 0)

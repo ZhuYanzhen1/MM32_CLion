@@ -15,18 +15,18 @@
 #define _2PI_                       (6.2831853f)
 
 ///////////////////// Trace Transition //////////////////
-#define DIVIDING_POINT_1            110
-#define DIVIDING_POINT_2            255
-#define DIVIDING_POINT_3            430
-#define DIVIDING_POINT_4            580
-#define DIVIDING_POINT_5            800
+#define DIVIDING_POINT_1            200
+#define DIVIDING_POINT_2            400
+#define DIVIDING_POINT_3            560
+#define DIVIDING_POINT_4            760
 #define TRANSITION_SECTION          30
 #define CURVES_ATTENUATION_RATE     1.9f
 #define STRAIGHT_ATTENUATION_RATE   1.4f
-#define BUFFER_BELT_1               (DIVIDING_POINT_1 + TRANSITION_SECTION)
-#define BUFFER_BELT_2               (DIVIDING_POINT_2 - TRANSITION_SECTION)
-#define BUFFER_BELT_3               (DIVIDING_POINT_3 + TRANSITION_SECTION)
-#define BUFFER_BELT_4               (DIVIDING_POINT_4 - TRANSITION_SECTION)
+#define BUFFER_BELT_1               (TRANSITION_SECTION)
+#define BUFFER_BELT_2               (DIVIDING_POINT_1 - TRANSITION_SECTION)
+#define BUFFER_BELT_3               (DIVIDING_POINT_2 + TRANSITION_SECTION)
+#define BUFFER_BELT_4               (DIVIDING_POINT_3 - TRANSITION_SECTION)
+#define BUFFER_BELT_5               (DIVIDING_POINT_4 + TRANSITION_SECTION)
 
 #define OUTPUT_DEBUG_INFO           (0)
 

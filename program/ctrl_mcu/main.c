@@ -28,11 +28,11 @@ int main(void) {
     led_config();
     uart1_config();
     uart6_config();
-    while (!UART_GetFlagStatus(UART6, UART_FLAG_RXAVL));
-    pc_connect_flag = UART_ReceiveData(UART6);
-    if (pc_connect_flag != 0)
-        sdcard_switch_device(1);
-    delayms(1000);
+//    while (!UART_GetFlagStatus(UART6, UART_FLAG_RXAVL));
+//    pc_connect_flag = UART_ReceiveData(UART6);
+//    if (pc_connect_flag != 0)
+//        sdcard_switch_device(1);
+//    UART_ClearITPendingBit()
 
     uart6_dma_nvic_config();
     uart6_dma_receive_config(uart6_dma_buffer_1, CTRL_MCU_RECEIVE_AMOUNT);
@@ -40,6 +40,7 @@ int main(void) {
     uart7_config();
     uart7_dma_sent_config(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
 
+    delayms(1000);
     cm_backtrace_config("CtrlMCU", "1.6.1", "1.6.1");
     debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
     printf("CtrlMCU %s %s %s\r\n", __DATE__, __TIME__, GIT_HASH);
@@ -113,7 +114,7 @@ int main(void) {
 
     while (1) {
         if (proc_data.distance_east != 0) {
-            for (unsigned char i = 0; i < 20; i++) {
+            for (unsigned char i = 0; i < 10; i++) {
                 while (1) {
                     if (lqr_flag == 1) {
                         lqr_flag = 0;
@@ -133,16 +134,16 @@ int main(void) {
                     }
                 }
             }
-            speed = 25000;  // 23000
+            speed = 10000;  // 23000
             if (playground_ind > INDEX_NUM - 130)
                 speed = 0;
-            if (playground_ind > INDEX_NUM - 100)
-                break;
+//            if (playground_ind > INDEX_NUM - 100)
+//                break;
             sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
             uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
             uart6_sendbyte(temperature);
 //            printf("%.3f, %.3f , \r\n", proc_data.distance_north, proc_data.distance_east);
         }
     }
-    while (1);
+//    while (1);
 }

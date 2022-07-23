@@ -9,7 +9,7 @@
 #ifndef MM32F3277_PROTOCOL_GPS_PARSER_H_
 #define MM32F3277_PROTOCOL_GPS_PARSER_H_
 
-#define STABLE_NUM  100
+#define STABLE_NUM  30
 typedef enum {
     autonomous_mode = 'A',
     voyage_projection = 'E',
