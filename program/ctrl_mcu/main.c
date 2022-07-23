@@ -63,66 +63,70 @@ int main(void) {
     static unsigned char find_counter = 0;
     static unsigned short start_point = 0;
     volatile static unsigned short index = 0;
-//    while (1) {
+    while (1) {
 //        for (unsigned char i = 0; i < 100; i++) {
-//            if (i < 10) {
-//                speed = 10000;
-//                sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
-//                uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
-//            } else {
-////                speed = (speed > 5000) ? (speed - 5000) : 0;
-//                speed = 0;
-//                sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
-//                uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
-//            }
+////            if (i < 10) {
+////                speed = 10000;
+////                sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
+////                uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
+////            } else {
+//////                speed = (speed > 5000) ? (speed - 5000) : 0;
+////                speed = 0;
+////                sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
+////                uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
+////            }
+//            speed = 0;
+//            sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
+//            uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
 //            delayms(400);
 //        }
 //    }
 
-    while (1) { // 寻点稳定再发车
-        LED1_TOGGLE();
-        if (proc_data.distance_east != 0 && lqr_flag == 1) {
-            lqr_flag = 0;
-            playground_ind =
-                dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
-                          (playground_ind + INDEX_OFFSET > INDEX_NUM) ? INDEX_NUM : (playground_ind
-                              + INDEX_OFFSET));
-            start_point = playground_ind;
-            find_counter++;
-            if (find_counter > 10)
-                break;
+        while (1) { // 寻点稳定再发车
             LED1_TOGGLE();
-            delayms(50);
+            if (proc_data.distance_east != 0 && lqr_flag == 1) {
+                lqr_flag = 0;
+                playground_ind =
+                    dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
+                              (playground_ind + INDEX_OFFSET > INDEX_NUM) ? INDEX_NUM : (playground_ind
+                                  + INDEX_OFFSET));
+                start_point = playground_ind;
+                find_counter++;
+                if (find_counter > 10)
+                    break;
+                LED1_TOGGLE();
+                delayms(50);
+            }
         }
-    }
-    while (1) {
-        if (proc_data.distance_east != 0) {
-            for (unsigned char i = 0; i < 20; i++) {
-                while (1) {
-                    if (lqr_flag == 1) {
-                        lqr_flag = 0;
-                        LED1_TOGGLE();
+        while (1) {
+            if (proc_data.distance_east != 0) {
+                for (unsigned char i = 0; i < 20; i++) {
+                    while (1) {
+                        if (lqr_flag == 1) {
+                            lqr_flag = 0;
+                            LED1_TOGGLE();
 
-                        basic_status_t current_status = {proc_data.distance_north,
-                                                         proc_data.distance_east,
-                                                         proc_data.north_angle};
+                            basic_status_t current_status = {proc_data.distance_north,
+                                                             proc_data.distance_east,
+                                                             proc_data.north_angle};
 
-                        playground_ind = find_index(playground_ind);
+                            playground_ind = find_index(playground_ind);
 
-                        index = playground_ind + OVERRUN_POINT;
-                        unsigned char angle = lqr_control(index, current_status);
+                            index = playground_ind + OVERRUN_POINT;
+                            unsigned char angle = lqr_control(index, current_status);
 
-                        WRITE_REG(TIM3->CCR1, angle);
-                        break;
+                            WRITE_REG(TIM3->CCR1, angle);
+                            break;
+                        }
                     }
                 }
-            }
-            speed = 25000;  // 23000
-            if (playground_ind > INDEX_NUM - 130)
-                speed = 0;
-            sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
-            uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
+                speed = 25000;  // 23000
+                if (playground_ind > INDEX_NUM - 130)
+                    speed = 0;
+                sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
+                uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
 //            printf("%.3f, %.3f , \r\n", proc_data.distance_north, proc_data.distance_east);
+            }
         }
     }
 }
