@@ -64,10 +64,14 @@ void initialize_task(void *parameters) {
     uart2_dma_set_transmit_buffer(packages_to_be_unpacked_1, uart2_dma_buffer_size);
     uart4_config();
     uart6_config();
+    for (unsigned char counter = 0; counter < 5; ++counter) {
+        uart4_sendbyte(pc_connect_flag);
+        delayms(200);
+    }
     xpt2046_gpio_config();
     cm_backtrace_config("ProcMCU", "1.6.1", "1.6.1");
     gui_config();
-    delayms(2000);
+    delayms(1000);
     uart3_config();
     gps_config();
 #if STARTUP_CALIBRATE == 1

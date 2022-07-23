@@ -19,6 +19,7 @@ extern unsigned int uart6_dma_buffer_1[CTRL_MCU_RECEIVE_AMOUNT];
 extern unsigned int uart6_dma_buffer_2[CTRL_MCU_RECEIVE_AMOUNT];
 
 unsigned int uart7_dma_send_buffer[UART7_DMA_SEND_BUFFER] = {0};
+static unsigned char pc_connect_flag = 0;
 
 int main(void) {
     delay_config();
@@ -26,6 +27,10 @@ int main(void) {
     led_config();
     uart1_config();
     uart6_config();
+    while (!UART_GetFlagStatus(UART6, UART_FLAG_RXAVL));
+    pc_connect_flag = UART_ReceiveData(UART6);
+    if (pc_connect_flag != 0)
+        sdcard_switch_device(1);
     uart6_dma_nvic_config();
     uart6_dma_receive_config(uart6_dma_buffer_1, CTRL_MCU_RECEIVE_AMOUNT);
     uart6_dma_set_transmit_buffer(uart6_dma_buffer_1, CTRL_MCU_RECEIVE_AMOUNT);
@@ -43,24 +48,26 @@ int main(void) {
     delayms(2000);
     timer3_config();
 
-    sdcard_switch_device(0);
-    FRESULT result = f_mount(&filesystem, "0:", 1);
-    if (result == FR_NO_FILESYSTEM) {
-        printf("Making FileSystem...\r\n");
-        if (f_mkfs("0:", 0, fs_buffer, sizeof(fs_buffer)) == FR_OK) {
-            f_setlabel((const TCHAR *) "0:SD");
-            printf("Make FileSystem Success\r\n");
-        } else {
-            printf("Error To Make FileSystem\r\n");
+    if (pc_connect_flag == 0) {
+        sdcard_switch_device(0);
+        FRESULT result = f_mount(&filesystem, "0:", 1);
+        if (result == FR_NO_FILESYSTEM) {
+            printf("Making FileSystem...\r\n");
+            if (f_mkfs("0:", 0, fs_buffer, sizeof(fs_buffer)) == FR_OK) {
+                f_setlabel((const TCHAR *) "0:SD");
+                printf("Make FileSystem Success\r\n");
+            } else {
+                printf("Error To Make FileSystem\r\n");
+                while (1);
+            }
+        } else if (result != FR_OK) {
+            printf("Error To Mount FileSystem\r\n");
             while (1);
         }
-    } else if (result != FR_OK) {
-        printf("Error To Mount FileSystem\r\n");
-        while (1);
+        printf("FileSystem Mount Success!\r\n");
+        fs_write_current_info();
+        fs_scan_files("0:");
     }
-    printf("FileSystem Mount Success!\r\n");
-    fs_write_current_info();
-    fs_scan_files("0:");
 
     static unsigned char find_counter = 0;
     static unsigned short start_point = 0;
