@@ -51,6 +51,7 @@ int main(void) {
 //////////////////////////////////////// Tasks ////////////////////////////////////////
 void initialize_task(void *parameters) {
     (void) parameters;
+    taskENTER_CRITICAL();
     delay_config();
     led_config();
     iic1_config();
@@ -71,7 +72,7 @@ void initialize_task(void *parameters) {
     xpt2046_gpio_config();
     cm_backtrace_config("ProcMCU", "1.6.1", "1.6.1");
     gui_config();
-    delayms(1000);
+    delayus(2000 * 1000);
     uart3_config();
     gps_config();
 #if STARTUP_CALIBRATE == 1
@@ -92,6 +93,7 @@ void initialize_task(void *parameters) {
     xTaskCreate(touchscan_task, "touch_scan", 128, NULL, 2,
                 &touch_taskhandler);
     vTaskDelete(NULL);
+    taskEXIT_CRITICAL();
 }
 
 void fusion_task(void *parameters) {

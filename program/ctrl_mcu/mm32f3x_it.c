@@ -40,11 +40,13 @@ void UART1_IRQHandler(void) {
 }
 
 extern float actual_speed;
+unsigned char temperature = 0;
 void UART7_IRQHandler(void) {
     if (UART_GetITStatus(UART7, UART_ISR_RX) != RESET) {
         unsigned char recvbyte = UART_ReceiveData(UART7);
         UART_ClearITPendingBit(UART7, UART_ISR_RX);
         sdtp_receive_handler(recvbyte);
+        temperature = recvbyte;
     }
 }
 

@@ -5,6 +5,8 @@
 #include "orgin_sensor_form.h"
 #include "main.h"
 
+extern unsigned char temperature;
+
 extern form_struct_t orgin_form;
 
 static form_struct_t orgin_sensor_form;
@@ -14,6 +16,7 @@ static label_struct_t az_label;
 static label_struct_t mag_x_label;
 static label_struct_t mag_y_label;
 static label_struct_t mag_z_label;
+static label_struct_t temperature_label;
 static button_struct_t sensor_return_btn;
 
 static void gui_show_orgin_sensor(void *parameter) {
@@ -24,7 +27,7 @@ static void gui_show_orgin_sensor(void *parameter) {
     gui_label_settext(&mag_x_label, " mag_x:%d   ", debug_data.mag_x);
     gui_label_settext(&mag_y_label, " mag_y:%d   ", debug_data.mag_y);
     gui_label_settext(&mag_z_label, " mag_z:%d   ", debug_data.mag_z);
-
+    gui_label_settext(&temperature_label, " temperature:%x   ", temperature);
 }
 
 static void sensor_form_return_callback(void *parameter) {
@@ -41,6 +44,7 @@ void gui_orgin_sensor_form_init() {
     gui_label_init(&mag_x_label, 4, C_BLACK, label_align_left, " mag_x");
     gui_label_init(&mag_y_label, 5, C_BLACK, label_align_left, " mag_y");
     gui_label_init(&mag_z_label, 6, C_BLACK, label_align_left, " mag_z");
+    gui_label_init(&temperature_label, 7, C_BLACK, label_align_left, " temperature");
 
     sensor_return_btn.callback = sensor_form_return_callback;
     gui_button_init(&sensor_return_btn, 14, 114 + 6, 100, 26, "Return");
@@ -52,6 +56,7 @@ void gui_orgin_sensor_form_init() {
     gui_form_bind_label(&orgin_sensor_form, &mag_x_label);
     gui_form_bind_label(&orgin_sensor_form, &mag_y_label);
     gui_form_bind_label(&orgin_sensor_form, &mag_z_label);
+    gui_form_bind_label(&orgin_sensor_form, &temperature_label);
 
     gui_form_bind_button(&orgin_sensor_form, &sensor_return_btn);
     gui_form_display(&orgin_sensor_form);

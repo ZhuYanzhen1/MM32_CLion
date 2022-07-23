@@ -47,6 +47,15 @@ void UART2_IRQHandler(void) {
     }
 }
 
+unsigned char temperature = 0;
+void UART4_IRQHandler(void) {
+    if (UART_GetITStatus(UART4, UART_ISR_RX) != RESET) {
+        unsigned char recvbyte = UART_ReceiveData(UART4);
+        UART_ClearITPendingBit(UART4, UART_ISR_RX);
+        temperature = recvbyte;
+    }
+}
+
 unsigned char battery_voltage = 0x00;
 unsigned char battery_current = 0x00;
 void UART6_IRQHandler(void) {

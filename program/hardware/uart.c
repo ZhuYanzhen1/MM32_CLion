@@ -92,12 +92,19 @@ void uart3_config() {
 void uart4_config() {
     UART_InitTypeDef UART_InitStruct;
     GPIO_InitTypeDef GPIO_InitStruct;
+    NVIC_InitTypeDef NVIC_InitStruct;
 
     RCC_APB1PeriphClockCmd(RCC_APB1ENR_UART4, ENABLE);
     RCC_AHBPeriphClockCmd(RCC_AHBENR_GPIOA, ENABLE);
 
     GPIO_PinAFConfig(GPIOA, GPIO_PinSource0, GPIO_AF_8);
     GPIO_PinAFConfig(GPIOA, GPIO_PinSource1, GPIO_AF_8);
+
+    NVIC_InitStruct.NVIC_IRQChannel = UART4_IRQn;
+    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = UART6_PRIORITY;
+    NVIC_InitStruct.NVIC_IRQChannelSubPriority = 0;
+    NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStruct);
 
     GPIO_StructInit(&GPIO_InitStruct);
     GPIO_InitStruct.GPIO_Pin = GPIO_Pin_0;
