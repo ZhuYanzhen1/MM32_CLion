@@ -88,10 +88,3 @@ void DMA1_Channel4_IRQHandler(void) {
         }
     }
 }
-
-void EXTI9_5_IRQHandler(void) {
-    if (EXTI_GetITStatus(EXTI_Line6)) {
-        EXTI_ClearFlag(EXTI_Line6);
-//        ch372_interrupt_callback();
-    }
-}

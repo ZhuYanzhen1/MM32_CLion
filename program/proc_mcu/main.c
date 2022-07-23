@@ -72,7 +72,7 @@ void initialize_task(void *parameters) {
     xpt2046_gpio_config();
     cm_backtrace_config("ProcMCU", "1.6.1", "1.6.1");
     gui_config();
-    delayus(2000 * 1000);
+    delayus(1000 * 1000);
     uart3_config();
     gps_config();
 #if STARTUP_CALIBRATE == 1
