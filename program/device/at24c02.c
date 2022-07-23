@@ -149,6 +149,7 @@ unsigned char at24c02_test_memory(void) {
 
 extern short touch_x_offset, touch_y_offset;
 extern float touch_x_factor, touch_y_factor;
+extern unsigned char pc_connect_flag;
 void at24c02_saveparams(void) {
     unsigned int float_int32 = (*(unsigned int *) &touch_x_factor);
     unsigned char
@@ -162,6 +163,10 @@ void at24c02_saveparams(void) {
     tmp_buf[1] = (float_int32 >> 16) & 0x000000ff;
     tmp_buf[2] = (float_int32 >> 8) & 0x000000ff;
     tmp_buf[3] = float_int32 & 0x000000ff;
+    tmp_buf[4] = pc_connect_flag;
+    tmp_buf[5] = 0x00;
+    tmp_buf[6] = 0x00;
+    tmp_buf[7] = 0x00;
     at24c02_writebytes(0x08, tmp_buf, 8);
 }
 
@@ -177,4 +182,5 @@ void at24c02_readparams(void) {
     at24c02_readbytes(0x08, tmp_buf, 8);
     float_int32 = (tmp_buf[0] << 24 | tmp_buf[1] << 16 | tmp_buf[2] << 8 | tmp_buf[3]);
     touch_y_factor = (*(float *) &float_int32);
+    pc_connect_flag = tmp_buf[4];
 }

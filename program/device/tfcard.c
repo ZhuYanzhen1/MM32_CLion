@@ -30,12 +30,18 @@
 
 unsigned char SD_TYPE = 0x00;
 
-void sdcard_sync(void) {
-    GPIO_ResetBits(GPIOD, GPIO_Pin_15);
-    do {
-        delayms(1);
-    } while (spi3_readwrite_byte(0xFF) != 0xFF);
-    GPIO_SetBits(GPIOD, GPIO_Pin_15);
+void sdcard_switch_device(unsigned char index) {
+    GPIO_InitTypeDef GPIO_InitStruct;
+    RCC_AHBPeriphClockCmd(RCC_AHBENR_GPIOD, ENABLE);
+    GPIO_StructInit(&GPIO_InitStruct);
+    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_10;
+    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_Init(GPIOD, &GPIO_InitStruct);
+    if (index == 0)
+        GPIO_SetBits(GPIOD, GPIO_Pin_10);
+    else
+        GPIO_ResetBits(GPIOD, GPIO_Pin_10);
 }
 
 int sdcard_send_cmd(unsigned char cmd, unsigned int arg, unsigned char crc) {
@@ -66,15 +72,6 @@ unsigned char sdcard_config(void) {
     unsigned char buffer[6] = {0};
     unsigned short retry;
     unsigned char counter;
-
-    GPIO_InitTypeDef GPIO_InitStruct;
-    RCC_AHBPeriphClockCmd(RCC_AHBENR_GPIOD, ENABLE);
-    GPIO_StructInit(&GPIO_InitStruct);
-    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_10;
-    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
-    GPIO_Init(GPIOD, &GPIO_InitStruct);
-    GPIO_SetBits(GPIOD, GPIO_Pin_10);
 
     spi3_set_prescaler(SPI_BaudRatePrescaler_256);
     GPIO_SetBits(GPIOD, GPIO_Pin_15);

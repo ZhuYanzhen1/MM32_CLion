@@ -17,7 +17,7 @@
 #define SD_TYPE_V2          0x04
 #define SD_TYPE_V2HC        0x06
 
-void sdcard_sync(void);
+void sdcard_switch_device(unsigned char index);
 unsigned char sdcard_config(void);
 unsigned int sdcard_get_sector_num(void);
 unsigned char sdcard_read_disk(unsigned char *buf, unsigned int sector, unsigned char cnt);
