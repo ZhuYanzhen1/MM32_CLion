@@ -27,7 +27,7 @@ static void gui_show_orgin_sensor(void *parameter) {
     gui_label_settext(&mag_x_label, " mag_x:%d   ", debug_data.mag_x);
     gui_label_settext(&mag_y_label, " mag_y:%d   ", debug_data.mag_y);
     gui_label_settext(&mag_z_label, " mag_z:%d   ", debug_data.mag_z);
-    gui_label_settext(&temperature_label, " temperature:%x   ", temperature);
+    gui_label_settext(&temperature_label, " temperature:%x ", temperature);
 }
 
 static void sensor_form_return_callback(void *parameter) {
