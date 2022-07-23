@@ -94,7 +94,6 @@ int main(void) {
 //    }
 
     while (1) { // 寻点稳定再发车
-
         LED1_TOGGLE();
         delayms(50);
         if (proc_data.distance_east != 0 && lqr_flag == 1) {
@@ -109,8 +108,8 @@ int main(void) {
                 break;
             LED1_TOGGLE();
         }
-
     }
+
     while (1) {
         if (proc_data.distance_east != 0) {
             for (unsigned char i = 0; i < 20; i++) {
@@ -136,11 +135,13 @@ int main(void) {
             speed = 25000;  // 23000
             if (playground_ind > INDEX_NUM - 130)
                 speed = 0;
+            if (playground_ind > INDEX_NUM - 100)
+                break;
             sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
             uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
             uart6_sendbyte(temperature);
 //            printf("%.3f, %.3f , \r\n", proc_data.distance_north, proc_data.distance_east);
         }
     }
-
+    while (1);
 }
