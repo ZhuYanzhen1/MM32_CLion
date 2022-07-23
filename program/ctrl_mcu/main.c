@@ -32,13 +32,14 @@ int main(void) {
     pc_connect_flag = UART_ReceiveData(UART6);
     if (pc_connect_flag != 0)
         sdcard_switch_device(1);
+    delayms(1000);
+
     uart6_dma_nvic_config();
     uart6_dma_receive_config(uart6_dma_buffer_1, CTRL_MCU_RECEIVE_AMOUNT);
     uart6_dma_set_transmit_buffer(uart6_dma_buffer_1, CTRL_MCU_RECEIVE_AMOUNT);
     uart7_config();
     uart7_dma_sent_config(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
 
-    delayms(1000);
     cm_backtrace_config("CtrlMCU", "1.6.1", "1.6.1");
     debugger_register_variable(dbg_uint32, &global_time_stamp, "time");
     printf("CtrlMCU %s %s %s\r\n", __DATE__, __TIME__, GIT_HASH);
