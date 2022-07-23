@@ -27,7 +27,7 @@ void fusion_form_return_btn_callback(void *parameter) {
 
 void gui_show_fusion(void *parameter) {
     (void) parameter;
-    gui_label_settext(&kalman_north_label, " k_north:%.2f", small_packets.chebyshev_north);
+    gui_label_settext(&kalman_north_label, " k_north:%.2f", small_packets.north);
     gui_label_settext(&gnss_status_label, " status:%c", gps_rmc.status);
     gui_label_settext(&kalman_north_distance_lable, " k_nd:%.3f", kalman_data.distance_north);
     gui_label_settext(&kalman_east_distance_lable, " k_ed:%.3f", kalman_data.distance_east);

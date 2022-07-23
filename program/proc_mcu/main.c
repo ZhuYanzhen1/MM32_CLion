@@ -51,7 +51,6 @@ int main(void) {
 //////////////////////////////////////// Tasks ////////////////////////////////////////
 void initialize_task(void *parameters) {
     (void) parameters;
-    taskENTER_CRITICAL();
     delay_config();
     led_config();
     iic1_config();
@@ -65,14 +64,14 @@ void initialize_task(void *parameters) {
     uart2_dma_set_transmit_buffer(packages_to_be_unpacked_1, uart2_dma_buffer_size);
     uart4_config();
     uart6_config();
-    for (unsigned char counter = 0; counter < 5; ++counter) {
-        uart4_sendbyte(pc_connect_flag);
-        delayms(200);
-    }
+//    for (unsigned char counter = 0; counter < 5; ++counter) {
+//        uart4_sendbyte(pc_connect_flag);
+//        delayms(200);
+//    }
     xpt2046_gpio_config();
     cm_backtrace_config("ProcMCU", "1.6.1", "1.6.1");
     gui_config();
-    delayus(1000 * 1000);
+    delayms(2000);
     uart3_config();
     gps_config();
 #if STARTUP_CALIBRATE == 1
@@ -93,7 +92,6 @@ void initialize_task(void *parameters) {
     xTaskCreate(touchscan_task, "touch_scan", 128, NULL, 2,
                 &touch_taskhandler);
     vTaskDelete(NULL);
-    taskEXIT_CRITICAL();
 }
 
 void fusion_task(void *parameters) {
@@ -144,7 +142,7 @@ void fusion_task(void *parameters) {
         statistic_max_speed = kalman_data.v > statistic_max_speed ? kalman_data.v : statistic_max_speed;
 
         kalman_v.gps_valid_flag = 1;
-        coordinate_system_transformation_kalman_v(small_packets.chebyshev_north);
+        coordinate_system_transformation_kalman_v(small_packets.north);
         kalman_data.distance_north = kalman_update(&kalman_distance_north, neu.north_distance,
                                                    neu.north_v, dt);
         kalman_data.distance_east = kalman_update(&kalman_distance_east, neu.east_distance,
@@ -152,7 +150,7 @@ void fusion_task(void *parameters) {
 
         proc_to_ctrl_buffer[0] = *((unsigned int *) (&kalman_data.distance_north));
         proc_to_ctrl_buffer[1] = *((unsigned int *) (&kalman_data.distance_east));
-        proc_to_ctrl_buffer[2] = *((unsigned int *) (&small_packets.chebyshev_north));
+        proc_to_ctrl_buffer[2] = *((unsigned int *) (&small_packets.north));
         proc_to_ctrl_buffer[3] = *((unsigned int *) (&kalman_data.v));
         precossing_proc_to_control(proc_to_ctrl_package, proc_to_ctrl_buffer);
         for (unsigned char i = 0; i < PROC_MCU_SEND_AMOUNT; i++)

@@ -106,6 +106,8 @@ void unpacking_fixed_length_data(unsigned int packets[10]) {
     small_packets.chebyshev_north += 180;
     small_packets.chebyshev_north = (small_packets.chebyshev_north > 360.0f) ? (small_packets.chebyshev_north - 360)
                                                                              : small_packets.chebyshev_north;
+    small_packets.north += 180;
+    small_packets.north = (small_packets.chebyshev_north > 360.0f) ? (small_packets.north - 360) : small_packets.north;
 
 //    small_packets_sum.ax += small_packets.ax;  没用到
     small_packets_sum.ay += (float) small_packets.ay;
