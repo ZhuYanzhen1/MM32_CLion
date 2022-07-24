@@ -2,7 +2,7 @@
 #define RICCATI_SOLVER_H_
 
 ///////////////////// Find Index ////////////////////////
-#define OVERRUN_POINT               5
+#define OVERRUN_POINT               2
 #define INDEX_OFFSET                20
 
 ///////////////////// Servo control /////////////////////
@@ -15,12 +15,12 @@
 #define _2PI_                       (6.2831853f)
 
 ///////////////////// Trace Transition //////////////////
-#define DIVIDING_POINT_1            200
-#define DIVIDING_POINT_2            400
-#define DIVIDING_POINT_3            560
-#define DIVIDING_POINT_4            760
+#define DIVIDING_POINT_1            100
+#define DIVIDING_POINT_2            300
+#define DIVIDING_POINT_3            440
+#define DIVIDING_POINT_4            630
 #define TRANSITION_SECTION          30
-#define CURVES_ATTENUATION_RATE     1.9f
+#define CURVES_ATTENUATION_RATE     1.5f
 #define STRAIGHT_ATTENUATION_RATE   1.4f
 #define BUFFER_BELT_1               (TRANSITION_SECTION)
 #define BUFFER_BELT_2               (DIVIDING_POINT_1 - TRANSITION_SECTION)
