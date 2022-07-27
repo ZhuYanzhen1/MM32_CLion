@@ -1,8 +1,9 @@
 # MM32_CLion
 
-![Version](https://img.shields.io/badge/Version-1.2.2-brightgreen.svg)&nbsp;&nbsp;![Build](https://img.shields.io/badge/Build-Passed-success.svg)&nbsp;&nbsp;![License](https://img.shields.io/badge/License-AGPL-blue.svg)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;English / [中文](https://github.com/ZhuYanzhen1/MM32_CLion/blob/master/README_CN.md)
+![Version](https://img.shields.io/badge/Version-1.6.1-brightgreen.svg)&nbsp;&nbsp;![Build](https://img.shields.io/badge/Build-Passed-success.svg)&nbsp;&nbsp;![License](https://img.shields.io/badge/License-AGPL-blue.svg)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;English / [中文](https://github.com/ZhuYanzhen1/MM32_CLion/blob/master/README_CN.md)
 
-&nbsp;&nbsp;&nbsp;&nbsp;This project is a Windows CLion IDE file for the MM32F3277G9 chip and a circuit design for the main control board based on the MM32F3277G9 chip. The software code contains the link files required for GCC, CMake files, clang-format files, Doxygen configuration files, etc. to ensure that this package is ready to use when it arrives. The hardware mainly contains the schematic and PCB files, and the Gerber files will be released in the form of Releases.The adapted tuning tool is developed using Qt, and the repository contains the Qt source code files for the tool. Some Python scripting tools are also provided for easy development, such as scripts for calculating filter parameters.
+&nbsp;&nbsp;&nbsp;&nbsp;This project is a Windows CLion IDE file for the MM32F3277G9 chip and a circuit design for the main control board based on the MM32F3277G9 chip. The software code contains the link files required for GCC, CMake files, clang-format files, Doxygen configuration files, etc. to ensure that this package is ready to use when it arrives. The hardware mainly contains the schematic and PCB files, and the Gerber files will be released in the form of Releases.The adapted tuning tool is developed using Qt, and the repository contains the Qt source code files for the tool. Some Python scripting tools are also provided for easy development, such as scripts for calculating filter parameters.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;This project is developed around the 2022 National Student Intelligent Vehicle Competition. Complex algorithms such as LQR controller, multi-rate Kalman fusion, and advanced development tools such as unit testing and continuous integration are innovatively used in this project for development, which greatly improves the development efficiency and reduces the development cost.
 
 ***
 
@@ -12,7 +13,7 @@
 + OS: Windows 10 Professional 21H2 x64 10.0.19044
 + Make tool: GNU Make 4.3 x86_64-w64-mingw32
 + Compiler tool chain: gcc-arm-none-eabi 10.3.1 20210824
-+ Burning tool: OpenOCD 0.11.0+dev-00571-g254883597-dirty
++ Burning tool: OpenOCD 0.11.0+dev-00449-gb2ab2241f+ (2021-11-13-20:25)
 + Documentation tool: Doxygen GUI 1.9.4 (Qt version 5.15.2)
 + EDA tool: KiCAD 6.0.5 (VC++ 1929, 64bit)
 + Qt environment: Qt 5.14.2 (MSVC 2017, 32bit)

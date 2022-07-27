@@ -1,8 +1,9 @@
 # MM32_CLion
 
-![Version](https://img.shields.io/badge/Version-1.2.2-brightgreen.svg)&nbsp;&nbsp;![Build](https://img.shields.io/badge/Build-Passed-success.svg)&nbsp;&nbsp;![License](https://img.shields.io/badge/License-AGPL-blue.svg)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[English](https://github.com/ZhuYanzhen1/MM32_CLion/blob/master/README.md) / 中文
+![Version](https://img.shields.io/badge/Version-1.6.1-brightgreen.svg)&nbsp;&nbsp;![Build](https://img.shields.io/badge/Build-Passed-success.svg)&nbsp;&nbsp;![License](https://img.shields.io/badge/License-AGPL-blue.svg)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[English](https://github.com/ZhuYanzhen1/MM32_CLion/blob/master/README.md) / 中文
 
-&nbsp;&nbsp;&nbsp;&nbsp;这个项目是MM32F3277G9芯片的Windows CLion集成开发环境文件以及基于MM32F3277G9芯片的主控板电路设计。软件代码中包含了GCC所需的链接文件、CMake文件、clang-format文件、Doxygen配置文件等，确保本软件包可以到手即用。硬件主要包含了原理图和PCB文件，Gerber文件会以Releases的形式发布。适配的调参工具使用Qt进行开发，仓库中包含了该工具的Qt源码文件。另外还提供了一些便于开发的Python脚本工具，如计算滤波器参数等脚本。
+&nbsp;&nbsp;&nbsp;&nbsp;这个项目是MM32F3277G9芯片的Windows CLion集成开发环境文件以及基于MM32F3277G9芯片的主控板电路设计。软件代码中包含了GCC所需的链接文件、CMake文件、clang-format文件、Doxygen配置文件等，确保本软件包可以到手即用。硬件主要包含了原理图和PCB文件，Gerber文件会以Releases的形式发布。适配的调参工具使用Qt进行开发，仓库中包含了该工具的Qt源码文件。另外还提供了一些便于开发的Python脚本工具，如计算滤波器参数等脚本。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;本项目的开发是围绕着2022年的全国大学生智能车大赛进行的，在本项目中创新地使用了LQR控制器、多速率卡尔曼融合等复杂算法以及单元测试、持续集成等先进开发手段进行开发，极大地提高了开发效率，降低了开发成本。
 
 ***
 
@@ -12,7 +13,7 @@
 + 操作系统：Windows 10 专业版 21H2 x64 10.0.19044
 + Make工具：GNU Make 4.3 x86_64-w64-mingw32
 + 编译工具链：gcc-arm-none-eabi 10.3.1 20210824
-+ 烧录工具：OpenOCD 0.11.0+dev-00571-g254883597-dirty
++ 烧录工具：OpenOCD 0.11.0+dev-00449-gb2ab2241f+ (2021-11-13-20:25)
 + 文档生成工具：Doxygen GUI 1.9.4 (Qt version 5.15.2)
 + EDA工具：KiCAD 6.0.5 (VC++ 1929, 64bit)
 + Qt环境：Qt 5.14.2 (MSVC 2017, 32bit)
