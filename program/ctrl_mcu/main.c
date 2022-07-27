@@ -45,26 +45,24 @@ int main(void) {
     delayms(2000);
     timer3_config();
 
-    if (pc_connect_flag == 0) {
-        sdcard_switch_device(0);
-        FRESULT result = f_mount(&filesystem, "0:", 1);
-        if (result == FR_NO_FILESYSTEM) {
-            printf("Making FileSystem...\r\n");
-            if (f_mkfs("0:", 0, fs_buffer, sizeof(fs_buffer)) == FR_OK) {
-                f_setlabel((const TCHAR *) "0:SD");
-                printf("Make FileSystem Success\r\n");
-            } else {
-                printf("Error To Make FileSystem\r\n");
-                while (1);
-            }
-        } else if (result != FR_OK) {
-            printf("Error To Mount FileSystem\r\n");
+    sdcard_switch_device(0);
+    FRESULT result = f_mount(&filesystem, "0:", 1);
+    if (result == FR_NO_FILESYSTEM) {
+        printf("Making FileSystem...\r\n");
+        if (f_mkfs("0:", 0, fs_buffer, sizeof(fs_buffer)) == FR_OK) {
+            f_setlabel((const TCHAR *) "0:SD");
+            printf("Make FileSystem Success\r\n");
+        } else {
+            printf("Error To Make FileSystem\r\n");
             while (1);
         }
-        printf("FileSystem Mount Success!\r\n");
-        fs_write_current_info();
-        fs_scan_files("0:");
+    } else if (result != FR_OK) {
+        printf("Error To Mount FileSystem\r\n");
+        while (1);
     }
+    printf("FileSystem Mount Success!\r\n");
+    fs_write_current_info();
+    fs_scan_files("0:");
 
     static unsigned char find_counter = 0;
     static unsigned short start_point = 0;
