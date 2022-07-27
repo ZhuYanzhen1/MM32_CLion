@@ -1,3 +1,11 @@
+/**************************************************************************/ /**
+    \file       filter.c
+    \brief      Includes some filtering algorithms
+    \author     Lao·Zhu & ZGL
+    \version    V1.3.3
+    \date       22. March 2022
+******************************************************************************/
+
 #include "filter.h"
 #include "qfplib.h"
 #include "fast_math.h"

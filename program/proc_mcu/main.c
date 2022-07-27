@@ -8,13 +8,13 @@
 
 #include "main.h"
 
-// 统计其它控制器的信息
+/* Statistics of other controllers */
 unsigned char pc_connect_flag = 0;
 float statistic_max_speed = 0;
 float statistic_max_current = 0;
 extern unsigned char battery_current;
 
-// 检测gps稳定和与gps滤波有关的变量
+/* Variables related to gps */
 extern unsigned int temp_stable[100][2];
 extern unsigned int packages_to_be_unpacked_1[READ_MCU_AMOUNT];
 unsigned int proc_to_ctrl_package[PROC_MCU_SEND_AMOUNT] = {0};
@@ -160,11 +160,6 @@ void fusion_task(void *parameters) {
             (float) battery_current > statistic_max_current ? (float) battery_current : statistic_max_current;
 
         delayms(39);
-//        printf("%.2f,%.2f,%.2f,%.2f\r",
-//               neu.north_distance,
-//               neu.east_distance,
-//               kalman_data.distance_north,
-//               kalman_data.distance_east);
     }
 }
 

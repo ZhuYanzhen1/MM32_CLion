@@ -38,7 +38,7 @@
 #include "verification.h"
 #include "riccati_solver.h"
 #include "fast_math.h"
-#include "test.h"
+#include "path.h"
 #include "data_conversion.h"
 
 ///////////// Debug /////////////

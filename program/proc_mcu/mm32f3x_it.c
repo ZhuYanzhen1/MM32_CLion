@@ -9,8 +9,6 @@
 #include "mm32f3x_it.h"
 #include "main.h"
 
-//TODO 每一次在中断内写函数时，留意一下是否会发生重入，然后到Trello里面评论记录
-
 // 3us
 void TIM2_IRQHandler(void) {
     TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
@@ -18,6 +16,11 @@ void TIM2_IRQHandler(void) {
 }
 
 extern EventGroupHandle_t touch_event;
+
+/*!
+    \brief  Touch Screen Related
+    \retval none
+*/
 void EXTI4_IRQHandler(void) {
     if (EXTI_GetITStatus(EXTI_Line4)) {
         BaseType_t xHigherPriorityTaskWoken = pdFALSE;
@@ -28,6 +31,10 @@ void EXTI4_IRQHandler(void) {
     }
 }
 
+/*!
+    \brief  Receive data sent from the PC side
+    \retval none
+*/
 void UART1_IRQHandler(void) {
     if (UART_GetITStatus(UART1, UART_ISR_RX) != RESET) {
         unsigned char recvbyte = UART_ReceiveData(UART1);
@@ -37,6 +44,11 @@ void UART1_IRQHandler(void) {
 }
 
 unsigned char temperature = 0;
+
+/*!
+    \brief  Receive the motor temperature sent by ctrl_mcu
+    \retval none
+*/
 void UART4_IRQHandler(void) {
     if (UART_GetITStatus(UART4, UART_ISR_RX) != RESET) {
         unsigned char recvbyte = UART_ReceiveData(UART4);
@@ -47,6 +59,11 @@ void UART4_IRQHandler(void) {
 
 unsigned char battery_voltage = 0x00;
 unsigned char battery_current = 0x00;
+
+/*!
+    \brief  Receive information from the power board
+    \retval none
+*/
 void UART6_IRQHandler(void) {
     if (UART_GetITStatus(UART6, UART_ISR_RX) != RESET) {
         unsigned char recvbyte = UART_ReceiveData(UART6);
@@ -61,8 +78,10 @@ static buffer_no uart3_free_buffer_no = buffer_no_1;
 unsigned int usart3_dma_buffer_1[74];
 unsigned int usart3_dma_buffer_2[74];
 
-// 70.6us ~ 68.1us in V status
-// 63.5us in A status
+/*!
+    \brief  Receive information from GPS
+    \retval none
+*/
 void DMA1_Channel3_IRQHandler(void) {
     if (DMA_GetITStatus(DMA1_IT_TC3)) {
         /* Clear all interrupt flags */
@@ -84,6 +103,11 @@ void DMA1_Channel3_IRQHandler(void) {
 extern unsigned int printf_mdtp_dma_buffer[16][12];
 extern unsigned char printf_dma_counter;
 unsigned char printf_sending_flag = 0;
+
+/*!
+    \brief
+    \retval none
+*/
 void DMA1_Channel4_IRQHandler(void) {
     if (DMA_GetITStatus(DMA1_IT_TC4)) {
         DMA_ClearITPendingBit(DMA1_IT_TC4);
@@ -102,6 +126,11 @@ void DMA1_Channel4_IRQHandler(void) {
 static buffer_no uart2_free_buffer_no = buffer_no_1;
 volatile unsigned int packages_to_be_unpacked_1[READ_MCU_AMOUNT] = {0};
 volatile unsigned int packages_to_be_unpacked_2[READ_MCU_AMOUNT] = {0};
+
+/*!
+    \brief  Receive messages sent by read_mcu
+    \retval none
+*/
 void DMA1_Channel6_IRQHandler(void) {
     if (DMA_GetITStatus(DMA1_IT_TC6)) {
         DMA_ClearITPendingBit(DMA1_IT_TC6);
@@ -119,6 +148,11 @@ void DMA1_Channel6_IRQHandler(void) {
 }
 
 extern volatile unsigned char lcd_buffer[128 * 160 * 2];
+
+/*!
+    \brief  Refreshing the interface of the display
+    \retval none
+*/
 void DMA2_Channel2_IRQHandler(void) {
     if (DMA_GetITStatus(DMA2_IT_TC2)) {
         DMA_ClearITPendingBit(DMA2_IT_TC2);

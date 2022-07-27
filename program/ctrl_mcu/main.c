@@ -12,7 +12,7 @@ extern volatile unsigned char lqr_flag;
 
 FATFS filesystem;
 volatile unsigned short speed = 0;
-unsigned short playground_ind = 0;
+static volatile unsigned short playground_ind = 0;
 static unsigned char fs_buffer[FF_MAX_SS * 4];
 
 extern unsigned int uart6_dma_buffer_1[CTRL_MCU_RECEIVE_AMOUNT];
@@ -28,12 +28,6 @@ int main(void) {
     led_config();
     uart1_config();
     uart6_config();
-//    while (!UART_GetFlagStatus(UART6, UART_FLAG_RXAVL));
-//    pc_connect_flag = UART_ReceiveData(UART6);
-//    if (pc_connect_flag != 0)
-//        sdcard_switch_device(1);
-//    UART_ClearITPendingBit()
-
     uart6_dma_nvic_config();
     uart6_dma_receive_config(uart6_dma_buffer_1, CTRL_MCU_RECEIVE_AMOUNT);
     uart6_dma_set_transmit_buffer(uart6_dma_buffer_1, CTRL_MCU_RECEIVE_AMOUNT);
@@ -76,32 +70,13 @@ int main(void) {
     static unsigned short start_point = 0;
     volatile static unsigned short index = 0;
 
-//    while (1) {
-//        for (unsigned char i = 0; i < 100; i++) {
-//            if (i < 10) {
-//                speed = 3000;
-//                sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
-//                uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
-//            } else {
-////                speed = (speed > 5000) ? (speed - 5000) : 0;
-//                speed = 0;
-//                sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
-//                uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
-//            }
-//            delayms(400);
-//        }
-//    }
-
     while (1) { // 寻点稳定再发车
         LED1_TOGGLE();
         delayms(500);
         uart6_sendbyte(temperature);
         if (proc_data.distance_east != 0 && lqr_flag == 1) {
             lqr_flag = 0;
-            playground_ind =
-                dichotomy(((playground_ind - 2) <= 0) ? 0 : (playground_ind - 2),
-                          (playground_ind + INDEX_OFFSET > INDEX_NUM) ? INDEX_NUM : (playground_ind
-                              + INDEX_OFFSET));
+            playground_ind = find_index(playground_ind);
             start_point = playground_ind;
             find_counter++;
             if (find_counter > 3)
@@ -133,15 +108,12 @@ int main(void) {
                 }
             }
             speed = 23000;  // 23000
-            if (playground_ind > INDEX_NUM - 30)
+            if (playground_ind > INDEX_NUM - 10)
                 speed = 0;
-//            if (playground_ind > INDEX_NUM - 100)
-//                break;
             sdtp_data_transmit_speed(speed, uart7_dma_send_buffer);
             uart7_dma_set_send_buffer(uart7_dma_send_buffer, UART7_DMA_SEND_BUFFER);
             uart6_sendbyte(temperature);
-//            printf("%.3f, %.3f\r\n", proc_data.distance_north, proc_data.distance_east);
+            printf("%.3f, %.3f\r\n", proc_data.distance_north, proc_data.distance_east);
         }
     }
-//    while (1);
 }

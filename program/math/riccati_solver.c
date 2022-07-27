@@ -1,5 +1,13 @@
+/**************************************************************************/ /**
+    \file       riccati_solver.c
+    \brief      Processing LQR-related algorithms
+    \author     Lao·Zhu & ZGL
+    \version    V1.3.2
+    \date       21. July 2022
+ ******************************************************************************/
+
 #include "riccati_solver.h"
-#include "test.h"
+#include "path.h"
 
 #ifndef RUNNING_UNIT_TEST
 #include "qfplib.h"
@@ -15,25 +23,15 @@
 #endif
 
 #ifndef RUNNING_UNIT_TEST
-void track_prediction(basic_status_t *current, float v, float t, float servo_angle) {
-    float l = 0.28f;
-    float r = l / qfp_ftan(servo_angle);
-    float theta = v * t / r;
-    float s = 2 * r * qfp_fsin(0.5f * theta);
-//    float delta = v * t / l * 0.5f * qfp_ftan(servo_angle) + current.angle;   //
-    float delta = theta / 2 + current->angle;
-    current->pos_n = s * qfp_fcos(delta) + current->pos_n;
-    current->pos_e = s * qfp_fsin(delta) + current->pos_e;
-    current->angle = theta + current->angle;
 
-    current->angle = (current->angle > _2PI_) ? (current->angle - _2PI_) : (
-        (current->angle < 0) ? (current->angle + _2PI_) : current->angle);
-}
-// 对电机和舵机的控制量
-extern unsigned short playground_ind;
 extern unsigned int uart7_dma_send_buffer[UART7_DMA_SEND_BUFFER];
 unsigned short last_angle = SERVO_MID_POINT;
 
+/*!
+    \brief      Calculate the distance between the current coordinates and the target point
+    \param[in]  ind: The nth point
+    \retval     the distance between two points
+*/
 float calculate_distance(int ind) {
     float distance = (qfp_fsqrt
         ((test_point[ind][0] - proc_data.distance_north)
@@ -43,39 +41,46 @@ float calculate_distance(int ind) {
     return distance;
 }
 
+/*!
+    \brief      Limits on the amount of control of the servo
+    \param[in]  index: The nth point
+    \param[in]  control_value: Servo control volume
+    \retval     Corrected servo control amount
+    \note       DIVIDING_POINT_1 ~ DIVIDING_POINT_4 is the dividing point between curves and straights
+                BUFFER_BELT_1 ~ BUFFER_BELT_4 is the decay area where the control volume changes slowly
+*/
 float arranging_transition_process(float control_value, unsigned short index) {
     float attenuation_rate;
     float attenuation;
     unsigned short attenuation_index;
-    // 后面这些数字换成宏
-    if ((playground_ind > DIVIDING_POINT_3 && playground_ind < DIVIDING_POINT_4)
-        || (playground_ind > DIVIDING_POINT_1 && playground_ind < DIVIDING_POINT_2)) {
+    if ((index > DIVIDING_POINT_3 && index < DIVIDING_POINT_4)
+        || (index > DIVIDING_POINT_1 && index < DIVIDING_POINT_2)) {
         control_value /= CURVES_ATTENUATION_RATE;
-    } else if (playground_ind < DIVIDING_POINT_1) {  // 出弯道    从2到1.3
+    } else if (index < DIVIDING_POINT_1) {
         attenuation_rate =
-            (CURVES_ATTENUATION_RATE - STRAIGHT_ATTENUATION_RATE) / TRANSITION_SECTION;     // 衰减率
-        if (playground_ind > BUFFER_BELT_2) {
-            attenuation_index = index - BUFFER_BELT_2;                                      // 点数
-            attenuation = (float) attenuation_index * attenuation_rate;                     // 衰减量
+            (CURVES_ATTENUATION_RATE - STRAIGHT_ATTENUATION_RATE) / TRANSITION_SECTION;
+        if (index > BUFFER_BELT_2) {
+            attenuation_index = index - BUFFER_BELT_2;
+            attenuation = (float) attenuation_index * attenuation_rate;
             control_value /= STRAIGHT_ATTENUATION_RATE + attenuation;
         } else
             control_value /= STRAIGHT_ATTENUATION_RATE;
-    } else if ((playground_ind > DIVIDING_POINT_2 && playground_ind < DIVIDING_POINT_3)) {  // 出弯道 从2到1.3
+    } else if ((index > DIVIDING_POINT_2 && index < DIVIDING_POINT_3)) {
         attenuation_rate = (CURVES_ATTENUATION_RATE - STRAIGHT_ATTENUATION_RATE) / TRANSITION_SECTION;
-        if (playground_ind < BUFFER_BELT_3) {
-            attenuation_index = index - DIVIDING_POINT_2;                                   // 点数
-            attenuation = (float) attenuation_index * attenuation_rate;                     // 衰减量
+        if (index < BUFFER_BELT_3) {
+            attenuation_index = index - DIVIDING_POINT_2;
+            attenuation = (float) attenuation_index * attenuation_rate;
             control_value /= CURVES_ATTENUATION_RATE - attenuation;
-        } else if (playground_ind > BUFFER_BELT_4) {
-            attenuation_index = index - BUFFER_BELT_4;                                      // 点数
-            attenuation = (float) attenuation_index * attenuation_rate;                     // 衰减量
+        } else if (index > BUFFER_BELT_4) {
+            attenuation_index = index - BUFFER_BELT_4;
+            attenuation = (float) attenuation_index * attenuation_rate;
             control_value /= STRAIGHT_ATTENUATION_RATE + attenuation;
         } else
             control_value /= STRAIGHT_ATTENUATION_RATE;
     } else {
         attenuation_rate =
             (CURVES_ATTENUATION_RATE - STRAIGHT_ATTENUATION_RATE) / TRANSITION_SECTION;     // 衰减率
-        if (playground_ind < BUFFER_BELT_5) {
+        if (index < BUFFER_BELT_5) {
             attenuation_index = index - DIVIDING_POINT_4;                                   // 点数
             attenuation = (float) attenuation_index * attenuation_rate;                     // 衰减量
             control_value /= CURVES_ATTENUATION_RATE - attenuation;
@@ -86,6 +91,13 @@ float arranging_transition_process(float control_value, unsigned short index) {
 }
 
 static unsigned int last_global_time_stamp = 0;
+
+/*!
+    \brief      LQR control algorithm
+    \param[in]  index: The nth point
+    \param[in]  status: Current state: including coordinates and heading angle
+    \retval     The amount of control of the final servo
+*/
 unsigned char lqr_control(unsigned short index, basic_status_t status) {
     const double v_r = 12.5, L = 0.28;
     const float q = 1, r = 2;
@@ -95,7 +107,7 @@ unsigned char lqr_control(unsigned short index, basic_status_t status) {
     double dt = (double) (global_time_stamp - last_global_time_stamp) * 0.001;
     last_global_time_stamp = global_time_stamp;
 
-    // 求位置、航向角的误差
+    /* Find the error of position and heading angle */
     float yaw_temp = (status.angle < 180) ? status.angle : (status.angle - 360);
     yaw_temp *= ANGLE_TO_RADIAN;
 
@@ -110,7 +122,7 @@ unsigned char lqr_control(unsigned short index, basic_status_t status) {
     x_error = 0.2f * x_error;
     y_error = 0.2f * y_error;
 
-    // 由状态方程矩阵系数，计算K
+    /* From the state equation matrix coefficients, calculate K */
     double a[3][3] = {{1, 0, -v_r * dt * sin((double) test_point[index][2])},
                       {0, 1, v_r * dt * cos((double) test_point[index][2])},
                       {0, 0, 1}};
@@ -119,7 +131,7 @@ unsigned char lqr_control(unsigned short index, basic_status_t status) {
                       {tan((double) test_point[index][3]) * dt / L, v_r * dt /
                           (L * cos((double) test_point[index][3]) * cos((double) test_point[index][3]))}};
 
-    // 获得速度误差量、前轮转角误差量两个控制量
+    /* Obtain two control quantities: speed error and front wheel angle error */
     double x[3][1] = {{x_error},
                       {y_error},
                       {yaw_error}};
@@ -133,11 +145,13 @@ unsigned char lqr_control(unsigned short index, basic_status_t status) {
     float output_angle = control_val[1][0] + test_point[index][3];
     unsigned char angle = (short) (SERVO_MID_POINT + output_angle * YAW_TO_ANGLE);
 
+    /* Limit */
     if (angle > SERVO_MID_POINT + MAX_DECLINATION_ANGLE)
         angle = SERVO_MID_POINT + MAX_DECLINATION_ANGLE;
     else if (angle < SERVO_MID_POINT - MAX_DECLINATION_ANGLE)
         angle = SERVO_MID_POINT - MAX_DECLINATION_ANGLE;
 
+    /* Servo angular acceleration limit */
     if ((last_angle > SERVO_MID_POINT)) {
         if (angle > last_angle)
             angle = (short) (
@@ -155,7 +169,11 @@ unsigned char lqr_control(unsigned short index, basic_status_t status) {
     return angle;
 }
 
-/* 寻找点迹 */
+/*!
+    \brief      Addressing the nearest point using a sliding window
+    \param[in]  last_index: Last found nearest point
+    \retval     The point closest to its own coordinates
+*/
 int find_index(int last_index) {
     int nearest_index = last_index;
     for (int i = last_index; i < last_index + 10; i++) {
@@ -166,6 +184,12 @@ int find_index(int last_index) {
     return nearest_index;
 }
 
+/*!
+    \brief      Finding the nearest point using dichotomy with a sliding window
+    \param[in]  ind_start: Start point of the sliding window
+    \param[in]  ind_end: End point of the sliding window
+    \retval     The point closest to its own coordinates
+*/
 int dichotomy(int ind_start, int ind_end) {
     int ind_middle, ind_middle_add, ind_middle_sub;
     for (unsigned char i = 0; i < 10; i++) {

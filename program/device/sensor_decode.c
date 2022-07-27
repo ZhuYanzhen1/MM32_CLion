@@ -21,17 +21,22 @@ volatile unsigned char lqr_flag = 0;
     \param[in]  buffer: Data to be sent,includes 5 short type variables and a check digit
 */
 void precossing_proc_to_control(unsigned int packets[PROC_MCU_SEND_AMOUNT], const unsigned int *buffer) {
-    // 包头
+    /* Packet header */
     packets[0] = 0xff;
-    packets[PROC_MCU_SEND_AMOUNT - 4] = 0x00;  // 前8个信息字节的调整位
-    packets[PROC_MCU_SEND_AMOUNT - 3] = 0x00;  // 后8个信息字节的调整位
+
+    /* Adjustment bits for the first 8 information bytes */
+    packets[PROC_MCU_SEND_AMOUNT - 4] = 0x00;
+
+    /* Adjustment bits for the last 8 information bytes */
+    packets[PROC_MCU_SEND_AMOUNT - 3] = 0x00;
 
     FLOAT_SPLIT_CHAR(1, 0);
     FLOAT_SPLIT_CHAR(5, 1);
     FLOAT_SPLIT_CHAR(9, 2);
     FLOAT_SPLIT_CHAR(13, 3);
 
-    // 调整位，从高到低，每一位与一个字节的数据对应，如果为1，那就代表相应的数据为0xff
+    /* Adjust the bits, from high to low, each bit corresponds to one byte of data, if it is 1,
+     * then it means the corresponding data is 0xff */
     for (unsigned char i = 1; i < 9; ++i) {
         if (packets[i] == 0xff) {
             packets[i] = 0x00;
@@ -45,15 +50,16 @@ void precossing_proc_to_control(unsigned int packets[PROC_MCU_SEND_AMOUNT], cons
         }
     }
 
-    // 校验位
+    /* Check digit */
     packets[PROC_MCU_SEND_AMOUNT - 2] = verification_crc8(&packets[1], PROC_MCU_SEND_AMOUNT - 3);
-    // 包尾
+
+    /* Packet tail */
     packets[PROC_MCU_SEND_AMOUNT - 1] = 0xff;
 }
 
 /*!
     \brief      Solving packets with fixed data length
-    \param[in]  packets: Packets to be solved. Excluding the head and tail of the package
+    \param[out]  packets: Packets to be solved. Excluding the head and tail of the package
     \note       The package to be solved does not contain the head and tail parts of the package
 */
 void unpacking_proc_to_control(unsigned int packets[PROC_MCU_SEND_AMOUNT - 2]) {
@@ -61,7 +67,9 @@ void unpacking_proc_to_control(unsigned int packets[PROC_MCU_SEND_AMOUNT - 2]) {
     volatile short checksum = verification_crc8((unsigned int *) packets, PROC_MCU_SEND_AMOUNT - 3);
     proc_data.checksum = (short) packets[PROC_MCU_SEND_AMOUNT - 3];
     if (checksum != proc_data.checksum) return;
-    // 调整位恢复原始数据，和校验的顺序不能换，因为封包的时候是先算校验，再计算调整位
+
+    /* Adjustment bits restore the original data, and the order of the checksum can not be changed,
+     * because the packet is first counted checksum, and then calculate the adjustment bits */
     for (unsigned char i = 0; i < 8; ++i)
         if (packets[PROC_MCU_SEND_AMOUNT - 5] & (0x80 >> i))
             packets[i] = 0xff;
@@ -69,7 +77,9 @@ void unpacking_proc_to_control(unsigned int packets[PROC_MCU_SEND_AMOUNT - 2]) {
         if (packets[PROC_MCU_SEND_AMOUNT - 4] & (0x80 >> i))
             packets[i] = 0xff;
 
-    DECODE_TO_FLOAT(proc_data.distance_north, 0)    // 如果发送的是float类型，得先转换成unsigned int的地址传进来
+    /* If you are sending a float type,
+     * you must first convert it to an unsigned int address and pass it in */
+    DECODE_TO_FLOAT(proc_data.distance_north, 0)
     DECODE_TO_FLOAT(proc_data.distance_east, 4)
     DECODE_TO_FLOAT(proc_data.north_angle, 8)
     DECODE_TO_FLOAT(proc_data.v, 12)
@@ -86,7 +96,9 @@ void unpacking_fixed_length_data(unsigned int packets[10]) {
     short checksum = verification_crc8((unsigned int *) packets, 9);
     small_packets.checksum = (short) packets[9];
     if (checksum != small_packets.checksum) return;
-    // 调整位恢复原始数据，和校验的顺序不能换，因为封包的时候是先算校验，再计算调整位
+
+    /* If you are sending a float type,
+     * you must first convert it to an unsigned int address and pass it in */
     for (unsigned char i = 0; i < 8; ++i)
         if (packets[8] & (0x80 >> i))
             packets[i] = 0xff;
@@ -97,21 +109,19 @@ void unpacking_fixed_length_data(unsigned int packets[10]) {
     small_packets.ay = (short) (packets[3] | ((short) (packets[6] & 0x0f) << 8));
     small_packets.az = (short) (packets[4] | ((short) (packets[7] & 0xf0) << 4));
 
-    //先解出来并拿到东西，再去把传感器3轴信息-2048
+    /* Unpack the data first, then go to the sensor 3-axis information minus 2048 */
     small_packets.ax -= 2048;
     small_packets.ay -= 2048;
     small_packets.az -= 2048;
 
-    // small_packets.chebyshev_north 实际上是指向南，要将其修正为北
+    /* small_packets.chebyshev_north: it actually points south and should be corrected to north */
     small_packets.chebyshev_north += 180;
     small_packets.chebyshev_north = (small_packets.chebyshev_north > 360.0f) ? (small_packets.chebyshev_north - 360)
                                                                              : small_packets.chebyshev_north;
     small_packets.north += 180;
     small_packets.north = (small_packets.north > 360.0f) ? (small_packets.north - 360) : small_packets.north;
 
-//    small_packets_sum.ax += small_packets.ax;  没用到
     small_packets_sum.ay += (float) small_packets.ay;
-//    small_packets_sum.az += small_packets.az;  没用到
 
     small_packets_sum.num++;
 }
@@ -119,7 +129,6 @@ void unpacking_fixed_length_data(unsigned int packets[10]) {
 /*!
     \brief      Packets with variable data length
     \param[out] packets: Processes packets as long as they are sent through the serial port
-    \note
 */
 void unpacking_variable_length_data(unsigned int *packets) {
     unsigned short checksum = verification_crc16((unsigned int *) packets, 64);
@@ -151,6 +160,10 @@ static unsigned char status = 0;
 static unsigned int package_buffer[80];
 static unsigned char package_counter = 0;
 
+/*!
+    \brief
+    \param[in]
+*/
 void deal_uart6_dma_proc(const unsigned int *p) {
     for (unsigned char counter = 0; counter < CTRL_MCU_RECEIVE_AMOUNT; ++counter) {
         switch (status) {
@@ -160,7 +173,7 @@ void deal_uart6_dma_proc(const unsigned int *p) {
             case 1:
                 if (p[counter] == 0xff && package_counter != (PROC_MCU_SEND_AMOUNT - 2)) {
                     status = 1;
-                    package_counter = 0;    // 原本没有的
+                    package_counter = 0;
                 } else if (p[counter] == 0xff && package_counter == (PROC_MCU_SEND_AMOUNT - 2))
                     status = 2;
                 else {

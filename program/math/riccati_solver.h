@@ -1,3 +1,12 @@
+/**************************************************************************/ /**
+    \file       riccati_solver.h
+    \brief      Includes macros related to the LQR algorithm and
+                function header file
+    \author     Lao·Zhu & ZGL
+    \version    V1.3.2
+    \date       21. July 2022
+ ******************************************************************************/
+
 #ifndef RICCATI_SOLVER_H_
 #define RICCATI_SOLVER_H_
 
@@ -6,7 +15,7 @@
 #define INDEX_OFFSET                20
 
 ///////////////////// Servo control /////////////////////
-#define SERVO_MID_POINT             150
+#define SERVO_MID_POINT             160
 #define MAX_DECLINATION_ANGLE       20
 #define DELTA_ANGLE                 1
 #define YAW_TO_ANGLE                (-63.66203f)     // 180/pi * (-50/45)
@@ -18,9 +27,9 @@
 #define DIVIDING_POINT_1            100
 #define DIVIDING_POINT_2            300
 #define DIVIDING_POINT_3            440
-#define DIVIDING_POINT_4            630
+#define DIVIDING_POINT_4            620
 #define TRANSITION_SECTION          30
-#define CURVES_ATTENUATION_RATE     1.5f
+#define CURVES_ATTENUATION_RATE     2
 #define STRAIGHT_ATTENUATION_RATE   1.4f
 #define BUFFER_BELT_1               (TRANSITION_SECTION)
 #define BUFFER_BELT_2               (DIVIDING_POINT_1 - TRANSITION_SECTION)
