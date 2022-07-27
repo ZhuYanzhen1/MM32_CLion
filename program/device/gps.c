@@ -52,7 +52,9 @@ void gps_config() {
     UART3_CONFIG_GPS(output_frequency_10Hz)
     UART3_CONFIG_GPS(output_hot_start)
     UART3_CONFIG_GPS(output_rmc)
-    CLOSE_PACKAGE_OUTPUT(0x00, 0x00, 0xFA, 0x0F)    // 关闭除rmc外的其他包
+
+    /* Close packages other than rmc */
+    CLOSE_PACKAGE_OUTPUT(0x00, 0x00, 0xFA, 0x0F)
     CLOSE_PACKAGE_OUTPUT(0x01, 0x00, 0xFB, 0x11)
     CLOSE_PACKAGE_OUTPUT(0x02, 0x00, 0xFC, 0x13)
     CLOSE_PACKAGE_OUTPUT(0x04, 0x00, 0xFE, 0x17)

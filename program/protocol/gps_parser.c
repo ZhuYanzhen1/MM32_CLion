@@ -9,9 +9,7 @@
 
 #include "gps_parser.h"
 #include "data_conversion.h"
-#include "filter.h"
 #include "kalman.h"
-#include "test.h"
 
 #define STRING_TO_NUM(x, y, num)    if(comma_position[(num)-1]!=0) \
                                         (x) = nmea_str2num(p + comma_position[(num)-1] +1, &(y));
@@ -20,20 +18,15 @@
 
 nmea_rmc gps_rmc = {0};
 
-// 卡尔曼融合
+/* Related to Kalman Fusion */
 unsigned int last_lat = 0;
 unsigned int last_lon = 0;
 extern kalman_filter_t kalman_distance_north;
 extern kalman_filter_t kalman_distance_east;
 
-// 平稳
+/* Determining whether the positioning is stable at rest */
 static unsigned char sum_counter = 0;
 unsigned int temp_stable[STABLE_NUM][2] = {0};
-
-// 滤波
-float last_output_v = 0;
-float last_output_n = FIRST_DIS_N;
-float last_output_e = FIRST_DIS_E;
 
 /*!
     \brief      Get the location of all commas in the gps packet at once
@@ -264,13 +257,7 @@ void nmea_gnrmc_analysis(char *buffer) {
     neu.north_distance = get_distance(QRIGIN_LAT, temp_lon, temp_lat, temp_lon);
     neu.east_distance = get_distance(temp_lat, QRIGIN_LON, temp_lat, temp_lon);
 
-    /* 一阶低通滤波（速度快则系数要高）（防止太滞后） */
-//    neu.north_distance = rc_low_pass(neu.north_distance, last_output_n, 0.3f);
-//    neu.east_distance = rc_low_pass(neu.east_distance, last_output_e, 0.3f);
-//    last_output_n = neu.north_distance;
-//    last_output_e = neu.east_distance;
-
-    // 检验GPS定位是否稳定，存入环形缓冲区
+    /* Check if the GPS position is stable and stored in the ring buffer */
     temp_stable[sum_counter][0] = gps_rmc.longitude;
     temp_stable[sum_counter][1] = gps_rmc.latitude;
     sum_counter = (sum_counter + 1) % STABLE_NUM;
