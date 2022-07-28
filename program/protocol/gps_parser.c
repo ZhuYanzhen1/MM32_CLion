@@ -11,11 +11,13 @@
 #include "data_conversion.h"
 #include "kalman.h"
 
+/* Extracting content from a string to a variable */
 #define STRING_TO_NUM(x, y, num)    if(comma_position[(num)-1]!=0) \
                                         (x) = nmea_str2num(p + comma_position[(num)-1] +1, &(y));
 #define STRING_TO_STR(x, num)       if (comma_position[(num)-1]!=0) \
                                         (x) = *(p + comma_position[(num)-1]+1);
 
+/* RMC package solved from GPS */
 nmea_rmc gps_rmc = {0};
 
 /* Related to Kalman Fusion */

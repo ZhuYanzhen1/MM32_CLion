@@ -18,6 +18,7 @@ typedef enum {
     Unlocated = 'M'
 } positioning_mode;
 
+/* Is the GPS positioning information valid */
 typedef volatile enum {
     invalid = 'V',
     valid = 'A'
@@ -34,6 +35,7 @@ typedef struct {
     long uct_time;
 } nmea_utc_time;
 
+/* RMC package solved from GPS */
 typedef struct {
     unsigned int latitude;
     unsigned int longitude;

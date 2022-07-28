@@ -24,7 +24,7 @@
 
 #ifndef RUNNING_UNIT_TEST
 
-extern unsigned int uart7_dma_send_buffer[UART7_DMA_SEND_BUFFER];
+/* The last obtained angle control amount */
 unsigned short last_angle = SERVO_MID_POINT;
 
 /*!

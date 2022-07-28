@@ -9,10 +9,15 @@
 #include "sensor_decode.h"
 #include "verification.h"
 
+/* Integral amount of processed sensors */
 decode_fixed_sum small_packets_sum = {0};
+/* Processed sensor information */
 decode_fixed small_packets = {0};
+/* Sensor raw data and matrix associated with geomagnetic correction */
 decode_debug debug_data = {0};
+/* The amount of state of the car */
 volatile decode_proc proc_data = {0};
+/*  */
 volatile unsigned char lqr_flag = 0;
 
 /*!

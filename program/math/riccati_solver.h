@@ -24,13 +24,18 @@
 #define _2PI_                       (6.2831853f)
 
 ///////////////////// Trace Transition //////////////////
+/* DIVIDING_POINT_1 ~ DIVIDING_POINT_4 is the dividing point between curves and straights */
 #define DIVIDING_POINT_1            100
 #define DIVIDING_POINT_2            300
 #define DIVIDING_POINT_3            440
 #define DIVIDING_POINT_4            620
 #define TRANSITION_SECTION          30
+
+/* Degree of decay of control volume */
 #define CURVES_ATTENUATION_RATE     2
 #define STRAIGHT_ATTENUATION_RATE   1.4f
+
+/* BUFFER_BELT_1 ~ BUFFER_BELT_4 is the decay area where the control volume changes slowly */
 #define BUFFER_BELT_1               (TRANSITION_SECTION)
 #define BUFFER_BELT_2               (DIVIDING_POINT_1 - TRANSITION_SECTION)
 #define BUFFER_BELT_3               (DIVIDING_POINT_2 + TRANSITION_SECTION)
