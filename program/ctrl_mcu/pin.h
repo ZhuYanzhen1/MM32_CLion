@@ -9,7 +9,9 @@
 #ifndef MM32F3277_USER_PIN_H_
 #define MM32F3277_USER_PIN_H_
 
+/*! \brief The port where LED1 located */
 #define LED1_PORT       GPIOA
+/*! \brief The pin where LED1 located */
 #define LED1_PIN        GPIO_Pin_2
 
 #endif // MM32F3277_USER_PIN_H_

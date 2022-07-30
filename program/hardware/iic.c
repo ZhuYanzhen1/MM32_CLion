@@ -42,15 +42,15 @@ void iic1_config(void) {
     RCC_APB1PeriphClockCmd(RCC_APB1ENR_I2C1, ENABLE);
     I2C_StructInit(&I2C_InitStruct);
 
-    GPIO_PinAFConfig(IIC_SCL_PORT, GPIO_PinSource10, GPIO_AF_4);
-    GPIO_PinAFConfig(IIC_SDA_PORT, GPIO_PinSource11, GPIO_AF_4);
+    GPIO_PinAFConfig(GPIOD, GPIO_PinSource10, GPIO_AF_4);
+    GPIO_PinAFConfig(GPIOD, GPIO_PinSource11, GPIO_AF_4);
 
-    GPIO_InitStruct.GPIO_Pin = IIC_SCL_PIN;
+    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_10;
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_OD;
-    GPIO_Init(IIC_SCL_PORT, &GPIO_InitStruct);
-    GPIO_InitStruct.GPIO_Pin = IIC_SDA_PIN;
-    GPIO_Init(IIC_SDA_PORT, &GPIO_InitStruct);
+    GPIO_Init(GPIOD, &GPIO_InitStruct);
+    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_11;
+    GPIO_Init(GPIOD, &GPIO_InitStruct);
 
     I2C_InitStruct.Mode = I2C_CR_MASTER;
     I2C_InitStruct.OwnAddress = 0;
