@@ -1,6 +1,10 @@
-//
-// Created by 16625 on 2022-03-27.
-//
+/**************************************************************************/ /**
+    \file       orgin_sensor_form.h
+    \brief      orgin_sensor_form function Header File
+    \author     LaoZhu
+    \version    V1.6.1
+    \date       24. July 2022
+******************************************************************************/
 
 #ifndef MM32F3277_FORM_ORIGIN_FORM_ORGIN_SENSOR_H_
 #define MM32F3277_FORM_ORIGIN_FORM_ORGIN_SENSOR_H_

@@ -1,6 +1,10 @@
-//
-// Created by 16625 on 2022-03-27.
-//
+/**************************************************************************/ /**
+    \file       orgin_gnss_form.c
+    \brief      orgin_gnss_form function Source File
+    \author     LaoZhu
+    \version    V1.6.1
+    \date       24. July 2022
+******************************************************************************/
 
 #include "main.h"
 #include "orgin_gnss_form.h"

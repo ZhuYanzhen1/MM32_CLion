@@ -57,7 +57,6 @@ void TIM2_IRQHandler(void) {
 
 /*!
     \brief  Touch Screen Related
-    \retval None
 */
 void EXTI4_IRQHandler(void) {
     if (EXTI_GetITStatus(EXTI_Line4)) {
@@ -71,7 +70,6 @@ void EXTI4_IRQHandler(void) {
 
 /*!
     \brief  Receive data sent from the PC side
-    \retval None
 */
 void UART1_IRQHandler(void) {
     if (UART_GetITStatus(UART1, UART_ISR_RX) != RESET) {
@@ -83,7 +81,6 @@ void UART1_IRQHandler(void) {
 
 /*!
     \brief  Receive the motor temperature sent by ctrl_mcu
-    \retval None
 */
 void UART4_IRQHandler(void) {
     if (UART_GetITStatus(UART4, UART_ISR_RX) != RESET) {
@@ -95,7 +92,6 @@ void UART4_IRQHandler(void) {
 
 /*!
     \brief  Receive information from the power board
-    \retval None
 */
 void UART6_IRQHandler(void) {
     if (UART_GetITStatus(UART6, UART_ISR_RX) != RESET) {
@@ -108,7 +104,6 @@ void UART6_IRQHandler(void) {
 
 /*!
     \brief  Receive information from GPS
-    \retval None
 */
 void DMA1_Channel3_IRQHandler(void) {
     if (DMA_GetITStatus(DMA1_IT_TC3)) {
@@ -135,8 +130,7 @@ void DMA1_Channel3_IRQHandler(void) {
 }
 
 /*!
-    \brief
-    \retval None
+    \brief Interrupt functions related to printf
 */
 void DMA1_Channel4_IRQHandler(void) {
     if (DMA_GetITStatus(DMA1_IT_TC4)) {
@@ -156,7 +150,6 @@ void DMA1_Channel4_IRQHandler(void) {
 
 /*!
     \brief  Receive messages sent by read_mcu
-    \retval None
 */
 void DMA1_Channel6_IRQHandler(void) {
     if (DMA_GetITStatus(DMA1_IT_TC6)) {
@@ -186,7 +179,6 @@ void DMA1_Channel6_IRQHandler(void) {
 
 /*!
     \brief  Refreshing the interface of the display
-    \retval None
 */
 void DMA2_Channel2_IRQHandler(void) {
     if (DMA_GetITStatus(DMA2_IT_TC2)) {
