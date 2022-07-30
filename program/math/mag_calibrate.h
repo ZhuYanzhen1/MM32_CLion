@@ -1,6 +1,6 @@
 /**************************************************************************/ /**
-    \file     mag_calibrate.c
-    \brief    mag_calibrate features function Source File
+    \file     mag_calibrate.h
+    \brief    mag_calibrate features function Header File
     \author   Lao·Zhu
     \version  V1.6.1
     \date     24. July 2022

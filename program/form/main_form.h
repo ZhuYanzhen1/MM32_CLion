@@ -1,6 +1,6 @@
 /**************************************************************************/ /**
-    \file       main_form.c
-    \brief      main_form function Source File
+    \file       main_form.h
+    \brief      main_form function Header File
     \author     LaoZhu
     \version    V1.6.1
     \date       24. July 2022

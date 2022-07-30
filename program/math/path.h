@@ -1,5 +1,5 @@
 /**************************************************************************/ /**
-    \file     path.c
+    \file     path.h
     \brief    Contains macros related to track points
     \author   ZGL
     \version  V1.6.1

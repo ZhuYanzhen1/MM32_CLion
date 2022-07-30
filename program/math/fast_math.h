@@ -1,5 +1,5 @@
 /**************************************************************************/ /**
-    \file       fast_math.c
+    \file       fast_math.h
     \brief      fast math features function Header File
     \author     Lao·Zhu & ZGL
     \version    V1.6.1

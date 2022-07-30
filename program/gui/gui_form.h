@@ -1,5 +1,5 @@
 /**************************************************************************/ /**
-    \file     gui_from.h
+    \file     gui_form.h
     \brief    gui from features function Header File
     \author   Lao·Zhu
     \version  V1.6.1

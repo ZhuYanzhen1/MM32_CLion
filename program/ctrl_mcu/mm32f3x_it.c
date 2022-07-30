@@ -34,7 +34,7 @@ extern unsigned char printf_dma_counter;
 unsigned char printf_sending_flag = 0;
 
 /*!
-    \brief  This function handles SysTick exception
+    \brief This function handles SysTick exception
 */
 void SysTick_Handler(void) {
     /* update millisecond delay counter */
@@ -42,7 +42,7 @@ void SysTick_Handler(void) {
 }
 
 /*!
-    \brief  Timer2 interrupt callback function, scan debug variable
+    \brief Timer2 interrupt callback function, scan debug variable
 */
 void TIM2_IRQHandler(void) {
     /* Clear TIM2 interrupt bit */
@@ -51,7 +51,7 @@ void TIM2_IRQHandler(void) {
 }
 
 /*!
-    \brief  Receive data sent from the PC side
+    \brief Receive data sent from the PC side
 */
 void UART1_IRQHandler(void) {
     if (UART_GetITStatus(UART1, UART_ISR_RX) != RESET) {
@@ -66,7 +66,7 @@ void UART1_IRQHandler(void) {
 }
 
 /*!
-    \brief  Receive data from the brushless driver board
+    \brief Receive data from the brushless driver board
 */
 void UART7_IRQHandler(void) {
     if (UART_GetITStatus(UART7, UART_ISR_RX) != RESET) {
@@ -81,7 +81,7 @@ void UART7_IRQHandler(void) {
 }
 
 /*!
-    \brief  Receive data sent by proc_mcu using a double ping-pong buffer
+    \brief Receive data sent by proc_mcu using a double ping-pong buffer
 */
 void DMA1_Channel1_IRQHandler(void) {
     if (DMA_GetITStatus(DMA1_IT_TC1)) {
@@ -108,7 +108,7 @@ void DMA1_Channel1_IRQHandler(void) {
 }
 
 /*!
-    \brief  Transmit printf() information to PC using DMA1
+    \brief Transmit printf() information to PC using DMA1
 */
 void DMA1_Channel4_IRQHandler(void) {
     if (DMA_GetITStatus(DMA1_IT_TC4)) {

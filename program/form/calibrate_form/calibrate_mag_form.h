@@ -1,5 +1,5 @@
 /**************************************************************************/ /**
-    \file       calibrate_mag_form.c
+    \file       calibrate_mag_form.h
     \brief      calibrate_mag_form function Header File
     \author     LaoZhu
     \version    V1.6.1

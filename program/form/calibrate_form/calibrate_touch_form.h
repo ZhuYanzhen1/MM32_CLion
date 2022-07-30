@@ -1,5 +1,5 @@
 /**************************************************************************/ /**
-    \file       calibrate_touch_form.c
+    \file       calibrate_touch_form.h
     \brief      calibrate_touch_form function Header File
     \author     LaoZhu
     \version    V1.6.1
