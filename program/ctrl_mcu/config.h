@@ -12,38 +12,40 @@
 #include "version.h"
 
 //////////////////////////////////////// System & Debugger Macro ////////////////////////////////////////
-/* Not Using FreeRTOS */
+/*! \brief Not Using FreeRTOS */
 #define USE_FREERTOS            0
-/* systick interrupt frequency set to 1kHz */
+/*! \brief Systick interrupt frequency set to 1kHz */
 #define configTICK_RATE_HZ      1000
-/* FreeRTOS Heap Size Set To 32KB */
-#define RTOS_HEAP_SIZE          32 * 1024
-/* debugger variable maximum size set to 12 */
+/*! \brief Debugger variable maximum size set to 12 */
 #define VARIABLE_BUFFER_SIZE    12
-/* use mdtp protocol to print buffer */
+/*! \brief Not use mdtp protocol to print buffer */
 #define DEBUG_USE_PROTOCOL      0
 
 
 //////////////////////////////////////// CMBackTrace Macro ////////////////////////////////////////
-/* enable bare metal(no OS) platform */
+/*! \brief Enable bare metal(no OS) platform */
 #define CMB_USING_BARE_METAL_PLATFORM
-/* cpu platform type, must config by user */
+/*! \brief CPU platform type set to Cortex-M3 */
 #define CMB_CPU_PLATFORM_TYPE          CMB_CPU_ARM_CORTEX_M3
-/* enable dump stack information */
+/*! \brief Enable dump stack information */
 #define CMB_USING_DUMP_STACK_INFO
-/* language of print information */
+/*! \brief Language of print information set as English */
 #define CMB_PRINT_LANGUAGE             CMB_PRINT_LANUUAGE_ENGLISH
 
 
 //////////////////////////////////////// Interrupt Priority ////////////////////////////////////////
-#define TIM2_PRIORITY           10
-#define TIM4_PRIORITY           2
-#define UART1_PRIORITY          2
-#define UART1_DMA_PRIORITY      3
+/*! \brief Variable scanner timer interrupt priority set to 5 */
+#define TIM2_PRIORITY           5
+/*! \brief PC debugger receive interrupt priority set to 3 */
+#define UART1_PRIORITY          3
+/*! \brief Debugger send DMA interrupt priority set to 4 */
+#define UART1_DMA_PRIORITY      4
+/*! \brief ProcessMCU data receive DMA interrupt priority set to 4 */
 #define UART6_DMA_PRIORITY      1
-#define UART7_DMA_PRIORITY      2
-#define EXTI6_PRIORITY          11
+/*! \brief Motor Driver temperature receive interrupt priority set to 2 */
+#define UART7_PRIORITY          2
 
+//////////////////////////////////////// Peripherals Speed ////////////////////////////////////////
 #define UART1_BAUDRATE          115200
 #define UART6_BAUDRATE          115200
 #define UART7_BAUDRATE          115200
