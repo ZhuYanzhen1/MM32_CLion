@@ -112,17 +112,23 @@ void UART6_IRQHandler(void) {
 */
 void DMA1_Channel3_IRQHandler(void) {
     if (DMA_GetITStatus(DMA1_IT_TC3)) {
-        /* Clear all interrupt flags */
+        /* Clear DMA1 channel4 interrupt flags */
         DMA_ClearITPendingBit(DMA1_IT_GL3);
 
-        /* Double ping pong buffer */
+        /* Ping-pong buffer switching logic */
         if (uart3_free_buffer_no == buffer_no_1) {
+            /* Switching DMA1 receive memory to buffer2 */
             uart3_dma_set_transmit_buffer(usart3_dma_buffer_2, 74);
             uart3_free_buffer_no = buffer_no_2;
+
+            /* Process the data in buffer1 */
             deal_dma_gnrmc(usart3_dma_buffer_1);
         } else {
+            /* Switching DMA1 receive memory to buffer1 */
             uart3_dma_set_transmit_buffer(usart3_dma_buffer_1, 74);
             uart3_free_buffer_no = buffer_no_1;
+
+            /* Process the data in buffer2 */
             deal_dma_gnrmc(usart3_dma_buffer_2);
         }
     }
@@ -134,6 +140,7 @@ void DMA1_Channel3_IRQHandler(void) {
 */
 void DMA1_Channel4_IRQHandler(void) {
     if (DMA_GetITStatus(DMA1_IT_TC4)) {
+        /* Clear DMA1 channel4 interrupt flags */
         DMA_ClearITPendingBit(DMA1_IT_TC4);
         if (printf_sending_flag == 1 && printf_dma_counter == 0) {
             printf_sending_flag = 0;
@@ -153,15 +160,25 @@ void DMA1_Channel4_IRQHandler(void) {
 */
 void DMA1_Channel6_IRQHandler(void) {
     if (DMA_GetITStatus(DMA1_IT_TC6)) {
+        /* Clear DMA1 channel6 interrupt flags */
         DMA_ClearITPendingBit(DMA1_IT_TC6);
 
+        /* Ping-pong buffer switching logic */
         if (uart2_free_buffer_no == buffer_no_1) {
-            uart2_dma_set_transmit_buffer((unsigned int *) packages_to_be_unpacked_2, uart2_dma_buffer_size);
+            /* Switching DMA1 receive memory to buffer2 */
+            uart2_dma_set_transmit_buffer((unsigned int *) packages_to_be_unpacked_2,
+                                          uart2_dma_buffer_size);
             uart2_free_buffer_no = buffer_no_2;
+
+            /* Process the data in buffer1 */
             deal_dma_read_mcu((unsigned int *) packages_to_be_unpacked_1);
         } else {
-            uart2_dma_set_transmit_buffer((unsigned int *) packages_to_be_unpacked_1, uart2_dma_buffer_size);
+            /* Switching DMA1 receive memory to buffer1 */
+            uart2_dma_set_transmit_buffer((unsigned int *) packages_to_be_unpacked_1,
+                                          uart2_dma_buffer_size);
             uart2_free_buffer_no = buffer_no_1;
+
+            /* Process the data in buffer2 */
             deal_dma_read_mcu((unsigned int *) packages_to_be_unpacked_2);
         }
     }

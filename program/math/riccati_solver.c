@@ -82,10 +82,10 @@ float arranging_transition_process(float control_value, unsigned short index) {
             control_value /= STRAIGHT_ATTENUATION_RATE;
     } else {
         attenuation_rate =
-            (CURVES_ATTENUATION_RATE - STRAIGHT_ATTENUATION_RATE) / TRANSITION_SECTION;     // 衰减率
+            (CURVES_ATTENUATION_RATE - STRAIGHT_ATTENUATION_RATE) / TRANSITION_SECTION;
         if (index < BUFFER_BELT_5) {
-            attenuation_index = index - DIVIDING_POINT_4;                                   // 点数
-            attenuation = (float) attenuation_index * attenuation_rate;                     // 衰减量
+            attenuation_index = index - DIVIDING_POINT_4;
+            attenuation = (float) attenuation_index * attenuation_rate;
             control_value /= CURVES_ATTENUATION_RATE - attenuation;
         } else
             control_value /= STRAIGHT_ATTENUATION_RATE;
