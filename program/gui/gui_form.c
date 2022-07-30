@@ -1,5 +1,5 @@
 /**************************************************************************/ /**
-    \file     gui_from.c
+    \file     gui_form.c
     \brief    gui from features function Source File
     \author   Lao·Zhu
     \version  V1.6.1

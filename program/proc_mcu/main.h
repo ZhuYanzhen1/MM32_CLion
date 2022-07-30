@@ -1,5 +1,5 @@
 /**************************************************************************/ /**
-    \file     main.c
+    \file     main.h
     \brief    main function Header File
     \author   Lao·Zhu & ZGL
     \version  V1.6.1
