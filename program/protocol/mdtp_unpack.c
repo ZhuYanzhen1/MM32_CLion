@@ -2,8 +2,8 @@
     \file     mdtp_unpack.c
     \brief    Medium capacity transport protocol unpacking function Source File.
     \author   Lao·Zhu
-    \version  V1.2.2
-    \date     19. January 2022
+    \version  V1.6.1
+    \date     24. July 2022
 ******************************************************************************/
 
 #include "mdtp_unpack.h"

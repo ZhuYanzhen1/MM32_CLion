@@ -3,8 +3,8 @@
     \brief      gps unpacking algorithm,
                 algorithm for processing gps packets truncated by DMA
     \author     ZGL
-    \version    V1.3.2
-    \date       06. March 2022
+    \version    V1.6.1
+    \date       24. July 2022
 ******************************************************************************/
 
 #include "gps_parser.h"

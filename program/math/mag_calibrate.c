@@ -2,8 +2,8 @@
     \file     mag_calibrate.c
     \brief    mag_calibrate features function Source File
     \author   Lao·Zhu
-    \version  V1.0.1
-    \date     21. March 2022
+    \version  V1.6.1
+    \date     24. July 2022
  ******************************************************************************/
 
 #include "mag_calibrate.h"

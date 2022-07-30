@@ -1,3 +1,11 @@
+/**************************************************************************/ /**
+    \file     const_table.h
+    \brief    const_table function Header File
+    \author   Lao·Zhu
+    \version  V1.6.1
+    \date     24. July 2022
+ ******************************************************************************/
+
 #ifndef MM32F3277_MATH_CONST_TABLE_H_
 #define MM32F3277_MATH_CONST_TABLE_H_
 

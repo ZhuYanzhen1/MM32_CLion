@@ -2,8 +2,8 @@
     \file     sdtp_unpack.c
     \brief    Small capacity transport protocol unpacking function Source File.
     \author   Lao·Zhu
-    \version  V1.2.2
-    \date     19. January 2022
+    \version  V1.6.1
+    \date     24. July 2022
 ******************************************************************************/
 
 #include "sdtp_unpack.h"

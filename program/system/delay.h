@@ -2,8 +2,8 @@
     \file     delay.h
     \brief    delay function Header File
     \author   Lao·Zhu
-    \version  V1.0.1
-    \date     14. November 2021
+    \version  V1.6.1
+    \date     24. July 2022
  ******************************************************************************/
 
 #ifndef MM32F3277_SYSTEM_DELAY_H_
