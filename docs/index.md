@@ -4,6 +4,11 @@
 
 ***
 
+### Program Manual / 程序手册
+[Program Manual / 程序手册](https://zhuyanzhen1.github.io/MM32_CLion/doxygen/index.html)
+
+***
+
 ### Unit Test / 单元测试
 [Unit Test Results / 单元测试结果](https://zhuyanzhen1.github.io/MM32_CLion/unit_test/Report-Results.xml)<br>
 [Unit Test List / 单元测试列表](https://zhuyanzhen1.github.io/MM32_CLion/unit_test/Report-Listing.xml)
