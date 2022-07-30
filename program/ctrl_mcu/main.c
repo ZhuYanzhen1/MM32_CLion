@@ -40,7 +40,6 @@ int main(void) {
     printf("CtrlMCU %s %s %s\r\n", __DATE__, __TIME__, GIT_HASH);
     timer2_config();
 
-    timer4_config();
     spi3_config();
     delayms(2000);
     timer3_config();

@@ -101,7 +101,7 @@ void uart4_config() {
     GPIO_PinAFConfig(GPIOA, GPIO_PinSource1, GPIO_AF_8);
 
     NVIC_InitStruct.NVIC_IRQChannel = UART4_IRQn;
-    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = UART6_PRIORITY;
+    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = UART4_PRIORITY;
     NVIC_InitStruct.NVIC_IRQChannelSubPriority = 0;
     NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStruct);
@@ -182,7 +182,7 @@ void uart7_config() {
     GPIO_Init(GPIOB, &GPIO_InitStruct);
 
     NVIC_InitStruct.NVIC_IRQChannel = UART7_IRQn;
-    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = UART7_DMA_PRIORITY;
+    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = UART7_PRIORITY;
     NVIC_InitStruct.NVIC_IRQChannelSubPriority = 0;
     NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStruct);

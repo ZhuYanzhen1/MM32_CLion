@@ -16,6 +16,33 @@
 #include "../proc_mcu/config.h"
 #endif  // IS_CONTROL_MCU
 
+void timer2_config() {
+    TIM_TimeBaseInitTypeDef TIM_TimeBaseStruct;
+    NVIC_InitTypeDef NVIC_StructInit;
+    RCC_APB1PeriphClockCmd(RCC_APB1ENR_TIM2, ENABLE);
+    TIM_TimeBaseStructInit(&TIM_TimeBaseStruct);
+
+    /* 25Hz */
+    TIM_TimeBaseStruct.TIM_Period = 399;            // 400 - 1
+    TIM_TimeBaseStruct.TIM_Prescaler = 11999;
+    TIM_TimeBaseStruct.TIM_ClockDivision = TIM_CKD_DIV1;
+    TIM_TimeBaseStruct.TIM_CounterMode = TIM_CounterMode_Up;
+    TIM_TimeBaseStruct.TIM_RepetitionCounter = 0;
+    TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStruct);
+
+    NVIC_StructInit.NVIC_IRQChannel = TIM2_IRQn;
+    NVIC_StructInit.NVIC_IRQChannelPreemptionPriority = TIM2_PRIORITY;
+    NVIC_StructInit.NVIC_IRQChannelSubPriority = 0;
+    NVIC_StructInit.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_StructInit);
+
+    TIM_ClearFlag(TIM2, TIM_FLAG_Update);
+    TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
+    TIM_Cmd(TIM2, ENABLE);
+}
+
+#ifdef IS_CONTROL_MCU
+
 void timer3_config(void) {  // PB4
     GPIO_InitTypeDef GPIO_InitStructure;
     TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
@@ -58,58 +85,6 @@ void timer3_config(void) {  // PB4
 
     TIM_Cmd(TIM3, ENABLE);
     WRITE_REG(TIM3->CCR1, SERVO_MID_POINT);
-}
-
-void timer2_config() {
-    TIM_TimeBaseInitTypeDef TIM_TimeBaseStruct;
-    NVIC_InitTypeDef NVIC_StructInit;
-    RCC_APB1PeriphClockCmd(RCC_APB1ENR_TIM2, ENABLE);
-    TIM_TimeBaseStructInit(&TIM_TimeBaseStruct);
-
-    /* 25Hz */
-    TIM_TimeBaseStruct.TIM_Period = 399;            // 400 - 1
-    TIM_TimeBaseStruct.TIM_Prescaler = 11999;
-    TIM_TimeBaseStruct.TIM_ClockDivision = TIM_CKD_DIV1;
-    TIM_TimeBaseStruct.TIM_CounterMode = TIM_CounterMode_Up;
-    TIM_TimeBaseStruct.TIM_RepetitionCounter = 0;
-    TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStruct);
-
-    NVIC_StructInit.NVIC_IRQChannel = TIM2_IRQn;
-    NVIC_StructInit.NVIC_IRQChannelPreemptionPriority = TIM2_PRIORITY;
-    NVIC_StructInit.NVIC_IRQChannelSubPriority = 0;
-    NVIC_StructInit.NVIC_IRQChannelCmd = ENABLE;
-    NVIC_Init(&NVIC_StructInit);
-
-    TIM_ClearFlag(TIM2, TIM_FLAG_Update);
-    TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
-    TIM_Cmd(TIM2, ENABLE);
-}
-
-#ifdef IS_CONTROL_MCU
-
-void timer4_config() {
-    TIM_TimeBaseInitTypeDef TIM_TimeBaseStruct;
-    NVIC_InitTypeDef NVIC_StructInit;
-    RCC_APB1PeriphClockCmd(RCC_APB1ENR_TIM4, ENABLE);
-    TIM_TimeBaseStructInit(&TIM_TimeBaseStruct);
-
-    /* 50Hz */
-    TIM_TimeBaseStruct.TIM_Period = 399;            // 200 - 1
-    TIM_TimeBaseStruct.TIM_Prescaler = 11999;
-    TIM_TimeBaseStruct.TIM_ClockDivision = TIM_CKD_DIV1;
-    TIM_TimeBaseStruct.TIM_CounterMode = TIM_CounterMode_Up;
-    TIM_TimeBaseStruct.TIM_RepetitionCounter = 0;
-    TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStruct);
-
-    NVIC_StructInit.NVIC_IRQChannel = TIM4_IRQn;
-    NVIC_StructInit.NVIC_IRQChannelPreemptionPriority = TIM4_PRIORITY;
-    NVIC_StructInit.NVIC_IRQChannelSubPriority = 0;
-    NVIC_StructInit.NVIC_IRQChannelCmd = ENABLE;
-    NVIC_Init(&NVIC_StructInit);
-
-    TIM_ClearFlag(TIM4, TIM_FLAG_Update);
-    TIM_ITConfig(TIM4, TIM_IT_Update, ENABLE);
-    TIM_Cmd(TIM4, ENABLE);
 }
 
 #endif

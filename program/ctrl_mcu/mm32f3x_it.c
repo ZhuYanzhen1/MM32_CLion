@@ -9,19 +9,19 @@
 #include "mm32f3x_it.h"
 #include "main.h"
 
-/*! \brief  Motor temperature information from the driver */
+/*! \brief Motor temperature information from the driver */
 unsigned char temperature = 0;
 
-/*! \brief  Buffer enumeration value currently used by UART6 */
+/*! \brief Buffer enumeration value currently used by UART6 */
 typedef enum { buffer_no_1 = 1, buffer_no_2 = 2 } buffer_no;
 
-/*! \brief  Buffer flag bit currently used by UART6 */
+/*! \brief Buffer flag bit currently used by UART6 */
 static buffer_no uart6_free_buffer_no = buffer_no_1;
 
-/*! \brief  UART6 receive buffer 1 */
+/*! \brief UART6 receive buffer 1 */
 unsigned int uart6_dma_buffer_1[CTRL_MCU_RECEIVE_AMOUNT];
 
-/*! \brief  UART6 receive buffer 2 */
+/*! \brief UART6 receive buffer 2 */
 unsigned int uart6_dma_buffer_2[CTRL_MCU_RECEIVE_AMOUNT];
 
 /*! \brief Data buffer used by the printf() function */
@@ -50,15 +50,6 @@ void TIM2_IRQHandler(void) {
     /* Clear TIM2 interrupt bit */
     TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
     debugger_scan_variable(global_time_stamp);
-}
-
-/*!
-    \brief  Timer4 interrupt callback function, not used
-    \retval None
-*/
-void TIM4_IRQHandler(void) {
-    /* Clear TIM4 interrupt bit */
-    TIM_ClearITPendingBit(TIM4, TIM_IT_Update);
 }
 
 /*!
