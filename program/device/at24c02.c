@@ -2,8 +2,8 @@
     \file       at24c02.c
     \brief      at24c02 function Source File
     \author     LaoZhu
-    \version    V1.3.2
-    \date       04. February 2022
+    \version    V1.6.1
+    \date       24. July 2022
 ******************************************************************************/
 
 #include "at24c02.h"

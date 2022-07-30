@@ -2,8 +2,8 @@
     \file     debugger.c
     \brief    debugger function Source File
     \author   Lao·Zhu
-    \version  V1.0.2
-    \date     19. January 2022
+    \version  V1.6.1
+    \date     24. July 2022
 ******************************************************************************/
 
 #include "debugger.h"
@@ -65,7 +65,7 @@ void _putchar(char character) {
     }
 }
 #else
-void _fflush(void) { }
+void _fflush(void) {}
 #endif
 
 static void debugger_report_variable(unsigned char index) {

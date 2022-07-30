@@ -2,8 +2,8 @@
     \file       dma.c
     \brief      DMA function Source File
     \author     ZGL
-    \version    V1.3.2
-    \date       19. March 2022
+    \version    V1.6.1
+    \date       24. July 2022
 ******************************************************************************/
 
 #include "dma.h"

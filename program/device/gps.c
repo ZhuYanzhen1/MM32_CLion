@@ -3,8 +3,8 @@
     \brief      Contains gps initialization and
                 display of received gps related information on the screen
     \author     ZGL
-    \version    V1.3.2
-    \date       06. March 2021
+    \version    V1.6.1
+    \date       24. July 2022
 ******************************************************************************/
 
 

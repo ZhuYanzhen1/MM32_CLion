@@ -2,8 +2,8 @@
     \file     gui_button.h
     \brief    gui button features function Header File
     \author   Lao·Zhu
-    \version  V1.0.1
-    \date     19. January 2022
+    \version  V1.6.1
+    \date     24. July 2022
  ******************************************************************************/
 
 #ifndef MM32F3277_GUI_BUTTON_H_

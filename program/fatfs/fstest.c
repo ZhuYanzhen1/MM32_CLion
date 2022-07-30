@@ -1,6 +1,10 @@
-//
-// Created by LaoZhu on 2022/4/23.
-//
+/**************************************************************************/ /**
+    \file       fsrest.c
+    \brief      fsrest function Source File
+    \author     LaoZhu
+    \version    V1.6.1
+    \date       24. July 2022
+******************************************************************************/
 
 #include "fstest.h"
 #include "ff.h"

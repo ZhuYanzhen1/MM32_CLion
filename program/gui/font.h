@@ -2,8 +2,8 @@
     \file     font.h
     \brief    file that stores 6x12 size ASCII character font.
     \author   Lao·Zhu
-    \version  V1.0.1
-    \date     19. January 2022
+    \version  V1.6.1
+    \date     24. July 2022
  ******************************************************************************/
 
 #ifndef MM32F3277_GUI_FONT_H_
