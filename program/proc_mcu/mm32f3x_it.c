@@ -9,17 +9,55 @@
 #include "mm32f3x_it.h"
 #include "main.h"
 
-// 3us
+extern EventGroupHandle_t touch_event;
+
+/* \brief Motor temperature */
+unsigned char temperature = 0;
+
+unsigned char battery_voltage = 0x00;
+unsigned char battery_current = 0x00;
+
+/*! \brief  Buffer enumeration value currently used by UART2 & UART3 */
+typedef enum { buffer_no_1 = 1, buffer_no_2 = 2 } buffer_no;
+
+/*! \brief  Buffer flag bit currently used by UART3 */
+static buffer_no uart3_free_buffer_no = buffer_no_1;
+
+/*! \brief  UART3 receive buffer 1 */
+unsigned int usart3_dma_buffer_1[74];
+
+/*! \brief  UART3 receive buffer 2 */
+unsigned int usart3_dma_buffer_2[74];
+
+/*! \brief  Buffer flag bit currently used by UART2 */
+static buffer_no uart2_free_buffer_no = buffer_no_1;
+
+/*! \brief  UART2 receive buffer 1 */
+volatile unsigned int packages_to_be_unpacked_1[READ_MCU_AMOUNT] = {0};
+
+/*! \brief  UART2 receive buffer 2 */
+volatile unsigned int packages_to_be_unpacked_2[READ_MCU_AMOUNT] = {0};
+
+/*! \brief Data buffer used by the printf() function */
+extern unsigned int printf_mdtp_dma_buffer[16][12];
+
+/*! \brief The number of buffers used by the printf() function counter */
+extern unsigned char printf_dma_counter;
+
+/*! \brief Flag bit for printf content being sent */
+unsigned char printf_sending_flag = 0;
+
+/*! \brief  Lcd buffer */
+extern volatile unsigned char lcd_buffer[128 * 160 * 2];
+
 void TIM2_IRQHandler(void) {
     TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
     debugger_scan_variable(global_time_stamp);
 }
 
-extern EventGroupHandle_t touch_event;
-
 /*!
     \brief  Touch Screen Related
-    \retval none
+    \retval None
 */
 void EXTI4_IRQHandler(void) {
     if (EXTI_GetITStatus(EXTI_Line4)) {
@@ -33,7 +71,7 @@ void EXTI4_IRQHandler(void) {
 
 /*!
     \brief  Receive data sent from the PC side
-    \retval none
+    \retval None
 */
 void UART1_IRQHandler(void) {
     if (UART_GetITStatus(UART1, UART_ISR_RX) != RESET) {
@@ -43,11 +81,9 @@ void UART1_IRQHandler(void) {
     }
 }
 
-unsigned char temperature = 0;
-
 /*!
     \brief  Receive the motor temperature sent by ctrl_mcu
-    \retval none
+    \retval None
 */
 void UART4_IRQHandler(void) {
     if (UART_GetITStatus(UART4, UART_ISR_RX) != RESET) {
@@ -57,12 +93,9 @@ void UART4_IRQHandler(void) {
     }
 }
 
-unsigned char battery_voltage = 0x00;
-unsigned char battery_current = 0x00;
-
 /*!
     \brief  Receive information from the power board
-    \retval none
+    \retval None
 */
 void UART6_IRQHandler(void) {
     if (UART_GetITStatus(UART6, UART_ISR_RX) != RESET) {
@@ -73,14 +106,9 @@ void UART6_IRQHandler(void) {
     }
 }
 
-typedef enum { buffer_no_1 = 1, buffer_no_2 = 2 } buffer_no;
-static buffer_no uart3_free_buffer_no = buffer_no_1;
-unsigned int usart3_dma_buffer_1[74];
-unsigned int usart3_dma_buffer_2[74];
-
 /*!
     \brief  Receive information from GPS
-    \retval none
+    \retval None
 */
 void DMA1_Channel3_IRQHandler(void) {
     if (DMA_GetITStatus(DMA1_IT_TC3)) {
@@ -100,13 +128,9 @@ void DMA1_Channel3_IRQHandler(void) {
     }
 }
 
-extern unsigned int printf_mdtp_dma_buffer[16][12];
-extern unsigned char printf_dma_counter;
-unsigned char printf_sending_flag = 0;
-
 /*!
     \brief
-    \retval none
+    \retval None
 */
 void DMA1_Channel4_IRQHandler(void) {
     if (DMA_GetITStatus(DMA1_IT_TC4)) {
@@ -123,13 +147,9 @@ void DMA1_Channel4_IRQHandler(void) {
     }
 }
 
-static buffer_no uart2_free_buffer_no = buffer_no_1;
-volatile unsigned int packages_to_be_unpacked_1[READ_MCU_AMOUNT] = {0};
-volatile unsigned int packages_to_be_unpacked_2[READ_MCU_AMOUNT] = {0};
-
 /*!
     \brief  Receive messages sent by read_mcu
-    \retval none
+    \retval None
 */
 void DMA1_Channel6_IRQHandler(void) {
     if (DMA_GetITStatus(DMA1_IT_TC6)) {
@@ -147,11 +167,9 @@ void DMA1_Channel6_IRQHandler(void) {
     }
 }
 
-extern volatile unsigned char lcd_buffer[128 * 160 * 2];
-
 /*!
     \brief  Refreshing the interface of the display
-    \retval none
+    \retval None
 */
 void DMA2_Channel2_IRQHandler(void) {
     if (DMA_GetITStatus(DMA2_IT_TC2)) {

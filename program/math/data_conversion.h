@@ -9,23 +9,27 @@
 #ifndef MM32F3277_MATH_DATA_CONVERSION_H_
 #define MM32F3277_MATH_DATA_CONVERSION_H_
 
-/* The starting point is set as(23°N,113°E) */
+/*! \brief The starting point is set as(23°N,113°E) */
 #define QRIGIN_LAT      23
 #define QRIGIN_LON      113
+
 #define EARTH_RADIUS    6371000
 
-/* Acceleration conversion factor */
+/*! \brief Acceleration conversion factor */
 #define FACTOR_ALLC_X   1.778f
 #define FACTOR_ALLC_Y   1.811f
 #define FACTOR_ALLC_Z   1.899f
-/* Convert the units of the velocity obtained from GPS from knot to m/s */
+
+/*! \brief Convert the units of the velocity obtained from GPS from knot to m/s */
 #define GEO_ANGLE(x)    ((x) * 0.0174533f)  // PI / 180 = 0.0174533f
-/* Convert the units of the velocity obtained from GPS from knot to m/s */
+
+/*! \brief Convert the units of the velocity obtained from GPS from knot to m/s */
 #define KNOT_TO_M_S(x)  ((x) * 0.514444f)
-/* Change the units of the accelerometer data from mg to m/s^2 */
+
+/*! \brief Change the units of the accelerometer data from mg to m/s^2 */
 #define MG_TO_M_S_2(x)  ((x) / 102.1627f)
 
-/* Status information in the neu coordinates */
+/*! \brief Status information in the neu coordinates */
 typedef volatile struct {
     float north_v;
     float east_v;

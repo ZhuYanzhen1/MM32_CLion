@@ -16,6 +16,7 @@
 
 extern kalman_data_t kalman_data;
 
+/*! \brief Status information in the neu coordinates */
 neu_infomation neu = {0};
 
 /*!

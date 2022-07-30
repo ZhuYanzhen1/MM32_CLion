@@ -11,23 +11,31 @@
 #include "data_conversion.h"
 #include "kalman.h"
 
-/* Extracting content from a string to a variable */
+/*! \brief Extracting content from a string to a variable */
 #define STRING_TO_NUM(x, y, num)    if(comma_position[(num)-1]!=0) \
                                         (x) = nmea_str2num(p + comma_position[(num)-1] +1, &(y));
 #define STRING_TO_STR(x, num)       if (comma_position[(num)-1]!=0) \
                                         (x) = *(p + comma_position[(num)-1]+1);
 
-/* RMC package solved from GPS */
+/*! \brief RMC package solved from GPS */
 nmea_rmc gps_rmc = {0};
 
-/* Related to Kalman Fusion */
+/*! \brief Record the dimensional coordinates of the last */
 unsigned int last_lat = 0;
+
+/*! \brief Record the coordinates of the last longitude */
 unsigned int last_lon = 0;
+
+/*! \brief Kalman structure for northward position */
 extern kalman_filter_t kalman_distance_north;
+
+/*! \brief Kalman structure for eastward position */
 extern kalman_filter_t kalman_distance_east;
 
-/* Determining whether the positioning is stable at rest */
+/*! \brief Determining whether the positioning is stable at rest */
 static unsigned char sum_counter = 0;
+
+/*! \brief Store the coordinates to determine whether the GPS position is stable or not */
 unsigned int temp_stable[STABLE_NUM][2] = {0};
 
 /*!

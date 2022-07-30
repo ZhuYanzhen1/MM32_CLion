@@ -12,7 +12,7 @@
 #define V_Q_POS     0.2f
 #define DIS_Q_POS   0.8f
 
-/* The data after performing Kalman fusion */
+/*! \brief The data after performing Kalman fusion */
 typedef struct {
     float v;
     float distance_north;

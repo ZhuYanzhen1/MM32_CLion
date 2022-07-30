@@ -1,26 +1,34 @@
 /**************************************************************************/ /**
     \file     main.c
     \brief    main function Source File
-    \author   Lao·Zhu
+    \author   Lao·Zhu & ZGL
     \version  V1.6.1
     \date     17. July 2022
  ******************************************************************************/
 
 #include "main.h"
 
-extern volatile unsigned char lqr_flag;
-
 FATFS filesystem;
-volatile unsigned short speed = 0;
-static volatile unsigned short playground_ind = 0;
 static unsigned char fs_buffer[FF_MAX_SS * 4];
 
+/*! \brief  Determining whether to perform LQR control */
+extern volatile unsigned char lqr_flag;
+
+/*! \brief  Motor control volume */
+volatile unsigned short speed = 0;
+
+/*! \brief  The nearest track point to yourself */
+static volatile unsigned short playground_ind = 0;
+
+/*! \brief  Information received from proc_mcu */
 extern unsigned int uart6_dma_buffer_1[CTRL_MCU_RECEIVE_AMOUNT];
 extern unsigned int uart6_dma_buffer_2[CTRL_MCU_RECEIVE_AMOUNT];
+
+/*! \brief  Temperature of the motor */
 extern unsigned char temperature;
 
+/*! \brief  Messages sent to the brushless control board */
 unsigned int uart7_dma_send_buffer[UART7_DMA_SEND_BUFFER] = {0};
-static unsigned char pc_connect_flag = 0;
 
 int main(void) {
     delay_config();

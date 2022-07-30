@@ -9,42 +9,44 @@
 #ifndef MM32F3277_DEVICE_SENSOR_DECODE_H_
 #define MM32F3277_DEVICE_SENSOR_DECODE_H_
 
-/* The number of bytes sent by read_mcu to proc_mcu in a packet */
+/*! \brief The number of bytes sent by read_mcu to proc_mcu in a packet */
 #define READ_MCU_AMOUNT         96
-/* Number of bytes sent by proc_mcu to ctrl_mcu in a packet */
+
+/*! \brief Number of bytes sent by proc_mcu to ctrl_mcu in a packet */
 #define PROC_MCU_SEND_AMOUNT    21
-/* Number of bytes in a packet received by ctrl_mcu from proc_mcu */
+
+/*! \brief Number of bytes in a packet received by ctrl_mcu from proc_mcu */
 #define CTRL_MCU_RECEIVE_AMOUNT 21
 
-/* Splitting a short type into two char types */
+/*! \brief Splitting a short type into two char types */
 #define SHORT_SPLIT_CHAR(x, y)  packets[x] = ((buffer[y] & 0x0000ff00) >> 8);\
                                 packets[(x)+1] = (buffer[y] & 0x000000ff);
-/* Splitting an int data into four char data */
+/*! \brief Splitting an int data into four char data */
 #define INT_SPLIT_CHAR(x, y)    packets[x] = ((buffer[y] & 0x00ff0000) >> 16);\
                                 packets[(x)+1] = ((buffer[y] & 0x0000ff00) >> 8);\
                                 packets[(x)+2] = (buffer[y] & 0x000000ff);
-/* Divide a float data into four char type data */
+/*! \brief Divide a float data into four char type data */
 #define FLOAT_SPLIT_CHAR(x, y)  packets[x] = ((buffer[y] & 0xff000000) >> 24);\
                                 packets[(x)+1] = ((buffer[y] & 0x00ff0000) >> 16);\
                                 packets[(x)+2] = ((buffer[y] & 0x0000ff00) >> 8);\
                                 packets[(x)+3] = (buffer[y] & 0x000000ff);
 
-/* Merge two char data into one short data type */
+/*! \brief Merge two char data into one short data type */
 #define DECODE_TO_SHORT(x, y)   (x) = (int)(((int) packets[y] <<8) | \
                                 (packets[y+1])) ;
-/* Merge four char types into one int type */
+/*! \brief Merge four char types into one int type */
 #define DECODE_TO_INT(x, y)     (x) = (int) (((int) packets[y] <<24) | \
                                 ((int)packets[y+1] <<16) |\
                                 ((int)packets[y+2])<<8 |\
                                 ((int)packets[y+3]));
-/* Merge four char types into one float type */
+/*! \brief Merge four char types into one float type */
 #define DECODE_TO_FLOAT(x, y)   (temp) = (unsigned int)( ((int)packets[y] <<24) |\
                                 ((int) packets[y+1] <<16) |\
                                 ((int) packets[y+2] <<8) |\
                                 ((int) packets[y+3]));\
                                 (x) = *((float *) (&temp));
 
-/* Processed sensor information */
+/*! \brief Processed sensor information */
 typedef struct {
     float north;
     float chebyshev_north;
@@ -54,7 +56,7 @@ typedef struct {
     short checksum;
 } decode_fixed;
 
-/* Integral amount of processed sensors */
+/*! \brief Integral amount of processed sensors */
 typedef struct {
     float north;
     float chebyshev_north;
@@ -65,7 +67,7 @@ typedef struct {
     short num;  // 接收的数量
 } decode_fixed_sum;
 
-/* Sensor raw data and matrix associated with geomagnetic correction */
+/*! \brief Sensor raw data and matrix associated with geomagnetic correction */
 typedef struct {
     int mag_x;
     int mag_y;
@@ -88,7 +90,7 @@ typedef struct {
     int checksum;
 } decode_debug;
 
-/* The amount of state of the car */
+/*! \brief The amount of state of the car */
 typedef struct {
     float distance_north;
     float distance_east;

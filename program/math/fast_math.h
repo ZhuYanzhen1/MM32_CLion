@@ -9,7 +9,7 @@
 #ifndef MM32F3277_MATH_FAST_MATH_H_
 #define MM32F3277_MATH_FAST_MATH_H_
 
-/* Take absolute value */
+/*! \brief Take absolute value */
 #define fast_absf(x) ((x < 0) ? -1.0f * x : x)
 
 float atan_fast(float x);

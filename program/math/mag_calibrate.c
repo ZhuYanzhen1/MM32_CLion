@@ -20,7 +20,7 @@
 
 #define OUTPUT_DEBUG_INFO   0
 
-//校正参数，包含hard iron 和soft iron
+/* \brief Calibration parameters, including hard iron and soft iron */
 calpara_t params;
 
 static float sample_buffer[3][COMPASS_CAL_NUM_SAMPLES];
@@ -36,8 +36,6 @@ void Initial_CompassCal(calpara_t *calibrate_param) {
     calibrate_param->radius = 200;
     samples_collected = 0;
 }
-
-//static volatile unava_data_counter = 0;
 
 char accept_sample(float sample[3], float mag_sphere_radius) {
     float min_sample_dist, dist;

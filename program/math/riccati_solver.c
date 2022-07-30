@@ -24,8 +24,11 @@
 
 #ifndef RUNNING_UNIT_TEST
 
-/* The last obtained angle control amount */
+/* \brief The last obtained angle control amount */
 unsigned short last_angle = SERVO_MID_POINT;
+
+/* \brief Timestamp at this time */
+static unsigned int last_global_time_stamp = 0;
 
 /*!
     \brief      Calculate the distance between the current coordinates and the target point
@@ -89,8 +92,6 @@ float arranging_transition_process(float control_value, unsigned short index) {
     }
     return control_value;
 }
-
-static unsigned int last_global_time_stamp = 0;
 
 /*!
     \brief      LQR control algorithm

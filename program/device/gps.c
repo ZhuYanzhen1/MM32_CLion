@@ -14,18 +14,18 @@
 #include "dma.h"
 #include "hal_conf.h"
 
-/* Send GPS initialization information */
+/* \brief Send GPS initialization information */
 #define UART3_CONFIG_GPS(cmdbuf)            for (unsigned char i = 0; i < (unsigned char) sizeof(cmdbuf); i++)\
                                                 uart3_sendbyte((cmdbuf)[i]);\
                                             delayms(100);
-/* Close packages other than RMC */
+/* \brief Close packages other than RMC */
 #define CLOSE_PACKAGE_OUTPUT(a, b, c, d)    output_rmc[7]=a;\
                                             output_rmc[8]=b;\
                                             output_rmc[9]=c;\
                                             output_rmc[10]=d;\
                                             UART3_CONFIG_GPS(output_rmc)
 
-/* Receive information from GPS */
+/* \brief Receive information from GPS */
 extern unsigned int usart3_dma_buffer_1[74];
 extern unsigned int usart3_dma_buffer_2[74];
 

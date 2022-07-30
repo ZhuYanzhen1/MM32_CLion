@@ -8,22 +8,39 @@
 
 #include "main.h"
 
-/* Statistics of other controllers */
 unsigned char pc_connect_flag = 0;
+
+/*! \brief Maximum speed of motor detected by brushless driver board */
 float statistic_max_speed = 0;
+
+/*! \brief Maximum current detected by the power supply board */
 float statistic_max_current = 0;
+
+/*! \brief Battery Current */
 extern unsigned char battery_current;
 
-/* Variables related to gps */
+/*! \brief Store to determine if its own position is the temperature */
 extern unsigned int temp_stable[100][2];
+
+/*! \brief UART2 receive buffer 1 */
 extern unsigned int packages_to_be_unpacked_1[READ_MCU_AMOUNT];
+
+/*! \brief Data after packet sealing */
 unsigned int proc_to_ctrl_package[PROC_MCU_SEND_AMOUNT] = {0};
+
+/*! \brief Data before packet sealing */
 unsigned int proc_to_ctrl_buffer[4] = {0};
 
-/* Kalman fusion to obtain northward and eastward velocities */
+/*! \brief The state volume after Kalman fusion */
 kalman_data_t kalman_data = {0};
+
+/*! \brief Kalman structure of v */
 kalman_filter_t kalman_v = {0};
+
+/*! \brief Kalman structure of distance_north */
 kalman_filter_t kalman_distance_north = {0};
+
+/*! \brief Kalman structure of distance_east */
 kalman_filter_t kalman_distance_east = {0};
 
 //////////////////////////////////// Task Handler ////////////////////////////////////
