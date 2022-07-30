@@ -2,8 +2,8 @@
     \file     gui_label.c
     \brief    gui from features function Source File
     \author   Lao·Zhu
-    \version  V1.3.2
-    \date     21. March 2022
+    \version  V1.6.1
+    \date     24. July 2022
  ******************************************************************************/
 
 #include "gui_label.h"

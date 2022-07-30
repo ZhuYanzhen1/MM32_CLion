@@ -2,8 +2,8 @@
     \file       xpt2046.h
     \brief      Touch Screen Related Codes
     \author     Lao·Zhu
-    \version    V1.2.2
-    \date       19. January 2022
+    \version    V1.6.1
+    \date       24. July 2022
 ******************************************************************************/
 
 #ifndef MM32F3277_DEVICE_XPT2046_H_

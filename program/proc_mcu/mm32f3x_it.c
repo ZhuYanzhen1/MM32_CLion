@@ -1,9 +1,9 @@
 /**************************************************************************/ /**
     \file     mm32f3x_it.c
     \brief    MM32F3x interrupt handler function source file
-    \author   Lao·Zhu
-    \version  V1.3.2
-    \date     06. March 2022
+    \author   Lao·Zhu & ZGL
+    \version  V1.6.1
+    \date     24. July 2022
  ******************************************************************************/
 
 #include "mm32f3x_it.h"

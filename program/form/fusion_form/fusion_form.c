@@ -1,6 +1,10 @@
-//
-// Created by 16625 on 2022-03-20.
-//
+/**************************************************************************/ /**
+    \file       fusion_form.c
+    \brief      fusion_form function Source File
+    \author     LaoZhu
+    \version    V1.6.1
+    \date       24. July 2022
+******************************************************************************/
 
 #include "main.h"
 #include "fusion_form.h"

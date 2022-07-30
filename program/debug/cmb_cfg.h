@@ -2,8 +2,8 @@
     \file     cmb_cfg.h
     \brief    CMBackTrace configuration file
     \author   Armink
-    \version  V1.0.1
-    \date     19. January 2022
+    \version  V1.6.1
+    \date     24. July 2022
 ******************************************************************************/
 
 #ifndef MM32F3277_DEBUG_CMB_CFG_H_

@@ -2,8 +2,8 @@
     \file     uart.h
     \brief    UART function Header File
     \author   Lao·Zhu
-    \version  V1.3.2
-    \date     06. March 2021
+    \version  V1.6.1
+    \date     24. July 2022
  ******************************************************************************/
 
 #ifndef MM32F3277_HARDWARE_UART_H_

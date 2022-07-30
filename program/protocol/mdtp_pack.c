@@ -2,8 +2,8 @@
     \file     mdtp_pack.c
     \brief    Medium capacity transport protocol packing function source file.
     \author   Lao·Zhu
-    \version  V1.2.2
-    \date     19. January 2022
+    \version  V1.6.1
+    \date     24. July 2022
 ******************************************************************************/
 
 #include "mdtp_pack.h"

@@ -2,8 +2,8 @@
     \file       fast_math.c
     \brief      fast math features function Header File
     \author     Lao·Zhu & ZGL
-    \version    V1.3.3
-    \date       22. March 2022
+    \version    V1.6.1
+    \date       24. July 2022
 ******************************************************************************/
 
 #ifndef MM32F3277_MATH_FAST_MATH_H_

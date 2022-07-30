@@ -2,8 +2,8 @@
     \file       sensor_decode.h
     \brief      sensor_decode function Header File
     \author     ZGL
-    \version    V1.3.2
-    \date       09. March 2022
+    \version    V1.6.1
+    \date       24. July 2022
 ******************************************************************************/
 
 #ifndef MM32F3277_DEVICE_SENSOR_DECODE_H_

@@ -2,8 +2,8 @@
     \file       riccati_solver.c
     \brief      Processing LQR-related algorithms
     \author     Lao·Zhu & ZGL
-    \version    V1.3.2
-    \date       21. July 2022
+    \version    V1.6.1
+    \date       24. July 2022
  ******************************************************************************/
 
 #include "riccati_solver.h"

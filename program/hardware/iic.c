@@ -2,8 +2,8 @@
     \file       iic.c
     \brief      iic function Source File
     \author     ZGL & LaoZhu
-    \version    V1.3.2
-    \date       06. March 2022
+    \version    V1.6.1
+    \date       24. July 2022
 ******************************************************************************/
 
 #include "iic.h"

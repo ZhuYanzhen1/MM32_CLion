@@ -2,8 +2,8 @@
     \file     gui_label.h
     \brief    gui from features function Header File
     \author   Lao·Zhu
-    \version  V1.3.2
-    \date     21. March 2022
+    \version  V1.6.1
+    \date     24. July 2022
  ******************************************************************************/
 
 #ifndef MM32F3277_GUI_LABLE_H_

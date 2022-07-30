@@ -2,8 +2,8 @@
     \file       at24c02.h
     \brief      at24c02 function Header File
     \author     LaoZhu
-    \version    V1.3.2
-    \date       04. February 2022
+    \version    V1.6.1
+    \date       24. July 2022
 ******************************************************************************/
 
 #ifndef MM32F3277_DEVICE_AT24C02_H_

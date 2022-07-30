@@ -1,6 +1,10 @@
-//
-// Created by LaoZhu on 2022/3/22.
-//
+/**************************************************************************/ /**
+    \file       main_form.c
+    \brief      main_form function Source File
+    \author     LaoZhu
+    \version    V1.6.1
+    \date       24. July 2022
+******************************************************************************/
 
 #include "main.h"
 #include "orign_form.h"

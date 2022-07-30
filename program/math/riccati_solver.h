@@ -3,8 +3,8 @@
     \brief      Includes macros related to the LQR algorithm and
                 function header file
     \author     Lao·Zhu & ZGL
-    \version    V1.3.2
-    \date       21. July 2022
+    \version    V1.6.1
+    \date       24. July 2022
  ******************************************************************************/
 
 #ifndef RICCATI_SOLVER_H_

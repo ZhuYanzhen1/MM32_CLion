@@ -2,8 +2,8 @@
     \file       sensor_decode.c
     \brief      sensor_decode function Source File
     \author     ZGL
-    \version    V1.3.2
-    \date       09. March 2022
+    \version    V1.6.1
+    \date       24. July 2022
 ******************************************************************************/
 
 #include "sensor_decode.h"

@@ -2,8 +2,8 @@
     \file       tfcard.c
     \brief      tfcard function Source File
     \author     LaoZhu
-    \version    V1.3.2
-    \date       21. April 2022
+    \version    V1.6.1
+    \date       24. July 2022
 ******************************************************************************/
 
 #include "tfcard.h"

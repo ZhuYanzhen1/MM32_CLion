@@ -1,6 +1,10 @@
-//
-// Created by 16625 on 2022-04-10.
-//
+/**************************************************************************/ /**
+    \file     path.c
+    \brief    Contains macros related to track points
+    \author   ZGL
+    \version  V1.6.1
+    \date     24. July 2022
+ ******************************************************************************/
 
 #ifndef MM32F3277_MATH_TEST_H_
 #define MM32F3277_MATH_TEST_H_

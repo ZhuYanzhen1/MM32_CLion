@@ -2,8 +2,8 @@
     \file     gui_from.c
     \brief    gui from features function Source File
     \author   Lao·Zhu
-    \version  V1.0.1
-    \date     21. March 2022
+    \version  V1.6.1
+    \date     24. July 2022
  ******************************************************************************/
 
 #include "gui_form.h"

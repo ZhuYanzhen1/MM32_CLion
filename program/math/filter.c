@@ -2,8 +2,8 @@
     \file       filter.c
     \brief      Includes some filtering algorithms
     \author     Lao·Zhu & ZGL
-    \version    V1.3.3
-    \date       22. March 2022
+    \version    V1.6.1
+    \date       24. July 2022
 ******************************************************************************/
 
 #include "filter.h"

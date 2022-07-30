@@ -3,8 +3,8 @@
     \brief      Coordinate system transformation
                 Data Transformation
     \author     ZGL
-    \version    V1.3.3
-    \date       22. March 2022
+    \version    V1.6.1
+    \date       24. July 2022
 ******************************************************************************/
 #ifndef MM32F3277_MATH_DATA_CONVERSION_H_
 #define MM32F3277_MATH_DATA_CONVERSION_H_

@@ -2,8 +2,8 @@
     \file     gui_base.c
     \brief    gui basic features function Source File
     \author   Lao·Zhu
-    \version  V1.0.1
-    \date     19. January 2022
+    \version  V1.6.1
+    \date     24. July 2022
  ******************************************************************************/
 
 #include "tft_lcd.h"

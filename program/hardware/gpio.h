@@ -2,8 +2,8 @@
     \file       gpio.h
     \brief      GPIO function Header File
     \author     LaoZhu
-    \version    V1.2.2
-    \date       19. January 2022
+    \version    V1.6.1
+    \date       24. July 2022
 ******************************************************************************/
 
 #ifndef MM32F3277_HARDWARE_GPIO_H_

@@ -1,7 +1,10 @@
-//
-// Created by 16625 on 2022-03-26.
-//
-
+/**************************************************************************/ /**
+    \file       calibrate_mag_form.c
+    \brief      calibrate_mag_form function Source File
+    \author     LaoZhu
+    \version    V1.6.1
+    \date       24. July 2022
+******************************************************************************/
 #include "main.h"
 #include "calibrate_mag_form.h"
 

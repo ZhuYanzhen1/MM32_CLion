@@ -2,8 +2,8 @@
     \file       kalman.h
     \brief      Kalman Fusion Header File
     \author     ZGL
-    \version    V1.3.2
-    \date       06. March 2022
+    \version    V1.6.1
+    \date       24. July 2022
 ******************************************************************************/
 
 #ifndef MM32F3277_MATH_KALMAN_H_

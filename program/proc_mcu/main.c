@@ -1,9 +1,9 @@
 /**************************************************************************/ /**
     \file     main.c
     \brief    main function Source File
-    \author   Lao·Zhu
-    \version  V1.0.1
-    \date     14. November 2021
+    \author   Lao·Zhu & ZGL
+    \version  V1.6.1
+    \date     24. July 2022
  ******************************************************************************/
 
 #include "main.h"

@@ -1,6 +1,10 @@
-//
-// Created by LaoZhu on 2022/4/23.
-//
+/**************************************************************************/ /**
+    \file       fsrest.c
+    \brief      fsrest function Header File
+    \author     LaoZhu
+    \version    V1.6.1
+    \date       24. July 2022
+******************************************************************************/
 
 #ifndef MAIN_C_FATFS_FSTEST_H_
 #define MAIN_C_FATFS_FSTEST_H_

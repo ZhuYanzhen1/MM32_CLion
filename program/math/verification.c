@@ -2,8 +2,8 @@
     \file     verification.c
     \brief    verification function Source File
     \author   Lao·Zhu
-    \version  V1.0.1
-    \date     15. November 2021
+    \version  V1.6.1
+    \date     24. July 2022
  ******************************************************************************/
 
 #include "verification.h"

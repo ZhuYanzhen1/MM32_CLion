@@ -1,9 +1,9 @@
 /**************************************************************************/ /**
-    \file     main.h
+    \file     main.c
     \brief    main function Header File
-    \author   Lao·Zhu
-    \version  V1.0.1
-    \date     14. November 2021
+    \author   Lao·Zhu & ZGL
+    \version  V1.6.1
+    \date     24. July 2022
  ******************************************************************************/
 
 #ifndef MM32F3277_USER_MAIN_H_

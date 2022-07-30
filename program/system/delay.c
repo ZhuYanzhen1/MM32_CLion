@@ -2,8 +2,8 @@
     \file     delay.c
     \brief    delay function Source File
     \author   Lao·Zhu
-    \version  V1.0.1
-    \date     14. November 2021
+    \version  V1.6.1
+    \date     24. July 2022
  ******************************************************************************/
 
 #include "delay.h"

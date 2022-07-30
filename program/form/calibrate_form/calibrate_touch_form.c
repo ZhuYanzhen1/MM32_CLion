@@ -1,6 +1,10 @@
-//
-// Created by LaoZhu on 2022/3/27.
-//
+/**************************************************************************/ /**
+    \file       calibrate_touch_form.c
+    \brief      calibrate_touch_form function Source File
+    \author     LaoZhu
+    \version    V1.6.1
+    \date       24. July 2022
+******************************************************************************/
 
 #include "main.h"
 #include "calibrate_touch_form.h"
