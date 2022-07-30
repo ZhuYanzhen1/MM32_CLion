@@ -11,7 +11,9 @@
 
 void SysTick_Handler(void);
 void TIM2_IRQHandler(void);
+void TIM4_IRQHandler(void);
 void UART1_IRQHandler(void);
+void UART7_IRQHandler(void);
 void DMA1_Channel1_IRQHandler(void);
 void DMA1_Channel4_IRQHandler(void);
 
