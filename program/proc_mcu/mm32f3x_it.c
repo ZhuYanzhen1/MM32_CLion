@@ -9,12 +9,16 @@
 #include "mm32f3x_it.h"
 #include "main.h"
 
+/* \brief The event group when the touch event occurs */
 extern EventGroupHandle_t touch_event;
 
-/* \brief Motor temperature */
+/* \brief Motor temperature form control MCU */
 unsigned char temperature = 0;
 
+/* \brief Battery voltage from power board */
 unsigned char battery_voltage = 0x00;
+
+/* \brief Battery output current from power board */
 unsigned char battery_current = 0x00;
 
 /*! \brief  Buffer enumeration value currently used by UART2 & UART3 */
@@ -50,18 +54,25 @@ unsigned char printf_sending_flag = 0;
 /*! \brief  Lcd buffer */
 extern volatile unsigned char lcd_buffer[128 * 160 * 2];
 
+/*!
+    \brief Timer2 interrupt callback function, scan debug variable
+*/
 void TIM2_IRQHandler(void) {
+    /* Clear TIM2 interrupt bit */
     TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
     debugger_scan_variable(global_time_stamp);
 }
 
 /*!
-    \brief  Touch Screen Related
+    \brief  Interrupt callback function when touch screen event is triggered
 */
 void EXTI4_IRQHandler(void) {
     if (EXTI_GetITStatus(EXTI_Line4)) {
         BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+        /* Clear EXTI4 interrupt bit */
         EXTI_ClearFlag(EXTI_Line4);
+
+        /* Determine whether to touch and send touch events through the operating system */
         if (!GPIO_ReadInputDataBit(TOUCH_PEN_PORT, TOUCH_PEN_PIN) && touch_event != NULL)
             xEventGroupSetBitsFromISR(touch_event, 0x00000001,
                                       &xHigherPriorityTaskWoken);
@@ -74,18 +85,26 @@ void EXTI4_IRQHandler(void) {
 void UART1_IRQHandler(void) {
     if (UART_GetITStatus(UART1, UART_ISR_RX) != RESET) {
         unsigned char recvbyte = UART_ReceiveData(UART1);
-        mdtp_receive_handler(recvbyte);
+
+        /* Clear UART1 interrupt bit */
         UART_ClearITPendingBit(UART1, UART_ISR_RX);
+
+        /* Handles single byte UART data */
+        mdtp_receive_handler(recvbyte);
     }
 }
 
 /*!
-    \brief  Receive the motor temperature sent by ctrl_mcu
+    \brief  Receive the motor temperature sent from ctrl_mcu
 */
 void UART4_IRQHandler(void) {
     if (UART_GetITStatus(UART4, UART_ISR_RX) != RESET) {
         unsigned char recvbyte = UART_ReceiveData(UART4);
+
+        /* Clear UART4 interrupt bit */
         UART_ClearITPendingBit(UART4, UART_ISR_RX);
+
+        /* Store the received temperature into variable */
         temperature = recvbyte;
     }
 }
@@ -96,7 +115,11 @@ void UART4_IRQHandler(void) {
 void UART6_IRQHandler(void) {
     if (UART_GetITStatus(UART6, UART_ISR_RX) != RESET) {
         unsigned char recvbyte = UART_ReceiveData(UART6);
+
+        /* Clear UART6 interrupt bit */
         UART_ClearITPendingBit(UART6, UART_ISR_RX);
+
+        /* Store the received battery info into variable */
         battery_voltage = (recvbyte >> 3) + 140;
         battery_current = recvbyte & 0x07;
     }
@@ -136,10 +159,14 @@ void DMA1_Channel4_IRQHandler(void) {
     if (DMA_GetITStatus(DMA1_IT_TC4)) {
         /* Clear DMA1 channel4 interrupt flags */
         DMA_ClearITPendingBit(DMA1_IT_TC4);
+
+        /* Determine if printing of all printf() function data is complete */
         if (printf_sending_flag == 1 && printf_dma_counter == 0) {
             printf_sending_flag = 0;
             printf_dma_counter = 0;
         }
+
+        /* Determine if the printf() function is used to print data */
         if (printf_dma_counter != 0) {
             uart1_dma_set_transmit_buffer(printf_mdtp_dma_buffer[0], printf_dma_counter * 12);
             printf_dma_counter = 0;
@@ -178,12 +205,17 @@ void DMA1_Channel6_IRQHandler(void) {
 }
 
 /*!
-    \brief  Refreshing the interface of the display
+    \brief  Refreshing LCD data using DMA
 */
 void DMA2_Channel2_IRQHandler(void) {
     if (DMA_GetITStatus(DMA2_IT_TC2)) {
+        /* Clear DMA2 channel2 interrupt flags */
         DMA_ClearITPendingBit(DMA2_IT_TC2);
+
+        /* Set the display refresh area to the entire screen */
         lcd_set_address(0, 0, 127, 159);
+
+        /* Configure DMA2 to start transferring LCD screen color data */
         spi3_dma_set_transmit_buffer((unsigned int *) lcd_buffer, 128 * 160 * 2);
     }
 }
